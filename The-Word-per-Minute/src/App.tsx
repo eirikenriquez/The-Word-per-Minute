@@ -1,12 +1,38 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import { useState, useEffect } from "react";
+
+type Verse = { id: string; ref: string; text: string };
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [verses, setVerses] = useState<Verse[] | null>(null);
+  const [err, setErr] = useState<string | null>(null);
 
-  return <h1>Test</h1>;
+  useEffect(() => {
+    fetch("./data/verses.json")
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to load verses.json");
+        return response.json();
+      })
+      .then((json) => setVerses(json.verses as Verse[]))
+      .catch((error) => setErr(error.message));
+  }, []);
+
+  return (
+    <div>
+      <header>
+        <h1 className="text-xl font-bold">The Word per Minute</h1>
+      </header>
+      <main>
+        {!verses && !err && <div>Loading verses…</div>}
+        {err && <div>{err}</div>}
+        {verses && (
+          <div>
+            <p>{verses[0].ref}</p>
+            <p>{verses[0].text}</p>
+          </div>
+        )}
+      </main>
+    </div>
+  );
 }
 
 export default App;
