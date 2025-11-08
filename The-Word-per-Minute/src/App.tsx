@@ -19,7 +19,7 @@ function App() {
   return (
     <div>
       <header>
-        <h1 className="text-xl font-bold">The Word per Minute</h1>
+        <h1>The Word per Minute</h1>
       </header>
       <main>
         {!verses && !err && <div>Loading verses…</div>}
