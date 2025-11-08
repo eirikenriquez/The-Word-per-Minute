@@ -1,0 +1,20 @@
+{
+  "version": "ESV",
+  "verses": [
+    {
+      "id": "john-3-16",
+      "ref": "John 3:16",
+      "text": "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life."
+    },
+    {
+      "id": "ps-23-1",
+      "ref": "Psalm 23:1",
+      "text": "The Lord is my shepherd; I shall not want."
+    },
+    {
+      "id": "prov-3-5-6",
+      "ref": "Proverbs 3:5–6",
+      "text": "Trust in the Lord with all your heart, and do not lean on your own understanding. In all your ways acknowledge him, and he will make straight your paths."
+    }
+  ]
+}
