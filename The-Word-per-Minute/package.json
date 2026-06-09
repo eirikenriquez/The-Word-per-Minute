@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --configLoader runner",
     "build": "tsc -b && vite build --configLoader runner",
+    "import:bible": "node scripts/importPublicDomainBible.mjs",
     "lint": "eslint .",
     "preview": "vite preview --configLoader runner"
   },

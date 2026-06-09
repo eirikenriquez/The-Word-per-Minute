@@ -6,26 +6,33 @@ import { VerseDisplay } from "./components/VerseDisplay";
 import { usePracticeStats } from "./hooks/usePracticeStats";
 import { useVerseLibrary } from "./hooks/useVerseLibrary";
 import { calculateTypingMetrics, countCorrectCharacters } from "./utils/typingMetrics";
-import { getRandomVerseIndex } from "./utils/verseSelection";
 
 function App() {
-  const [selectedVerseIndex, setSelectedVerseIndex] = useState(0);
   const [typedText, setTypedText] = useState("");
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [finishedAt, setFinishedAt] = useState<number | null>(null);
   const savedFinishAt = useRef<number | null>(null);
   const { stats, recordCompletedAttempt, resetStats } = usePracticeStats();
   const {
+    books,
+    chapter,
     error,
     isLoading,
+    practiceVerse,
+    selectBook,
+    selectChapter,
+    selectRandomVerse,
     selectedTranslationId,
-    setSelectedTranslationId,
+    selectTranslation,
+    selectVerse,
+    selectedBook,
+    selectedBookId,
+    selectedChapter,
+    selectedVerse,
     translations,
-    verses,
   } = useVerseLibrary();
 
-  const verse = verses[selectedVerseIndex];
-  const targetText = verse?.text ?? "";
+  const targetText = practiceVerse?.text ?? "";
   const metrics = useMemo(
     () => calculateTypingMetrics({ targetText, typedText, startedAt, finishedAt }),
     [finishedAt, startedAt, targetText, typedText],
@@ -38,8 +45,7 @@ function App() {
     recordCompletedAttempt(metrics.wpm, metrics.accuracy);
   }, [finishedAt, metrics.accuracy, metrics.isComplete, metrics.wpm, recordCompletedAttempt]);
 
-  function resetPractice(nextVerseIndex = selectedVerseIndex) {
-    setSelectedVerseIndex(nextVerseIndex);
+  function resetPractice() {
     setTypedText("");
     setStartedAt(null);
     setFinishedAt(null);
@@ -47,8 +53,28 @@ function App() {
   }
 
   function handleTranslationChange(translationId: string) {
-    setSelectedTranslationId(translationId);
-    resetPractice(0);
+    selectTranslation(translationId);
+    resetPractice();
+  }
+
+  function handleBookChange(bookId: string) {
+    selectBook(bookId);
+    resetPractice();
+  }
+
+  function handleChapterChange(chapterNumber: number) {
+    selectChapter(chapterNumber);
+    resetPractice();
+  }
+
+  function handleVerseChange(verseNumber: number) {
+    selectVerse(verseNumber);
+    resetPractice();
+  }
+
+  function handleRandomVerse() {
+    selectRandomVerse();
+    resetPractice();
   }
 
   function handleTyping(nextTypedText: string) {
@@ -83,7 +109,7 @@ function App() {
     );
   }
 
-  if (error || !verse) {
+  if (error || !practiceVerse) {
     return (
       <div className="min-h-screen bg-slate-50 px-4 py-8 text-slate-900">
         <div className="mx-auto max-w-3xl rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800">
@@ -103,17 +129,23 @@ function App() {
 
       <main className="mx-auto grid max-w-4xl gap-4 px-4 py-6">
         <VerseControls
-          selectedVerseIndex={selectedVerseIndex}
+          books={books}
+          chapter={chapter}
+          selectedBook={selectedBook}
+          selectedBookId={selectedBookId}
+          selectedChapter={selectedChapter}
           selectedTranslationId={selectedTranslationId}
+          selectedVerse={selectedVerse}
           translations={translations}
-          verses={verses}
-          onSelectVerse={resetPractice}
+          onSelectBook={handleBookChange}
+          onSelectChapter={handleChapterChange}
           onSelectTranslation={handleTranslationChange}
-          onRandomVerse={() => resetPractice(getRandomVerseIndex(verses.length, selectedVerseIndex))}
-          onReset={() => resetPractice()}
+          onSelectVerse={handleVerseChange}
+          onRandomVerse={handleRandomVerse}
+          onReset={resetPractice}
         />
 
-        <VerseDisplay verse={verse} typedText={typedText} />
+        <VerseDisplay verse={practiceVerse} typedText={typedText} />
 
         <TypingPracticePanel
           accuracy={metrics.accuracy}

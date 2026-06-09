@@ -1,7 +1,7 @@
-import type { Verse } from "../types/verse";
+import type { PracticeVerse } from "../types/verse";
 
 type VerseDisplayProps = {
-  verse: Verse;
+  verse: PracticeVerse;
   typedText: string;
 };
 
@@ -18,7 +18,9 @@ function getCharacterClass(targetCharacter: string, typedCharacter: string | und
 export function VerseDisplay({ verse, typedText }: VerseDisplayProps) {
   return (
     <section className="rounded-lg border bg-white p-5 shadow-sm">
-      <p className="mb-3 text-sm font-medium text-slate-500">{verse.ref}</p>
+      <p className="mb-3 text-sm font-medium text-slate-500">
+        {verse.ref} <span className="text-slate-400">({verse.translationName})</span>
+      </p>
       <p className="text-lg leading-9">
         {verse.text.split("").map((character, index) => (
           <span

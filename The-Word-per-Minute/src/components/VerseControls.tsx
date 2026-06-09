@@ -1,32 +1,44 @@
-import type { Translation, Verse } from "../types/verse";
+import type { ReactNode } from "react";
+import type { BibleChapter, BookSummary, Translation } from "../types/verse";
 
 type VerseControlsProps = {
-  selectedVerseIndex: number;
+  books: BookSummary[];
+  chapter: BibleChapter | null;
+  selectedBook?: BookSummary;
+  selectedBookId: string;
+  selectedChapter: number;
   selectedTranslationId: string;
+  selectedVerse: number;
   translations: Translation[];
-  verses: Verse[];
-  onSelectVerse: (verseIndex: number) => void;
-  onSelectTranslation: (translationId: string) => void;
   onRandomVerse: () => void;
   onReset: () => void;
+  onSelectBook: (bookId: string) => void;
+  onSelectChapter: (chapter: number) => void;
+  onSelectTranslation: (translationId: string) => void;
+  onSelectVerse: (verse: number) => void;
 };
 
 export function VerseControls({
-  selectedVerseIndex,
+  books,
+  chapter,
+  selectedBook,
+  selectedBookId,
+  selectedChapter,
   selectedTranslationId,
+  selectedVerse,
   translations,
-  verses,
-  onSelectVerse,
-  onSelectTranslation,
   onRandomVerse,
   onReset,
+  onSelectBook,
+  onSelectChapter,
+  onSelectTranslation,
+  onSelectVerse,
 }: VerseControlsProps) {
   return (
     <section className="rounded-lg border bg-white p-4 shadow-sm">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div className="grid gap-3 sm:grid-cols-2">
-          <label className="grid gap-1">
-            <span className="text-sm font-medium text-slate-600">Translation</span>
+      <div className="grid gap-4">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <PickerLabel label="Translation">
             <select
               className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
               value={selectedTranslationId}
@@ -38,22 +50,51 @@ export function VerseControls({
                 </option>
               ))}
             </select>
-          </label>
+          </PickerLabel>
 
-          <label className="grid gap-1">
-            <span className="text-sm font-medium text-slate-600">Verse</span>
+          <PickerLabel label="Book">
             <select
               className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
-              value={selectedVerseIndex}
-              onChange={(event) => onSelectVerse(Number(event.target.value))}
+              value={selectedBookId}
+              onChange={(event) => onSelectBook(event.target.value)}
             >
-              {verses.map((verse, index) => (
-                <option key={verse.id} value={index}>
-                  {verse.ref}
+              {books.map((book) => (
+                <option key={book.id} value={book.id}>
+                  {book.name}
                 </option>
               ))}
             </select>
-          </label>
+          </PickerLabel>
+
+          <PickerLabel label="Chapter">
+            <select
+              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
+              value={selectedChapter}
+              onChange={(event) => onSelectChapter(Number(event.target.value))}
+            >
+              {Array.from({ length: selectedBook?.chapterCount ?? 0 }, (_, index) => index + 1).map(
+                (chapterNumber) => (
+                  <option key={chapterNumber} value={chapterNumber}>
+                    {chapterNumber}
+                  </option>
+                ),
+              )}
+            </select>
+          </PickerLabel>
+
+          <PickerLabel label="Verse">
+            <select
+              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
+              value={selectedVerse}
+              onChange={(event) => onSelectVerse(Number(event.target.value))}
+            >
+              {(chapter?.verses ?? []).map((verse) => (
+                <option key={verse.number} value={verse.number}>
+                  {verse.number}
+                </option>
+              ))}
+            </select>
+          </PickerLabel>
         </div>
 
         <div className="flex flex-wrap gap-2">
@@ -74,5 +115,19 @@ export function VerseControls({
         </div>
       </div>
     </section>
+  );
+}
+
+type PickerLabelProps = {
+  children: ReactNode;
+  label: string;
+};
+
+function PickerLabel({ children, label }: PickerLabelProps) {
+  return (
+    <label className="grid gap-1">
+      <span className="text-sm font-medium text-slate-600">{label}</span>
+      {children}
+    </label>
   );
 }

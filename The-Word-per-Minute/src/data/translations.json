@@ -4,9 +4,10 @@
       "id": "web",
       "name": "World English Bible",
       "abbreviation": "WEB",
-      "language": "English",
-      "license": "Public Domain",
-      "source": "Local JSON"
+      "language": "en",
+      "license": "public-domain",
+      "source": "Midvash bible-data",
+      "sourceUrl": "https://worldenglish.bible/"
     }
   ]
 }
