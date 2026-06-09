@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import type { PracticeStats } from "../types/practice";
 
 const statsStorageKey = "the-word-per-minute-stats";
@@ -27,7 +27,7 @@ function saveStats(stats: PracticeStats) {
 export function usePracticeStats() {
   const [stats, setStats] = useState(loadStats);
 
-  function recordCompletedAttempt(wpm: number, accuracy: number) {
+  const recordCompletedAttempt = useCallback((wpm: number, accuracy: number) => {
     setStats((currentStats) => {
       const nextStats = {
         bestWpm: Math.max(currentStats.bestWpm, wpm),
@@ -38,12 +38,12 @@ export function usePracticeStats() {
       saveStats(nextStats);
       return nextStats;
     });
-  }
+  }, []);
 
-  function resetStats() {
+  const resetStats = useCallback(() => {
     saveStats(emptyStats);
     setStats(emptyStats);
-  }
+  }, []);
 
   return {
     stats,

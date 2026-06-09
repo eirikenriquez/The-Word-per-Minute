@@ -3,13 +3,10 @@ import { PersonalBests } from "./components/PersonalBests";
 import { TypingPracticePanel } from "./components/TypingPracticePanel";
 import { VerseControls } from "./components/VerseControls";
 import { VerseDisplay } from "./components/VerseDisplay";
-import versesData from "./data/verses.json";
 import { usePracticeStats } from "./hooks/usePracticeStats";
-import type { Verse } from "./types/verse";
+import { useVerseLibrary } from "./hooks/useVerseLibrary";
 import { calculateTypingMetrics, countCorrectCharacters } from "./utils/typingMetrics";
 import { getRandomVerseIndex } from "./utils/verseSelection";
-
-const verses = versesData.verses as Verse[];
 
 function App() {
   const [selectedVerseIndex, setSelectedVerseIndex] = useState(0);
@@ -18,6 +15,14 @@ function App() {
   const [finishedAt, setFinishedAt] = useState<number | null>(null);
   const savedFinishAt = useRef<number | null>(null);
   const { stats, recordCompletedAttempt, resetStats } = usePracticeStats();
+  const {
+    error,
+    isLoading,
+    selectedTranslationId,
+    setSelectedTranslationId,
+    translations,
+    verses,
+  } = useVerseLibrary();
 
   const verse = verses[selectedVerseIndex];
   const targetText = verse?.text ?? "";
@@ -39,6 +44,11 @@ function App() {
     setStartedAt(null);
     setFinishedAt(null);
     savedFinishAt.current = null;
+  }
+
+  function handleTranslationChange(translationId: string) {
+    setSelectedTranslationId(translationId);
+    resetPractice(0);
   }
 
   function handleTyping(nextTypedText: string) {
@@ -63,11 +73,21 @@ function App() {
     setFinishedAt(null);
   }
 
-  if (!verse) {
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 px-4 py-8 text-slate-900">
+        <div className="mx-auto max-w-3xl rounded-xl border bg-white p-4 text-slate-600 shadow-sm">
+          Loading verses...
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !verse) {
     return (
       <div className="min-h-screen bg-slate-50 px-4 py-8 text-slate-900">
         <div className="mx-auto max-w-3xl rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800">
-          No verses found.
+          {error ?? "No verses found."}
         </div>
       </div>
     );
@@ -84,8 +104,11 @@ function App() {
       <main className="mx-auto grid max-w-4xl gap-4 px-4 py-6">
         <VerseControls
           selectedVerseIndex={selectedVerseIndex}
+          selectedTranslationId={selectedTranslationId}
+          translations={translations}
           verses={verses}
           onSelectVerse={resetPractice}
+          onSelectTranslation={handleTranslationChange}
           onRandomVerse={() => resetPractice(getRandomVerseIndex(verses.length, selectedVerseIndex))}
           onReset={() => resetPractice()}
         />

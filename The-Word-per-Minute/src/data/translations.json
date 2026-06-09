@@ -1,0 +1,12 @@
+{
+  "translations": [
+    {
+      "id": "web",
+      "name": "World English Bible",
+      "abbreviation": "WEB",
+      "language": "English",
+      "license": "Public Domain",
+      "source": "Local JSON"
+    }
+  ]
+}
