@@ -1,8 +1,36 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import versesData from "./data/verses.json";
 import type { Verse } from "./types/verse";
 
 const verses = versesData.verses as Verse[];
+const statsStorageKey = "the-word-per-minute-stats";
+
+type PracticeStats = {
+  bestWpm: number;
+  bestAccuracy: number;
+  completedAttempts: number;
+};
+
+const emptyStats: PracticeStats = {
+  bestWpm: 0,
+  bestAccuracy: 0,
+  completedAttempts: 0,
+};
+
+function loadStats() {
+  const savedStats = localStorage.getItem(statsStorageKey);
+  if (!savedStats) return emptyStats;
+
+  try {
+    return { ...emptyStats, ...JSON.parse(savedStats) } as PracticeStats;
+  } catch {
+    return emptyStats;
+  }
+}
+
+function saveStats(stats: PracticeStats) {
+  localStorage.setItem(statsStorageKey, JSON.stringify(stats));
+}
 
 function getRandomVerseIndex(currentIndex: number) {
   if (verses.length <= 1) return 0;
@@ -20,6 +48,8 @@ function App() {
   const [typedText, setTypedText] = useState("");
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [finishedAt, setFinishedAt] = useState<number | null>(null);
+  const [stats, setStats] = useState(loadStats);
+  const savedFinishAt = useRef<number | null>(null);
 
   const verse = verses[selectedVerseIndex];
   const targetText = verse?.text ?? "";
@@ -43,11 +73,33 @@ function App() {
     targetText && typedText.length === targetText.length && correctCharacters === targetText.length,
   );
 
+  useEffect(() => {
+    if (!isComplete || !finishedAt || savedFinishAt.current === finishedAt) return;
+
+    savedFinishAt.current = finishedAt;
+    setStats((currentStats) => {
+      const nextStats = {
+        bestWpm: Math.max(currentStats.bestWpm, wpm),
+        bestAccuracy: Math.max(currentStats.bestAccuracy, accuracy),
+        completedAttempts: currentStats.completedAttempts + 1,
+      };
+
+      saveStats(nextStats);
+      return nextStats;
+    });
+  }, [accuracy, finishedAt, isComplete, wpm]);
+
   function resetPractice(nextVerseIndex = selectedVerseIndex) {
     setSelectedVerseIndex(nextVerseIndex);
     setTypedText("");
     setStartedAt(null);
     setFinishedAt(null);
+    savedFinishAt.current = null;
+  }
+
+  function resetStats() {
+    saveStats(emptyStats);
+    setStats(emptyStats);
   }
 
   function handleTyping(nextTypedText: string) {
@@ -188,6 +240,37 @@ function App() {
               Nice work. You finished this verse at {wpm} WPM with {accuracy}% accuracy.
             </div>
           )}
+        </section>
+
+        <section className="rounded-lg border bg-white p-5 shadow-sm">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-base font-bold">Personal bests</h2>
+              <p className="text-sm text-slate-500">Saved in this browser.</p>
+            </div>
+            <button
+              className="w-fit rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+              type="button"
+              onClick={resetStats}
+            >
+              Reset Stats
+            </button>
+          </div>
+
+          <div className="mt-4 grid grid-cols-3 gap-3">
+            <div className="rounded-md bg-slate-100 p-3">
+              <p className="text-xs font-medium uppercase text-slate-500">Best WPM</p>
+              <p className="text-2xl font-bold">{stats.bestWpm}</p>
+            </div>
+            <div className="rounded-md bg-slate-100 p-3">
+              <p className="text-xs font-medium uppercase text-slate-500">Best Accuracy</p>
+              <p className="text-2xl font-bold">{stats.bestAccuracy}%</p>
+            </div>
+            <div className="rounded-md bg-slate-100 p-3">
+              <p className="text-xs font-medium uppercase text-slate-500">Completed</p>
+              <p className="text-2xl font-bold">{stats.completedAttempts}</p>
+            </div>
+          </div>
         </section>
       </main>
     </div>
