@@ -1,93 +1,37 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { PersonalBests } from "./components/PersonalBests";
+import { TypingPracticePanel } from "./components/TypingPracticePanel";
+import { VerseControls } from "./components/VerseControls";
+import { VerseDisplay } from "./components/VerseDisplay";
 import versesData from "./data/verses.json";
+import { usePracticeStats } from "./hooks/usePracticeStats";
 import type { Verse } from "./types/verse";
+import { calculateTypingMetrics, countCorrectCharacters } from "./utils/typingMetrics";
+import { getRandomVerseIndex } from "./utils/verseSelection";
 
 const verses = versesData.verses as Verse[];
-const statsStorageKey = "the-word-per-minute-stats";
-
-type PracticeStats = {
-  bestWpm: number;
-  bestAccuracy: number;
-  completedAttempts: number;
-};
-
-const emptyStats: PracticeStats = {
-  bestWpm: 0,
-  bestAccuracy: 0,
-  completedAttempts: 0,
-};
-
-function loadStats() {
-  const savedStats = localStorage.getItem(statsStorageKey);
-  if (!savedStats) return emptyStats;
-
-  try {
-    return { ...emptyStats, ...JSON.parse(savedStats) } as PracticeStats;
-  } catch {
-    return emptyStats;
-  }
-}
-
-function saveStats(stats: PracticeStats) {
-  localStorage.setItem(statsStorageKey, JSON.stringify(stats));
-}
-
-function getRandomVerseIndex(currentIndex: number) {
-  if (verses.length <= 1) return 0;
-
-  let nextIndex = currentIndex;
-  while (nextIndex === currentIndex) {
-    nextIndex = Math.floor(Math.random() * verses.length);
-  }
-
-  return nextIndex;
-}
 
 function App() {
   const [selectedVerseIndex, setSelectedVerseIndex] = useState(0);
   const [typedText, setTypedText] = useState("");
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [finishedAt, setFinishedAt] = useState<number | null>(null);
-  const [stats, setStats] = useState(loadStats);
   const savedFinishAt = useRef<number | null>(null);
+  const { stats, recordCompletedAttempt, resetStats } = usePracticeStats();
 
   const verse = verses[selectedVerseIndex];
   const targetText = verse?.text ?? "";
-
-  const correctCharacters = useMemo(() => {
-    return typedText
-      .split("")
-      .filter((character, index) => character === targetText[index]).length;
-  }, [targetText, typedText]);
-
-  const progress = targetText.length
-    ? Math.round((typedText.length / targetText.length) * 100)
-    : 0;
-  const accuracy = typedText.length
-    ? Math.round((correctCharacters / typedText.length) * 100)
-    : 100;
-  const elapsedMs = startedAt ? (finishedAt ?? Date.now()) - startedAt : 0;
-  const elapsedMinutes = elapsedMs / 1000 / 60;
-  const wpm = elapsedMinutes > 0 ? Math.round(correctCharacters / 5 / elapsedMinutes) : 0;
-  const isComplete = Boolean(
-    targetText && typedText.length === targetText.length && correctCharacters === targetText.length,
+  const metrics = useMemo(
+    () => calculateTypingMetrics({ targetText, typedText, startedAt, finishedAt }),
+    [finishedAt, startedAt, targetText, typedText],
   );
 
   useEffect(() => {
-    if (!isComplete || !finishedAt || savedFinishAt.current === finishedAt) return;
+    if (!metrics.isComplete || !finishedAt || savedFinishAt.current === finishedAt) return;
 
     savedFinishAt.current = finishedAt;
-    setStats((currentStats) => {
-      const nextStats = {
-        bestWpm: Math.max(currentStats.bestWpm, wpm),
-        bestAccuracy: Math.max(currentStats.bestAccuracy, accuracy),
-        completedAttempts: currentStats.completedAttempts + 1,
-      };
-
-      saveStats(nextStats);
-      return nextStats;
-    });
-  }, [accuracy, finishedAt, isComplete, wpm]);
+    recordCompletedAttempt(metrics.wpm, metrics.accuracy);
+  }, [finishedAt, metrics.accuracy, metrics.isComplete, metrics.wpm, recordCompletedAttempt]);
 
   function resetPractice(nextVerseIndex = selectedVerseIndex) {
     setSelectedVerseIndex(nextVerseIndex);
@@ -95,11 +39,6 @@ function App() {
     setStartedAt(null);
     setFinishedAt(null);
     savedFinishAt.current = null;
-  }
-
-  function resetStats() {
-    saveStats(emptyStats);
-    setStats(emptyStats);
   }
 
   function handleTyping(nextTypedText: string) {
@@ -111,19 +50,17 @@ function App() {
 
     setTypedText(limitedText);
 
-    const nextCorrectCharacters = limitedText
-      .split("")
-      .filter((character, index) => character === targetText[index]).length;
-
-    if (
+    const isFinished =
       targetText.length > 0 &&
       limitedText.length === targetText.length &&
-      nextCorrectCharacters === targetText.length
-    ) {
+      countCorrectCharacters(targetText, limitedText) === targetText.length;
+
+    if (isFinished) {
       setFinishedAt((currentFinishedAt) => currentFinishedAt ?? Date.now());
-    } else {
-      setFinishedAt(null);
+      return;
     }
+
+    setFinishedAt(null);
   }
 
   if (!verse) {
@@ -145,133 +82,27 @@ function App() {
       </header>
 
       <main className="mx-auto grid max-w-4xl gap-4 px-4 py-6">
-        <section className="rounded-lg border bg-white p-4 shadow-sm">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <label className="grid gap-1">
-              <span className="text-sm font-medium text-slate-600">Verse</span>
-              <select
-                className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
-                value={selectedVerseIndex}
-                onChange={(event) => resetPractice(Number(event.target.value))}
-              >
-                {verses.map((availableVerse, index) => (
-                  <option key={availableVerse.id} value={index}>
-                    {availableVerse.ref}
-                  </option>
-                ))}
-              </select>
-            </label>
+        <VerseControls
+          selectedVerseIndex={selectedVerseIndex}
+          verses={verses}
+          onSelectVerse={resetPractice}
+          onRandomVerse={() => resetPractice(getRandomVerseIndex(verses.length, selectedVerseIndex))}
+          onReset={() => resetPractice()}
+        />
 
-            <div className="flex flex-wrap gap-2">
-              <button
-                className="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
-                type="button"
-                onClick={() => resetPractice(getRandomVerseIndex(selectedVerseIndex))}
-              >
-                Random Verse
-              </button>
-              <button
-                className="rounded-md bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-700"
-                type="button"
-                onClick={() => resetPractice()}
-              >
-                Reset
-              </button>
-            </div>
-          </div>
-        </section>
+        <VerseDisplay verse={verse} typedText={typedText} />
 
-        <section className="rounded-lg border bg-white p-5 shadow-sm">
-          <p className="mb-3 text-sm font-medium text-slate-500">{verse.ref}</p>
-          <p className="text-lg leading-9">
-            {targetText.split("").map((character, index) => {
-              const typedCharacter = typedText[index];
-              const isCurrentCharacter = index === typedText.length;
-              const characterClass =
-                typedCharacter === undefined
-                  ? isCurrentCharacter
-                    ? "bg-amber-100 text-slate-900"
-                    : "text-slate-500"
-                  : typedCharacter === character
-                    ? "bg-emerald-100 text-emerald-900"
-                    : "bg-rose-100 text-rose-900";
+        <TypingPracticePanel
+          accuracy={metrics.accuracy}
+          isComplete={metrics.isComplete}
+          progress={metrics.progress}
+          status={metrics.status}
+          typedText={typedText}
+          wpm={metrics.wpm}
+          onTypingChange={handleTyping}
+        />
 
-              return (
-                <span className={characterClass} key={`${character}-${index}`}>
-                  {character}
-                </span>
-              );
-            })}
-          </p>
-        </section>
-
-        <section className="grid gap-4 rounded-lg border bg-white p-5 shadow-sm">
-          <label className="grid gap-2">
-            <span className="text-sm font-medium text-slate-600">Type the verse</span>
-            <textarea
-              className="min-h-32 resize-y rounded-md border border-slate-300 p-3 leading-7 outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
-              placeholder="Start typing here..."
-              value={typedText}
-              onChange={(event) => handleTyping(event.target.value)}
-            />
-          </label>
-
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <div className="rounded-md bg-slate-100 p-3">
-              <p className="text-xs font-medium uppercase text-slate-500">WPM</p>
-              <p className="text-2xl font-bold">{wpm}</p>
-            </div>
-            <div className="rounded-md bg-slate-100 p-3">
-              <p className="text-xs font-medium uppercase text-slate-500">Accuracy</p>
-              <p className="text-2xl font-bold">{accuracy}%</p>
-            </div>
-            <div className="rounded-md bg-slate-100 p-3">
-              <p className="text-xs font-medium uppercase text-slate-500">Progress</p>
-              <p className="text-2xl font-bold">{Math.min(progress, 100)}%</p>
-            </div>
-            <div className="rounded-md bg-slate-100 p-3">
-              <p className="text-xs font-medium uppercase text-slate-500">Status</p>
-              <p className="text-lg font-bold">{isComplete ? "Complete" : startedAt ? "Typing" : "Ready"}</p>
-            </div>
-          </div>
-
-          {isComplete && (
-            <div className="rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm font-medium text-emerald-800">
-              Nice work. You finished this verse at {wpm} WPM with {accuracy}% accuracy.
-            </div>
-          )}
-        </section>
-
-        <section className="rounded-lg border bg-white p-5 shadow-sm">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h2 className="text-base font-bold">Personal bests</h2>
-              <p className="text-sm text-slate-500">Saved in this browser.</p>
-            </div>
-            <button
-              className="w-fit rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
-              type="button"
-              onClick={resetStats}
-            >
-              Reset Stats
-            </button>
-          </div>
-
-          <div className="mt-4 grid grid-cols-3 gap-3">
-            <div className="rounded-md bg-slate-100 p-3">
-              <p className="text-xs font-medium uppercase text-slate-500">Best WPM</p>
-              <p className="text-2xl font-bold">{stats.bestWpm}</p>
-            </div>
-            <div className="rounded-md bg-slate-100 p-3">
-              <p className="text-xs font-medium uppercase text-slate-500">Best Accuracy</p>
-              <p className="text-2xl font-bold">{stats.bestAccuracy}%</p>
-            </div>
-            <div className="rounded-md bg-slate-100 p-3">
-              <p className="text-xs font-medium uppercase text-slate-500">Completed</p>
-              <p className="text-2xl font-bold">{stats.completedAttempts}</p>
-            </div>
-          </div>
-        </section>
+        <PersonalBests stats={stats} onResetStats={resetStats} />
       </main>
     </div>
   );
