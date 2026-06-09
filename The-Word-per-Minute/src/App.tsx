@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { ChapterControls } from "./components/ChapterControls";
 import { PersonalBests } from "./components/PersonalBests";
+import { PracticeBatchDisplay } from "./components/PracticeBatchDisplay";
 import { TypingPracticePanel } from "./components/TypingPracticePanel";
-import { VerseControls } from "./components/VerseControls";
-import { VerseDisplay } from "./components/VerseDisplay";
 import { usePracticeStats } from "./hooks/usePracticeStats";
 import { useVerseLibrary } from "./hooks/useVerseLibrary";
-import { calculateTypingMetrics, countCorrectCharacters } from "./utils/typingMetrics";
+import { buildPracticeBatches } from "./utils/chapterPractice";
+import { countCorrectCharacters } from "./utils/typingMetrics";
 
 function App() {
+  const [currentBatchIndex, setCurrentBatchIndex] = useState(0);
   const [typedText, setTypedText] = useState("");
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [finishedAt, setFinishedAt] = useState<number | null>(null);
@@ -18,34 +20,68 @@ function App() {
     chapter,
     error,
     isLoading,
-    practiceVerse,
     selectBook,
     selectChapter,
-    selectRandomVerse,
+    selectRandomChapter,
     selectedTranslationId,
     selectTranslation,
-    selectVerse,
     selectedBook,
     selectedBookId,
     selectedChapter,
-    selectedVerse,
     translations,
   } = useVerseLibrary();
 
-  const targetText = practiceVerse?.text ?? "";
-  const metrics = useMemo(
-    () => calculateTypingMetrics({ targetText, typedText, startedAt, finishedAt }),
-    [finishedAt, startedAt, targetText, typedText],
+  const selectedTranslation = translations.find(
+    (translation) => translation.id === selectedTranslationId,
   );
+  const batches = useMemo(() => {
+    if (!chapter || !selectedBook) return [];
+    return buildPracticeBatches(selectedBook.name, selectedChapter, chapter.verses, 2);
+  }, [chapter, selectedBook, selectedChapter]);
+  const currentBatch = batches[currentBatchIndex];
+  const targetText = currentBatch?.text ?? "";
+  const currentCorrectCharacters = countCorrectCharacters(targetText, typedText);
+  const completedCharacterCount = batches
+    .slice(0, currentBatchIndex)
+    .reduce((total, batch) => total + batch.text.length, 0);
+  const totalCharacterCount = batches.reduce((total, batch) => total + batch.text.length, 0);
+  const totalCorrectCharacters = completedCharacterCount + currentCorrectCharacters;
+  const totalTypedCharacters = completedCharacterCount + typedText.length;
+  const progress = totalCharacterCount
+    ? Math.round((totalTypedCharacters / totalCharacterCount) * 100)
+    : 0;
+  const accuracy = totalTypedCharacters
+    ? Math.round((totalCorrectCharacters / totalTypedCharacters) * 100)
+    : 100;
+  const elapsedMs = startedAt ? (finishedAt ?? Date.now()) - startedAt : 0;
+  const elapsedMinutes = elapsedMs / 1000 / 60;
+  const wpm = elapsedMinutes > 0 ? Math.round(totalCorrectCharacters / 5 / elapsedMinutes) : 0;
+  const isBatchComplete = Boolean(
+    targetText && typedText.length === targetText.length && currentCorrectCharacters === targetText.length,
+  );
+  const isChapterComplete = isBatchComplete && currentBatchIndex === batches.length - 1;
+  const status = isChapterComplete ? "Complete" : startedAt ? "Typing" : "Ready";
 
   useEffect(() => {
-    if (!metrics.isComplete || !finishedAt || savedFinishAt.current === finishedAt) return;
+    if (!isBatchComplete || isChapterComplete) return;
+
+    const advanceTimer = window.setTimeout(() => {
+      setCurrentBatchIndex((index) => index + 1);
+      setTypedText("");
+    }, 500);
+
+    return () => window.clearTimeout(advanceTimer);
+  }, [isBatchComplete, isChapterComplete]);
+
+  useEffect(() => {
+    if (!isChapterComplete || !finishedAt || savedFinishAt.current === finishedAt) return;
 
     savedFinishAt.current = finishedAt;
-    recordCompletedAttempt(metrics.wpm, metrics.accuracy);
-  }, [finishedAt, metrics.accuracy, metrics.isComplete, metrics.wpm, recordCompletedAttempt]);
+    recordCompletedAttempt(wpm, accuracy);
+  }, [accuracy, finishedAt, isChapterComplete, recordCompletedAttempt, wpm]);
 
   function resetPractice() {
+    setCurrentBatchIndex(0);
     setTypedText("");
     setStartedAt(null);
     setFinishedAt(null);
@@ -67,13 +103,8 @@ function App() {
     resetPractice();
   }
 
-  function handleVerseChange(verseNumber: number) {
-    selectVerse(verseNumber);
-    resetPractice();
-  }
-
-  function handleRandomVerse() {
-    selectRandomVerse();
+  function handleRandomChapter() {
+    selectRandomChapter();
     resetPractice();
   }
 
@@ -86,12 +117,14 @@ function App() {
 
     setTypedText(limitedText);
 
-    const isFinished =
+    const nextCorrectCharacters = countCorrectCharacters(targetText, limitedText);
+    const nextBatchComplete =
       targetText.length > 0 &&
       limitedText.length === targetText.length &&
-      countCorrectCharacters(targetText, limitedText) === targetText.length;
+      nextCorrectCharacters === targetText.length;
+    const nextChapterComplete = nextBatchComplete && currentBatchIndex === batches.length - 1;
 
-    if (isFinished) {
+    if (nextChapterComplete) {
       setFinishedAt((currentFinishedAt) => currentFinishedAt ?? Date.now());
       return;
     }
@@ -103,17 +136,17 @@ function App() {
     return (
       <div className="min-h-screen bg-slate-50 px-4 py-8 text-slate-900">
         <div className="mx-auto max-w-3xl rounded-xl border bg-white p-4 text-slate-600 shadow-sm">
-          Loading verses...
+          Loading chapter...
         </div>
       </div>
     );
   }
 
-  if (error || !practiceVerse) {
+  if (error || !currentBatch || !selectedBook) {
     return (
       <div className="min-h-screen bg-slate-50 px-4 py-8 text-slate-900">
         <div className="mx-auto max-w-3xl rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800">
-          {error ?? "No verses found."}
+          {error ?? "No chapter found."}
         </div>
       </div>
     );
@@ -128,32 +161,40 @@ function App() {
       </header>
 
       <main className="mx-auto grid max-w-4xl gap-4 px-4 py-6">
-        <VerseControls
+        <ChapterControls
           books={books}
-          chapter={chapter}
           selectedBook={selectedBook}
           selectedBookId={selectedBookId}
           selectedChapter={selectedChapter}
           selectedTranslationId={selectedTranslationId}
-          selectedVerse={selectedVerse}
           translations={translations}
           onSelectBook={handleBookChange}
           onSelectChapter={handleChapterChange}
           onSelectTranslation={handleTranslationChange}
-          onSelectVerse={handleVerseChange}
-          onRandomVerse={handleRandomVerse}
+          onRandomChapter={handleRandomChapter}
           onReset={resetPractice}
         />
 
-        <VerseDisplay verse={practiceVerse} typedText={typedText} />
+        <PracticeBatchDisplay
+          batch={currentBatch}
+          batchNumber={currentBatchIndex + 1}
+          totalBatches={batches.length}
+          translationName={selectedTranslation?.abbreviation ?? selectedTranslationId.toUpperCase()}
+          typedText={typedText}
+        />
 
         <TypingPracticePanel
-          accuracy={metrics.accuracy}
-          isComplete={metrics.isComplete}
-          progress={metrics.progress}
-          status={metrics.status}
+          accuracy={accuracy}
+          completionMessage={
+            isChapterComplete
+              ? `Chapter complete. You finished ${selectedBook.name} ${selectedChapter} at ${wpm} WPM with ${accuracy}% accuracy.`
+              : "Batch complete. Moving to the next verses..."
+          }
+          isComplete={isBatchComplete}
+          progress={Math.min(progress, 100)}
+          status={status}
           typedText={typedText}
-          wpm={metrics.wpm}
+          wpm={wpm}
           onTypingChange={handleTyping}
         />
 

@@ -2,6 +2,7 @@ import type { TypingMetrics } from "../types/practice";
 
 type TypingPracticePanelProps = {
   accuracy: number;
+  completionMessage: string;
   isComplete: boolean;
   onTypingChange: (typedText: string) => void;
   progress: number;
@@ -12,6 +13,7 @@ type TypingPracticePanelProps = {
 
 export function TypingPracticePanel({
   accuracy,
+  completionMessage,
   isComplete,
   onTypingChange,
   progress,
@@ -40,7 +42,7 @@ export function TypingPracticePanel({
 
       {isComplete && (
         <div className="rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm font-medium text-emerald-800">
-          Nice work. You finished this verse at {wpm} WPM with {accuracy}% accuracy.
+          {completionMessage}
         </div>
       )}
     </section>

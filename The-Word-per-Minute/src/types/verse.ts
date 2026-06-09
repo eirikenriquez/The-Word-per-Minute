@@ -34,19 +34,6 @@ export type BibleBook = {
   chapters: BibleChapter[];
 };
 
-export type PracticeVerse = {
-  id: string;
-  translationId: string;
-  translationName: string;
-  book: string;
-  bookId: string;
-  chapter: number;
-  verseStart: number;
-  verseEnd?: number;
-  ref: string;
-  text: string;
-};
-
 export type TranslationListResponse = {
   translations: Translation[];
 };
@@ -60,9 +47,4 @@ export type ChapterResponse = {
   translation: Translation;
   book: BibleBook;
   chapter: BibleChapter;
-};
-
-export type PracticeVerseResponse = {
-  translation: Translation;
-  verse: PracticeVerse;
 };

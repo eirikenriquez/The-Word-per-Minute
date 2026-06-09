@@ -1,43 +1,37 @@
 import type { ReactNode } from "react";
-import type { BibleChapter, BookSummary, Translation } from "../types/verse";
+import type { BookSummary, Translation } from "../types/verse";
 
-type VerseControlsProps = {
+type ChapterControlsProps = {
   books: BookSummary[];
-  chapter: BibleChapter | null;
   selectedBook?: BookSummary;
   selectedBookId: string;
   selectedChapter: number;
   selectedTranslationId: string;
-  selectedVerse: number;
   translations: Translation[];
-  onRandomVerse: () => void;
+  onRandomChapter: () => void;
   onReset: () => void;
   onSelectBook: (bookId: string) => void;
   onSelectChapter: (chapter: number) => void;
   onSelectTranslation: (translationId: string) => void;
-  onSelectVerse: (verse: number) => void;
 };
 
-export function VerseControls({
+export function ChapterControls({
   books,
-  chapter,
   selectedBook,
   selectedBookId,
   selectedChapter,
   selectedTranslationId,
-  selectedVerse,
   translations,
-  onRandomVerse,
+  onRandomChapter,
   onReset,
   onSelectBook,
   onSelectChapter,
   onSelectTranslation,
-  onSelectVerse,
-}: VerseControlsProps) {
+}: ChapterControlsProps) {
   return (
     <section className="rounded-lg border bg-white p-4 shadow-sm">
       <div className="grid gap-4">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-3 sm:grid-cols-3">
           <PickerLabel label="Translation">
             <select
               className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
@@ -81,36 +75,22 @@ export function VerseControls({
               )}
             </select>
           </PickerLabel>
-
-          <PickerLabel label="Verse">
-            <select
-              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
-              value={selectedVerse}
-              onChange={(event) => onSelectVerse(Number(event.target.value))}
-            >
-              {(chapter?.verses ?? []).map((verse) => (
-                <option key={verse.number} value={verse.number}>
-                  {verse.number}
-                </option>
-              ))}
-            </select>
-          </PickerLabel>
         </div>
 
         <div className="flex flex-wrap gap-2">
           <button
             className="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
             type="button"
-            onClick={onRandomVerse}
+            onClick={onRandomChapter}
           >
-            Random Verse
+            Random Chapter
           </button>
           <button
             className="rounded-md bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-700"
             type="button"
             onClick={onReset}
           >
-            Reset
+            Reset Chapter
           </button>
         </div>
       </div>

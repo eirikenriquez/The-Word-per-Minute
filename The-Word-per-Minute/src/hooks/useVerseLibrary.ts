@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { verseService } from "../services/verseService";
-import type { BibleChapter, BookSummary, PracticeVerse, Translation } from "../types/verse";
+import type { BibleChapter, BookSummary, Translation } from "../types/verse";
 
 export function useVerseLibrary() {
   const [translations, setTranslations] = useState<Translation[]>([]);
@@ -9,8 +9,6 @@ export function useVerseLibrary() {
   const [selectedTranslationId, setSelectedTranslationId] = useState("");
   const [selectedBookId, setSelectedBookId] = useState("");
   const [selectedChapter, setSelectedChapter] = useState(1);
-  const [selectedVerse, setSelectedVerse] = useState(1);
-  const [practiceVerse, setPracticeVerse] = useState<PracticeVerse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -55,7 +53,6 @@ export function useVerseLibrary() {
         setBooks(response.books);
         setSelectedBookId(response.books[0]?.id ?? "");
         setSelectedChapter(1);
-        setSelectedVerse(1);
         setError(null);
       } catch (caughtError) {
         if (!isCurrent) return;
@@ -84,14 +81,14 @@ export function useVerseLibrary() {
         if (!isCurrent) return;
 
         setChapter(response.chapter);
-        setSelectedVerse((currentVerse) => Math.min(currentVerse, response.chapter.verses.length));
         setError(null);
       } catch (caughtError) {
         if (!isCurrent) return;
 
         setChapter(null);
-        setPracticeVerse(null);
         setError(getErrorMessage(caughtError));
+      } finally {
+        if (isCurrent) setIsLoading(false);
       }
     }
 
@@ -102,40 +99,6 @@ export function useVerseLibrary() {
     };
   }, [selectedBookId, selectedChapter, selectedTranslationId]);
 
-  useEffect(() => {
-    if (!selectedTranslationId || !selectedBookId || !chapter) return;
-
-    let isCurrent = true;
-
-    async function loadPracticeVerse() {
-      try {
-        const response = await verseService.getPracticeVerse(
-          selectedTranslationId,
-          selectedBookId,
-          selectedChapter,
-          selectedVerse,
-        );
-        if (!isCurrent) return;
-
-        setPracticeVerse(response.verse);
-        setError(null);
-      } catch (caughtError) {
-        if (!isCurrent) return;
-
-        setPracticeVerse(null);
-        setError(getErrorMessage(caughtError));
-      } finally {
-        if (isCurrent) setIsLoading(false);
-      }
-    }
-
-    loadPracticeVerse();
-
-    return () => {
-      isCurrent = false;
-    };
-  }, [chapter, selectedBookId, selectedChapter, selectedTranslationId, selectedVerse]);
-
   function selectTranslation(translationId: string) {
     setSelectedTranslationId(translationId);
   }
@@ -143,29 +106,20 @@ export function useVerseLibrary() {
   function selectBook(bookId: string) {
     setSelectedBookId(bookId);
     setSelectedChapter(1);
-    setSelectedVerse(1);
   }
 
   function selectChapter(chapterNumber: number) {
     setSelectedChapter(chapterNumber);
-    setSelectedVerse(1);
   }
 
-  function selectVerse(verseNumber: number) {
-    setSelectedVerse(verseNumber);
-  }
-
-  function selectRandomVerse() {
+  function selectRandomChapter() {
     const randomBook = books[Math.floor(Math.random() * books.length)];
     if (!randomBook) return;
 
     const chapterNumber = Math.floor(Math.random() * randomBook.chapterCount) + 1;
-    const verseCount = randomBook.verseCounts[chapterNumber - 1] ?? 1;
-    const verseNumber = Math.floor(Math.random() * verseCount) + 1;
 
     setSelectedBookId(randomBook.id);
     setSelectedChapter(chapterNumber);
-    setSelectedVerse(verseNumber);
   }
 
   return {
@@ -173,17 +127,14 @@ export function useVerseLibrary() {
     chapter,
     error,
     isLoading,
-    practiceVerse,
     selectBook,
     selectChapter,
-    selectRandomVerse,
+    selectRandomChapter,
     selectTranslation,
-    selectVerse,
     selectedBook,
     selectedBookId,
     selectedChapter,
     selectedTranslationId,
-    selectedVerse,
     translations,
   };
 }

@@ -5,7 +5,6 @@ import type {
   BookListResponse,
   BookSummary,
   ChapterResponse,
-  PracticeVerseResponse,
   Translation,
   TranslationListResponse,
 } from "../types/verse";
@@ -78,32 +77,4 @@ export const verseService = {
     };
   },
 
-  async getPracticeVerse(
-    translationId: string,
-    bookId: string,
-    chapterNumber: number,
-    verseNumber: number,
-  ): Promise<PracticeVerseResponse> {
-    const { translation, book, chapter } = await this.getChapter(translationId, bookId, chapterNumber);
-    const verse = chapter.verses.find((availableVerse) => availableVerse.number === verseNumber);
-
-    if (!verse) {
-      throw new Error(`Verse not found: ${book.name} ${chapterNumber}:${verseNumber}`);
-    }
-
-    return {
-      translation,
-      verse: {
-        id: `${translationId}-${bookId}-${chapterNumber}-${verseNumber}`,
-        translationId,
-        translationName: translation.abbreviation,
-        book: book.name,
-        bookId,
-        chapter: chapterNumber,
-        verseStart: verseNumber,
-        ref: `${book.name} ${chapterNumber}:${verseNumber}`,
-        text: verse.text,
-      },
-    };
-  },
 };
