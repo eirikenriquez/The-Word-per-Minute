@@ -11,7 +11,17 @@ type TypingMetricsInput = {
 export function countCorrectCharacters(targetText: string, typedText: string) {
   return typedText
     .split("")
-    .filter((character, index) => character === targetText[index]).length;
+    .filter((character, index) => areCharactersEquivalent(targetText[index], character)).length;
+}
+
+export function areCharactersEquivalent(targetCharacter: string | undefined, typedCharacter: string | undefined) {
+  if (targetCharacter === undefined || typedCharacter === undefined) return false;
+  return normalizeTypedCharacter(targetCharacter) === normalizeTypedCharacter(typedCharacter);
+}
+
+function normalizeTypedCharacter(character: string) {
+  if (character === "’" || character === "‘") return "'";
+  return character;
 }
 
 export function calculateTypingMetrics({

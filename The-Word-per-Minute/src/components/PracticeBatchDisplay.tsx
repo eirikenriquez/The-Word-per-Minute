@@ -1,4 +1,5 @@
 import type { PracticeBatch } from "../types/chapterPractice";
+import { areCharactersEquivalent } from "../utils/typingMetrics";
 
 type PracticeBatchDisplayProps = {
   batch: PracticeBatch;
@@ -13,7 +14,7 @@ function getCharacterClass(targetCharacter: string, typedCharacter: string | und
     return isCurrent ? "bg-amber-100 text-slate-900" : "text-slate-500";
   }
 
-  return typedCharacter === targetCharacter
+  return areCharactersEquivalent(targetCharacter, typedCharacter)
     ? "bg-emerald-100 text-emerald-900"
     : "bg-rose-100 text-rose-900";
 }

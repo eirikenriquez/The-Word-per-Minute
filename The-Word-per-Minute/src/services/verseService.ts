@@ -14,6 +14,7 @@ import type {
   Translation,
   TranslationListResponse,
 } from "../types/verse";
+import { formatPassageReference } from "../utils/passageReference";
 
 type BibleManifest = {
   translationId: string;
@@ -112,6 +113,12 @@ export const verseService = {
 
     return {
       passage,
+      reference: formatPassageReference(
+        book.name,
+        passage.chapter,
+        passage.startVerse,
+        passage.endVerse,
+      ),
       translation,
       bookName: book.name,
       chapter,

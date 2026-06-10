@@ -17,6 +17,7 @@ export type FeaturedPassageListResponse = {
 
 export type PassageResponse = {
   passage: FeaturedPassage;
+  reference: string;
   translation: Translation;
   bookName: string;
   chapter: BibleChapter;

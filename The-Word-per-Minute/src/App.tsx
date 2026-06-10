@@ -8,6 +8,7 @@ import { useFeaturedPassages } from "./hooks/useFeaturedPassages";
 import { usePracticeStats } from "./hooks/usePracticeStats";
 import { useVerseLibrary } from "./hooks/useVerseLibrary";
 import { buildPracticeBatches } from "./utils/chapterPractice";
+import { formatChapterReference } from "./utils/passageReference";
 import { countCorrectCharacters } from "./utils/typingMetrics";
 
 type PracticeMode = "featured" | "chapter";
@@ -70,6 +71,12 @@ function App() {
     practiceMode === "featured"
       ? featuredLibrary.passageResponse?.passage.title ?? "Featured Passage"
       : `${chapterLibrary.selectedBook?.name ?? "Chapter"} ${chapterLibrary.selectedChapter}`;
+  const practiceReference =
+    practiceMode === "featured"
+      ? featuredLibrary.passageResponse?.reference ?? ""
+      : chapterLibrary.selectedBook
+        ? formatChapterReference(chapterLibrary.selectedBook.name, chapterLibrary.selectedChapter)
+        : "";
   const practiceSubtitle =
     practiceMode === "featured"
       ? featuredLibrary.passageResponse?.passage.theme ?? "Discovery"
@@ -198,6 +205,9 @@ function App() {
           <div>
             <p className="text-sm font-medium text-slate-500">{practiceSubtitle}</p>
             <h2 className="text-2xl font-bold">{practiceTitle}</h2>
+            {practiceReference && (
+              <p className="mt-1 text-sm font-medium text-slate-600">{practiceReference}</p>
+            )}
           </div>
           <div className="flex rounded-md border border-slate-300 p-1 text-sm">
             <button
