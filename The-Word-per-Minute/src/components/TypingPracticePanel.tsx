@@ -2,8 +2,10 @@ import type { TypingMetrics } from "../types/practice";
 
 type TypingPracticePanelProps = {
   accuracy: number;
+  completionActionLabel?: string;
   completionMessage: string;
   isComplete: boolean;
+  onCompletionAction?: () => void;
   onTypingChange: (typedText: string) => void;
   progress: number;
   status: TypingMetrics["status"];
@@ -13,8 +15,10 @@ type TypingPracticePanelProps = {
 
 export function TypingPracticePanel({
   accuracy,
+  completionActionLabel,
   completionMessage,
   isComplete,
+  onCompletionAction,
   onTypingChange,
   progress,
   status,
@@ -24,7 +28,7 @@ export function TypingPracticePanel({
   return (
     <section className="grid gap-4 rounded-lg border bg-white p-5 shadow-sm">
       <label className="grid gap-2">
-        <span className="text-sm font-medium text-slate-600">Type the verse</span>
+        <span className="text-sm font-medium text-slate-600">Type the passage</span>
         <textarea
           className="min-h-32 resize-y rounded-md border border-slate-300 p-3 leading-7 outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
           placeholder="Start typing here..."
@@ -41,8 +45,17 @@ export function TypingPracticePanel({
       </div>
 
       {isComplete && (
-        <div className="rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm font-medium text-emerald-800">
-          {completionMessage}
+        <div className="flex flex-col gap-3 rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm font-medium text-emerald-800 sm:flex-row sm:items-center sm:justify-between">
+          <p>{completionMessage}</p>
+          {completionActionLabel && onCompletionAction && (
+            <button
+              className="w-fit rounded-md bg-emerald-800 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
+              type="button"
+              onClick={onCompletionAction}
+            >
+              {completionActionLabel}
+            </button>
+          )}
         </div>
       )}
     </section>

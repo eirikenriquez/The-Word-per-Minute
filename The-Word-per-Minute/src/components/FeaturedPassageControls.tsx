@@ -18,7 +18,7 @@ export function FeaturedPassageControls({
   return (
     <section className="rounded-lg border bg-white p-4 shadow-sm">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <label className="grid gap-1">
+        <label className="grid gap-1 sm:min-w-80">
           <span className="text-sm font-medium text-slate-600">Featured Passage</span>
           <select
             className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
@@ -27,7 +27,7 @@ export function FeaturedPassageControls({
           >
             {passages.map((passage) => (
               <option key={passage.id} value={passage.id}>
-                {passage.title} - {passage.theme}
+                {passage.title} ({passage.theme})
               </option>
             ))}
           </select>

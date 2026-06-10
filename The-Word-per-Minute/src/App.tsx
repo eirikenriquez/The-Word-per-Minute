@@ -206,7 +206,9 @@ function App() {
             <p className="text-sm font-medium text-slate-500">{practiceSubtitle}</p>
             <h2 className="text-2xl font-bold">{practiceTitle}</h2>
             {practiceReference && (
-              <p className="mt-1 text-sm font-medium text-slate-600">{practiceReference}</p>
+              <p className="mt-2 w-fit rounded-md bg-slate-100 px-2.5 py-1 text-sm font-semibold text-slate-700">
+                {practiceReference}
+              </p>
             )}
           </div>
           <div className="flex rounded-md border border-slate-300 p-1 text-sm">
@@ -266,12 +268,14 @@ function App() {
 
       <TypingPracticePanel
         accuracy={accuracy}
+        completionActionLabel={isPassageComplete && practiceMode === "featured" ? "Next Passage" : undefined}
         completionMessage={
           isPassageComplete
             ? `Complete. You finished ${practiceTitle} at ${wpm} WPM with ${accuracy}% accuracy.`
             : "Batch complete. Moving to the next verses..."
         }
         isComplete={isBatchComplete}
+        onCompletionAction={isPassageComplete && practiceMode === "featured" ? handleNextFeaturedPassage : undefined}
         progress={Math.min(progress, 100)}
         status={status}
         typedText={typedText}
