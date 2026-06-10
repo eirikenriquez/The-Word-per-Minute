@@ -1,8 +1,9 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { BibleChapter, BookSummary } from "../types/verse";
 
 type BibleReaderSelectorProps = {
   chapter: BibleChapter | null;
+  focusSelectedVerseKey: number;
   selectedBook?: BookSummary;
   selectedChapter: number;
   selectedVerseNumbers: number[];
@@ -17,6 +18,7 @@ type BibleReaderSelectorProps = {
  */
 export function BibleReaderSelector({
   chapter,
+  focusSelectedVerseKey,
   selectedBook,
   selectedChapter,
   selectedVerseNumbers,
@@ -27,7 +29,19 @@ export function BibleReaderSelector({
   const [dragStartVerse, setDragStartVerse] = useState<number | null>(null);
   const [hasDragged, setHasDragged] = useState(false);
   const shouldSkipNextClear = useRef(false);
+  const verseButtonRefs = useRef(new Map<number, HTMLButtonElement>());
   const hasSelectedVerses = selectedVerseNumbers.length > 0;
+
+  useEffect(() => {
+    if (!focusSelectedVerseKey || !selectedVerseNumbers.length) return;
+
+    const firstSelectedVerse = selectedVerseNumbers[0];
+    verseButtonRefs.current.get(firstSelectedVerse)?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+      inline: "nearest",
+    });
+  }, [focusSelectedVerseKey, selectedVerseNumbers]);
 
   if (!chapter || !selectedBook) return null;
 
@@ -107,6 +121,14 @@ export function BibleReaderSelector({
                   : "text-slate-700 hover:bg-white"
               }`}
               key={verse.number}
+              ref={(buttonElement) => {
+                if (buttonElement) {
+                  verseButtonRefs.current.set(verse.number, buttonElement);
+                  return;
+                }
+
+                verseButtonRefs.current.delete(verse.number);
+              }}
               type="button"
               onClick={(event) => event.stopPropagation()}
               onPointerDown={(event) => {

@@ -38,6 +38,7 @@ function App() {
   const [currentBatchIndex, setCurrentBatchIndex] = useState(0);
   const [typedText, setTypedText] = useState("");
   const [selectedVerseNumbers, setSelectedVerseNumbers] = useState<number[]>([]);
+  const [readerFocusKey, setReaderFocusKey] = useState(0);
   const [saveTitle, setSaveTitle] = useState("");
   const [saveCategory, setSaveCategory] = useState(DEFAULT_SAVED_CATEGORY);
   const [startedAt, setStartedAt] = useState<number | null>(null);
@@ -320,6 +321,7 @@ function App() {
         (_, index) => passage.startVerse + index,
       ),
     );
+    setReaderFocusKey((currentKey) => currentKey + 1);
     setPracticeMode("bible");
     resetPractice();
   }
@@ -564,6 +566,7 @@ function App() {
             selectedBook={bibleLibrary.selectedBook}
             selectedChapter={bibleLibrary.selectedChapter}
             selectedVerseNumbers={selectedVerseNumbers}
+            focusSelectedVerseKey={readerFocusKey}
             onClearSelection={handleClearBibleSelection}
             onSelectRange={handleSelectReaderRange}
             onSelectVerse={handleSelectReaderVerse}
