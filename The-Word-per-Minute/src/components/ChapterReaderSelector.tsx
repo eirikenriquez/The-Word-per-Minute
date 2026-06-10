@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { BibleChapter, BookSummary } from "../types/verse";
 
 type VerseRange = {
@@ -11,12 +12,13 @@ type ChapterReaderSelectorProps = {
   selectedChapter: number;
   selectedRange: VerseRange | null;
   onClearSelection: () => void;
+  onSelectRange: (startVerse: number, endVerse: number) => void;
   onSelectVerse: (verseNumber: number) => void;
 };
 
 /**
  * Bible-reader style chapter view.
- * Verse clicks build one contiguous range that can be saved as a typing passage.
+ * Verse clicks select one verse; dragging across verses selects a contiguous passage range.
  */
 export function ChapterReaderSelector({
   chapter,
@@ -24,9 +26,43 @@ export function ChapterReaderSelector({
   selectedChapter,
   selectedRange,
   onClearSelection,
+  onSelectRange,
   onSelectVerse,
 }: ChapterReaderSelectorProps) {
+  const [dragStartVerse, setDragStartVerse] = useState<number | null>(null);
+  const [hasDragged, setHasDragged] = useState(false);
+
   if (!chapter || !selectedBook) return null;
+
+  function startVerseSelection(verseNumber: number) {
+    setDragStartVerse(verseNumber);
+    setHasDragged(false);
+  }
+
+  function extendVerseSelection(verseNumber: number) {
+    if (dragStartVerse === null || dragStartVerse === verseNumber) return;
+
+    setHasDragged(true);
+    onSelectRange(dragStartVerse, verseNumber);
+  }
+
+  function finishVerseSelection(verseNumber: number) {
+    if (dragStartVerse === null) return;
+
+    if (hasDragged) {
+      onSelectRange(dragStartVerse, verseNumber);
+    } else {
+      onSelectVerse(verseNumber);
+    }
+
+    setDragStartVerse(null);
+    setHasDragged(false);
+  }
+
+  function cancelDragState() {
+    setDragStartVerse(null);
+    setHasDragged(false);
+  }
 
   return (
     <section className="rounded-lg border bg-white p-5 shadow-sm">
@@ -50,7 +86,12 @@ export function ChapterReaderSelector({
       <div
         className="rounded-md border border-slate-200 bg-slate-50 p-4 text-lg leading-9"
         role="presentation"
-        onClick={onClearSelection}
+        onClick={() => {
+          onClearSelection();
+          cancelDragState();
+        }}
+        onPointerLeave={cancelDragState}
+        onPointerUp={cancelDragState}
       >
         {chapter.verses.map((verse) => {
           const isSelected = Boolean(
@@ -68,9 +109,15 @@ export function ChapterReaderSelector({
               }`}
               key={verse.number}
               type="button"
-              onClick={(event) => {
+              onClick={(event) => event.stopPropagation()}
+              onPointerDown={(event) => {
                 event.stopPropagation();
-                onSelectVerse(verse.number);
+                startVerseSelection(verse.number);
+              }}
+              onPointerEnter={() => extendVerseSelection(verse.number)}
+              onPointerUp={(event) => {
+                event.stopPropagation();
+                finishVerseSelection(verse.number);
               }}
             >
               <sup className="mr-1 text-xs font-bold text-slate-400">{verse.number}</sup>

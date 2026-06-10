@@ -253,47 +253,26 @@ function App() {
   }
 
   /**
-   * Builds and edits a contiguous verse range from Bible-reader clicks.
-   * Clicking selected range edges shrinks the range; clicking the only selected verse clears it.
+   * Click selection is intentionally single-verse.
+   * Drag selection handles multi-verse ranges in the reader component.
    */
   function handleSelectReaderVerse(verseNumber: number) {
     setSelectedVerseRange((currentRange) => {
-      if (!currentRange) {
-        return {
-          startVerse: verseNumber,
-          endVerse: verseNumber,
-        };
-      }
-
-      if (currentRange.startVerse === verseNumber && currentRange.endVerse === verseNumber) {
+      if (currentRange?.startVerse === verseNumber && currentRange.endVerse === verseNumber) {
         return null;
       }
 
-      if (verseNumber === currentRange.startVerse) {
-        return {
-          startVerse: currentRange.startVerse + 1,
-          endVerse: currentRange.endVerse,
-        };
-      }
-
-      if (verseNumber === currentRange.endVerse) {
-        return {
-          startVerse: currentRange.startVerse,
-          endVerse: currentRange.endVerse - 1,
-        };
-      }
-
-      if (verseNumber > currentRange.startVerse && verseNumber < currentRange.endVerse) {
-        return {
-          startVerse: verseNumber,
-          endVerse: verseNumber,
-        };
-      }
-
       return {
-        startVerse: Math.min(currentRange.startVerse, verseNumber),
-        endVerse: Math.max(currentRange.endVerse, verseNumber),
+        startVerse: verseNumber,
+        endVerse: verseNumber,
       };
+    });
+  }
+
+  function handleSelectReaderRange(startVerse: number, endVerse: number) {
+    setSelectedVerseRange({
+      startVerse: Math.min(startVerse, endVerse),
+      endVerse: Math.max(startVerse, endVerse),
     });
   }
 
@@ -499,6 +478,7 @@ function App() {
             selectedChapter={chapterLibrary.selectedChapter}
             selectedRange={selectedVerseRange}
             onClearSelection={() => setSelectedVerseRange(null)}
+            onSelectRange={handleSelectReaderRange}
             onSelectVerse={handleSelectReaderVerse}
           />
         </>
