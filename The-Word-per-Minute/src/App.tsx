@@ -253,7 +253,8 @@ function App() {
   }
 
   /**
-   * Builds a contiguous verse range from Bible-reader clicks.
+   * Builds and edits a contiguous verse range from Bible-reader clicks.
+   * Clicking selected range edges shrinks the range; clicking the only selected verse clears it.
    */
   function handleSelectReaderVerse(verseNumber: number) {
     setSelectedVerseRange((currentRange) => {
@@ -266,6 +267,27 @@ function App() {
 
       if (currentRange.startVerse === verseNumber && currentRange.endVerse === verseNumber) {
         return null;
+      }
+
+      if (verseNumber === currentRange.startVerse) {
+        return {
+          startVerse: currentRange.startVerse + 1,
+          endVerse: currentRange.endVerse,
+        };
+      }
+
+      if (verseNumber === currentRange.endVerse) {
+        return {
+          startVerse: currentRange.startVerse,
+          endVerse: currentRange.endVerse - 1,
+        };
+      }
+
+      if (verseNumber > currentRange.startVerse && verseNumber < currentRange.endVerse) {
+        return {
+          startVerse: verseNumber,
+          endVerse: verseNumber,
+        };
       }
 
       return {
