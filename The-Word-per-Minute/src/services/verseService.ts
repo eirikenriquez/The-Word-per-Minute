@@ -1,5 +1,11 @@
+import featuredPassagesData from "../data/featuredPassages.json";
 import translationsData from "../data/translations.json";
 import webManifest from "../data/bibles/web/manifest.json";
+import type {
+  FeaturedPassage,
+  FeaturedPassageListResponse,
+  PassageResponse,
+} from "../types/featuredPassage";
 import type {
   BibleBook,
   BookListResponse,
@@ -15,6 +21,7 @@ type BibleManifest = {
 };
 
 const translations = translationsData.translations as Translation[];
+const featuredPassages = featuredPassagesData.passages as FeaturedPassage[];
 const manifestsByTranslation: Record<string, BibleManifest> = {
   web: webManifest as BibleManifest,
 };
@@ -74,6 +81,41 @@ export const verseService = {
       translation,
       book,
       chapter,
+    };
+  },
+
+  async getFeaturedPassages(): Promise<FeaturedPassageListResponse> {
+    return {
+      passages: featuredPassages,
+    };
+  },
+
+  async getPassage(passageId: string): Promise<PassageResponse> {
+    const passage = featuredPassages.find((availablePassage) => availablePassage.id === passageId);
+
+    if (!passage) {
+      throw new Error(`Passage not found: ${passageId}`);
+    }
+
+    const { translation, book, chapter } = await this.getChapter(
+      passage.translationId,
+      passage.bookId,
+      passage.chapter,
+    );
+    const verses = chapter.verses.filter(
+      (verse) => verse.number >= passage.startVerse && verse.number <= passage.endVerse,
+    );
+
+    if (!verses.length) {
+      throw new Error(`No verses found for passage: ${passageId}`);
+    }
+
+    return {
+      passage,
+      translation,
+      bookName: book.name,
+      chapter,
+      verses,
     };
   },
 

@@ -1,0 +1,124 @@
+{
+  "passages": [
+    {
+      "id": "john-3-16-17",
+      "title": "God's Love",
+      "theme": "Gospel",
+      "translationId": "web",
+      "bookId": "John",
+      "chapter": 3,
+      "startVerse": 16,
+      "endVerse": 17
+    },
+    {
+      "id": "ps-23-1-6",
+      "title": "The Shepherd",
+      "theme": "Comfort",
+      "translationId": "web",
+      "bookId": "Ps",
+      "chapter": 23,
+      "startVerse": 1,
+      "endVerse": 6
+    },
+    {
+      "id": "rom-8-38-39",
+      "title": "Nothing Can Separate",
+      "theme": "Assurance",
+      "translationId": "web",
+      "bookId": "Rom",
+      "chapter": 8,
+      "startVerse": 38,
+      "endVerse": 39
+    },
+    {
+      "id": "phil-4-6-7",
+      "title": "Peace Beyond Understanding",
+      "theme": "Peace",
+      "translationId": "web",
+      "bookId": "Phil",
+      "chapter": 4,
+      "startVerse": 6,
+      "endVerse": 7
+    },
+    {
+      "id": "prov-3-5-6",
+      "title": "Trust the Lord",
+      "theme": "Wisdom",
+      "translationId": "web",
+      "bookId": "Prov",
+      "chapter": 3,
+      "startVerse": 5,
+      "endVerse": 6
+    },
+    {
+      "id": "matt-5-3-10",
+      "title": "The Beatitudes",
+      "theme": "Kingdom",
+      "translationId": "web",
+      "bookId": "Matt",
+      "chapter": 5,
+      "startVerse": 3,
+      "endVerse": 10
+    },
+    {
+      "id": "1cor-13-4-8",
+      "title": "Love Is Patient",
+      "theme": "Love",
+      "translationId": "web",
+      "bookId": "1Cor",
+      "chapter": 13,
+      "startVerse": 4,
+      "endVerse": 8
+    },
+    {
+      "id": "isa-40-28-31",
+      "title": "Renewed Strength",
+      "theme": "Hope",
+      "translationId": "web",
+      "bookId": "Isa",
+      "chapter": 40,
+      "startVerse": 28,
+      "endVerse": 31
+    },
+    {
+      "id": "rom-12-1-2",
+      "title": "Renew Your Mind",
+      "theme": "Discipleship",
+      "translationId": "web",
+      "bookId": "Rom",
+      "chapter": 12,
+      "startVerse": 1,
+      "endVerse": 2
+    },
+    {
+      "id": "gal-5-22-23",
+      "title": "Fruit of the Spirit",
+      "theme": "Character",
+      "translationId": "web",
+      "bookId": "Gal",
+      "chapter": 5,
+      "startVerse": 22,
+      "endVerse": 23
+    },
+    {
+      "id": "eph-2-8-10",
+      "title": "Saved by Grace",
+      "theme": "Grace",
+      "translationId": "web",
+      "bookId": "Eph",
+      "chapter": 2,
+      "startVerse": 8,
+      "endVerse": 10
+    },
+    {
+      "id": "ps-91-1-4",
+      "title": "Under His Wings",
+      "theme": "Protection",
+      "translationId": "web",
+      "bookId": "Ps",
+      "chapter": 91,
+      "startVerse": 1,
+      "endVerse": 4
+    }
+  ]
+}
