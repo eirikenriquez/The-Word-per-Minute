@@ -4,6 +4,7 @@ import webManifest from "../data/bibles/web/manifest.json";
 import type {
   FeaturedPassage,
   FeaturedPassageListResponse,
+  PassageReference,
   PassageResponse,
 } from "../types/featuredPassage";
 import type {
@@ -125,18 +126,24 @@ export const verseService = {
       throw new Error(`Passage not found: ${passageId}`);
     }
 
+    return this.getReferencePassage(passage);
+  },
+
+  /**
+   * Resolves any structured reference into verse text ready for typing.
+   */
+  async getReferencePassage(passage: PassageReference): Promise<PassageResponse> {
     const { translation, book, chapter } = await this.getChapter(
       passage.translationId,
       passage.bookId,
       passage.chapter,
     );
-    // Featured passages store references; the service resolves them into actual verse text.
     const verses = chapter.verses.filter(
       (verse) => verse.number >= passage.startVerse && verse.number <= passage.endVerse,
     );
 
     if (!verses.length) {
-      throw new Error(`No verses found for passage: ${passageId}`);
+      throw new Error(`No verses found for passage: ${passage.title}`);
     }
 
     return {
@@ -153,5 +160,4 @@ export const verseService = {
       verses,
     };
   },
-
 };

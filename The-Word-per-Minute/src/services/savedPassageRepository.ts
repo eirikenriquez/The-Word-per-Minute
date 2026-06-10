@@ -1,0 +1,60 @@
+import type { SavedPassage, SavePassageInput } from "../types/savedPassage";
+
+const SAVED_PASSAGES_STORAGE_KEY = "the-word-per-minute-saved-passages";
+
+type SavedPassageRepository = {
+  list: () => SavedPassage[];
+  save: (input: SavePassageInput) => SavedPassage;
+  remove: (passageId: string) => void;
+};
+
+/**
+ * Creates a stable identity for the passage itself, independent of where it is stored.
+ * A future database can use the same fields as a unique constraint.
+ */
+export function getSavedPassageId(passage: SavePassageInput) {
+  return [
+    passage.translationId,
+    passage.bookId,
+    passage.chapter,
+    passage.startVerse,
+    passage.endVerse,
+  ].join(":");
+}
+
+/**
+ * Repository boundary for saved passages.
+ * Today this writes to localStorage; later this can become API calls without changing UI code.
+ */
+export const savedPassageRepository: SavedPassageRepository = {
+  list(): SavedPassage[] {
+    const savedPassages = localStorage.getItem(SAVED_PASSAGES_STORAGE_KEY);
+    if (!savedPassages) return [];
+
+    try {
+      return JSON.parse(savedPassages) as SavedPassage[];
+    } catch {
+      return [];
+    }
+  },
+
+  save(input: SavePassageInput): SavedPassage {
+    const savedPassage = {
+      ...input,
+      id: getSavedPassageId(input),
+      createdAt: new Date().toISOString(),
+    };
+    const nextSavedPassages = [
+      savedPassage,
+      ...this.list().filter((passage) => passage.id !== savedPassage.id),
+    ];
+
+    localStorage.setItem(SAVED_PASSAGES_STORAGE_KEY, JSON.stringify(nextSavedPassages));
+    return savedPassage;
+  },
+
+  remove(passageId: string) {
+    const nextSavedPassages = this.list().filter((passage) => passage.id !== passageId);
+    localStorage.setItem(SAVED_PASSAGES_STORAGE_KEY, JSON.stringify(nextSavedPassages));
+  },
+};

@@ -4,15 +4,18 @@ import { ChapterControls } from "./components/ChapterControls";
 import { FeaturedPassageControls } from "./components/FeaturedPassageControls";
 import { PersonalBests } from "./components/PersonalBests";
 import { PracticeBatchDisplay } from "./components/PracticeBatchDisplay";
+import { SavedPassageControls } from "./components/SavedPassageControls";
 import { TypingPracticePanel } from "./components/TypingPracticePanel";
 import { useFeaturedPassages } from "./hooks/useFeaturedPassages";
 import { usePracticeStats } from "./hooks/usePracticeStats";
+import { useSavedPassages } from "./hooks/useSavedPassages";
 import { useVerseLibrary } from "./hooks/useVerseLibrary";
+import type { SavePassageInput } from "./types/savedPassage";
 import { buildPracticeBatches } from "./utils/chapterPractice";
 import { formatChapterReference } from "./utils/passageReference";
 import { calculatePracticeSessionMetrics, countCorrectCharacters } from "./utils/typingMetrics";
 
-type PracticeMode = "featured" | "chapter";
+type PracticeMode = "featured" | "chapter" | "saved";
 
 /**
  * Main practice screen.
@@ -28,6 +31,7 @@ function App() {
   const { stats, recordCompletedAttempt, resetStats } = usePracticeStats();
   const featuredLibrary = useFeaturedPassages();
   const chapterLibrary = useVerseLibrary();
+  const savedLibrary = useSavedPassages();
 
   // Convert the selected featured passage into the same batch shape used by chapter practice.
   const featuredBatches = useMemo(() => {
@@ -48,7 +52,20 @@ function App() {
       2,
     );
   }, [chapterLibrary.chapter, chapterLibrary.selectedBook, chapterLibrary.selectedChapter]);
-  const batches = practiceMode === "featured" ? featuredBatches : chapterBatches;
+
+  // Saved passages are stored as references, then resolved back into verse text for practice.
+  const savedBatches = useMemo(() => {
+    const response = savedLibrary.passageResponse;
+    if (!response) return [];
+
+    return buildPracticeBatches(response.bookName, response.passage.chapter, response.verses, 2);
+  }, [savedLibrary.passageResponse]);
+  const batches =
+    practiceMode === "featured"
+      ? featuredBatches
+      : practiceMode === "chapter"
+        ? chapterBatches
+        : savedBatches;
 
   // Session metrics are calculated from all completed batches, not only the visible one.
   const {
@@ -68,33 +85,64 @@ function App() {
     finishedAt,
   });
   const isLoading =
-    practiceMode === "featured" ? featuredLibrary.isLoading : chapterLibrary.isLoading;
-  const error = practiceMode === "featured" ? featuredLibrary.error : chapterLibrary.error;
+    practiceMode === "featured"
+      ? featuredLibrary.isLoading
+      : practiceMode === "chapter"
+        ? chapterLibrary.isLoading
+        : savedLibrary.isLoading;
+  const error =
+    practiceMode === "featured"
+      ? featuredLibrary.error
+      : practiceMode === "chapter"
+        ? chapterLibrary.error
+        : savedLibrary.error;
   const practiceTitle =
     practiceMode === "featured"
       ? featuredLibrary.passageResponse?.passage.title ?? "Featured Passage"
-      : `${chapterLibrary.selectedBook?.name ?? "Chapter"} ${chapterLibrary.selectedChapter}`;
+      : practiceMode === "chapter"
+        ? `${chapterLibrary.selectedBook?.name ?? "Chapter"} ${chapterLibrary.selectedChapter}`
+        : savedLibrary.selectedSavedPassage?.title ?? "Saved Passage";
   const practiceReference =
     practiceMode === "featured"
       ? featuredLibrary.passageResponse?.reference ?? ""
-      : chapterLibrary.selectedBook
-        ? formatChapterReference(chapterLibrary.selectedBook.name, chapterLibrary.selectedChapter)
-        : "";
+      : practiceMode === "chapter"
+        ? chapterLibrary.selectedBook
+          ? formatChapterReference(chapterLibrary.selectedBook.name, chapterLibrary.selectedChapter)
+          : ""
+        : savedLibrary.selectedSavedPassage?.reference ?? "";
   const practiceSubtitle =
     practiceMode === "featured"
       ? featuredLibrary.passageResponse?.passage.theme ?? "Discovery"
-      : "Manual chapter practice";
+      : practiceMode === "chapter"
+        ? "Manual chapter practice"
+        : "Saved for later practice";
   const translationName =
     practiceMode === "featured"
       ? featuredLibrary.passageResponse?.translation.abbreviation ?? "WEB"
-      : chapterLibrary.translations.find(
-          (translation) => translation.id === chapterLibrary.selectedTranslationId,
-        )?.abbreviation ?? chapterLibrary.selectedTranslationId.toUpperCase();
+      : practiceMode === "chapter"
+        ? chapterLibrary.translations.find(
+            (translation) => translation.id === chapterLibrary.selectedTranslationId,
+          )?.abbreviation ?? chapterLibrary.selectedTranslationId.toUpperCase()
+        : savedLibrary.selectedSavedPassage?.translationAbbreviation ?? "WEB";
+  const saveInput = getCurrentSaveInput();
+  const isCurrentPassageSaved = savedLibrary.isPassageSaved(saveInput);
+
+  useEffect(() => {
+    if (practiceMode === "saved" && !savedLibrary.savedPassages.length) {
+      setPracticeMode("featured");
+    }
+  }, [practiceMode, savedLibrary.savedPassages.length]);
 
   // Changing the selected practice source should always restart the typing session.
   useEffect(() => {
     resetPractice();
-  }, [practiceMode, featuredLibrary.selectedPassageId, chapterLibrary.selectedBookId, chapterLibrary.selectedChapter]);
+  }, [
+    practiceMode,
+    featuredLibrary.selectedPassageId,
+    chapterLibrary.selectedBookId,
+    chapterLibrary.selectedChapter,
+    savedLibrary.selectedSavedPassageId,
+  ]);
 
   useEffect(() => {
     if (!isBatchComplete || isPassageComplete) return;
@@ -167,6 +215,74 @@ function App() {
   }
 
   /**
+   * Saves the current featured passage or selected chapter through the saved-passage hook.
+   */
+  function handleSaveCurrentPassage() {
+    if (!saveInput) return;
+
+    savedLibrary.savePassage(saveInput);
+  }
+
+  function handleSelectSavedPassage(passageId: string) {
+    savedLibrary.selectSavedPassage(passageId);
+    setPracticeMode("saved");
+    resetPractice();
+  }
+
+  function handleRemoveSavedPassage(passageId: string) {
+    savedLibrary.removePassage(passageId);
+    resetPractice();
+  }
+
+  /**
+   * Builds the save payload for the currently selected featured passage or chapter.
+   */
+  function getCurrentSaveInput(): SavePassageInput | null {
+    if (practiceMode === "featured" && featuredLibrary.passageResponse) {
+      const { passage, reference, translation, bookName } = featuredLibrary.passageResponse;
+
+      return {
+        title: passage.title,
+        theme: passage.theme,
+        reference,
+        translationId: passage.translationId,
+        translationAbbreviation: translation.abbreviation,
+        bookId: passage.bookId,
+        bookName,
+        chapter: passage.chapter,
+        startVerse: passage.startVerse,
+        endVerse: passage.endVerse,
+        source: "featured",
+      };
+    }
+
+    if (practiceMode === "chapter" && chapterLibrary.chapter && chapterLibrary.selectedBook) {
+      const translation = chapterLibrary.translations.find(
+        (availableTranslation) => availableTranslation.id === chapterLibrary.selectedTranslationId,
+      );
+      const lastVerse = chapterLibrary.chapter.verses[chapterLibrary.chapter.verses.length - 1];
+
+      if (!lastVerse) return null;
+
+      return {
+        title: formatChapterReference(chapterLibrary.selectedBook.name, chapterLibrary.selectedChapter),
+        theme: "Manual chapter",
+        reference: formatChapterReference(chapterLibrary.selectedBook.name, chapterLibrary.selectedChapter),
+        translationId: chapterLibrary.selectedTranslationId,
+        translationAbbreviation: translation?.abbreviation ?? chapterLibrary.selectedTranslationId.toUpperCase(),
+        bookId: chapterLibrary.selectedBook.id,
+        bookName: chapterLibrary.selectedBook.name,
+        chapter: chapterLibrary.selectedChapter,
+        startVerse: 1,
+        endVerse: lastVerse.number,
+        source: "chapter",
+      };
+    }
+
+    return null;
+  }
+
+  /**
    * Starts the timer on the first typed character and locks the finish time at completion.
    */
   function handleTyping(nextTypedText: string) {
@@ -207,7 +323,7 @@ function App() {
     return (
       <PageShell>
         <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800">
-          {error ?? "No practice passage found."}
+          {error ?? (practiceMode === "saved" ? "Save a passage first." : "No practice passage found.")}
         </div>
       </PageShell>
     );
@@ -245,8 +361,28 @@ function App() {
             >
               Chapter
             </button>
+            <button
+              className={`rounded px-3 py-1.5 font-medium ${
+                practiceMode === "saved" ? "bg-slate-900 text-white" : "text-slate-600"
+              } disabled:cursor-not-allowed disabled:text-slate-400`}
+              disabled={!savedLibrary.savedPassages.length}
+              type="button"
+              onClick={() => setPracticeMode("saved")}
+            >
+              Saved
+            </button>
           </div>
         </div>
+        {practiceMode !== "saved" && (
+          <button
+            className="mt-4 rounded-md border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-400"
+            disabled={!saveInput || isCurrentPassageSaved}
+            type="button"
+            onClick={handleSaveCurrentPassage}
+          >
+            {isCurrentPassageSaved ? "Saved" : "Save Passage"}
+          </button>
+        )}
       </section>
 
       {practiceMode === "featured" ? (
@@ -257,7 +393,7 @@ function App() {
           onReset={resetPractice}
           onSelectPassage={handleSelectFeaturedPassage}
         />
-      ) : (
+      ) : practiceMode === "chapter" ? (
         <ChapterControls
           books={chapterLibrary.books}
           selectedBook={chapterLibrary.selectedBook}
@@ -270,6 +406,14 @@ function App() {
           onSelectTranslation={handleTranslationChange}
           onRandomChapter={handleRandomChapter}
           onReset={resetPractice}
+        />
+      ) : (
+        <SavedPassageControls
+          savedPassages={savedLibrary.savedPassages}
+          selectedSavedPassageId={savedLibrary.selectedSavedPassageId}
+          onRemovePassage={handleRemoveSavedPassage}
+          onReset={resetPractice}
+          onSelectSavedPassage={handleSelectSavedPassage}
         />
       )}
 

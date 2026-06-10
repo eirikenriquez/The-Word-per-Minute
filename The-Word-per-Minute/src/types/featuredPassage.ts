@@ -1,7 +1,6 @@
 import type { BibleChapter, BibleVerse, Translation } from "./verse";
 
-export type FeaturedPassage = {
-  id: string;
+export type PassageReference = {
   title: string;
   theme: string;
   translationId: string;
@@ -11,12 +10,16 @@ export type FeaturedPassage = {
   endVerse: number;
 };
 
+export type FeaturedPassage = PassageReference & {
+  id: string;
+};
+
 export type FeaturedPassageListResponse = {
   passages: FeaturedPassage[];
 };
 
 export type PassageResponse = {
-  passage: FeaturedPassage;
+  passage: PassageReference;
   reference: string;
   translation: Translation;
   bookName: string;
