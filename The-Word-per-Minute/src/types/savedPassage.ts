@@ -12,6 +12,7 @@ export type SavedPassage = {
   chapter: number;
   startVerse: number;
   endVerse: number;
+  selectedVerses?: number[];
   source: SavedPassageSource;
   createdAt: string;
 };

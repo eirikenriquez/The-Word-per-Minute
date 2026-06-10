@@ -1,16 +1,11 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import type { BibleChapter, BookSummary } from "../types/verse";
-
-type VerseRange = {
-  startVerse: number;
-  endVerse: number;
-};
 
 type ChapterReaderSelectorProps = {
   chapter: BibleChapter | null;
   selectedBook?: BookSummary;
   selectedChapter: number;
-  selectedRange: VerseRange | null;
+  selectedVerseNumbers: number[];
   onClearSelection: () => void;
   onSelectRange: (startVerse: number, endVerse: number) => void;
   onSelectVerse: (verseNumber: number) => void;
@@ -24,13 +19,15 @@ export function ChapterReaderSelector({
   chapter,
   selectedBook,
   selectedChapter,
-  selectedRange,
+  selectedVerseNumbers,
   onClearSelection,
   onSelectRange,
   onSelectVerse,
 }: ChapterReaderSelectorProps) {
   const [dragStartVerse, setDragStartVerse] = useState<number | null>(null);
   const [hasDragged, setHasDragged] = useState(false);
+  const shouldSkipNextClear = useRef(false);
+  const hasSelectedVerses = selectedVerseNumbers.length > 0;
 
   if (!chapter || !selectedBook) return null;
 
@@ -51,6 +48,7 @@ export function ChapterReaderSelector({
 
     if (hasDragged) {
       onSelectRange(dragStartVerse, verseNumber);
+      shouldSkipNextClear.current = true;
     } else {
       onSelectVerse(verseNumber);
     }
@@ -75,7 +73,7 @@ export function ChapterReaderSelector({
         </div>
         <button
           className="w-fit rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-400"
-          disabled={!selectedRange}
+          disabled={!hasSelectedVerses}
           type="button"
           onClick={onClearSelection}
         >
@@ -87,6 +85,11 @@ export function ChapterReaderSelector({
         className="rounded-md border border-slate-200 bg-slate-50 p-4 text-lg leading-9"
         role="presentation"
         onClick={() => {
+          if (shouldSkipNextClear.current) {
+            shouldSkipNextClear.current = false;
+            return;
+          }
+
           onClearSelection();
           cancelDragState();
         }}
@@ -94,11 +97,7 @@ export function ChapterReaderSelector({
         onPointerUp={cancelDragState}
       >
         {chapter.verses.map((verse) => {
-          const isSelected = Boolean(
-            selectedRange &&
-              verse.number >= selectedRange.startVerse &&
-              verse.number <= selectedRange.endVerse,
-          );
+          const isSelected = selectedVerseNumbers.includes(verse.number);
 
           return (
             <button
@@ -111,6 +110,7 @@ export function ChapterReaderSelector({
               type="button"
               onClick={(event) => event.stopPropagation()}
               onPointerDown={(event) => {
+                event.preventDefault();
                 event.stopPropagation();
                 startVerseSelection(verse.number);
               }}

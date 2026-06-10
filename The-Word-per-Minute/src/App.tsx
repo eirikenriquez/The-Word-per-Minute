@@ -13,15 +13,14 @@ import { useSavedPassages } from "./hooks/useSavedPassages";
 import { useVerseLibrary } from "./hooks/useVerseLibrary";
 import type { SavePassageInput } from "./types/savedPassage";
 import { buildPracticeBatches } from "./utils/chapterPractice";
-import { formatChapterReference, formatPassageReference } from "./utils/passageReference";
+import {
+  formatChapterReference,
+  formatPassageReference,
+  formatSelectedVerseReference,
+} from "./utils/passageReference";
 import { calculatePracticeSessionMetrics, countCorrectCharacters } from "./utils/typingMetrics";
 
 type PracticeMode = "featured" | "chapter" | "saved";
-
-type VerseRange = {
-  startVerse: number;
-  endVerse: number;
-};
 
 /**
  * Main practice screen.
@@ -31,7 +30,7 @@ function App() {
   const [practiceMode, setPracticeMode] = useState<PracticeMode>("featured");
   const [currentBatchIndex, setCurrentBatchIndex] = useState(0);
   const [typedText, setTypedText] = useState("");
-  const [selectedVerseRange, setSelectedVerseRange] = useState<VerseRange | null>(null);
+  const [selectedVerseNumbers, setSelectedVerseNumbers] = useState<number[]>([]);
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [finishedAt, setFinishedAt] = useState<number | null>(null);
   const savedFinishAt = useRef<number | null>(null);
@@ -51,11 +50,9 @@ function App() {
   // Convert a selected chapter into short, karaoke-style typing batches.
   const chapterBatches = useMemo(() => {
     if (!chapterLibrary.chapter || !chapterLibrary.selectedBook) return [];
-    const selectedVerses = selectedVerseRange
-      ? chapterLibrary.chapter.verses.filter(
-          (verse) =>
-            verse.number >= selectedVerseRange.startVerse && verse.number <= selectedVerseRange.endVerse,
-        )
+    const selectedVerseSet = new Set(selectedVerseNumbers);
+    const selectedVerses = selectedVerseNumbers.length
+      ? chapterLibrary.chapter.verses.filter((verse) => selectedVerseSet.has(verse.number))
       : chapterLibrary.chapter.verses;
 
     return buildPracticeBatches(
@@ -64,7 +61,7 @@ function App() {
       selectedVerses,
       2,
     );
-  }, [chapterLibrary.chapter, chapterLibrary.selectedBook, chapterLibrary.selectedChapter, selectedVerseRange]);
+  }, [chapterLibrary.chapter, chapterLibrary.selectedBook, chapterLibrary.selectedChapter, selectedVerseNumbers]);
 
   // Saved passages are stored as references, then resolved back into verse text for practice.
   const savedBatches = useMemo(() => {
@@ -154,7 +151,7 @@ function App() {
     featuredLibrary.selectedPassageId,
     chapterLibrary.selectedBookId,
     chapterLibrary.selectedChapter,
-    selectedVerseRange,
+    selectedVerseNumbers,
     savedLibrary.selectedSavedPassageId,
   ]);
 
@@ -206,28 +203,28 @@ function App() {
 
   function handleTranslationChange(translationId: string) {
     chapterLibrary.selectTranslation(translationId);
-    setSelectedVerseRange(null);
+    setSelectedVerseNumbers([]);
     setPracticeMode("chapter");
     resetPractice();
   }
 
   function handleBookChange(bookId: string) {
     chapterLibrary.selectBook(bookId);
-    setSelectedVerseRange(null);
+    setSelectedVerseNumbers([]);
     setPracticeMode("chapter");
     resetPractice();
   }
 
   function handleChapterChange(chapterNumber: number) {
     chapterLibrary.selectChapter(chapterNumber);
-    setSelectedVerseRange(null);
+    setSelectedVerseNumbers([]);
     setPracticeMode("chapter");
     resetPractice();
   }
 
   function handleRandomChapter() {
     chapterLibrary.selectRandomChapter();
-    setSelectedVerseRange(null);
+    setSelectedVerseNumbers([]);
     setPracticeMode("chapter");
     resetPractice();
   }
@@ -257,34 +254,39 @@ function App() {
    * Drag selection handles multi-verse ranges in the reader component.
    */
   function handleSelectReaderVerse(verseNumber: number) {
-    setSelectedVerseRange((currentRange) => {
-      if (currentRange?.startVerse === verseNumber && currentRange.endVerse === verseNumber) {
-        return null;
+    setSelectedVerseNumbers((currentVerseNumbers) => {
+      if (currentVerseNumbers.includes(verseNumber)) {
+        return currentVerseNumbers.filter((currentVerseNumber) => currentVerseNumber !== verseNumber);
       }
 
-      return {
-        startVerse: verseNumber,
-        endVerse: verseNumber,
-      };
+      return [...currentVerseNumbers, verseNumber].sort((firstVerse, secondVerse) => firstVerse - secondVerse);
     });
   }
 
   function handleSelectReaderRange(startVerse: number, endVerse: number) {
-    setSelectedVerseRange({
-      startVerse: Math.min(startVerse, endVerse),
-      endVerse: Math.max(startVerse, endVerse),
+    const firstVerse = Math.min(startVerse, endVerse);
+    const lastVerse = Math.max(startVerse, endVerse);
+    const verseRange = Array.from(
+      { length: lastVerse - firstVerse + 1 },
+      (_, index) => firstVerse + index,
+    );
+
+    setSelectedVerseNumbers((currentVerseNumbers) => {
+      const nextVerseNumbers = new Set([...currentVerseNumbers, ...verseRange]);
+      return [...nextVerseNumbers].sort((firstSelectedVerse, secondSelectedVerse) => {
+        return firstSelectedVerse - secondSelectedVerse;
+      });
     });
   }
 
   function getChapterPracticeReference() {
     if (!chapterLibrary.selectedBook) return "";
 
-    return selectedVerseRange
-      ? formatPassageReference(
+    return selectedVerseNumbers.length
+      ? formatSelectedVerseReference(
           chapterLibrary.selectedBook.name,
           chapterLibrary.selectedChapter,
-          selectedVerseRange.startVerse,
-          selectedVerseRange.endVerse,
+          selectedVerseNumbers,
         )
       : formatChapterReference(chapterLibrary.selectedBook.name, chapterLibrary.selectedChapter);
   }
@@ -319,18 +321,24 @@ function App() {
 
       if (!lastVerse) return null;
 
-      const startVerse = selectedVerseRange?.startVerse ?? 1;
-      const endVerse = selectedVerseRange?.endVerse ?? lastVerse.number;
-      const reference = formatPassageReference(
-        chapterLibrary.selectedBook.name,
-        chapterLibrary.selectedChapter,
-        startVerse,
-        endVerse,
-      );
+      const startVerse = selectedVerseNumbers[0] ?? 1;
+      const endVerse = selectedVerseNumbers[selectedVerseNumbers.length - 1] ?? lastVerse.number;
+      const reference = selectedVerseNumbers.length
+        ? formatSelectedVerseReference(
+            chapterLibrary.selectedBook.name,
+            chapterLibrary.selectedChapter,
+            selectedVerseNumbers,
+          )
+        : formatPassageReference(
+            chapterLibrary.selectedBook.name,
+            chapterLibrary.selectedChapter,
+            startVerse,
+            endVerse,
+          );
 
       return {
         title: reference,
-        theme: selectedVerseRange ? "Selected verses" : "Manual chapter",
+        theme: selectedVerseNumbers.length ? "Selected verses" : "Manual chapter",
         reference,
         translationId: chapterLibrary.selectedTranslationId,
         translationAbbreviation: translation?.abbreviation ?? chapterLibrary.selectedTranslationId.toUpperCase(),
@@ -339,6 +347,7 @@ function App() {
         chapter: chapterLibrary.selectedChapter,
         startVerse,
         endVerse,
+        selectedVerses: selectedVerseNumbers.length ? selectedVerseNumbers : undefined,
         source: "chapter",
       };
     }
@@ -476,8 +485,8 @@ function App() {
             chapter={chapterLibrary.chapter}
             selectedBook={chapterLibrary.selectedBook}
             selectedChapter={chapterLibrary.selectedChapter}
-            selectedRange={selectedVerseRange}
-            onClearSelection={() => setSelectedVerseRange(null)}
+            selectedVerseNumbers={selectedVerseNumbers}
+            onClearSelection={() => setSelectedVerseNumbers([])}
             onSelectRange={handleSelectReaderRange}
             onSelectVerse={handleSelectReaderVerse}
           />

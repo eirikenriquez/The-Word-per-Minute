@@ -15,7 +15,7 @@ import type {
   Translation,
   TranslationListResponse,
 } from "../types/verse";
-import { formatPassageReference } from "../utils/passageReference";
+import { formatPassageReference, formatSelectedVerseReference } from "../utils/passageReference";
 
 type BibleManifest = {
   translationId: string;
@@ -138,9 +138,14 @@ export const verseService = {
       passage.bookId,
       passage.chapter,
     );
-    const verses = chapter.verses.filter(
-      (verse) => verse.number >= passage.startVerse && verse.number <= passage.endVerse,
-    );
+    const selectedVerseSet = passage.selectedVerses?.length
+      ? new Set(passage.selectedVerses)
+      : null;
+    const verses = selectedVerseSet
+      ? chapter.verses.filter((verse) => selectedVerseSet.has(verse.number))
+      : chapter.verses.filter(
+          (verse) => verse.number >= passage.startVerse && verse.number <= passage.endVerse,
+        );
 
     if (!verses.length) {
       throw new Error(`No verses found for passage: ${passage.title}`);
@@ -148,12 +153,14 @@ export const verseService = {
 
     return {
       passage,
-      reference: formatPassageReference(
-        book.name,
-        passage.chapter,
-        passage.startVerse,
-        passage.endVerse,
-      ),
+      reference: passage.selectedVerses?.length
+        ? formatSelectedVerseReference(book.name, passage.chapter, passage.selectedVerses)
+        : formatPassageReference(
+            book.name,
+            passage.chapter,
+            passage.startVerse,
+            passage.endVerse,
+          ),
       translation,
       bookName: book.name,
       chapter,

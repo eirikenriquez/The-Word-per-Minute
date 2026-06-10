@@ -8,6 +8,7 @@ export type PassageReference = {
   chapter: number;
   startVerse: number;
   endVerse: number;
+  selectedVerses?: number[];
 };
 
 export type FeaturedPassage = PassageReference & {

@@ -17,8 +17,8 @@ export function getSavedPassageId(passage: SavePassageInput) {
     passage.translationId,
     passage.bookId,
     passage.chapter,
-    passage.startVerse,
-    passage.endVerse,
+    passage.selectedVerses?.length ? passage.selectedVerses.join(",") : passage.startVerse,
+    passage.selectedVerses?.length ? "selected" : passage.endVerse,
   ].join(":");
 }
 
