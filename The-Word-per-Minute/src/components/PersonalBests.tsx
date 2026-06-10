@@ -5,6 +5,9 @@ type PersonalBestsProps = {
   onResetStats: () => void;
 };
 
+/**
+ * Displays the simple localStorage stats for this browser.
+ */
 export function PersonalBests({ stats, onResetStats }: PersonalBestsProps) {
   return (
     <section className="rounded-lg border bg-white p-5 shadow-sm">
@@ -36,6 +39,9 @@ type BestStatProps = {
   value: number | string;
 };
 
+/**
+ * Reusable tile for each saved personal-best value.
+ */
 function BestStat({ label, value }: BestStatProps) {
   return (
     <div className="rounded-md bg-slate-100 p-3">

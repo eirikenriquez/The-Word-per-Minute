@@ -29,6 +29,9 @@ type PracticeSessionMetrics = {
   wpm: number;
 };
 
+/**
+ * Counts characters that match after applying the typing-friendly punctuation rules.
+ */
 export function countCorrectCharacters(targetText: string, typedText: string) {
   return typedText
     .split("")
@@ -45,6 +48,9 @@ export function areCharactersEquivalent(targetCharacter: string | undefined, typ
   return normalizeComparableCharacter(targetCharacter) === normalizeComparableCharacter(typedCharacter);
 }
 
+/**
+ * Normalizes common punctuation variants that users should not have to type exactly.
+ */
 function normalizeComparableCharacter(character: string) {
   return character
     .replace(/[\u2018\u2019\u201A\u201B`]/g, "'")

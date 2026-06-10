@@ -26,12 +26,20 @@ const featuredPassages = featuredPassagesData.passages as FeaturedPassage[];
 const manifestsByTranslation: Record<string, BibleManifest> = {
   web: webManifest as BibleManifest,
 };
+
+// Vite keeps each book as a lazy module so the app does not load the full Bible immediately.
 const bookModules = import.meta.glob("../data/bibles/*/books/*.json");
 
+/**
+ * Looks up translation metadata before loading books or chapters.
+ */
 function findTranslation(translationId: string) {
   return translations.find((translation) => translation.id === translationId);
 }
 
+/**
+ * Loads a single Bible book JSON file on demand.
+ */
 async function loadBook(translationId: string, bookId: string) {
   const modulePath = `../data/bibles/${translationId}/books/${bookId}.json`;
   const loadModule = bookModules[modulePath];
@@ -49,12 +57,18 @@ async function loadBook(translationId: string, bookId: string) {
  * Swapping these methods to fetch from Vercel later should not require UI rewrites.
  */
 export const verseService = {
+  /**
+   * Lists available local translations.
+   */
   async getTranslations(): Promise<TranslationListResponse> {
     return {
       translations,
     };
   },
 
+  /**
+   * Lists the books for a translation without loading every full book file.
+   */
   async getBooks(translationId: string): Promise<BookListResponse> {
     const translation = findTranslation(translationId);
     const manifest = manifestsByTranslation[translationId];
@@ -69,6 +83,9 @@ export const verseService = {
     };
   },
 
+  /**
+   * Loads one chapter from one book.
+   */
   async getChapter(translationId: string, bookId: string, chapterNumber: number): Promise<ChapterResponse> {
     const translation = findTranslation(translationId);
     const book = await loadBook(translationId, bookId);
@@ -89,12 +106,18 @@ export const verseService = {
     };
   },
 
+  /**
+   * Lists curated prompts used by the default featured mode.
+   */
   async getFeaturedPassages(): Promise<FeaturedPassageListResponse> {
     return {
       passages: featuredPassages,
     };
   },
 
+  /**
+   * Resolves a curated passage reference into verse text ready for typing.
+   */
   async getPassage(passageId: string): Promise<PassageResponse> {
     const passage = featuredPassages.find((availablePassage) => availablePassage.id === passageId);
 

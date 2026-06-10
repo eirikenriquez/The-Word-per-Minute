@@ -8,6 +8,10 @@ type FeaturedPassageControlsProps = {
   onSelectPassage: (passageId: string) => void;
 };
 
+/**
+ * Controls for the default TypeRacer-style flow.
+ * The user can jump to a curated passage, request another random passage, or reset.
+ */
 export function FeaturedPassageControls({
   passages,
   selectedPassageId,

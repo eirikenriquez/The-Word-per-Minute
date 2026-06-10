@@ -9,6 +9,10 @@ type PracticeBatchDisplayProps = {
   typedText: string;
 };
 
+/**
+ * Chooses the highlight class for each displayed character.
+ * It uses typing normalization so curly quotes and straight quotes score consistently.
+ */
 function getCharacterClass(targetCharacter: string, typedCharacter: string | undefined, isCurrent: boolean) {
   if (typedCharacter === undefined) {
     return isCurrent ? "bg-amber-100 text-slate-900" : "text-slate-500";
@@ -19,6 +23,9 @@ function getCharacterClass(targetCharacter: string, typedCharacter: string | und
     : "bg-rose-100 text-rose-900";
 }
 
+/**
+ * Shows the current passage batch with per-character feedback.
+ */
 export function PracticeBatchDisplay({
   batch,
   batchNumber,

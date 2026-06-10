@@ -15,6 +15,9 @@ type ChapterControlsProps = {
   onSelectTranslation: (translationId: string) => void;
 };
 
+/**
+ * Manual Bible-browsing controls for translation, book, and chapter practice.
+ */
 export function ChapterControls({
   books,
   selectedBook,
@@ -103,6 +106,9 @@ type PickerLabelProps = {
   label: string;
 };
 
+/**
+ * Keeps picker labels and spacing consistent across the chapter controls.
+ */
 function PickerLabel({ children, label }: PickerLabelProps) {
   return (
     <label className="grid gap-1">

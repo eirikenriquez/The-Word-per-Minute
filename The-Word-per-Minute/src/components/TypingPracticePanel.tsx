@@ -13,6 +13,10 @@ type TypingPracticePanelProps = {
   wpm: number;
 };
 
+/**
+ * Typing input plus live result cards.
+ * This component is presentational; the parent owns timing, scoring, and selected text.
+ */
 export function TypingPracticePanel({
   accuracy,
   completionActionLabel,
@@ -68,6 +72,9 @@ type MetricCardProps = {
   valueClassName?: string;
 };
 
+/**
+ * Small reusable stat tile for the live typing metrics.
+ */
 function MetricCard({ label, value, valueClassName = "text-2xl" }: MetricCardProps) {
   return (
     <div className="rounded-md bg-slate-100 p-3">

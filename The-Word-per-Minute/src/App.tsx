@@ -14,6 +14,10 @@ import { calculatePracticeSessionMetrics, countCorrectCharacters } from "./utils
 
 type PracticeMode = "featured" | "chapter";
 
+/**
+ * Main practice screen.
+ * Owns the active mode, current typing state, and the handoff between data hooks and UI panels.
+ */
 function App() {
   const [practiceMode, setPracticeMode] = useState<PracticeMode>("featured");
   const [currentBatchIndex, setCurrentBatchIndex] = useState(0);
@@ -25,12 +29,15 @@ function App() {
   const featuredLibrary = useFeaturedPassages();
   const chapterLibrary = useVerseLibrary();
 
+  // Convert the selected featured passage into the same batch shape used by chapter practice.
   const featuredBatches = useMemo(() => {
     const response = featuredLibrary.passageResponse;
     if (!response) return [];
 
     return buildPracticeBatches(response.bookName, response.passage.chapter, response.verses, 2);
   }, [featuredLibrary.passageResponse]);
+
+  // Convert a selected chapter into short, karaoke-style typing batches.
   const chapterBatches = useMemo(() => {
     if (!chapterLibrary.chapter || !chapterLibrary.selectedBook) return [];
 
@@ -42,6 +49,8 @@ function App() {
     );
   }, [chapterLibrary.chapter, chapterLibrary.selectedBook, chapterLibrary.selectedChapter]);
   const batches = practiceMode === "featured" ? featuredBatches : chapterBatches;
+
+  // Session metrics are calculated from all completed batches, not only the visible one.
   const {
     accuracy,
     currentBatch,
@@ -82,6 +91,7 @@ function App() {
           (translation) => translation.id === chapterLibrary.selectedTranslationId,
         )?.abbreviation ?? chapterLibrary.selectedTranslationId.toUpperCase();
 
+  // Changing the selected practice source should always restart the typing session.
   useEffect(() => {
     resetPractice();
   }, [practiceMode, featuredLibrary.selectedPassageId, chapterLibrary.selectedBookId, chapterLibrary.selectedChapter]);
@@ -106,6 +116,9 @@ function App() {
     recordCompletedAttempt(wpm, accuracy);
   }, [accuracy, finishedAt, isPassageComplete, recordCompletedAttempt, wpm]);
 
+  /**
+   * Clears the current attempt while keeping the selected passage or chapter.
+   */
   function resetPractice() {
     setCurrentBatchIndex(0);
     setTypedText("");
@@ -114,6 +127,9 @@ function App() {
     savedFinishAt.current = null;
   }
 
+  /**
+   * Picks a new curated passage and keeps the user in the featured practice flow.
+   */
   function handleNextFeaturedPassage() {
     featuredLibrary.selectRandomPassage();
     setPracticeMode("featured");
@@ -150,6 +166,9 @@ function App() {
     resetPractice();
   }
 
+  /**
+   * Starts the timer on the first typed character and locks the finish time at completion.
+   */
   function handleTyping(nextTypedText: string) {
     const limitedText = nextTypedText.slice(0, targetText.length);
 
@@ -288,6 +307,9 @@ type PageShellProps = {
   children: ReactNode;
 };
 
+/**
+ * Shared page frame for loading, error, and practice states.
+ */
 function PageShell({ children }: PageShellProps) {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">

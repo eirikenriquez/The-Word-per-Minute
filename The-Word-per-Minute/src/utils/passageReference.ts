@@ -13,6 +13,9 @@ export function formatPassageReference(
     : `${bookName} ${chapter}:${startVerse}-${endVerse}`;
 }
 
+/**
+ * Builds display references like "Matthew 5" for whole-chapter practice.
+ */
 export function formatChapterReference(bookName: string, chapter: number) {
   return `${bookName} ${chapter}`;
 }
