@@ -2,6 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { verseService } from "../services/verseService";
 import type { FeaturedPassage, PassageResponse } from "../types/featuredPassage";
 
+/**
+ * Loads the curated featured-passage list and resolves the selected prompt
+ * into real Bible text through the verse service.
+ */
 export function useFeaturedPassages() {
   const [passages, setPassages] = useState<FeaturedPassage[]>([]);
   const [selectedPassageId, setSelectedPassageId] = useState("");

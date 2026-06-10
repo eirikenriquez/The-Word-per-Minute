@@ -95,6 +95,7 @@ function App() {
   useEffect(() => {
     if (!isBatchComplete || isPassageComplete) return;
 
+    // Pause briefly so the user can see the completed batch before auto-advancing.
     const advanceTimer = window.setTimeout(() => {
       setCurrentBatchIndex((index) => index + 1);
       setTypedText("");
@@ -106,6 +107,7 @@ function App() {
   useEffect(() => {
     if (!isPassageComplete || !finishedAt || savedFinishAt.current === finishedAt) return;
 
+    // Store stats once per completed passage, even if React re-renders the result.
     savedFinishAt.current = finishedAt;
     recordCompletedAttempt(wpm, accuracy);
   }, [accuracy, finishedAt, isPassageComplete, recordCompletedAttempt, wpm]);

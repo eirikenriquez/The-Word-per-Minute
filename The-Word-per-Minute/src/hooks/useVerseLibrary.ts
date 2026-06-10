@@ -2,6 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { verseService } from "../services/verseService";
 import type { BibleChapter, BookSummary, Translation } from "../types/verse";
 
+/**
+ * Handles the manual library flow: translation, book, and chapter selection.
+ * The UI can use this as a local-data version of future API-backed browsing.
+ */
 export function useVerseLibrary() {
   const [translations, setTranslations] = useState<Translation[]>([]);
   const [books, setBooks] = useState<BookSummary[]>([]);

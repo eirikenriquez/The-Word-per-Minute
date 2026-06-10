@@ -1,3 +1,7 @@
+/**
+ * Builds display references like "Matthew 5:3-10" from structured passage data.
+ * Keeping this in one place avoids slightly different reference formats across the UI.
+ */
 export function formatPassageReference(
   bookName: string,
   chapter: number,

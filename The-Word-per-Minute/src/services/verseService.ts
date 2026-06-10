@@ -44,6 +44,10 @@ async function loadBook(translationId: string, bookId: string) {
   return bookModule.default;
 }
 
+/**
+ * Local data service with an API-shaped interface.
+ * Swapping these methods to fetch from Vercel later should not require UI rewrites.
+ */
 export const verseService = {
   async getTranslations(): Promise<TranslationListResponse> {
     return {
@@ -103,6 +107,7 @@ export const verseService = {
       passage.bookId,
       passage.chapter,
     );
+    // Featured passages store references; the service resolves them into actual verse text.
     const verses = chapter.verses.filter(
       (verse) => verse.number >= passage.startVerse && verse.number <= passage.endVerse,
     );

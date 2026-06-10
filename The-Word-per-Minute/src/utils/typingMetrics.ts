@@ -14,16 +14,28 @@ export function countCorrectCharacters(targetText: string, typedText: string) {
     .filter((character, index) => areCharactersEquivalent(targetText[index], character)).length;
 }
 
+/**
+ * Compares typed characters using a small "typing friendly" normalization layer.
+ * Bible text can contain curly quotes or typographic dashes, while users usually
+ * type straight quotes and hyphens from a normal keyboard.
+ */
 export function areCharactersEquivalent(targetCharacter: string | undefined, typedCharacter: string | undefined) {
   if (targetCharacter === undefined || typedCharacter === undefined) return false;
-  return normalizeTypedCharacter(targetCharacter) === normalizeTypedCharacter(typedCharacter);
+  return normalizeComparableCharacter(targetCharacter) === normalizeComparableCharacter(typedCharacter);
 }
 
-function normalizeTypedCharacter(character: string) {
-  if (character === "’" || character === "‘") return "'";
-  return character;
+function normalizeComparableCharacter(character: string) {
+  return character
+    .replace(/[\u2018\u2019\u201A\u201B`]/g, "'")
+    .replace(/[\u201C\u201D\u201E\u201F]/g, '"')
+    .replace(/[\u2010-\u2015]/g, "-")
+    .replace(/[\u00A0\u202F]/g, " ");
 }
 
+/**
+ * Calculates live typing stats for the current passage or chapter session.
+ * WPM uses the common typing-test convention of five correct characters per word.
+ */
 export function calculateTypingMetrics({
   targetText,
   typedText,
