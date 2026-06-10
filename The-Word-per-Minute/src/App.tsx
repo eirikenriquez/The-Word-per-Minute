@@ -22,6 +22,21 @@ import { calculatePracticeSessionMetrics, countCorrectCharacters } from "./utils
 
 type PracticeMode = "featured" | "chapter" | "saved";
 
+const SAVED_PASSAGE_CATEGORIES = [
+  "Memorise",
+  "Peace",
+  "Anxiety",
+  "Love",
+  "Faith",
+  "Hope",
+  "Wisdom",
+  "Other",
+];
+
+function getDefaultSavedCategory(theme: string) {
+  return SAVED_PASSAGE_CATEGORIES.includes(theme) ? theme : SAVED_PASSAGE_CATEGORIES[0];
+}
+
 /**
  * Main practice screen.
  * Owns the active mode, current typing state, and the handoff between data hooks and UI panels.
@@ -31,6 +46,8 @@ function App() {
   const [currentBatchIndex, setCurrentBatchIndex] = useState(0);
   const [typedText, setTypedText] = useState("");
   const [selectedVerseNumbers, setSelectedVerseNumbers] = useState<number[]>([]);
+  const [saveTitle, setSaveTitle] = useState("");
+  const [saveCategory, setSaveCategory] = useState(SAVED_PASSAGE_CATEGORIES[0]);
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [finishedAt, setFinishedAt] = useState<number | null>(null);
   const savedFinishAt = useRef<number | null>(null);
@@ -124,7 +141,7 @@ function App() {
     practiceMode === "featured"
       ? featuredLibrary.passageResponse?.passage.theme ?? "Discovery"
       : practiceMode === "chapter"
-        ? "Manual chapter practice"
+        ? "Bible reader"
         : "Saved for later practice";
   const translationName =
     practiceMode === "featured"
@@ -134,8 +151,85 @@ function App() {
             (translation) => translation.id === chapterLibrary.selectedTranslationId,
           )?.abbreviation ?? chapterLibrary.selectedTranslationId.toUpperCase()
         : savedLibrary.selectedSavedPassage?.translationAbbreviation ?? "WEB";
-  const saveInput = getCurrentSaveInput();
+  const saveInput = useMemo((): SavePassageInput | null => {
+    if (practiceMode === "featured" && featuredLibrary.passageResponse) {
+      const { passage, reference, translation, bookName } = featuredLibrary.passageResponse;
+
+      return {
+        title: passage.title,
+        theme: passage.theme,
+        category: getDefaultSavedCategory(passage.theme),
+        reference,
+        translationId: passage.translationId,
+        translationAbbreviation: translation.abbreviation,
+        bookId: passage.bookId,
+        bookName,
+        chapter: passage.chapter,
+        startVerse: passage.startVerse,
+        endVerse: passage.endVerse,
+        source: "featured",
+      };
+    }
+
+    if (practiceMode === "chapter" && chapterLibrary.chapter && chapterLibrary.selectedBook) {
+      const translation = chapterLibrary.translations.find(
+        (availableTranslation) => availableTranslation.id === chapterLibrary.selectedTranslationId,
+      );
+      const lastVerse = chapterLibrary.chapter.verses[chapterLibrary.chapter.verses.length - 1];
+
+      if (!lastVerse) return null;
+
+      const startVerse = selectedVerseNumbers[0] ?? 1;
+      const endVerse = selectedVerseNumbers[selectedVerseNumbers.length - 1] ?? lastVerse.number;
+      const reference = selectedVerseNumbers.length
+        ? formatSelectedVerseReference(
+            chapterLibrary.selectedBook.name,
+            chapterLibrary.selectedChapter,
+            selectedVerseNumbers,
+          )
+        : formatPassageReference(
+            chapterLibrary.selectedBook.name,
+            chapterLibrary.selectedChapter,
+            startVerse,
+            endVerse,
+          );
+
+      return {
+        title: reference,
+        category: SAVED_PASSAGE_CATEGORIES[0],
+        theme: selectedVerseNumbers.length ? "Selected verses" : "Manual chapter",
+        reference,
+        translationId: chapterLibrary.selectedTranslationId,
+        translationAbbreviation: translation?.abbreviation ?? chapterLibrary.selectedTranslationId.toUpperCase(),
+        bookId: chapterLibrary.selectedBook.id,
+        bookName: chapterLibrary.selectedBook.name,
+        chapter: chapterLibrary.selectedChapter,
+        startVerse,
+        endVerse,
+        selectedVerses: selectedVerseNumbers.length ? selectedVerseNumbers : undefined,
+        source: "chapter",
+      };
+    }
+
+    return null;
+  }, [
+    chapterLibrary.chapter,
+    chapterLibrary.selectedBook,
+    chapterLibrary.selectedChapter,
+    chapterLibrary.selectedTranslationId,
+    chapterLibrary.translations,
+    featuredLibrary.passageResponse,
+    practiceMode,
+    selectedVerseNumbers,
+  ]);
   const isCurrentPassageSaved = savedLibrary.isPassageSaved(saveInput);
+
+  useEffect(() => {
+    if (!saveInput) return;
+
+    setSaveTitle(saveInput.title);
+    setSaveCategory(saveInput.category);
+  }, [saveInput]);
 
   useEffect(() => {
     if (practiceMode === "saved" && !savedLibrary.savedPassages.length) {
@@ -195,12 +289,6 @@ function App() {
     resetPractice();
   }
 
-  function handleSelectFeaturedPassage(passageId: string) {
-    featuredLibrary.selectPassage(passageId);
-    setPracticeMode("featured");
-    resetPractice();
-  }
-
   function handleTranslationChange(translationId: string) {
     chapterLibrary.selectTranslation(translationId);
     setSelectedVerseNumbers([]);
@@ -235,7 +323,11 @@ function App() {
   function handleSaveCurrentPassage() {
     if (!saveInput) return;
 
-    savedLibrary.savePassage(saveInput);
+    savedLibrary.savePassage({
+      ...saveInput,
+      title: saveTitle.trim() || saveInput.title,
+      category: saveCategory,
+    });
   }
 
   function handleSelectSavedPassage(passageId: string) {
@@ -292,70 +384,6 @@ function App() {
   }
 
   /**
-   * Builds the save payload for the currently selected featured passage or chapter.
-   */
-  function getCurrentSaveInput(): SavePassageInput | null {
-    if (practiceMode === "featured" && featuredLibrary.passageResponse) {
-      const { passage, reference, translation, bookName } = featuredLibrary.passageResponse;
-
-      return {
-        title: passage.title,
-        theme: passage.theme,
-        reference,
-        translationId: passage.translationId,
-        translationAbbreviation: translation.abbreviation,
-        bookId: passage.bookId,
-        bookName,
-        chapter: passage.chapter,
-        startVerse: passage.startVerse,
-        endVerse: passage.endVerse,
-        source: "featured",
-      };
-    }
-
-    if (practiceMode === "chapter" && chapterLibrary.chapter && chapterLibrary.selectedBook) {
-      const translation = chapterLibrary.translations.find(
-        (availableTranslation) => availableTranslation.id === chapterLibrary.selectedTranslationId,
-      );
-      const lastVerse = chapterLibrary.chapter.verses[chapterLibrary.chapter.verses.length - 1];
-
-      if (!lastVerse) return null;
-
-      const startVerse = selectedVerseNumbers[0] ?? 1;
-      const endVerse = selectedVerseNumbers[selectedVerseNumbers.length - 1] ?? lastVerse.number;
-      const reference = selectedVerseNumbers.length
-        ? formatSelectedVerseReference(
-            chapterLibrary.selectedBook.name,
-            chapterLibrary.selectedChapter,
-            selectedVerseNumbers,
-          )
-        : formatPassageReference(
-            chapterLibrary.selectedBook.name,
-            chapterLibrary.selectedChapter,
-            startVerse,
-            endVerse,
-          );
-
-      return {
-        title: reference,
-        theme: selectedVerseNumbers.length ? "Selected verses" : "Manual chapter",
-        reference,
-        translationId: chapterLibrary.selectedTranslationId,
-        translationAbbreviation: translation?.abbreviation ?? chapterLibrary.selectedTranslationId.toUpperCase(),
-        bookId: chapterLibrary.selectedBook.id,
-        bookName: chapterLibrary.selectedBook.name,
-        chapter: chapterLibrary.selectedChapter,
-        startVerse,
-        endVerse,
-        selectedVerses: selectedVerseNumbers.length ? selectedVerseNumbers : undefined,
-        source: "chapter",
-      };
-    }
-
-    return null;
-  }
-
-  /**
    * Starts the timer on the first typed character and locks the finish time at completion.
    */
   function handleTyping(nextTypedText: string) {
@@ -392,7 +420,7 @@ function App() {
     );
   }
 
-  if (error || !currentBatch) {
+  if (error || (practiceMode !== "chapter" && !currentBatch)) {
     return (
       <PageShell>
         <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800">
@@ -432,7 +460,7 @@ function App() {
               type="button"
               onClick={() => setPracticeMode("chapter")}
             >
-              Chapter
+              Bible
             </button>
             <button
               className={`rounded px-3 py-1.5 font-medium ${
@@ -447,24 +475,46 @@ function App() {
           </div>
         </div>
         {practiceMode !== "saved" && (
-          <button
-            className="mt-4 rounded-md border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-400"
-            disabled={!saveInput || isCurrentPassageSaved}
-            type="button"
-            onClick={handleSaveCurrentPassage}
-          >
-            {isCurrentPassageSaved ? "Saved" : "Save Passage"}
-          </button>
+          <div className="mt-4 grid gap-3 border-t border-slate-200 pt-4 sm:grid-cols-[1fr_12rem_auto] sm:items-end">
+            <label className="grid gap-1">
+              <span className="text-sm font-medium text-slate-600">Saved Title</span>
+              <input
+                className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+                placeholder="Name this saved passage"
+                value={saveTitle}
+                onChange={(event) => setSaveTitle(event.target.value)}
+              />
+            </label>
+            <label className="grid gap-1">
+              <span className="text-sm font-medium text-slate-600">Category</span>
+              <select
+                className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
+                value={saveCategory}
+                onChange={(event) => setSaveCategory(event.target.value)}
+              >
+                {SAVED_PASSAGE_CATEGORIES.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <button
+              className="rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:bg-slate-400"
+              disabled={!saveInput || isCurrentPassageSaved}
+              type="button"
+              onClick={handleSaveCurrentPassage}
+            >
+              {isCurrentPassageSaved ? "Saved" : "Save Passage"}
+            </button>
+          </div>
         )}
       </section>
 
       {practiceMode === "featured" ? (
         <FeaturedPassageControls
-          passages={featuredLibrary.passages}
-          selectedPassageId={featuredLibrary.selectedPassageId}
           onNextPassage={handleNextFeaturedPassage}
           onReset={resetPractice}
-          onSelectPassage={handleSelectFeaturedPassage}
         />
       ) : practiceMode === "chapter" ? (
         <>
@@ -501,32 +551,36 @@ function App() {
         />
       )}
 
-      <PracticeBatchDisplay
-        batch={currentBatch}
-        batchNumber={currentBatchIndex + 1}
-        totalBatches={batches.length}
-        translationName={translationName}
-        typedText={typedText}
-      />
+      {practiceMode !== "chapter" && currentBatch && (
+        <>
+          <PracticeBatchDisplay
+            batch={currentBatch}
+            batchNumber={currentBatchIndex + 1}
+            totalBatches={batches.length}
+            translationName={translationName}
+            typedText={typedText}
+          />
 
-      <TypingPracticePanel
-        accuracy={accuracy}
-        completionActionLabel={isPassageComplete && practiceMode === "featured" ? "Next Passage" : undefined}
-        completionMessage={
-          isPassageComplete
-            ? `Complete. You finished ${practiceTitle} at ${wpm} WPM with ${accuracy}% accuracy.`
-            : "Batch complete. Moving to the next verses..."
-        }
-        isComplete={isBatchComplete}
-        onCompletionAction={isPassageComplete && practiceMode === "featured" ? handleNextFeaturedPassage : undefined}
-        progress={Math.min(progress, 100)}
-        status={status}
-        typedText={typedText}
-        wpm={wpm}
-        onTypingChange={handleTyping}
-      />
+          <TypingPracticePanel
+            accuracy={accuracy}
+            completionActionLabel={isPassageComplete && practiceMode === "featured" ? "Next Passage" : undefined}
+            completionMessage={
+              isPassageComplete
+                ? `Complete. You finished ${practiceTitle} at ${wpm} WPM with ${accuracy}% accuracy.`
+                : "Batch complete. Moving to the next verses..."
+            }
+            isComplete={isBatchComplete}
+            onCompletionAction={isPassageComplete && practiceMode === "featured" ? handleNextFeaturedPassage : undefined}
+            progress={Math.min(progress, 100)}
+            status={status}
+            typedText={typedText}
+            wpm={wpm}
+            onTypingChange={handleTyping}
+          />
 
-      <PersonalBests stats={stats} onResetStats={resetStats} />
+          <PersonalBests stats={stats} onResetStats={resetStats} />
+        </>
+      )}
     </PageShell>
   );
 }

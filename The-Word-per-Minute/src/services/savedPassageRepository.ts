@@ -32,7 +32,11 @@ export const savedPassageRepository: SavedPassageRepository = {
     if (!savedPassages) return [];
 
     try {
-      return JSON.parse(savedPassages) as SavedPassage[];
+      const parsedPassages = JSON.parse(savedPassages) as SavedPassage[];
+      return parsedPassages.map((passage) => ({
+        ...passage,
+        category: passage.category ?? passage.theme ?? "Memorise",
+      }));
     } catch {
       return [];
     }

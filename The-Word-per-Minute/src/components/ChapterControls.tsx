@@ -86,14 +86,14 @@ export function ChapterControls({
             type="button"
             onClick={onRandomChapter}
           >
-            Random Chapter
+            Random Bible Chapter
           </button>
           <button
             className="rounded-md bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-700"
             type="button"
             onClick={onReset}
           >
-            Reset Chapter
+            Reset Reader
           </button>
         </div>
       </div>

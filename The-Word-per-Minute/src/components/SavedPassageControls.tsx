@@ -34,7 +34,7 @@ export function SavedPassageControls({
             {hasSavedPassages ? (
               savedPassages.map((passage) => (
                 <option key={passage.id} value={passage.id}>
-                  {passage.reference} ({passage.translationAbbreviation})
+                  {passage.title} - {passage.reference} ({passage.category})
                 </option>
               ))
             ) : (

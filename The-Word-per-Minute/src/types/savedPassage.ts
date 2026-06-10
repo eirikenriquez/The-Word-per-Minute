@@ -3,6 +3,7 @@ export type SavedPassageSource = "featured" | "chapter";
 export type SavedPassage = {
   id: string;
   title: string;
+  category: string;
   theme: string;
   reference: string;
   translationId: string;
