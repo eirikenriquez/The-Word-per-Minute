@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { verseService } from "../services/verseService";
 import type { BibleChapter, BookSummary, Translation } from "../types/verse";
+import { getErrorMessage } from "../utils/errors";
 
 /**
  * Handles the manual library flow: translation, book, and chapter selection.
@@ -141,8 +142,4 @@ export function useVerseLibrary() {
     selectedTranslationId,
     translations,
   };
-}
-
-function getErrorMessage(caughtError: unknown) {
-  return caughtError instanceof Error ? caughtError.message : "Something went wrong.";
 }

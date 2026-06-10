@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import { ChapterControls } from "./components/ChapterControls";
 import { FeaturedPassageControls } from "./components/FeaturedPassageControls";
 import { PersonalBests } from "./components/PersonalBests";
@@ -9,7 +10,7 @@ import { usePracticeStats } from "./hooks/usePracticeStats";
 import { useVerseLibrary } from "./hooks/useVerseLibrary";
 import { buildPracticeBatches } from "./utils/chapterPractice";
 import { formatChapterReference } from "./utils/passageReference";
-import { countCorrectCharacters } from "./utils/typingMetrics";
+import { calculatePracticeSessionMetrics, countCorrectCharacters } from "./utils/typingMetrics";
 
 type PracticeMode = "featured" | "chapter";
 
@@ -41,29 +42,22 @@ function App() {
     );
   }, [chapterLibrary.chapter, chapterLibrary.selectedBook, chapterLibrary.selectedChapter]);
   const batches = practiceMode === "featured" ? featuredBatches : chapterBatches;
-  const currentBatch = batches[currentBatchIndex];
-  const targetText = currentBatch?.text ?? "";
-  const currentCorrectCharacters = countCorrectCharacters(targetText, typedText);
-  const completedCharacterCount = batches
-    .slice(0, currentBatchIndex)
-    .reduce((total, batch) => total + batch.text.length, 0);
-  const totalCharacterCount = batches.reduce((total, batch) => total + batch.text.length, 0);
-  const totalCorrectCharacters = completedCharacterCount + currentCorrectCharacters;
-  const totalTypedCharacters = completedCharacterCount + typedText.length;
-  const progress = totalCharacterCount
-    ? Math.round((totalTypedCharacters / totalCharacterCount) * 100)
-    : 0;
-  const accuracy = totalTypedCharacters
-    ? Math.round((totalCorrectCharacters / totalTypedCharacters) * 100)
-    : 100;
-  const elapsedMs = startedAt ? (finishedAt ?? Date.now()) - startedAt : 0;
-  const elapsedMinutes = elapsedMs / 1000 / 60;
-  const wpm = elapsedMinutes > 0 ? Math.round(totalCorrectCharacters / 5 / elapsedMinutes) : 0;
-  const isBatchComplete = Boolean(
-    targetText && typedText.length === targetText.length && currentCorrectCharacters === targetText.length,
-  );
-  const isPassageComplete = isBatchComplete && currentBatchIndex === batches.length - 1;
-  const status = isPassageComplete ? "Complete" : startedAt ? "Typing" : "Ready";
+  const {
+    accuracy,
+    currentBatch,
+    isBatchComplete,
+    isPassageComplete,
+    progress,
+    status,
+    targetText,
+    wpm,
+  } = calculatePracticeSessionMetrics({
+    batches,
+    currentBatchIndex,
+    typedText,
+    startedAt,
+    finishedAt,
+  });
   const isLoading =
     practiceMode === "featured" ? featuredLibrary.isLoading : chapterLibrary.isLoading;
   const error = practiceMode === "featured" ? featuredLibrary.error : chapterLibrary.error;
@@ -291,7 +285,7 @@ function App() {
 }
 
 type PageShellProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 function PageShell({ children }: PageShellProps) {

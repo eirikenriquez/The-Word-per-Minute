@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import type { PracticeStats } from "../types/practice";
 
-const statsStorageKey = "the-word-per-minute-stats";
+const STATS_STORAGE_KEY = "the-word-per-minute-stats";
 
 export const emptyStats: PracticeStats = {
   bestWpm: 0,
@@ -10,7 +10,7 @@ export const emptyStats: PracticeStats = {
 };
 
 function loadStats() {
-  const savedStats = localStorage.getItem(statsStorageKey);
+  const savedStats = localStorage.getItem(STATS_STORAGE_KEY);
   if (!savedStats) return emptyStats;
 
   try {
@@ -21,9 +21,13 @@ function loadStats() {
 }
 
 function saveStats(stats: PracticeStats) {
-  localStorage.setItem(statsStorageKey, JSON.stringify(stats));
+  localStorage.setItem(STATS_STORAGE_KEY, JSON.stringify(stats));
 }
 
+/**
+ * Stores simple personal bests locally for the current browser.
+ * This is intentionally small until user accounts or cloud sync become real features.
+ */
 export function usePracticeStats() {
   const [stats, setStats] = useState(loadStats);
 

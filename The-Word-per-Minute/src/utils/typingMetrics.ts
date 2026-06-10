@@ -1,4 +1,5 @@
 import type { TypingMetrics } from "../types/practice";
+import type { PracticeBatch } from "../types/chapterPractice";
 
 type TypingMetricsInput = {
   targetText: string;
@@ -6,6 +7,26 @@ type TypingMetricsInput = {
   startedAt: number | null;
   finishedAt: number | null;
   now?: number;
+};
+
+type PracticeSessionMetricsInput = {
+  batches: PracticeBatch[];
+  currentBatchIndex: number;
+  typedText: string;
+  startedAt: number | null;
+  finishedAt: number | null;
+  now?: number;
+};
+
+type PracticeSessionMetrics = {
+  accuracy: number;
+  currentBatch: PracticeBatch | undefined;
+  isBatchComplete: boolean;
+  isPassageComplete: boolean;
+  progress: number;
+  status: TypingMetrics["status"];
+  targetText: string;
+  wpm: number;
 };
 
 export function countCorrectCharacters(targetText: string, typedText: string) {
@@ -64,5 +85,52 @@ export function calculateTypingMetrics({
     wpm,
     isComplete,
     status: isComplete ? "Complete" : startedAt ? "Typing" : "Ready",
+  };
+}
+
+/**
+ * Calculates stats across every completed batch plus the batch currently on screen.
+ * This keeps chapter-length and featured-passage practice scored as one session.
+ */
+export function calculatePracticeSessionMetrics({
+  batches,
+  currentBatchIndex,
+  typedText,
+  startedAt,
+  finishedAt,
+  now = Date.now(),
+}: PracticeSessionMetricsInput): PracticeSessionMetrics {
+  const currentBatch = batches[currentBatchIndex];
+  const targetText = currentBatch?.text ?? "";
+  const currentCorrectCharacters = countCorrectCharacters(targetText, typedText);
+  const completedCharacterCount = batches
+    .slice(0, currentBatchIndex)
+    .reduce((total, batch) => total + batch.text.length, 0);
+  const totalCharacterCount = batches.reduce((total, batch) => total + batch.text.length, 0);
+  const totalCorrectCharacters = completedCharacterCount + currentCorrectCharacters;
+  const totalTypedCharacters = completedCharacterCount + typedText.length;
+  const progress = totalCharacterCount
+    ? Math.round((totalTypedCharacters / totalCharacterCount) * 100)
+    : 0;
+  const accuracy = totalTypedCharacters
+    ? Math.round((totalCorrectCharacters / totalTypedCharacters) * 100)
+    : 100;
+  const elapsedMs = startedAt ? (finishedAt ?? now) - startedAt : 0;
+  const elapsedMinutes = elapsedMs / 1000 / 60;
+  const wpm = elapsedMinutes > 0 ? Math.round(totalCorrectCharacters / 5 / elapsedMinutes) : 0;
+  const isBatchComplete = Boolean(
+    targetText && typedText.length === targetText.length && currentCorrectCharacters === targetText.length,
+  );
+  const isPassageComplete = isBatchComplete && currentBatchIndex === batches.length - 1;
+
+  return {
+    accuracy,
+    currentBatch,
+    isBatchComplete,
+    isPassageComplete,
+    progress: Math.min(progress, 100),
+    status: isPassageComplete ? "Complete" : startedAt ? "Typing" : "Ready",
+    targetText,
+    wpm,
   };
 }
