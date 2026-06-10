@@ -47,7 +47,11 @@ export function ChapterReaderSelector({
         </button>
       </div>
 
-      <div className="rounded-md border border-slate-200 bg-slate-50 p-4 text-lg leading-9">
+      <div
+        className="rounded-md border border-slate-200 bg-slate-50 p-4 text-lg leading-9"
+        role="presentation"
+        onClick={onClearSelection}
+      >
         {chapter.verses.map((verse) => {
           const isSelected = Boolean(
             selectedRange &&
@@ -64,7 +68,10 @@ export function ChapterReaderSelector({
               }`}
               key={verse.number}
               type="button"
-              onClick={() => onSelectVerse(verse.number)}
+              onClick={(event) => {
+                event.stopPropagation();
+                onSelectVerse(verse.number);
+              }}
             >
               <sup className="mr-1 text-xs font-bold text-slate-400">{verse.number}</sup>
               {verse.text}
