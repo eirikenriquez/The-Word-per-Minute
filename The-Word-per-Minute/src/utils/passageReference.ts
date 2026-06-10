@@ -32,7 +32,7 @@ export function formatSelectedVerseReference(bookName: string, chapter: number, 
 }
 
 /**
- * Builds display references like "Matthew 5" for whole-chapter practice.
+ * Builds display references like "Matthew 5" for a whole Bible chapter.
  */
 export function formatChapterReference(bookName: string, chapter: number) {
   return `${bookName} ${chapter}`;

@@ -1,4 +1,4 @@
-import type { PracticeBatch } from "../types/chapterPractice";
+import type { PracticeBatch } from "../types/practiceBatch";
 import { areCharactersEquivalent } from "../utils/typingMetrics";
 
 type PracticeBatchDisplayProps = {

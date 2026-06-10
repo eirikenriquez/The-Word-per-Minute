@@ -1,14 +1,14 @@
 import type { ReactNode } from "react";
 import type { BookSummary, Translation } from "../types/verse";
 
-type ChapterControlsProps = {
+type BibleControlsProps = {
   books: BookSummary[];
   selectedBook?: BookSummary;
   selectedBookId: string;
   selectedChapter: number;
   selectedTranslationId: string;
   translations: Translation[];
-  onRandomChapter: () => void;
+  onRandomBibleChapter: () => void;
   onReset: () => void;
   onSelectBook: (bookId: string) => void;
   onSelectChapter: (chapter: number) => void;
@@ -16,21 +16,21 @@ type ChapterControlsProps = {
 };
 
 /**
- * Manual Bible-browsing controls for translation, book, and chapter practice.
+ * Manual Bible reader controls for translation, book, and chapter selection.
  */
-export function ChapterControls({
+export function BibleControls({
   books,
   selectedBook,
   selectedBookId,
   selectedChapter,
   selectedTranslationId,
   translations,
-  onRandomChapter,
+  onRandomBibleChapter,
   onReset,
   onSelectBook,
   onSelectChapter,
   onSelectTranslation,
-}: ChapterControlsProps) {
+}: BibleControlsProps) {
   return (
     <section className="rounded-lg border bg-white p-4 shadow-sm">
       <div className="grid gap-4">
@@ -84,7 +84,7 @@ export function ChapterControls({
           <button
             className="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
             type="button"
-            onClick={onRandomChapter}
+            onClick={onRandomBibleChapter}
           >
             Random Bible Chapter
           </button>
@@ -107,7 +107,7 @@ type PickerLabelProps = {
 };
 
 /**
- * Keeps picker labels and spacing consistent across the chapter controls.
+ * Keeps picker labels and spacing consistent across the Bible controls.
  */
 function PickerLabel({ children, label }: PickerLabelProps) {
   return (

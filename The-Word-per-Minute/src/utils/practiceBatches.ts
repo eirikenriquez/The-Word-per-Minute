@@ -1,8 +1,8 @@
-import type { PracticeBatch } from "../types/chapterPractice";
+import type { PracticeBatch } from "../types/practiceBatch";
 import type { BibleVerse } from "../types/verse";
 
 /**
- * Splits a chapter or passage into small typing chunks.
+ * Splits a passage into small typing chunks.
  * Keeping batches short makes long passages feel more like a guided TypeRacer prompt.
  */
 export function buildPracticeBatches(

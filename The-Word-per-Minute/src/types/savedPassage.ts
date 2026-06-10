@@ -1,4 +1,4 @@
-export type SavedPassageSource = "featured" | "chapter";
+export type SavedPassageSource = "featured" | "bible" | "chapter";
 
 export type SavedPassage = {
   id: string;

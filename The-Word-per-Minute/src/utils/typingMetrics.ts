@@ -1,5 +1,5 @@
 import type { TypingMetrics } from "../types/practice";
-import type { PracticeBatch } from "../types/chapterPractice";
+import type { PracticeBatch } from "../types/practiceBatch";
 
 type TypingMetricsInput = {
   targetText: string;
@@ -60,7 +60,7 @@ function normalizeComparableCharacter(character: string) {
 }
 
 /**
- * Calculates live typing stats for the current passage or chapter session.
+ * Calculates live typing stats for the current passage session.
  * WPM uses the common typing-test convention of five correct characters per word.
  */
 export function calculateTypingMetrics({
@@ -96,7 +96,7 @@ export function calculateTypingMetrics({
 
 /**
  * Calculates stats across every completed batch plus the batch currently on screen.
- * This keeps chapter-length and featured-passage practice scored as one session.
+ * This keeps longer Bible selections and featured passages scored as one session.
  */
 export function calculatePracticeSessionMetrics({
   batches,
