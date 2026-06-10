@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { ChapterControls } from "./components/ChapterControls";
+import { ChapterReaderSelector } from "./components/ChapterReaderSelector";
 import { FeaturedPassageControls } from "./components/FeaturedPassageControls";
 import { PersonalBests } from "./components/PersonalBests";
 import { PracticeBatchDisplay } from "./components/PracticeBatchDisplay";
@@ -12,10 +13,15 @@ import { useSavedPassages } from "./hooks/useSavedPassages";
 import { useVerseLibrary } from "./hooks/useVerseLibrary";
 import type { SavePassageInput } from "./types/savedPassage";
 import { buildPracticeBatches } from "./utils/chapterPractice";
-import { formatChapterReference } from "./utils/passageReference";
+import { formatChapterReference, formatPassageReference } from "./utils/passageReference";
 import { calculatePracticeSessionMetrics, countCorrectCharacters } from "./utils/typingMetrics";
 
 type PracticeMode = "featured" | "chapter" | "saved";
+
+type VerseRange = {
+  startVerse: number;
+  endVerse: number;
+};
 
 /**
  * Main practice screen.
@@ -25,6 +31,7 @@ function App() {
   const [practiceMode, setPracticeMode] = useState<PracticeMode>("featured");
   const [currentBatchIndex, setCurrentBatchIndex] = useState(0);
   const [typedText, setTypedText] = useState("");
+  const [selectedVerseRange, setSelectedVerseRange] = useState<VerseRange | null>(null);
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [finishedAt, setFinishedAt] = useState<number | null>(null);
   const savedFinishAt = useRef<number | null>(null);
@@ -44,14 +51,20 @@ function App() {
   // Convert a selected chapter into short, karaoke-style typing batches.
   const chapterBatches = useMemo(() => {
     if (!chapterLibrary.chapter || !chapterLibrary.selectedBook) return [];
+    const selectedVerses = selectedVerseRange
+      ? chapterLibrary.chapter.verses.filter(
+          (verse) =>
+            verse.number >= selectedVerseRange.startVerse && verse.number <= selectedVerseRange.endVerse,
+        )
+      : chapterLibrary.chapter.verses;
 
     return buildPracticeBatches(
       chapterLibrary.selectedBook.name,
       chapterLibrary.selectedChapter,
-      chapterLibrary.chapter.verses,
+      selectedVerses,
       2,
     );
-  }, [chapterLibrary.chapter, chapterLibrary.selectedBook, chapterLibrary.selectedChapter]);
+  }, [chapterLibrary.chapter, chapterLibrary.selectedBook, chapterLibrary.selectedChapter, selectedVerseRange]);
 
   // Saved passages are stored as references, then resolved back into verse text for practice.
   const savedBatches = useMemo(() => {
@@ -107,7 +120,7 @@ function App() {
       ? featuredLibrary.passageResponse?.reference ?? ""
       : practiceMode === "chapter"
         ? chapterLibrary.selectedBook
-          ? formatChapterReference(chapterLibrary.selectedBook.name, chapterLibrary.selectedChapter)
+          ? getChapterPracticeReference()
           : ""
         : savedLibrary.selectedSavedPassage?.reference ?? "";
   const practiceSubtitle =
@@ -141,6 +154,7 @@ function App() {
     featuredLibrary.selectedPassageId,
     chapterLibrary.selectedBookId,
     chapterLibrary.selectedChapter,
+    selectedVerseRange,
     savedLibrary.selectedSavedPassageId,
   ]);
 
@@ -192,24 +206,28 @@ function App() {
 
   function handleTranslationChange(translationId: string) {
     chapterLibrary.selectTranslation(translationId);
+    setSelectedVerseRange(null);
     setPracticeMode("chapter");
     resetPractice();
   }
 
   function handleBookChange(bookId: string) {
     chapterLibrary.selectBook(bookId);
+    setSelectedVerseRange(null);
     setPracticeMode("chapter");
     resetPractice();
   }
 
   function handleChapterChange(chapterNumber: number) {
     chapterLibrary.selectChapter(chapterNumber);
+    setSelectedVerseRange(null);
     setPracticeMode("chapter");
     resetPractice();
   }
 
   function handleRandomChapter() {
     chapterLibrary.selectRandomChapter();
+    setSelectedVerseRange(null);
     setPracticeMode("chapter");
     resetPractice();
   }
@@ -232,6 +250,42 @@ function App() {
   function handleRemoveSavedPassage(passageId: string) {
     savedLibrary.removePassage(passageId);
     resetPractice();
+  }
+
+  /**
+   * Builds a contiguous verse range from Bible-reader clicks.
+   */
+  function handleSelectReaderVerse(verseNumber: number) {
+    setSelectedVerseRange((currentRange) => {
+      if (!currentRange) {
+        return {
+          startVerse: verseNumber,
+          endVerse: verseNumber,
+        };
+      }
+
+      if (currentRange.startVerse === verseNumber && currentRange.endVerse === verseNumber) {
+        return null;
+      }
+
+      return {
+        startVerse: Math.min(currentRange.startVerse, verseNumber),
+        endVerse: Math.max(currentRange.endVerse, verseNumber),
+      };
+    });
+  }
+
+  function getChapterPracticeReference() {
+    if (!chapterLibrary.selectedBook) return "";
+
+    return selectedVerseRange
+      ? formatPassageReference(
+          chapterLibrary.selectedBook.name,
+          chapterLibrary.selectedChapter,
+          selectedVerseRange.startVerse,
+          selectedVerseRange.endVerse,
+        )
+      : formatChapterReference(chapterLibrary.selectedBook.name, chapterLibrary.selectedChapter);
   }
 
   /**
@@ -264,17 +318,26 @@ function App() {
 
       if (!lastVerse) return null;
 
+      const startVerse = selectedVerseRange?.startVerse ?? 1;
+      const endVerse = selectedVerseRange?.endVerse ?? lastVerse.number;
+      const reference = formatPassageReference(
+        chapterLibrary.selectedBook.name,
+        chapterLibrary.selectedChapter,
+        startVerse,
+        endVerse,
+      );
+
       return {
-        title: formatChapterReference(chapterLibrary.selectedBook.name, chapterLibrary.selectedChapter),
-        theme: "Manual chapter",
-        reference: formatChapterReference(chapterLibrary.selectedBook.name, chapterLibrary.selectedChapter),
+        title: reference,
+        theme: selectedVerseRange ? "Selected verses" : "Manual chapter",
+        reference,
         translationId: chapterLibrary.selectedTranslationId,
         translationAbbreviation: translation?.abbreviation ?? chapterLibrary.selectedTranslationId.toUpperCase(),
         bookId: chapterLibrary.selectedBook.id,
         bookName: chapterLibrary.selectedBook.name,
         chapter: chapterLibrary.selectedChapter,
-        startVerse: 1,
-        endVerse: lastVerse.number,
+        startVerse,
+        endVerse,
         source: "chapter",
       };
     }
@@ -394,19 +457,29 @@ function App() {
           onSelectPassage={handleSelectFeaturedPassage}
         />
       ) : practiceMode === "chapter" ? (
-        <ChapterControls
-          books={chapterLibrary.books}
-          selectedBook={chapterLibrary.selectedBook}
-          selectedBookId={chapterLibrary.selectedBookId}
-          selectedChapter={chapterLibrary.selectedChapter}
-          selectedTranslationId={chapterLibrary.selectedTranslationId}
-          translations={chapterLibrary.translations}
-          onSelectBook={handleBookChange}
-          onSelectChapter={handleChapterChange}
-          onSelectTranslation={handleTranslationChange}
-          onRandomChapter={handleRandomChapter}
-          onReset={resetPractice}
-        />
+        <>
+          <ChapterControls
+            books={chapterLibrary.books}
+            selectedBook={chapterLibrary.selectedBook}
+            selectedBookId={chapterLibrary.selectedBookId}
+            selectedChapter={chapterLibrary.selectedChapter}
+            selectedTranslationId={chapterLibrary.selectedTranslationId}
+            translations={chapterLibrary.translations}
+            onSelectBook={handleBookChange}
+            onSelectChapter={handleChapterChange}
+            onSelectTranslation={handleTranslationChange}
+            onRandomChapter={handleRandomChapter}
+            onReset={resetPractice}
+          />
+          <ChapterReaderSelector
+            chapter={chapterLibrary.chapter}
+            selectedBook={chapterLibrary.selectedBook}
+            selectedChapter={chapterLibrary.selectedChapter}
+            selectedRange={selectedVerseRange}
+            onClearSelection={() => setSelectedVerseRange(null)}
+            onSelectVerse={handleSelectReaderVerse}
+          />
+        </>
       ) : (
         <SavedPassageControls
           savedPassages={savedLibrary.savedPassages}

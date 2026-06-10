@@ -28,6 +28,7 @@ export function buildPracticeBatches(
           ? `${bookName} ${chapterNumber}:${firstVerse.number}`
           : `${bookName} ${chapterNumber}:${firstVerse.number}-${lastVerse.number}`,
       text: batchVerses.map((verse) => verse.text).join(" "),
+      verses: batchVerses,
     });
   }
 
