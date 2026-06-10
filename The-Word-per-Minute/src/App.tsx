@@ -22,19 +22,11 @@ import { calculatePracticeSessionMetrics, countCorrectCharacters } from "./utils
 
 type PracticeMode = "featured" | "bible" | "saved";
 
-const SAVED_PASSAGE_CATEGORIES = [
-  "Memorise",
-  "Peace",
-  "Anxiety",
-  "Love",
-  "Faith",
-  "Hope",
-  "Wisdom",
-  "Other",
-];
+const DEFAULT_SAVED_CATEGORY = "Memorise";
+const CUSTOM_SAVED_CATEGORY = "Other";
 
-function getDefaultSavedCategory(theme: string) {
-  return SAVED_PASSAGE_CATEGORIES.includes(theme) ? theme : SAVED_PASSAGE_CATEGORIES[0];
+function getDefaultSavedCategory(theme: string, categories: string[]) {
+  return categories.includes(theme) ? theme : DEFAULT_SAVED_CATEGORY;
 }
 
 /**
@@ -47,7 +39,7 @@ function App() {
   const [typedText, setTypedText] = useState("");
   const [selectedVerseNumbers, setSelectedVerseNumbers] = useState<number[]>([]);
   const [saveTitle, setSaveTitle] = useState("");
-  const [saveCategory, setSaveCategory] = useState(SAVED_PASSAGE_CATEGORIES[0]);
+  const [saveCategory, setSaveCategory] = useState(DEFAULT_SAVED_CATEGORY);
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [finishedAt, setFinishedAt] = useState<number | null>(null);
   const savedFinishAt = useRef<number | null>(null);
@@ -55,6 +47,10 @@ function App() {
   const featuredLibrary = useFeaturedPassages();
   const bibleLibrary = useVerseLibrary();
   const savedLibrary = useSavedPassages();
+  const savedPassageCategories = useMemo(() => {
+    const featuredThemes = featuredLibrary.passages.map((passage) => passage.theme);
+    return [...new Set([DEFAULT_SAVED_CATEGORY, ...featuredThemes, CUSTOM_SAVED_CATEGORY])];
+  }, [featuredLibrary.passages]);
 
   // Convert the selected featured passage into the same batch shape used by typing practice.
   const featuredBatches = useMemo(() => {
@@ -158,7 +154,7 @@ function App() {
       return {
         title: passage.title,
         theme: passage.theme,
-        category: getDefaultSavedCategory(passage.theme),
+        category: getDefaultSavedCategory(passage.theme, savedPassageCategories),
         reference,
         translationId: passage.translationId,
         translationAbbreviation: translation.abbreviation,
@@ -196,7 +192,7 @@ function App() {
 
       return {
         title: reference,
-        category: SAVED_PASSAGE_CATEGORIES[0],
+        category: DEFAULT_SAVED_CATEGORY,
         theme: selectedVerseNumbers.length ? "Selected verses" : "Bible reader",
         reference,
         translationId: bibleLibrary.selectedTranslationId,
@@ -220,6 +216,7 @@ function App() {
     bibleLibrary.translations,
     featuredLibrary.passageResponse,
     practiceMode,
+    savedPassageCategories,
     selectedVerseNumbers,
   ]);
   const isCurrentPassageSaved = savedLibrary.isPassageSaved(saveInput);
@@ -310,10 +307,25 @@ function App() {
     resetPractice();
   }
 
-  function handleRandomBibleChapter() {
-    bibleLibrary.selectRandomChapter();
-    setSelectedVerseNumbers([]);
+  function handleRandomFeaturedReaderPassage() {
+    const passage = featuredLibrary.passages[Math.floor(Math.random() * featuredLibrary.passages.length)];
+    if (!passage) return;
+
+    bibleLibrary.selectTranslation(passage.translationId);
+    bibleLibrary.selectBook(passage.bookId);
+    bibleLibrary.selectChapter(passage.chapter);
+    setSelectedVerseNumbers(
+      Array.from(
+        { length: passage.endVerse - passage.startVerse + 1 },
+        (_, index) => passage.startVerse + index,
+      ),
+    );
     setPracticeMode("bible");
+    resetPractice();
+  }
+
+  function handleClearBibleSelection() {
+    setSelectedVerseNumbers([]);
     resetPractice();
   }
 
@@ -323,11 +335,16 @@ function App() {
   function handleSaveCurrentPassage() {
     if (!saveInput) return;
 
-    savedLibrary.savePassage({
-      ...saveInput,
-      title: saveTitle.trim() || saveInput.title,
-      category: saveCategory,
-    });
+    const passageToSave =
+      practiceMode === "bible"
+        ? {
+            ...saveInput,
+            title: saveTitle.trim() || saveInput.title,
+            category: saveCategory,
+          }
+        : saveInput;
+
+    savedLibrary.savePassage(passageToSave);
   }
 
   function handleSelectSavedPassage(passageId: string) {
@@ -474,7 +491,19 @@ function App() {
             </button>
           </div>
         </div>
-        {practiceMode !== "saved" && (
+        {practiceMode === "featured" && (
+          <div className="mt-4 flex justify-end border-t border-slate-200 pt-4">
+            <button
+              className="rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:bg-slate-400"
+              disabled={!saveInput || isCurrentPassageSaved}
+              type="button"
+              onClick={handleSaveCurrentPassage}
+            >
+              {isCurrentPassageSaved ? "Saved" : "Save Passage"}
+            </button>
+          </div>
+        )}
+        {practiceMode === "bible" && (
           <div className="mt-4 grid gap-3 border-t border-slate-200 pt-4 sm:grid-cols-[1fr_12rem_auto] sm:items-end">
             <label className="grid gap-1">
               <span className="text-sm font-medium text-slate-600">Saved Title</span>
@@ -492,7 +521,7 @@ function App() {
                 value={saveCategory}
                 onChange={(event) => setSaveCategory(event.target.value)}
               >
-                {SAVED_PASSAGE_CATEGORIES.map((category) => (
+                {savedPassageCategories.map((category) => (
                   <option key={category} value={category}>
                     {category}
                   </option>
@@ -528,15 +557,14 @@ function App() {
             onSelectBook={handleBookChange}
             onSelectChapter={handleBibleChapterChange}
             onSelectTranslation={handleTranslationChange}
-            onRandomBibleChapter={handleRandomBibleChapter}
-            onReset={resetPractice}
+            onRandomFeaturedPassage={handleRandomFeaturedReaderPassage}
           />
           <BibleReaderSelector
             chapter={bibleLibrary.chapter}
             selectedBook={bibleLibrary.selectedBook}
             selectedChapter={bibleLibrary.selectedChapter}
             selectedVerseNumbers={selectedVerseNumbers}
-            onClearSelection={() => setSelectedVerseNumbers([])}
+            onClearSelection={handleClearBibleSelection}
             onSelectRange={handleSelectReaderRange}
             onSelectVerse={handleSelectReaderVerse}
           />

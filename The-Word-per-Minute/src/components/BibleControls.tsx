@@ -8,8 +8,7 @@ type BibleControlsProps = {
   selectedChapter: number;
   selectedTranslationId: string;
   translations: Translation[];
-  onRandomBibleChapter: () => void;
-  onReset: () => void;
+  onRandomFeaturedPassage: () => void;
   onSelectBook: (bookId: string) => void;
   onSelectChapter: (chapter: number) => void;
   onSelectTranslation: (translationId: string) => void;
@@ -25,8 +24,7 @@ export function BibleControls({
   selectedChapter,
   selectedTranslationId,
   translations,
-  onRandomBibleChapter,
-  onReset,
+  onRandomFeaturedPassage,
   onSelectBook,
   onSelectChapter,
   onSelectTranslation,
@@ -80,20 +78,13 @@ export function BibleControls({
           </PickerLabel>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div>
           <button
             className="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
             type="button"
-            onClick={onRandomBibleChapter}
+            onClick={onRandomFeaturedPassage}
           >
-            Random Bible Chapter
-          </button>
-          <button
-            className="rounded-md bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-700"
-            type="button"
-            onClick={onReset}
-          >
-            Reset Reader
+            Random Featured Passage
           </button>
         </div>
       </div>
