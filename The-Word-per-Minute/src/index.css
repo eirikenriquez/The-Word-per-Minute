@@ -28,6 +28,14 @@ button:not(:disabled):active {
   transform: translateY(0);
 }
 
+section,
+article {
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+}
+
 .page-transition {
   animation: page-fade-in 220ms ease-out both;
 }
@@ -79,6 +87,50 @@ button:not(:disabled):active {
 
 .dark .hover\:bg-slate-100:hover {
   background-color: #334155;
+}
+
+.dark .hover\:bg-slate-800:hover {
+  background-color: #475569;
+}
+
+.dark .hover\:text-slate-900:hover {
+  color: #f8fafc;
+}
+
+.dark .hover\:border-slate-400:hover {
+  border-color: #f59e0b;
+}
+
+.dark .hover\:shadow-md:hover {
+  box-shadow:
+    0 14px 28px rgb(0 0 0 / 0.28),
+    0 0 0 1px rgb(245 158 11 / 0.2);
+}
+
+.dark button:not(:disabled):hover {
+  box-shadow: 0 0 0 1px rgb(245 158 11 / 0.22);
+}
+
+.dark button:not(:disabled):active {
+  box-shadow: 0 0 0 1px rgb(148 163 184 / 0.25);
+}
+
+.dark .page-transition {
+  animation-name: dark-page-fade-in;
+}
+
+@keyframes dark-page-fade-in {
+  from {
+    opacity: 0;
+    filter: brightness(0.94);
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    filter: brightness(1);
+    transform: translateY(0);
+  }
 }
 
 .dark .bg-amber-50 {
