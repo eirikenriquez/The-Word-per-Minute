@@ -552,197 +552,201 @@ function App() {
 
   return (
     <PageShell theme={theme} onToggleTheme={handleToggleTheme}>
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="min-w-0">
-            <p className="text-sm font-semibold uppercase text-slate-500">{practiceSubtitle}</p>
-            <h2 className="mt-1 text-2xl font-bold text-slate-950">{practiceTitle}</h2>
-            {practiceReference && (
-              <p className="mt-2 w-fit rounded-md bg-amber-50 px-2.5 py-1 text-sm font-semibold text-amber-900 ring-1 ring-amber-200">
-                {practiceReference}
-              </p>
-            )}
-          </div>
-          <div className="grid grid-cols-4 rounded-md border border-slate-300 bg-slate-100 p-1 text-sm sm:flex">
-            <button
-              className={`rounded px-3 py-1.5 font-medium ${
-                appMode === "home" ? "bg-white text-slate-950 shadow-sm" : "text-slate-600 hover:text-slate-900"
-              }`}
-              type="button"
-              onClick={() => setAppMode("home")}
-            >
-              Home
-            </button>
-            <button
-              className={`rounded px-3 py-1.5 font-medium ${
-                appMode === "practice" ? "bg-white text-slate-950 shadow-sm" : "text-slate-600 hover:text-slate-900"
-              }`}
-              type="button"
-              onClick={() => setAppMode("practice")}
-            >
-              Practice
-            </button>
-            <button
-              className={`rounded px-3 py-1.5 font-medium ${
-                appMode === "bible" ? "bg-white text-slate-950 shadow-sm" : "text-slate-600 hover:text-slate-900"
-              }`}
-              type="button"
-              onClick={() => setAppMode("bible")}
-            >
-              Bible
-            </button>
-            <button
-              className={`rounded px-3 py-1.5 font-medium ${
-                appMode === "library" ? "bg-white text-slate-950 shadow-sm" : "text-slate-600 hover:text-slate-900"
-              } disabled:cursor-not-allowed disabled:text-slate-400`}
-              disabled={!savedLibrary.savedPassages.length}
-              type="button"
-              onClick={() => setAppMode("library")}
-            >
-              Library
-            </button>
-          </div>
-        </div>
-        {appMode === "practice" && practiceSource === "featured" && (
-          <div className="mt-4 flex justify-end border-t border-slate-200 pt-4">
-            <button
-              className="rounded-md bg-slate-950 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
-              disabled={!saveInput || isCurrentPassageSaved}
-              type="button"
-              onClick={handleSaveCurrentPassage}
-            >
-              {isCurrentPassageSaved ? "Saved" : "Save Passage"}
-            </button>
-          </div>
-        )}
-        {appMode === "bible" && (
-          <div className="mt-4 grid gap-3 border-t border-slate-200 pt-4 sm:grid-cols-[1fr_12rem_auto] sm:items-end">
-            <label className="grid gap-1">
-              <span className="text-sm font-medium text-slate-600">Saved Title</span>
-              <input
-                className="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
-                placeholder="Name this saved passage"
-                value={saveTitle}
-                onChange={(event) => setSaveTitle(event.target.value)}
-              />
-            </label>
-            <label className="grid gap-1">
-              <span className="text-sm font-medium text-slate-600">Category</span>
-              <select
-                className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
-                value={saveCategory}
-                onChange={(event) => setSaveCategory(event.target.value)}
+      <div key={appMode} className="page-transition grid gap-4">
+        <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
+              <p className="text-sm font-semibold uppercase text-slate-500">{practiceSubtitle}</p>
+              <h2 className="mt-1 text-2xl font-bold text-slate-950">{practiceTitle}</h2>
+              {practiceReference && (
+                <p className="mt-2 w-fit rounded-md bg-amber-50 px-2.5 py-1 text-sm font-semibold text-amber-900 ring-1 ring-amber-200">
+                  {practiceReference}
+                </p>
+              )}
+            </div>
+            <div className="grid grid-cols-4 rounded-md border border-slate-300 bg-slate-100 p-1 text-sm sm:flex">
+              <button
+                className={`rounded px-3 py-1.5 font-medium ${
+                  appMode === "home" ? "bg-white text-slate-950 shadow-sm" : "text-slate-600 hover:text-slate-900"
+                }`}
+                type="button"
+                onClick={() => setAppMode("home")}
               >
-                {savedPassageCategories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <button
-              className="rounded-md bg-slate-950 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
-              disabled={!saveInput || isCurrentPassageSaved}
-              type="button"
-              onClick={handleSaveCurrentPassage}
-            >
-              {isCurrentPassageSaved ? "Saved" : "Save Passage"}
-            </button>
+                Home
+              </button>
+              <button
+                className={`rounded px-3 py-1.5 font-medium ${
+                  appMode === "practice"
+                    ? "bg-white text-slate-950 shadow-sm"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+                type="button"
+                onClick={() => setAppMode("practice")}
+              >
+                Practice
+              </button>
+              <button
+                className={`rounded px-3 py-1.5 font-medium ${
+                  appMode === "bible" ? "bg-white text-slate-950 shadow-sm" : "text-slate-600 hover:text-slate-900"
+                }`}
+                type="button"
+                onClick={() => setAppMode("bible")}
+              >
+                Bible
+              </button>
+              <button
+                className={`rounded px-3 py-1.5 font-medium ${
+                  appMode === "library" ? "bg-white text-slate-950 shadow-sm" : "text-slate-600 hover:text-slate-900"
+                } disabled:cursor-not-allowed disabled:text-slate-400`}
+                disabled={!savedLibrary.savedPassages.length}
+                type="button"
+                onClick={() => setAppMode("library")}
+              >
+                Library
+              </button>
+            </div>
           </div>
+          {appMode === "practice" && practiceSource === "featured" && (
+            <div className="mt-4 flex justify-end border-t border-slate-200 pt-4">
+              <button
+                className="rounded-md bg-slate-950 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+                disabled={!saveInput || isCurrentPassageSaved}
+                type="button"
+                onClick={handleSaveCurrentPassage}
+              >
+                {isCurrentPassageSaved ? "Saved" : "Save Passage"}
+              </button>
+            </div>
+          )}
+          {appMode === "bible" && (
+            <div className="mt-4 grid gap-3 border-t border-slate-200 pt-4 sm:grid-cols-[1fr_12rem_auto] sm:items-end">
+              <label className="grid gap-1">
+                <span className="text-sm font-medium text-slate-600">Saved Title</span>
+                <input
+                  className="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+                  placeholder="Name this saved passage"
+                  value={saveTitle}
+                  onChange={(event) => setSaveTitle(event.target.value)}
+                />
+              </label>
+              <label className="grid gap-1">
+                <span className="text-sm font-medium text-slate-600">Category</span>
+                <select
+                  className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+                  value={saveCategory}
+                  onChange={(event) => setSaveCategory(event.target.value)}
+                >
+                  {savedPassageCategories.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <button
+                className="rounded-md bg-slate-950 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+                disabled={!saveInput || isCurrentPassageSaved}
+                type="button"
+                onClick={handleSaveCurrentPassage}
+              >
+                {isCurrentPassageSaved ? "Saved" : "Save Passage"}
+              </button>
+            </div>
+          )}
+        </section>
+
+        {appMode === "home" ? (
+          <HomeCategoryPicker
+            featuredCategories={featuredHomeCategories}
+            hasSavedPassages={savedLibrary.savedPassages.length > 0}
+            savedPassageCount={savedLibrary.savedPassages.length}
+            onOpenBible={handleOpenBible}
+            onOpenLibrary={handleOpenLibrary}
+            onStartFeatured={handleStartFeaturedPractice}
+            onStartFeaturedCategory={handleStartFeaturedCategory}
+          />
+        ) : appMode === "practice" ? (
+          <PracticeControls
+            hasSavedPassages={savedLibrary.savedPassages.length > 0}
+            practiceSource={practiceSource}
+            savedPassages={savedLibrary.savedPassages}
+            selectedSavedPassageId={savedLibrary.selectedSavedPassageId}
+            onNextFeaturedPassage={handleNextFeaturedPassage}
+            onOpenLibrary={handleOpenLibrary}
+            onReset={resetPractice}
+            onSelectFeaturedPractice={handleSelectFeaturedPractice}
+            onSelectSavedPractice={handleSelectSavedPassage}
+          />
+        ) : appMode === "bible" ? (
+          <>
+            <BibleControls
+              books={bibleLibrary.books}
+              selectedBook={bibleLibrary.selectedBook}
+              selectedBookId={bibleLibrary.selectedBookId}
+              selectedChapter={bibleLibrary.selectedChapter}
+              selectedTranslationId={bibleLibrary.selectedTranslationId}
+              translations={bibleLibrary.translations}
+              onSelectBook={handleBookChange}
+              onSelectChapter={handleBibleChapterChange}
+              onSelectTranslation={handleTranslationChange}
+              onRandomFeaturedPassage={handleRandomFeaturedReaderPassage}
+            />
+            <BibleReaderSelector
+              chapter={bibleLibrary.chapter}
+              selectedBook={bibleLibrary.selectedBook}
+              selectedChapter={bibleLibrary.selectedChapter}
+              selectedVerseNumbers={selectedVerseNumbers}
+              focusSelectedVerseKey={readerFocusKey}
+              onClearSelection={handleClearBibleSelection}
+              onSelectRange={handleSelectReaderRange}
+              onSelectVerse={handleSelectReaderVerse}
+            />
+          </>
+        ) : (
+          <SavedPassageControls
+            savedPassages={savedLibrary.savedPassages}
+            selectedSavedPassageId={savedLibrary.selectedSavedPassageId}
+            onRemovePassage={handleRemoveSavedPassage}
+            onSelectSavedPassage={handleSelectSavedPassage}
+            onUpdatePassage={savedLibrary.updatePassage}
+          />
         )}
-      </section>
 
-      {appMode === "home" ? (
-        <HomeCategoryPicker
-          featuredCategories={featuredHomeCategories}
-          hasSavedPassages={savedLibrary.savedPassages.length > 0}
-          savedPassageCount={savedLibrary.savedPassages.length}
-          onOpenBible={handleOpenBible}
-          onOpenLibrary={handleOpenLibrary}
-          onStartFeatured={handleStartFeaturedPractice}
-          onStartFeaturedCategory={handleStartFeaturedCategory}
-        />
-      ) : appMode === "practice" ? (
-        <PracticeControls
-          hasSavedPassages={savedLibrary.savedPassages.length > 0}
-          practiceSource={practiceSource}
-          savedPassages={savedLibrary.savedPassages}
-          selectedSavedPassageId={savedLibrary.selectedSavedPassageId}
-          onNextFeaturedPassage={handleNextFeaturedPassage}
-          onOpenLibrary={handleOpenLibrary}
-          onReset={resetPractice}
-          onSelectFeaturedPractice={handleSelectFeaturedPractice}
-          onSelectSavedPractice={handleSelectSavedPassage}
-        />
-      ) : appMode === "bible" ? (
-        <>
-          <BibleControls
-            books={bibleLibrary.books}
-            selectedBook={bibleLibrary.selectedBook}
-            selectedBookId={bibleLibrary.selectedBookId}
-            selectedChapter={bibleLibrary.selectedChapter}
-            selectedTranslationId={bibleLibrary.selectedTranslationId}
-            translations={bibleLibrary.translations}
-            onSelectBook={handleBookChange}
-            onSelectChapter={handleBibleChapterChange}
-            onSelectTranslation={handleTranslationChange}
-            onRandomFeaturedPassage={handleRandomFeaturedReaderPassage}
-          />
-          <BibleReaderSelector
-            chapter={bibleLibrary.chapter}
-            selectedBook={bibleLibrary.selectedBook}
-            selectedChapter={bibleLibrary.selectedChapter}
-            selectedVerseNumbers={selectedVerseNumbers}
-            focusSelectedVerseKey={readerFocusKey}
-            onClearSelection={handleClearBibleSelection}
-            onSelectRange={handleSelectReaderRange}
-            onSelectVerse={handleSelectReaderVerse}
-          />
-        </>
-      ) : (
-        <SavedPassageControls
-          savedPassages={savedLibrary.savedPassages}
-          selectedSavedPassageId={savedLibrary.selectedSavedPassageId}
-          onRemovePassage={handleRemoveSavedPassage}
-          onSelectSavedPassage={handleSelectSavedPassage}
-          onUpdatePassage={savedLibrary.updatePassage}
-        />
-      )}
+        {appMode === "practice" && currentBatch && (
+          <>
+            <PracticeBatchDisplay
+              batch={currentBatch}
+              batchNumber={currentBatchIndex + 1}
+              totalBatches={batches.length}
+              translationName={translationName}
+              typedText={typedText}
+            />
 
-      {appMode === "practice" && currentBatch && (
-        <>
-          <PracticeBatchDisplay
-            batch={currentBatch}
-            batchNumber={currentBatchIndex + 1}
-            totalBatches={batches.length}
-            translationName={translationName}
-            typedText={typedText}
-          />
+            <TypingPracticePanel
+              accuracy={accuracy}
+              completionActionLabel={
+                isPassageComplete && practiceSource === "featured" ? "Next Passage" : undefined
+              }
+              completionMessage={
+                isPassageComplete
+                  ? `Complete. You finished ${practiceTitle} at ${wpm} WPM with ${accuracy}% accuracy.`
+                  : "Batch complete. Moving to the next verses..."
+              }
+              isComplete={isBatchComplete}
+              onCompletionAction={
+                isPassageComplete && practiceSource === "featured" ? handleNextFeaturedPassage : undefined
+              }
+              progress={Math.min(progress, 100)}
+              status={status}
+              typedText={typedText}
+              wpm={wpm}
+              onTypingChange={handleTyping}
+            />
 
-          <TypingPracticePanel
-            accuracy={accuracy}
-            completionActionLabel={
-              isPassageComplete && practiceSource === "featured" ? "Next Passage" : undefined
-            }
-            completionMessage={
-              isPassageComplete
-                ? `Complete. You finished ${practiceTitle} at ${wpm} WPM with ${accuracy}% accuracy.`
-                : "Batch complete. Moving to the next verses..."
-            }
-            isComplete={isBatchComplete}
-            onCompletionAction={
-              isPassageComplete && practiceSource === "featured" ? handleNextFeaturedPassage : undefined
-            }
-            progress={Math.min(progress, 100)}
-            status={status}
-            typedText={typedText}
-            wpm={wpm}
-            onTypingChange={handleTyping}
-          />
-
-          <PersonalBests stats={stats} onResetStats={resetStats} />
-        </>
-      )}
+            <PersonalBests stats={stats} onResetStats={resetStats} />
+          </>
+        )}
+      </div>
     </PageShell>
   );
 }
