@@ -30,11 +30,11 @@ export function TypingPracticePanel({
   wpm,
 }: TypingPracticePanelProps) {
   return (
-    <section className="grid gap-4 rounded-lg border bg-white p-5 shadow-sm">
+    <section className="grid gap-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <label className="grid gap-2">
-        <span className="text-sm font-medium text-slate-600">Type the passage</span>
+        <span className="text-sm font-semibold text-slate-700">Type the passage</span>
         <textarea
-          className="min-h-32 resize-y rounded-md border border-slate-300 p-3 leading-7 outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+          className="min-h-36 resize-y rounded-md border border-slate-300 bg-stone-50 p-3 leading-7 outline-none transition focus:border-slate-500 focus:bg-white focus:ring-2 focus:ring-slate-200"
           placeholder="Start typing here..."
           value={typedText}
           onChange={(event) => onTypingChange(event.target.value)}
@@ -77,9 +77,9 @@ type MetricCardProps = {
  */
 function MetricCard({ label, value, valueClassName = "text-2xl" }: MetricCardProps) {
   return (
-    <div className="rounded-md bg-slate-100 p-3">
+    <div className="rounded-md border border-slate-200 bg-slate-50 p-3">
       <p className="text-xs font-medium uppercase text-slate-500">{label}</p>
-      <p className={`${valueClassName} font-bold`}>{value}</p>
+      <p className={`${valueClassName} font-bold text-slate-950`}>{value}</p>
     </div>
   );
 }

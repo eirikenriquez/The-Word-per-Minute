@@ -506,21 +506,21 @@ function App() {
 
   return (
     <PageShell>
-      <section className="rounded-lg border bg-white p-5 shadow-sm">
+      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm font-medium text-slate-500">{practiceSubtitle}</p>
-            <h2 className="text-2xl font-bold">{practiceTitle}</h2>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold uppercase text-slate-500">{practiceSubtitle}</p>
+            <h2 className="mt-1 text-2xl font-bold text-slate-950">{practiceTitle}</h2>
             {practiceReference && (
-              <p className="mt-2 w-fit rounded-md bg-slate-100 px-2.5 py-1 text-sm font-semibold text-slate-700">
+              <p className="mt-2 w-fit rounded-md bg-amber-50 px-2.5 py-1 text-sm font-semibold text-amber-900 ring-1 ring-amber-200">
                 {practiceReference}
               </p>
             )}
           </div>
-          <div className="flex rounded-md border border-slate-300 p-1 text-sm">
+          <div className="grid grid-cols-4 rounded-md border border-slate-300 bg-slate-100 p-1 text-sm sm:flex">
             <button
               className={`rounded px-3 py-1.5 font-medium ${
-                practiceMode === "home" ? "bg-slate-900 text-white" : "text-slate-600"
+                practiceMode === "home" ? "bg-white text-slate-950 shadow-sm" : "text-slate-600 hover:text-slate-900"
               }`}
               type="button"
               onClick={() => setPracticeMode("home")}
@@ -529,7 +529,7 @@ function App() {
             </button>
             <button
               className={`rounded px-3 py-1.5 font-medium ${
-                practiceMode === "featured" ? "bg-slate-900 text-white" : "text-slate-600"
+                practiceMode === "featured" ? "bg-white text-slate-950 shadow-sm" : "text-slate-600 hover:text-slate-900"
               }`}
               type="button"
               onClick={() => setPracticeMode("featured")}
@@ -538,7 +538,7 @@ function App() {
             </button>
             <button
               className={`rounded px-3 py-1.5 font-medium ${
-                practiceMode === "bible" ? "bg-slate-900 text-white" : "text-slate-600"
+                practiceMode === "bible" ? "bg-white text-slate-950 shadow-sm" : "text-slate-600 hover:text-slate-900"
               }`}
               type="button"
               onClick={() => setPracticeMode("bible")}
@@ -547,7 +547,7 @@ function App() {
             </button>
             <button
               className={`rounded px-3 py-1.5 font-medium ${
-                practiceMode === "saved" ? "bg-slate-900 text-white" : "text-slate-600"
+                practiceMode === "saved" ? "bg-white text-slate-950 shadow-sm" : "text-slate-600 hover:text-slate-900"
               } disabled:cursor-not-allowed disabled:text-slate-400`}
               disabled={!savedLibrary.savedPassages.length}
               type="button"
@@ -560,7 +560,7 @@ function App() {
         {practiceMode === "featured" && (
           <div className="mt-4 flex justify-end border-t border-slate-200 pt-4">
             <button
-              className="rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:bg-slate-400"
+              className="rounded-md bg-slate-950 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
               disabled={!saveInput || isCurrentPassageSaved}
               type="button"
               onClick={handleSaveCurrentPassage}
@@ -574,7 +574,7 @@ function App() {
             <label className="grid gap-1">
               <span className="text-sm font-medium text-slate-600">Saved Title</span>
               <input
-                className="rounded-md border border-slate-300 px-3 py-2 text-sm"
+                className="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
                 placeholder="Name this saved passage"
                 value={saveTitle}
                 onChange={(event) => setSaveTitle(event.target.value)}
@@ -583,7 +583,7 @@ function App() {
             <label className="grid gap-1">
               <span className="text-sm font-medium text-slate-600">Category</span>
               <select
-                className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm"
+                className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
                 value={saveCategory}
                 onChange={(event) => setSaveCategory(event.target.value)}
               >
@@ -595,7 +595,7 @@ function App() {
               </select>
             </label>
             <button
-              className="rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:bg-slate-400"
+              className="rounded-md bg-slate-950 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
               disabled={!saveInput || isCurrentPassageSaved}
               type="button"
               onClick={handleSaveCurrentPassage}
@@ -700,14 +700,14 @@ type PageShellProps = {
  */
 function PageShell({ children }: PageShellProps) {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
-      <header className="border-b bg-white">
-        <div className="mx-auto max-w-4xl px-4 py-4">
-          <h1 className="text-xl font-bold">The Word per Minute</h1>
+    <div className="min-h-screen bg-stone-50 text-slate-900">
+      <header className="border-b border-slate-200 bg-white">
+        <div className="mx-auto max-w-5xl px-4 py-4">
+          <h1 className="text-xl font-bold tracking-normal text-slate-950">The Word per Minute</h1>
         </div>
       </header>
 
-      <main className="mx-auto grid max-w-4xl gap-4 px-4 py-6">{children}</main>
+      <main className="mx-auto grid max-w-5xl gap-4 px-4 py-6">{children}</main>
     </div>
   );
 }
