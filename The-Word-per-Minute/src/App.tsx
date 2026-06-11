@@ -22,6 +22,7 @@ import {
 import { calculatePracticeSessionMetrics, countCorrectCharacters } from "./utils/typingMetrics";
 
 type AppMode = "home" | "practice" | "bible" | "library";
+type PracticeSource = "featured" | "saved";
 
 const DEFAULT_SAVED_CATEGORY = "Memorise";
 const CUSTOM_SAVED_CATEGORY = "Other";
@@ -36,6 +37,7 @@ function getDefaultSavedCategory(theme: string, categories: string[]) {
  */
 function App() {
   const [appMode, setAppMode] = useState<AppMode>("home");
+  const [practiceSource, setPracticeSource] = useState<PracticeSource>("featured");
   const [currentBatchIndex, setCurrentBatchIndex] = useState(0);
   const [typedText, setTypedText] = useState("");
   const [selectedVerseNumbers, setSelectedVerseNumbers] = useState<number[]>([]);
@@ -92,12 +94,12 @@ function App() {
     return buildPracticeBatches(response.bookName, response.passage.chapter, response.verses, 2);
   }, [savedLibrary.passageResponse]);
   const batches =
-    appMode === "practice"
+    appMode === "practice" && practiceSource === "featured"
       ? featuredBatches
-      : appMode === "bible"
+      : appMode === "practice" && practiceSource === "saved"
+        ? savedBatches
+        : appMode === "bible"
         ? bibleBatches
-        : appMode === "library"
-          ? savedBatches
           : [];
 
   // Session metrics are calculated from all completed batches, not only the visible one.
@@ -121,41 +123,51 @@ function App() {
     appMode === "home"
       ? featuredLibrary.isLoading
       : appMode === "practice"
-      ? featuredLibrary.isLoading
+      ? practiceSource === "featured"
+        ? featuredLibrary.isLoading
+        : savedLibrary.isLoading
       : appMode === "bible"
         ? bibleLibrary.isLoading
-        : savedLibrary.isLoading;
+        : false;
   const error =
     appMode === "home"
       ? featuredLibrary.error
       : appMode === "practice"
-      ? featuredLibrary.error
+      ? practiceSource === "featured"
+        ? featuredLibrary.error
+        : savedLibrary.error
       : appMode === "bible"
         ? bibleLibrary.error
-        : savedLibrary.error;
+        : null;
   const practiceTitle =
     appMode === "home"
       ? "Choose Practice"
       : appMode === "practice"
-      ? featuredLibrary.passageResponse?.passage.title ?? "Featured Passage"
+      ? practiceSource === "featured"
+        ? featuredLibrary.passageResponse?.passage.title ?? "Featured Passage"
+        : savedLibrary.selectedSavedPassage?.title ?? "Saved Passage"
       : appMode === "bible"
         ? `${bibleLibrary.selectedBook?.name ?? "Bible"} ${bibleLibrary.selectedChapter}`
-        : savedLibrary.selectedSavedPassage?.title ?? "Saved Passage";
+        : "Saved Library";
   const practiceReference =
     appMode === "home"
       ? ""
       : appMode === "practice"
-      ? featuredLibrary.passageResponse?.reference ?? ""
+      ? practiceSource === "featured"
+        ? featuredLibrary.passageResponse?.reference ?? ""
+        : savedLibrary.selectedSavedPassage?.reference ?? ""
       : appMode === "bible"
         ? bibleLibrary.selectedBook
           ? getBibleReaderReference()
           : ""
-        : savedLibrary.selectedSavedPassage?.reference ?? "";
+        : `${savedLibrary.savedPassages.length} saved`;
   const practiceSubtitle =
     appMode === "home"
       ? "Home"
       : appMode === "practice"
-      ? `Practice - ${featuredLibrary.passageResponse?.passage.theme ?? "Discovery"}`
+      ? practiceSource === "featured"
+        ? `Practice - ${featuredLibrary.passageResponse?.passage.theme ?? "Discovery"}`
+        : "Practice - Saved passage"
       : appMode === "bible"
         ? "Bible reader"
         : "Saved library";
@@ -163,14 +175,16 @@ function App() {
     appMode === "home"
       ? "WEB"
       : appMode === "practice"
-      ? featuredLibrary.passageResponse?.translation.abbreviation ?? "WEB"
+      ? practiceSource === "featured"
+        ? featuredLibrary.passageResponse?.translation.abbreviation ?? "WEB"
+        : savedLibrary.selectedSavedPassage?.translationAbbreviation ?? "WEB"
       : appMode === "bible"
         ? bibleLibrary.translations.find(
             (translation) => translation.id === bibleLibrary.selectedTranslationId,
           )?.abbreviation ?? bibleLibrary.selectedTranslationId.toUpperCase()
-        : savedLibrary.selectedSavedPassage?.translationAbbreviation ?? "WEB";
+        : "WEB";
   const saveInput = useMemo((): SavePassageInput | null => {
-    if (appMode === "practice" && featuredLibrary.passageResponse) {
+    if (appMode === "practice" && practiceSource === "featured" && featuredLibrary.passageResponse) {
       const { passage, reference, translation, bookName } = featuredLibrary.passageResponse;
 
       return {
@@ -238,6 +252,7 @@ function App() {
     bibleLibrary.translations,
     featuredLibrary.passageResponse,
     appMode,
+    practiceSource,
     savedPassageCategories,
     selectedVerseNumbers,
   ]);
@@ -256,11 +271,18 @@ function App() {
     }
   }, [appMode, savedLibrary.savedPassages.length]);
 
+  useEffect(() => {
+    if (practiceSource === "saved" && !savedLibrary.savedPassages.length) {
+      setPracticeSource("featured");
+    }
+  }, [practiceSource, savedLibrary.savedPassages.length]);
+
   // Changing the selected practice source should always restart the typing session.
   useEffect(() => {
     resetPractice();
   }, [
     appMode,
+    practiceSource,
     featuredLibrary.selectedPassageId,
     bibleLibrary.selectedBookId,
     bibleLibrary.selectedChapter,
@@ -304,12 +326,14 @@ function App() {
    */
   function handleNextFeaturedPassage() {
     featuredLibrary.selectRandomPassage();
+    setPracticeSource("featured");
     setAppMode("practice");
     resetPractice();
   }
 
   function handleStartFeaturedPractice() {
     featuredLibrary.selectRandomPassage();
+    setPracticeSource("featured");
     setAppMode("practice");
     resetPractice();
   }
@@ -320,6 +344,7 @@ function App() {
     if (!passage) return;
 
     featuredLibrary.selectPassage(passage.id);
+    setPracticeSource("featured");
     setAppMode("practice");
     resetPractice();
   }
@@ -406,7 +431,8 @@ function App() {
 
   function handleSelectSavedPassage(passageId: string) {
     savedLibrary.selectSavedPassage(passageId);
-    setAppMode("library");
+    setPracticeSource("saved");
+    setAppMode("practice");
     resetPractice();
   }
 
@@ -494,11 +520,11 @@ function App() {
     );
   }
 
-  if (error || (appMode !== "home" && appMode !== "bible" && !currentBatch)) {
+  if (error || (appMode === "practice" && !currentBatch)) {
     return (
       <PageShell>
         <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800">
-          {error ?? (appMode === "library" ? "Save a passage first." : "No practice passage found.")}
+          {error ?? (practiceSource === "saved" ? "Save a passage first." : "No practice passage found.")}
         </div>
       </PageShell>
     );
@@ -557,7 +583,7 @@ function App() {
             </button>
           </div>
         </div>
-        {appMode === "practice" && (
+        {appMode === "practice" && practiceSource === "featured" && (
           <div className="mt-4 flex justify-end border-t border-slate-200 pt-4">
             <button
               className="rounded-md bg-slate-950 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
@@ -618,6 +644,7 @@ function App() {
         />
       ) : appMode === "practice" ? (
         <FeaturedPassageControls
+          isSavedPractice={practiceSource === "saved"}
           onNextPassage={handleNextFeaturedPassage}
           onReset={resetPractice}
         />
@@ -651,13 +678,12 @@ function App() {
           savedPassages={savedLibrary.savedPassages}
           selectedSavedPassageId={savedLibrary.selectedSavedPassageId}
           onRemovePassage={handleRemoveSavedPassage}
-          onReset={resetPractice}
           onSelectSavedPassage={handleSelectSavedPassage}
           onUpdatePassage={savedLibrary.updatePassage}
         />
       )}
 
-      {appMode !== "home" && appMode !== "bible" && currentBatch && (
+      {appMode === "practice" && currentBatch && (
         <>
           <PracticeBatchDisplay
             batch={currentBatch}
@@ -669,14 +695,18 @@ function App() {
 
           <TypingPracticePanel
             accuracy={accuracy}
-            completionActionLabel={isPassageComplete && appMode === "practice" ? "Next Passage" : undefined}
+            completionActionLabel={
+              isPassageComplete && practiceSource === "featured" ? "Next Passage" : undefined
+            }
             completionMessage={
               isPassageComplete
                 ? `Complete. You finished ${practiceTitle} at ${wpm} WPM with ${accuracy}% accuracy.`
                 : "Batch complete. Moving to the next verses..."
             }
             isComplete={isBatchComplete}
-            onCompletionAction={isPassageComplete && appMode === "practice" ? handleNextFeaturedPassage : undefined}
+            onCompletionAction={
+              isPassageComplete && practiceSource === "featured" ? handleNextFeaturedPassage : undefined
+            }
             progress={Math.min(progress, 100)}
             status={status}
             typedText={typedText}

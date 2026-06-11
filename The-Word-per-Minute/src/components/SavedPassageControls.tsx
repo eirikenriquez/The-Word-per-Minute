@@ -5,7 +5,6 @@ type SavedPassageControlsProps = {
   savedPassages: SavedPassage[];
   selectedSavedPassageId: string;
   onRemovePassage: (passageId: string) => void;
-  onReset: () => void;
   onSelectSavedPassage: (passageId: string) => void;
   onUpdatePassage: (passageId: string, update: SavedPassageUpdate) => SavedPassage | null;
 };
@@ -18,7 +17,6 @@ export function SavedPassageControls({
   savedPassages,
   selectedSavedPassageId,
   onRemovePassage,
-  onReset,
   onSelectSavedPassage,
   onUpdatePassage,
 }: SavedPassageControlsProps) {
@@ -53,15 +51,6 @@ export function SavedPassageControls({
               ))}
             </select>
           </label>
-
-          <button
-            className="w-fit rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-400"
-            disabled={!selectedSavedPassageId}
-            type="button"
-            onClick={onReset}
-          >
-            Restart Practice
-          </button>
         </div>
 
         {!hasSavedPassages ? (
