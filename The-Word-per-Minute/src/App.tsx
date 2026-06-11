@@ -141,7 +141,7 @@ function App() {
         : null;
   const practiceTitle =
     appMode === "home"
-      ? "Choose Practice"
+      ? "Welcome"
       : appMode === "practice"
       ? practiceSource === "featured"
         ? featuredLibrary.passageResponse?.passage.title ?? "Featured Passage"
@@ -163,7 +163,7 @@ function App() {
         : `${savedLibrary.savedPassages.length} saved`;
   const practiceSubtitle =
     appMode === "home"
-      ? "Home"
+      ? "The Word per Minute"
       : appMode === "practice"
       ? practiceSource === "featured"
         ? `Practice - ${featuredLibrary.passageResponse?.passage.theme ?? "Discovery"}`

@@ -25,13 +25,38 @@ export function HomeCategoryPicker({
   onStartFeatured,
   onStartFeaturedCategory,
 }: HomeCategoryPickerProps) {
+  const totalFeaturedPassages = featuredCategories.reduce((total, category) => total + category.count, 0);
+
   return (
     <section className="grid gap-4">
+      <section className="rounded-lg border border-amber-200 bg-amber-50 p-6 shadow-sm">
+        <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
+          <div className="max-w-2xl">
+            <p className="text-sm font-semibold uppercase text-amber-900">Quiet typing practice</p>
+            <h2 className="mt-2 text-3xl font-bold text-slate-950 sm:text-4xl">
+              Slow down with scripture and build your rhythm.
+            </h2>
+            <p className="mt-3 text-base leading-7 text-slate-700">
+              Start with a passage chosen for you, read through a chapter, or return to verses you have saved
+              for memorisation.
+            </p>
+          </div>
+
+          <button
+            className="w-fit rounded-md bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-slate-800"
+            type="button"
+            onClick={onStartFeatured}
+          >
+            Start Practice
+          </button>
+        </div>
+      </section>
+
       <div className="grid gap-3 md:grid-cols-3">
         <HomeCard
           description="Start with a curated scripture prompt"
           label="Practice"
-          meta={`${featuredCategories.reduce((total, category) => total + category.count, 0)} passages`}
+          meta={`${totalFeaturedPassages} passages`}
           tone="amber"
           onSelect={onStartFeatured}
         />
@@ -54,7 +79,10 @@ export function HomeCategoryPicker({
 
       <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
         <div className="mb-4 flex items-center justify-between gap-3">
-          <h3 className="text-lg font-bold text-slate-950">Categories</h3>
+          <div>
+            <h3 className="text-lg font-bold text-slate-950">Featured Categories</h3>
+            <p className="mt-1 text-sm text-slate-600">Choose a theme when you want a more focused passage.</p>
+          </div>
           <span className="text-sm font-medium text-slate-500">{featuredCategories.length} themes</span>
         </div>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
