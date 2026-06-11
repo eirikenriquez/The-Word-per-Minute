@@ -19,3 +19,5 @@ export type SavedPassage = {
 };
 
 export type SavePassageInput = Omit<SavedPassage, "createdAt" | "id">;
+
+export type SavedPassageUpdate = Pick<SavedPassage, "category" | "title">;

@@ -579,6 +579,7 @@ function App() {
           onRemovePassage={handleRemoveSavedPassage}
           onReset={resetPractice}
           onSelectSavedPassage={handleSelectSavedPassage}
+          onUpdatePassage={savedLibrary.updatePassage}
         />
       )}
 
