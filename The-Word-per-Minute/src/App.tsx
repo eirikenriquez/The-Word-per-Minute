@@ -2,10 +2,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { BibleControls } from "./components/BibleControls";
 import { BibleReaderSelector } from "./components/BibleReaderSelector";
-import { FeaturedPassageControls } from "./components/FeaturedPassageControls";
 import { HomeCategoryPicker } from "./components/HomeCategoryPicker";
 import { PersonalBests } from "./components/PersonalBests";
 import { PracticeBatchDisplay } from "./components/PracticeBatchDisplay";
+import { PracticeControls } from "./components/PracticeControls";
 import { SavedPassageControls } from "./components/SavedPassageControls";
 import { TypingPracticePanel } from "./components/TypingPracticePanel";
 import { useFeaturedPassages } from "./hooks/useFeaturedPassages";
@@ -436,6 +436,12 @@ function App() {
     resetPractice();
   }
 
+  function handleSelectFeaturedPractice() {
+    setPracticeSource("featured");
+    setAppMode("practice");
+    resetPractice();
+  }
+
   function handleRemoveSavedPassage(passageId: string) {
     savedLibrary.removePassage(passageId);
     resetPractice();
@@ -643,10 +649,16 @@ function App() {
           onStartFeaturedCategory={handleStartFeaturedCategory}
         />
       ) : appMode === "practice" ? (
-        <FeaturedPassageControls
-          isSavedPractice={practiceSource === "saved"}
-          onNextPassage={handleNextFeaturedPassage}
+        <PracticeControls
+          hasSavedPassages={savedLibrary.savedPassages.length > 0}
+          practiceSource={practiceSource}
+          savedPassages={savedLibrary.savedPassages}
+          selectedSavedPassageId={savedLibrary.selectedSavedPassageId}
+          onNextFeaturedPassage={handleNextFeaturedPassage}
+          onOpenLibrary={handleOpenLibrary}
           onReset={resetPractice}
+          onSelectFeaturedPractice={handleSelectFeaturedPractice}
+          onSelectSavedPractice={handleSelectSavedPassage}
         />
       ) : appMode === "bible" ? (
         <>
