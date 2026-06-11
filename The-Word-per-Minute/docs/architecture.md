@@ -1,14 +1,31 @@
 # The Word per Minute Architecture
 
-Document version: `120626.1.b`
+Document version: `120626.1.c`
 Last updated: 12/06/26
 Update rule: only update this file when explicitly requested by the project owner.
 
 ## What This Version Updates
 
-This version updates the architecture snapshot after the Home/category picker and saved-passage editing work.
+This version updates the architecture snapshot after the layout, practice flow, theme, and motion work.
 
 It updates:
+
+- the app modes to `Home`, `Practice`, `Bible`, and `Library`,
+- the product direction to describe Practice as the central typing page,
+- the split between featured practice and saved-passage practice,
+- Library responsibilities as saved-passage management rather than typing,
+- component responsibilities for `PracticeControls`,
+- light/dark theme behavior and browser persistence,
+- shared hover, page-transition, and reduced-motion behavior,
+- the current file structure,
+- the architecture diagram,
+- known technical debt and likely next architecture steps.
+
+## Previous Update: `120626.1.b`
+
+This version updated the architecture snapshot after the Home/category picker and saved-passage editing work.
+
+It updated:
 
 - the app modes to include Home,
 - the product direction to describe Home as the starting point,
@@ -68,9 +85,11 @@ The Word per Minute is a Bible typing practice app. The app helps users practise
 The current product direction is:
 
 - Home mode gives users a starting screen for choosing how to practise.
-- Featured mode introduces users to curated passages.
+- Practice mode is the central typing page.
+- Featured passages introduce users to curated scripture through Practice mode.
 - Bible mode lets users read chapters and select verses to save.
-- Saved mode lets users practise their saved passages.
+- Library mode lets users manage saved passages.
+- Saved passages can be practised from the central Practice mode.
 
 ## Current Tech Stack
 
@@ -80,6 +99,7 @@ The current product direction is:
 - Tailwind CSS
 - Local JSON Bible data
 - `localStorage` for saved passages and personal best stats
+- `localStorage` for the light/dark theme preference
 
 No backend, database, authentication, or external Bible API is currently used.
 
@@ -93,6 +113,7 @@ The app currently follows a simple React architecture:
 - Utils handle pure calculations and formatting.
 - Types define shared TypeScript data shapes.
 - JSON data provides Bible translations, books, chapters, and featured passages.
+- Global CSS currently provides first-pass light/dark theme mapping and shared motion behavior.
 
 This is not a class-heavy OOP app. The current design is closer to:
 
@@ -108,24 +129,28 @@ Home mode is the current starting screen.
 
 It:
 
-- shows primary entry points for Featured, Bible, and Saved,
+- shows primary entry points for Practice, Bible, and Library,
+- shows a calm intro section and start-practice action,
 - shows featured passage categories generated from curated passage themes,
-- starts a random featured passage when the user chooses Featured,
+- starts a random featured passage when the user chooses Practice,
 - starts a random featured passage from a chosen theme when the user chooses a category,
 - opens the Bible reader,
-- opens Saved mode when saved passages exist.
+- opens Library mode when saved passages exist.
 
-### Featured
+### Practice
 
-Featured mode is the discovery/practice flow.
+Practice mode is the central typing flow.
 
 It:
 
-- loads curated featured passages from local JSON,
+- can practise a featured passage,
+- can practise a saved passage,
+- keeps a `practiceSource` of `featured` or `saved`,
 - resolves passage references into real verse text,
-- presents the passage as typing batches,
+- presents the selected passage as typing batches,
 - calculates WPM and accuracy,
-- allows saving the passage using its original title and category.
+- allows saving featured passages using their original title and category,
+- shows source controls through `PracticeControls`.
 
 ### Bible
 
@@ -142,18 +167,20 @@ It:
 
 Bible mode does not currently show the typing input directly.
 
-### Saved
+### Library
 
-Saved mode is the user's local passage library and practice flow.
+Library mode is the user's local saved-passage library.
 
 It:
 
 - reads saved passages from `localStorage`,
 - displays saved passages as cards,
 - supports category filtering,
-- lets the user choose a saved passage to practise,
+- lets the user choose a saved passage to practise in Practice mode,
 - lets the user edit saved passage title/category,
 - lets the user remove saved passages.
+
+Library mode does not render the typing input directly.
 
 ## Main Runtime Flow
 
@@ -161,11 +188,11 @@ It:
 App starts
   -> loads Featured, Bible, Saved, and Stats hooks
   -> starts in Home mode
-  -> user chooses Featured, Bible, Saved, or a Featured category
+  -> user chooses Practice, Bible, Library, or a Featured category
   -> resolves current passage/chapter data
-  -> builds typing batches when needed
+  -> builds typing batches in Practice mode
   -> renders mode controls
-  -> renders typing panel for Featured/Saved
+  -> renders typing panel for Practice
   -> records completed stats
 ```
 
@@ -177,13 +204,16 @@ Main coordinator for the app.
 
 Responsibilities:
 
-- tracks active mode: `home`, `featured`, `bible`, or `saved`,
+- tracks active mode: `home`, `practice`, `bible`, or `library`,
+- tracks practice source: `featured` or `saved`,
+- tracks light/dark theme state,
 - tracks typing state,
 - tracks selected Bible verses,
 - handles save title/category state,
 - connects hooks to UI components,
 - decides which controls and practice panels are visible,
-- records completed attempts.
+- records completed attempts,
+- stores the theme preference in `localStorage`.
 
 This file is currently the largest file and may eventually be worth splitting once the app flow stabilises.
 
@@ -193,9 +223,10 @@ Displays the Home starting screen.
 
 Responsibilities:
 
-- primary cards for Featured, Bible, and Saved,
+- calm intro section and start-practice action,
+- primary cards for Practice, Bible, and Library,
 - featured-theme category cards,
-- disabled Saved state when no saved passages exist,
+- disabled Library state when no saved passages exist,
 - sends selected direction/category back to `App`.
 
 ### `src/components/BibleControls.tsx`
@@ -221,13 +252,16 @@ Responsibilities:
 - clears selection,
 - scrolls to a selected passage when opened from random featured passage.
 
-### `src/components/FeaturedPassageControls.tsx`
+### `src/components/PracticeControls.tsx`
 
-Displays Featured mode controls.
+Displays Practice mode controls.
 
 Responsibilities:
 
-- next passage,
+- switches between Featured and Saved practice sources,
+- shows a saved-passage dropdown when the source is Saved,
+- starts the next featured passage,
+- opens Library from saved practice,
 - reset current attempt.
 
 ### `src/components/SavedPassageControls.tsx`
@@ -243,6 +277,8 @@ Responsibilities:
 - remove action,
 - empty states.
 
+The practice action sends the selected saved passage back to Practice mode.
+
 ### `src/components/PracticeBatchDisplay.tsx`
 
 Shows the current typing batch and character-level progress.
@@ -254,6 +290,26 @@ Shows typing input, WPM, accuracy, progress, and completion messaging.
 ### `src/components/PersonalBests.tsx`
 
 Shows locally saved personal best stats.
+
+## Theme And Motion
+
+### `src/index.css`
+
+Global styling and first-pass theme behavior.
+
+Responsibilities:
+
+- imports Tailwind CSS,
+- resets body margin,
+- enables smooth scrolling,
+- defines shared button and form-control transitions,
+- defines subtle button hover/active motion,
+- defines page transition animations,
+- respects `prefers-reduced-motion`,
+- maps the current light Tailwind utility palette into a dark-mode palette,
+- adds dark-mode hover glow/border feedback.
+
+Theme state is owned by `App.tsx` and applied by toggling the `dark` class on the document root.
 
 ## Hooks
 
@@ -359,7 +415,7 @@ Converts unknown caught errors into displayable messages.
 
 ### `src/data/featuredPassages.json`
 
-Curated passage list used by Featured mode and random featured passage in Bible mode.
+Curated passage list used by featured-source Practice mode and random featured passage in Bible mode.
 
 ### `src/data/translations.json`
 
@@ -421,10 +477,10 @@ The-Word-per-Minute/
     components/
       BibleControls.tsx
       BibleReaderSelector.tsx
-      FeaturedPassageControls.tsx
       HomeCategoryPicker.tsx
       PersonalBests.tsx
       PracticeBatchDisplay.tsx
+      PracticeControls.tsx
       SavedPassageControls.tsx
       TypingPracticePanel.tsx
     data/
@@ -463,18 +519,21 @@ The-Word-per-Minute/
 ```mermaid
 classDiagram
   class App {
-    practiceMode
+    appMode
+    practiceSource
+    theme
     typedText
     selectedVerseNumbers
     saveTitle
     saveCategory
+    handleToggleTheme()
     resetPractice()
     handleTyping()
     handleSaveCurrentPassage()
   }
 
   class HomeCategoryPicker
-  class FeaturedPassageControls
+  class PracticeControls
   class BibleControls
   class BibleReaderSelector
   class SavedPassageControls
@@ -533,7 +592,7 @@ classDiagram
   }
 
   App --> HomeCategoryPicker
-  App --> FeaturedPassageControls
+  App --> PracticeControls
   App --> BibleControls
   App --> BibleReaderSelector
   App --> SavedPassageControls
@@ -559,21 +618,23 @@ classDiagram
 - Category management is still hardcoded/generated from featured themes.
 - The app has local JSON Bible data only; no hosted API yet.
 - User data is local-only through `localStorage`.
-- The current architecture is beginner-friendly, but not yet deeply modular.
+- Theme mapping is currently handled with global CSS overrides rather than full Tailwind design tokens.
+- The current architecture is beginner-friendly, but `App.tsx` is not yet deeply modular.
 - Browser automation from this environment was blocked by the local Windows sandbox, so full click-through testing is still manual for now.
 
 ## Likely Next Architecture Steps
 
 Suggested future steps:
 
-1. Commit and review Home/category picker.
-2. Browser-test the Home, Featured, Bible, and Saved flows manually.
+1. Browser-test the Home, Practice, Bible, and Library flows manually.
+2. Browser-test light/dark mode, hover states, and page transitions manually.
 3. Consider extracting mode-specific containers:
    - `HomeMode`
-   - `FeaturedMode`
+   - `PracticeMode`
    - `BibleMode`
-   - `SavedMode`
+   - `LibraryMode`
 4. Consider a small `PassagePracticeController` hook if typing state keeps growing.
 5. Keep `verseService` API-shaped so local JSON can later move to hosted data.
 6. Keep saved passage storage behind `savedPassageRepository` so it can later move to a database.
-7. Add automated tests later when the project is ready for test tooling.
+7. Consider moving theme colors into named design tokens once the palette stabilises.
+8. Add automated tests later when the project is ready for test tooling.
