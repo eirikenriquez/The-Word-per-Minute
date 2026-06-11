@@ -8,7 +8,7 @@ type HomeCategoryPickerProps = {
   hasSavedPassages: boolean;
   savedPassageCount: number;
   onOpenBible: () => void;
-  onOpenSaved: () => void;
+  onOpenLibrary: () => void;
   onStartFeatured: () => void;
   onStartFeaturedCategory: (category: string) => void;
 };
@@ -21,7 +21,7 @@ export function HomeCategoryPicker({
   hasSavedPassages,
   savedPassageCount,
   onOpenBible,
-  onOpenSaved,
+  onOpenLibrary,
   onStartFeatured,
   onStartFeaturedCategory,
 }: HomeCategoryPickerProps) {
@@ -29,8 +29,8 @@ export function HomeCategoryPicker({
     <section className="grid gap-4">
       <div className="grid gap-3 md:grid-cols-3">
         <HomeCard
-          description="Curated scripture prompts"
-          label="Featured"
+          description="Start with a curated scripture prompt"
+          label="Practice"
           meta={`${featuredCategories.reduce((total, category) => total + category.count, 0)} passages`}
           tone="amber"
           onSelect={onStartFeatured}
@@ -45,10 +45,10 @@ export function HomeCategoryPicker({
         <HomeCard
           description="Your practice library"
           disabled={!hasSavedPassages}
-          label="Saved"
+          label="Library"
           meta={`${savedPassageCount} saved`}
           tone="sky"
-          onSelect={onOpenSaved}
+          onSelect={onOpenLibrary}
         />
       </div>
 

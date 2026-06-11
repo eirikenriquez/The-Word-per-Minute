@@ -21,7 +21,7 @@ import {
 } from "./utils/passageReference";
 import { calculatePracticeSessionMetrics, countCorrectCharacters } from "./utils/typingMetrics";
 
-type PracticeMode = "home" | "featured" | "bible" | "saved";
+type AppMode = "home" | "practice" | "bible" | "library";
 
 const DEFAULT_SAVED_CATEGORY = "Memorise";
 const CUSTOM_SAVED_CATEGORY = "Other";
@@ -35,7 +35,7 @@ function getDefaultSavedCategory(theme: string, categories: string[]) {
  * Owns the active mode, current typing state, and the handoff between data hooks and UI panels.
  */
 function App() {
-  const [practiceMode, setPracticeMode] = useState<PracticeMode>("home");
+  const [appMode, setAppMode] = useState<AppMode>("home");
   const [currentBatchIndex, setCurrentBatchIndex] = useState(0);
   const [typedText, setTypedText] = useState("");
   const [selectedVerseNumbers, setSelectedVerseNumbers] = useState<number[]>([]);
@@ -92,11 +92,11 @@ function App() {
     return buildPracticeBatches(response.bookName, response.passage.chapter, response.verses, 2);
   }, [savedLibrary.passageResponse]);
   const batches =
-    practiceMode === "featured"
+    appMode === "practice"
       ? featuredBatches
-      : practiceMode === "bible"
+      : appMode === "bible"
         ? bibleBatches
-        : practiceMode === "saved"
+        : appMode === "library"
           ? savedBatches
           : [];
 
@@ -118,59 +118,59 @@ function App() {
     finishedAt,
   });
   const isLoading =
-    practiceMode === "home"
+    appMode === "home"
       ? featuredLibrary.isLoading
-      : practiceMode === "featured"
+      : appMode === "practice"
       ? featuredLibrary.isLoading
-      : practiceMode === "bible"
+      : appMode === "bible"
         ? bibleLibrary.isLoading
         : savedLibrary.isLoading;
   const error =
-    practiceMode === "home"
+    appMode === "home"
       ? featuredLibrary.error
-      : practiceMode === "featured"
+      : appMode === "practice"
       ? featuredLibrary.error
-      : practiceMode === "bible"
+      : appMode === "bible"
         ? bibleLibrary.error
         : savedLibrary.error;
   const practiceTitle =
-    practiceMode === "home"
+    appMode === "home"
       ? "Choose Practice"
-      : practiceMode === "featured"
+      : appMode === "practice"
       ? featuredLibrary.passageResponse?.passage.title ?? "Featured Passage"
-      : practiceMode === "bible"
+      : appMode === "bible"
         ? `${bibleLibrary.selectedBook?.name ?? "Bible"} ${bibleLibrary.selectedChapter}`
         : savedLibrary.selectedSavedPassage?.title ?? "Saved Passage";
   const practiceReference =
-    practiceMode === "home"
+    appMode === "home"
       ? ""
-      : practiceMode === "featured"
+      : appMode === "practice"
       ? featuredLibrary.passageResponse?.reference ?? ""
-      : practiceMode === "bible"
+      : appMode === "bible"
         ? bibleLibrary.selectedBook
           ? getBibleReaderReference()
           : ""
         : savedLibrary.selectedSavedPassage?.reference ?? "";
   const practiceSubtitle =
-    practiceMode === "home"
+    appMode === "home"
       ? "Home"
-      : practiceMode === "featured"
-      ? featuredLibrary.passageResponse?.passage.theme ?? "Discovery"
-      : practiceMode === "bible"
+      : appMode === "practice"
+      ? `Practice - ${featuredLibrary.passageResponse?.passage.theme ?? "Discovery"}`
+      : appMode === "bible"
         ? "Bible reader"
-        : "Saved for later practice";
+        : "Saved library";
   const translationName =
-    practiceMode === "home"
+    appMode === "home"
       ? "WEB"
-      : practiceMode === "featured"
+      : appMode === "practice"
       ? featuredLibrary.passageResponse?.translation.abbreviation ?? "WEB"
-      : practiceMode === "bible"
+      : appMode === "bible"
         ? bibleLibrary.translations.find(
             (translation) => translation.id === bibleLibrary.selectedTranslationId,
           )?.abbreviation ?? bibleLibrary.selectedTranslationId.toUpperCase()
         : savedLibrary.selectedSavedPassage?.translationAbbreviation ?? "WEB";
   const saveInput = useMemo((): SavePassageInput | null => {
-    if (practiceMode === "featured" && featuredLibrary.passageResponse) {
+    if (appMode === "practice" && featuredLibrary.passageResponse) {
       const { passage, reference, translation, bookName } = featuredLibrary.passageResponse;
 
       return {
@@ -189,7 +189,7 @@ function App() {
       };
     }
 
-    if (practiceMode === "bible" && bibleLibrary.chapter && bibleLibrary.selectedBook) {
+    if (appMode === "bible" && bibleLibrary.chapter && bibleLibrary.selectedBook) {
       const translation = bibleLibrary.translations.find(
         (availableTranslation) => availableTranslation.id === bibleLibrary.selectedTranslationId,
       );
@@ -237,7 +237,7 @@ function App() {
     bibleLibrary.selectedTranslationId,
     bibleLibrary.translations,
     featuredLibrary.passageResponse,
-    practiceMode,
+    appMode,
     savedPassageCategories,
     selectedVerseNumbers,
   ]);
@@ -251,16 +251,16 @@ function App() {
   }, [saveInput]);
 
   useEffect(() => {
-    if (practiceMode === "saved" && !savedLibrary.savedPassages.length) {
-      setPracticeMode("home");
+    if (appMode === "library" && !savedLibrary.savedPassages.length) {
+      setAppMode("home");
     }
-  }, [practiceMode, savedLibrary.savedPassages.length]);
+  }, [appMode, savedLibrary.savedPassages.length]);
 
   // Changing the selected practice source should always restart the typing session.
   useEffect(() => {
     resetPractice();
   }, [
-    practiceMode,
+    appMode,
     featuredLibrary.selectedPassageId,
     bibleLibrary.selectedBookId,
     bibleLibrary.selectedChapter,
@@ -304,13 +304,13 @@ function App() {
    */
   function handleNextFeaturedPassage() {
     featuredLibrary.selectRandomPassage();
-    setPracticeMode("featured");
+    setAppMode("practice");
     resetPractice();
   }
 
   function handleStartFeaturedPractice() {
     featuredLibrary.selectRandomPassage();
-    setPracticeMode("featured");
+    setAppMode("practice");
     resetPractice();
   }
 
@@ -320,16 +320,16 @@ function App() {
     if (!passage) return;
 
     featuredLibrary.selectPassage(passage.id);
-    setPracticeMode("featured");
+    setAppMode("practice");
     resetPractice();
   }
 
   function handleOpenBible() {
-    setPracticeMode("bible");
+    setAppMode("bible");
     resetPractice();
   }
 
-  function handleOpenSaved() {
+  function handleOpenLibrary() {
     const selectedPassageStillExists = savedLibrary.savedPassages.some((passage) => {
       return passage.id === savedLibrary.selectedSavedPassageId;
     });
@@ -338,28 +338,28 @@ function App() {
       savedLibrary.selectSavedPassage(savedLibrary.savedPassages[0].id);
     }
 
-    setPracticeMode("saved");
+    setAppMode("library");
     resetPractice();
   }
 
   function handleTranslationChange(translationId: string) {
     bibleLibrary.selectTranslation(translationId);
     setSelectedVerseNumbers([]);
-    setPracticeMode("bible");
+    setAppMode("bible");
     resetPractice();
   }
 
   function handleBookChange(bookId: string) {
     bibleLibrary.selectBook(bookId);
     setSelectedVerseNumbers([]);
-    setPracticeMode("bible");
+    setAppMode("bible");
     resetPractice();
   }
 
   function handleBibleChapterChange(chapterNumber: number) {
     bibleLibrary.selectChapter(chapterNumber);
     setSelectedVerseNumbers([]);
-    setPracticeMode("bible");
+    setAppMode("bible");
     resetPractice();
   }
 
@@ -377,7 +377,7 @@ function App() {
       ),
     );
     setReaderFocusKey((currentKey) => currentKey + 1);
-    setPracticeMode("bible");
+    setAppMode("bible");
     resetPractice();
   }
 
@@ -393,7 +393,7 @@ function App() {
     if (!saveInput) return;
 
     const passageToSave =
-      practiceMode === "bible"
+      appMode === "bible"
         ? {
             ...saveInput,
             title: saveTitle.trim() || saveInput.title,
@@ -406,7 +406,7 @@ function App() {
 
   function handleSelectSavedPassage(passageId: string) {
     savedLibrary.selectSavedPassage(passageId);
-    setPracticeMode("saved");
+    setAppMode("library");
     resetPractice();
   }
 
@@ -494,11 +494,11 @@ function App() {
     );
   }
 
-  if (error || (practiceMode !== "home" && practiceMode !== "bible" && !currentBatch)) {
+  if (error || (appMode !== "home" && appMode !== "bible" && !currentBatch)) {
     return (
       <PageShell>
         <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800">
-          {error ?? (practiceMode === "saved" ? "Save a passage first." : "No practice passage found.")}
+          {error ?? (appMode === "library" ? "Save a passage first." : "No practice passage found.")}
         </div>
       </PageShell>
     );
@@ -520,44 +520,44 @@ function App() {
           <div className="grid grid-cols-4 rounded-md border border-slate-300 bg-slate-100 p-1 text-sm sm:flex">
             <button
               className={`rounded px-3 py-1.5 font-medium ${
-                practiceMode === "home" ? "bg-white text-slate-950 shadow-sm" : "text-slate-600 hover:text-slate-900"
+                appMode === "home" ? "bg-white text-slate-950 shadow-sm" : "text-slate-600 hover:text-slate-900"
               }`}
               type="button"
-              onClick={() => setPracticeMode("home")}
+              onClick={() => setAppMode("home")}
             >
               Home
             </button>
             <button
               className={`rounded px-3 py-1.5 font-medium ${
-                practiceMode === "featured" ? "bg-white text-slate-950 shadow-sm" : "text-slate-600 hover:text-slate-900"
+                appMode === "practice" ? "bg-white text-slate-950 shadow-sm" : "text-slate-600 hover:text-slate-900"
               }`}
               type="button"
-              onClick={() => setPracticeMode("featured")}
+              onClick={() => setAppMode("practice")}
             >
-              Featured
+              Practice
             </button>
             <button
               className={`rounded px-3 py-1.5 font-medium ${
-                practiceMode === "bible" ? "bg-white text-slate-950 shadow-sm" : "text-slate-600 hover:text-slate-900"
+                appMode === "bible" ? "bg-white text-slate-950 shadow-sm" : "text-slate-600 hover:text-slate-900"
               }`}
               type="button"
-              onClick={() => setPracticeMode("bible")}
+              onClick={() => setAppMode("bible")}
             >
               Bible
             </button>
             <button
               className={`rounded px-3 py-1.5 font-medium ${
-                practiceMode === "saved" ? "bg-white text-slate-950 shadow-sm" : "text-slate-600 hover:text-slate-900"
+                appMode === "library" ? "bg-white text-slate-950 shadow-sm" : "text-slate-600 hover:text-slate-900"
               } disabled:cursor-not-allowed disabled:text-slate-400`}
               disabled={!savedLibrary.savedPassages.length}
               type="button"
-              onClick={() => setPracticeMode("saved")}
+              onClick={() => setAppMode("library")}
             >
-              Saved
+              Library
             </button>
           </div>
         </div>
-        {practiceMode === "featured" && (
+        {appMode === "practice" && (
           <div className="mt-4 flex justify-end border-t border-slate-200 pt-4">
             <button
               className="rounded-md bg-slate-950 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
@@ -569,7 +569,7 @@ function App() {
             </button>
           </div>
         )}
-        {practiceMode === "bible" && (
+        {appMode === "bible" && (
           <div className="mt-4 grid gap-3 border-t border-slate-200 pt-4 sm:grid-cols-[1fr_12rem_auto] sm:items-end">
             <label className="grid gap-1">
               <span className="text-sm font-medium text-slate-600">Saved Title</span>
@@ -606,22 +606,22 @@ function App() {
         )}
       </section>
 
-      {practiceMode === "home" ? (
+      {appMode === "home" ? (
         <HomeCategoryPicker
           featuredCategories={featuredHomeCategories}
           hasSavedPassages={savedLibrary.savedPassages.length > 0}
           savedPassageCount={savedLibrary.savedPassages.length}
           onOpenBible={handleOpenBible}
-          onOpenSaved={handleOpenSaved}
+          onOpenLibrary={handleOpenLibrary}
           onStartFeatured={handleStartFeaturedPractice}
           onStartFeaturedCategory={handleStartFeaturedCategory}
         />
-      ) : practiceMode === "featured" ? (
+      ) : appMode === "practice" ? (
         <FeaturedPassageControls
           onNextPassage={handleNextFeaturedPassage}
           onReset={resetPractice}
         />
-      ) : practiceMode === "bible" ? (
+      ) : appMode === "bible" ? (
         <>
           <BibleControls
             books={bibleLibrary.books}
@@ -657,7 +657,7 @@ function App() {
         />
       )}
 
-      {practiceMode !== "home" && practiceMode !== "bible" && currentBatch && (
+      {appMode !== "home" && appMode !== "bible" && currentBatch && (
         <>
           <PracticeBatchDisplay
             batch={currentBatch}
@@ -669,14 +669,14 @@ function App() {
 
           <TypingPracticePanel
             accuracy={accuracy}
-            completionActionLabel={isPassageComplete && practiceMode === "featured" ? "Next Passage" : undefined}
+            completionActionLabel={isPassageComplete && appMode === "practice" ? "Next Passage" : undefined}
             completionMessage={
               isPassageComplete
                 ? `Complete. You finished ${practiceTitle} at ${wpm} WPM with ${accuracy}% accuracy.`
                 : "Batch complete. Moving to the next verses..."
             }
             isComplete={isBatchComplete}
-            onCompletionAction={isPassageComplete && practiceMode === "featured" ? handleNextFeaturedPassage : undefined}
+            onCompletionAction={isPassageComplete && appMode === "practice" ? handleNextFeaturedPassage : undefined}
             progress={Math.min(progress, 100)}
             status={status}
             typedText={typedText}
