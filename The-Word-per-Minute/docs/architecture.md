@@ -1,10 +1,25 @@
 # The Word per Minute Architecture
 
-Document version: `120626.1.a`
+Document version: `120626.1.b`
 Last updated: 12/06/26
 Update rule: only update this file when explicitly requested by the project owner.
 
 ## What This Version Updates
+
+This version updates the architecture snapshot after the Home/category picker and saved-passage editing work.
+
+It updates:
+
+- the app modes to include Home,
+- the product direction to describe Home as the starting point,
+- Saved mode responsibilities to include editing saved passage title/category,
+- component responsibilities for the new `HomeCategoryPicker`,
+- saved passage hook and repository responsibilities to include metadata updates,
+- the current file structure,
+- the architecture diagram,
+- known technical debt and likely next architecture steps.
+
+## Previous Update: `120626.1.a`
 
 This version creates the first architecture snapshot for the project.
 
@@ -52,6 +67,7 @@ The Word per Minute is a Bible typing practice app. The app helps users practise
 
 The current product direction is:
 
+- Home mode gives users a starting screen for choosing how to practise.
 - Featured mode introduces users to curated passages.
 - Bible mode lets users read chapters and select verses to save.
 - Saved mode lets users practise their saved passages.
@@ -86,9 +102,22 @@ UI components -> hooks -> services -> local JSON / localStorage
 
 ## App Modes
 
+### Home
+
+Home mode is the current starting screen.
+
+It:
+
+- shows primary entry points for Featured, Bible, and Saved,
+- shows featured passage categories generated from curated passage themes,
+- starts a random featured passage when the user chooses Featured,
+- starts a random featured passage from a chosen theme when the user chooses a category,
+- opens the Bible reader,
+- opens Saved mode when saved passages exist.
+
 ### Featured
 
-Featured mode is the default discovery/practice flow.
+Featured mode is the discovery/practice flow.
 
 It:
 
@@ -123,6 +152,7 @@ It:
 - displays saved passages as cards,
 - supports category filtering,
 - lets the user choose a saved passage to practise,
+- lets the user edit saved passage title/category,
 - lets the user remove saved passages.
 
 ## Main Runtime Flow
@@ -130,7 +160,8 @@ It:
 ```txt
 App starts
   -> loads Featured, Bible, Saved, and Stats hooks
-  -> chooses active mode
+  -> starts in Home mode
+  -> user chooses Featured, Bible, Saved, or a Featured category
   -> resolves current passage/chapter data
   -> builds typing batches when needed
   -> renders mode controls
@@ -146,7 +177,7 @@ Main coordinator for the app.
 
 Responsibilities:
 
-- tracks active mode: `featured`, `bible`, or `saved`,
+- tracks active mode: `home`, `featured`, `bible`, or `saved`,
 - tracks typing state,
 - tracks selected Bible verses,
 - handles save title/category state,
@@ -155,6 +186,17 @@ Responsibilities:
 - records completed attempts.
 
 This file is currently the largest file and may eventually be worth splitting once the app flow stabilises.
+
+### `src/components/HomeCategoryPicker.tsx`
+
+Displays the Home starting screen.
+
+Responsibilities:
+
+- primary cards for Featured, Bible, and Saved,
+- featured-theme category cards,
+- disabled Saved state when no saved passages exist,
+- sends selected direction/category back to `App`.
 
 ### `src/components/BibleControls.tsx`
 
@@ -197,6 +239,7 @@ Responsibilities:
 - category filter,
 - saved passage cards,
 - practice action,
+- edit action,
 - remove action,
 - empty states.
 
@@ -238,6 +281,7 @@ Responsibilities:
 
 - reading saved passages from storage,
 - saving a passage,
+- updating saved passage title/category,
 - removing a passage,
 - selecting a saved passage,
 - resolving a saved passage into verse text.
@@ -278,8 +322,8 @@ Responsibilities:
 
 - list saved passages,
 - save a passage,
-- remove a passage,
-- check if a passage already exists.
+- update saved passage title/category,
+- remove a passage.
 
 This is the likely future swap point for a database-backed saved passage repository.
 
@@ -378,6 +422,7 @@ The-Word-per-Minute/
       BibleControls.tsx
       BibleReaderSelector.tsx
       FeaturedPassageControls.tsx
+      HomeCategoryPicker.tsx
       PersonalBests.tsx
       PracticeBatchDisplay.tsx
       SavedPassageControls.tsx
@@ -428,6 +473,7 @@ classDiagram
     handleSaveCurrentPassage()
   }
 
+  class HomeCategoryPicker
   class FeaturedPassageControls
   class BibleControls
   class BibleReaderSelector
@@ -455,6 +501,7 @@ classDiagram
     savedPassages
     passageResponse
     savePassage()
+    updatePassage()
     removePassage()
   }
 
@@ -476,8 +523,8 @@ classDiagram
   class savedPassageRepository {
     list()
     save()
+    update()
     remove()
-    exists()
   }
 
   class typingMetrics {
@@ -485,6 +532,7 @@ classDiagram
     countCorrectCharacters()
   }
 
+  App --> HomeCategoryPicker
   App --> FeaturedPassageControls
   App --> BibleControls
   App --> BibleReaderSelector
@@ -508,22 +556,24 @@ classDiagram
 ## Known Technical Debt
 
 - `App.tsx` is doing a lot of orchestration and may eventually need splitting.
-- Saved passage edit support does not exist yet.
 - Category management is still hardcoded/generated from featured themes.
 - The app has local JSON Bible data only; no hosted API yet.
 - User data is local-only through `localStorage`.
 - The current architecture is beginner-friendly, but not yet deeply modular.
+- Browser automation from this environment was blocked by the local Windows sandbox, so full click-through testing is still manual for now.
 
 ## Likely Next Architecture Steps
 
 Suggested future steps:
 
-1. Finish and commit Saved library polish.
-2. Add saved passage editing for title/category.
+1. Commit and review Home/category picker.
+2. Browser-test the Home, Featured, Bible, and Saved flows manually.
 3. Consider extracting mode-specific containers:
+   - `HomeMode`
    - `FeaturedMode`
    - `BibleMode`
    - `SavedMode`
 4. Consider a small `PassagePracticeController` hook if typing state keeps growing.
 5. Keep `verseService` API-shaped so local JSON can later move to hosted data.
 6. Keep saved passage storage behind `savedPassageRepository` so it can later move to a database.
+7. Add automated tests later when the project is ready for test tooling.
