@@ -23,6 +23,7 @@ import { calculatePracticeSessionMetrics, countCorrectCharacters } from "./utils
 
 type AppMode = "home" | "practice" | "bible" | "library";
 type PracticeSource = "featured" | "saved";
+type Theme = "light" | "dark";
 
 const DEFAULT_SAVED_CATEGORY = "Memorise";
 const CUSTOM_SAVED_CATEGORY = "Other";
@@ -38,6 +39,10 @@ function getDefaultSavedCategory(theme: string, categories: string[]) {
 function App() {
   const [appMode, setAppMode] = useState<AppMode>("home");
   const [practiceSource, setPracticeSource] = useState<PracticeSource>("featured");
+  const [theme, setTheme] = useState<Theme>(() => {
+    const savedTheme = window.localStorage.getItem("theme");
+    return savedTheme === "dark" || savedTheme === "light" ? savedTheme : "light";
+  });
   const [currentBatchIndex, setCurrentBatchIndex] = useState(0);
   const [typedText, setTypedText] = useState("");
   const [selectedVerseNumbers, setSelectedVerseNumbers] = useState<number[]>([]);
@@ -257,6 +262,11 @@ function App() {
     selectedVerseNumbers,
   ]);
   const isCurrentPassageSaved = savedLibrary.isPassageSaved(saveInput);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+    window.localStorage.setItem("theme", theme);
+  }, [theme]);
 
   useEffect(() => {
     if (!saveInput) return;
@@ -516,9 +526,13 @@ function App() {
     setFinishedAt(null);
   }
 
+  function handleToggleTheme() {
+    setTheme((currentTheme) => (currentTheme === "light" ? "dark" : "light"));
+  }
+
   if (isLoading) {
     return (
-      <PageShell>
+      <PageShell theme={theme} onToggleTheme={handleToggleTheme}>
         <div className="rounded-xl border bg-white p-4 text-slate-600 shadow-sm">
           Loading practice passage...
         </div>
@@ -528,7 +542,7 @@ function App() {
 
   if (error || (appMode === "practice" && !currentBatch)) {
     return (
-      <PageShell>
+      <PageShell theme={theme} onToggleTheme={handleToggleTheme}>
         <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800">
           {error ?? (practiceSource === "saved" ? "Save a passage first." : "No practice passage found.")}
         </div>
@@ -537,7 +551,7 @@ function App() {
   }
 
   return (
-    <PageShell>
+    <PageShell theme={theme} onToggleTheme={handleToggleTheme}>
       <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
@@ -735,17 +749,26 @@ function App() {
 
 type PageShellProps = {
   children: ReactNode;
+  theme: Theme;
+  onToggleTheme: () => void;
 };
 
 /**
  * Shared page frame for loading, error, and practice states.
  */
-function PageShell({ children }: PageShellProps) {
+function PageShell({ children, theme, onToggleTheme }: PageShellProps) {
   return (
     <div className="min-h-screen bg-stone-50 text-slate-900">
       <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto max-w-5xl px-4 py-4">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4">
           <h1 className="text-xl font-bold tracking-normal text-slate-950">The Word per Minute</h1>
+          <button
+            className="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+            type="button"
+            onClick={onToggleTheme}
+          >
+            {theme === "light" ? "Dark" : "Light"}
+          </button>
         </div>
       </header>
 
