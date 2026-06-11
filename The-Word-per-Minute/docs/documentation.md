@@ -1,84 +1,10 @@
-# The Word per Minute Architecture
+# The Word per Minute Documentation
 
-Document version: `120626.1.c`
+Document version: `120626.1.d`
 Last updated: 12/06/26
 Update rule: only update this file when explicitly requested by the project owner.
 
-## What This Version Updates
-
-This version updates the architecture snapshot after the layout, practice flow, theme, and motion work.
-
-It updates:
-
-- the app modes to `Home`, `Practice`, `Bible`, and `Library`,
-- the product direction to describe Practice as the central typing page,
-- the split between featured practice and saved-passage practice,
-- Library responsibilities as saved-passage management rather than typing,
-- component responsibilities for `PracticeControls`,
-- light/dark theme behavior and browser persistence,
-- shared hover, page-transition, and reduced-motion behavior,
-- the current file structure,
-- the architecture diagram,
-- known technical debt and likely next architecture steps.
-
-## Previous Update: `120626.1.b`
-
-This version updated the architecture snapshot after the Home/category picker and saved-passage editing work.
-
-It updated:
-
-- the app modes to include Home,
-- the product direction to describe Home as the starting point,
-- Saved mode responsibilities to include editing saved passage title/category,
-- component responsibilities for the new `HomeCategoryPicker`,
-- saved passage hook and repository responsibilities to include metadata updates,
-- the current file structure,
-- the architecture diagram,
-- known technical debt and likely next architecture steps.
-
-## Previous Update: `120626.1.a`
-
-This version creates the first architecture snapshot for the project.
-
-It documents:
-
-- the current app purpose and product direction,
-- the current tech stack,
-- the current React architecture,
-- the three app modes: Featured, Bible, and Saved,
-- the main file structure,
-- the responsibilities of components, hooks, services, utilities, and data files,
-- the current architecture diagram,
-- known technical debt,
-- likely next architecture steps.
-
-Future updates to this document must include a short section explaining what changed in that documentation version.
-
-## Version Format
-
-Architecture document versions use this format:
-
-```txt
-ddmmyy.major.minor
-```
-
-Example:
-
-```txt
-120626.1.a
-```
-
-- `120626` means 12/06/26.
-- `1` means the first major architecture snapshot for that day.
-- `a` means the first small revision of that snapshot.
-
-Suggested next versions:
-
-- Small same-day documentation update: `120626.1.b`
-- Larger same-day architecture update: `120626.2.a`
-- First update on a new day: `ddmmyy.1.a`
-
-## Project Purpose
+## Purpose
 
 The Word per Minute is a Bible typing practice app. The app helps users practise typing while reading, discovering, selecting, saving, and revisiting Bible passages.
 
@@ -91,15 +17,16 @@ The current product direction is:
 - Library mode lets users manage saved passages.
 - Saved passages can be practised from the central Practice mode.
 
-## Current Tech Stack
+Version history and documentation update notes live in `docs/update-notes.md`.
+
+## Tech Stack
 
 - Vite
 - React
 - TypeScript
 - Tailwind CSS
 - Local JSON Bible data
-- `localStorage` for saved passages and personal best stats
-- `localStorage` for the light/dark theme preference
+- `localStorage` for saved passages, personal best stats, and light/dark theme preference
 
 No backend, database, authentication, or external Bible API is currently used.
 
@@ -113,9 +40,9 @@ The app currently follows a simple React architecture:
 - Utils handle pure calculations and formatting.
 - Types define shared TypeScript data shapes.
 - JSON data provides Bible translations, books, chapters, and featured passages.
-- Global CSS currently provides first-pass light/dark theme mapping and shared motion behavior.
+- Global CSS provides first-pass light/dark theme mapping and shared motion behavior.
 
-This is not a class-heavy OOP app. The current design is closer to:
+The current design is closer to:
 
 ```txt
 UI components -> hooks -> services -> local JSON / localStorage
@@ -229,6 +156,18 @@ Responsibilities:
 - disabled Library state when no saved passages exist,
 - sends selected direction/category back to `App`.
 
+### `src/components/PracticeControls.tsx`
+
+Displays Practice mode controls.
+
+Responsibilities:
+
+- switches between Featured and Saved practice sources,
+- shows a saved-passage dropdown when the source is Saved,
+- starts the next featured passage,
+- opens Library from saved practice,
+- resets the current attempt.
+
 ### `src/components/BibleControls.tsx`
 
 Displays Bible reader controls.
@@ -252,18 +191,6 @@ Responsibilities:
 - clears selection,
 - scrolls to a selected passage when opened from random featured passage.
 
-### `src/components/PracticeControls.tsx`
-
-Displays Practice mode controls.
-
-Responsibilities:
-
-- switches between Featured and Saved practice sources,
-- shows a saved-passage dropdown when the source is Saved,
-- starts the next featured passage,
-- opens Library from saved practice,
-- reset current attempt.
-
 ### `src/components/SavedPassageControls.tsx`
 
 Displays the saved passage library.
@@ -279,17 +206,11 @@ Responsibilities:
 
 The practice action sends the selected saved passage back to Practice mode.
 
-### `src/components/PracticeBatchDisplay.tsx`
+### Other Components
 
-Shows the current typing batch and character-level progress.
-
-### `src/components/TypingPracticePanel.tsx`
-
-Shows typing input, WPM, accuracy, progress, and completion messaging.
-
-### `src/components/PersonalBests.tsx`
-
-Shows locally saved personal best stats.
+- `PracticeBatchDisplay.tsx`: shows the current typing batch and character-level progress.
+- `TypingPracticePanel.tsx`: shows typing input, WPM, accuracy, progress, and completion messaging.
+- `PersonalBests.tsx`: shows locally saved personal best stats.
 
 ## Theme And Motion
 
@@ -319,9 +240,7 @@ Loads featured passage references and resolves the selected passage into verse t
 
 ### `src/hooks/useVerseLibrary.ts`
 
-Handles Bible reader state.
-
-Responsibilities:
+Handles Bible reader state:
 
 - selected translation,
 - selected book,
@@ -331,9 +250,7 @@ Responsibilities:
 
 ### `src/hooks/useSavedPassages.ts`
 
-Handles saved passage state.
-
-Responsibilities:
+Handles saved passage state:
 
 - reading saved passages from storage,
 - saving a passage,
@@ -344,9 +261,7 @@ Responsibilities:
 
 ### `src/hooks/usePracticeStats.ts`
 
-Handles local typing stats.
-
-Responsibilities:
+Handles local typing stats:
 
 - personal best WPM,
 - personal best accuracy,
@@ -385,49 +300,18 @@ This is the likely future swap point for a database-backed saved passage reposit
 
 ## Utilities
 
-### `src/utils/practiceBatches.ts`
-
-Splits verses into short typing batches.
-
-### `src/utils/typingMetrics.ts`
-
-Calculates:
-
-- WPM,
-- accuracy,
-- progress,
-- completion state,
-- punctuation-normalised character matching.
-
-### `src/utils/passageReference.ts`
-
-Formats readable passage references, such as:
-
-- `Matthew 5`
-- `Matthew 5:3-10`
-- `Genesis 1:1,3,5`
-
-### `src/utils/errors.ts`
-
-Converts unknown caught errors into displayable messages.
+- `src/utils/practiceBatches.ts`: splits verses into short typing batches.
+- `src/utils/typingMetrics.ts`: calculates WPM, accuracy, progress, completion state, and punctuation-normalised character matching.
+- `src/utils/passageReference.ts`: formats readable passage references such as `Matthew 5:3-10`.
+- `src/utils/errors.ts`: converts unknown caught errors into displayable messages.
 
 ## Data Files
 
-### `src/data/featuredPassages.json`
+- `src/data/featuredPassages.json`: curated passage list used by featured-source Practice mode and random featured passage in Bible mode.
+- `src/data/translations.json`: list of available Bible translations.
+- `src/data/bibles/web`: local World English Bible data.
 
-Curated passage list used by featured-source Practice mode and random featured passage in Bible mode.
-
-### `src/data/translations.json`
-
-List of available Bible translations.
-
-Currently, the main available translation is local public-domain WEB data.
-
-### `src/data/bibles/web`
-
-Local World English Bible data.
-
-Structure:
+Bible data structure:
 
 ```txt
 src/data/bibles/web/
@@ -442,13 +326,10 @@ The manifest lets the app list books without loading the whole Bible at once.
 
 ## Important Types
 
-### `src/types/featuredPassage.ts`
-
-Defines featured passage references and resolved passage responses.
-
-### `src/types/savedPassage.ts`
-
-Defines saved passages and save inputs.
+- `src/types/featuredPassage.ts`: featured passage references and resolved passage responses.
+- `src/types/savedPassage.ts`: saved passages and save inputs.
+- `src/types/verse.ts`: Bible translation, book, chapter, and verse shapes.
+- `src/types/practiceBatch.ts`: typing batch shape.
 
 Saved passage sources currently include:
 
@@ -456,20 +337,13 @@ Saved passage sources currently include:
 - `bible`
 - `chapter` for old localStorage compatibility
 
-### `src/types/verse.ts`
-
-Defines Bible translation, book, chapter, and verse shapes.
-
-### `src/types/practiceBatch.ts`
-
-Defines the shape of a typing batch.
-
 ## Current File Structure
 
 ```txt
 The-Word-per-Minute/
   docs/
-    architecture.md
+    documentation.md
+    update-notes.md
   public/
   scripts/
     importPublicDomainBible.mjs
@@ -541,55 +415,13 @@ classDiagram
   class TypingPracticePanel
   class PersonalBests
 
-  class useFeaturedPassages {
-    passages
-    passageResponse
-    selectRandomPassage()
-  }
-
-  class useVerseLibrary {
-    translations
-    books
-    chapter
-    selectBook()
-    selectChapter()
-    selectTranslation()
-  }
-
-  class useSavedPassages {
-    savedPassages
-    passageResponse
-    savePassage()
-    updatePassage()
-    removePassage()
-  }
-
-  class usePracticeStats {
-    stats
-    recordCompletedAttempt()
-    resetStats()
-  }
-
-  class verseService {
-    getTranslations()
-    getBooks()
-    getChapter()
-    getFeaturedPassages()
-    getPassage()
-    getReferencePassage()
-  }
-
-  class savedPassageRepository {
-    list()
-    save()
-    update()
-    remove()
-  }
-
-  class typingMetrics {
-    calculatePracticeSessionMetrics()
-    countCorrectCharacters()
-  }
+  class useFeaturedPassages
+  class useVerseLibrary
+  class useSavedPassages
+  class usePracticeStats
+  class verseService
+  class savedPassageRepository
+  class typingMetrics
 
   App --> HomeCategoryPicker
   App --> PracticeControls
@@ -599,12 +431,10 @@ classDiagram
   App --> PracticeBatchDisplay
   App --> TypingPracticePanel
   App --> PersonalBests
-
   App --> useFeaturedPassages
   App --> useVerseLibrary
   App --> useSavedPassages
   App --> usePracticeStats
-
   useFeaturedPassages --> verseService
   useVerseLibrary --> verseService
   useSavedPassages --> verseService
@@ -623,8 +453,6 @@ classDiagram
 - Browser automation from this environment was blocked by the local Windows sandbox, so full click-through testing is still manual for now.
 
 ## Likely Next Architecture Steps
-
-Suggested future steps:
 
 1. Browser-test the Home, Practice, Bible, and Library flows manually.
 2. Browser-test light/dark mode, hover states, and page transitions manually.
