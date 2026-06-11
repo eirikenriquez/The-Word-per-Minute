@@ -85,17 +85,17 @@ export function PracticeBatchDisplay({
   typedText,
 }: PracticeBatchDisplayProps) {
   return (
-    <section className="rounded-lg border bg-white p-5 shadow-sm">
-      <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm font-medium text-slate-500">
-          {batch.ref} <span className="text-slate-400">({translationName})</span>
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <p className="w-fit rounded-md bg-slate-100 px-2.5 py-1 text-sm font-semibold text-slate-700">
+          {batch.ref} <span className="text-slate-500">({translationName})</span>
         </p>
-        <p className="text-sm text-slate-500">
+        <p className="text-sm font-medium text-slate-500">
           Batch {batchNumber} of {totalBatches}
         </p>
       </div>
 
-      <p className="text-lg leading-9">
+      <p className="rounded-md bg-stone-50 p-4 text-lg leading-9 text-slate-700 ring-1 ring-slate-100">
         {getDisplayParts(batch).map((part) =>
           part.kind === "verseNumber" ? (
             <sup className="mr-1 text-xs font-bold text-slate-400" key={part.key}>

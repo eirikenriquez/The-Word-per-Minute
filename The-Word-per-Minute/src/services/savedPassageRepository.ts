@@ -1,10 +1,11 @@
-import type { SavedPassage, SavePassageInput } from "../types/savedPassage";
+import type { SavedPassage, SavePassageInput, SavedPassageUpdate } from "../types/savedPassage";
 
 const SAVED_PASSAGES_STORAGE_KEY = "the-word-per-minute-saved-passages";
 
 type SavedPassageRepository = {
   list: () => SavedPassage[];
   save: (input: SavePassageInput) => SavedPassage;
+  update: (passageId: string, update: SavedPassageUpdate) => SavedPassage | null;
   remove: (passageId: string) => void;
 };
 
@@ -55,6 +56,25 @@ export const savedPassageRepository: SavedPassageRepository = {
 
     localStorage.setItem(SAVED_PASSAGES_STORAGE_KEY, JSON.stringify(nextSavedPassages));
     return savedPassage;
+  },
+
+  update(passageId: string, update: SavedPassageUpdate) {
+    const savedPassages = this.list();
+    const passageToUpdate = savedPassages.find((passage) => passage.id === passageId);
+
+    if (!passageToUpdate) return null;
+
+    const updatedPassage = {
+      ...passageToUpdate,
+      title: update.title,
+      category: update.category,
+    };
+    const nextSavedPassages = savedPassages.map((passage) => {
+      return passage.id === passageId ? updatedPassage : passage;
+    });
+
+    localStorage.setItem(SAVED_PASSAGES_STORAGE_KEY, JSON.stringify(nextSavedPassages));
+    return updatedPassage;
   },
 
   remove(passageId: string) {

@@ -5,7 +5,7 @@ import {
 } from "../services/savedPassageRepository";
 import { verseService } from "../services/verseService";
 import type { PassageResponse } from "../types/featuredPassage";
-import type { SavedPassage, SavePassageInput } from "../types/savedPassage";
+import type { SavedPassage, SavePassageInput, SavedPassageUpdate } from "../types/savedPassage";
 import { getErrorMessage } from "../utils/errors";
 
 /**
@@ -82,6 +82,14 @@ export function useSavedPassages() {
     });
   }
 
+  function updatePassage(passageId: string, update: SavedPassageUpdate) {
+    const updatedPassage = savedPassageRepository.update(passageId, update);
+    if (!updatedPassage) return null;
+
+    setSavedPassages(savedPassageRepository.list());
+    return updatedPassage;
+  }
+
   function isPassageSaved(input: SavePassageInput | null) {
     if (!input) return false;
 
@@ -100,5 +108,6 @@ export function useSavedPassages() {
     selectSavedPassage: setSelectedSavedPassageId,
     selectedSavedPassage,
     selectedSavedPassageId,
+    updatePassage,
   };
 }
