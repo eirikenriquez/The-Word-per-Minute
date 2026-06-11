@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { BibleControls } from "./components/BibleControls";
 import { BibleReaderSelector } from "./components/BibleReaderSelector";
 import { FeaturedPassageControls } from "./components/FeaturedPassageControls";
+import { HomeCategoryPicker } from "./components/HomeCategoryPicker";
 import { PersonalBests } from "./components/PersonalBests";
 import { PracticeBatchDisplay } from "./components/PracticeBatchDisplay";
 import { SavedPassageControls } from "./components/SavedPassageControls";
@@ -20,7 +21,7 @@ import {
 } from "./utils/passageReference";
 import { calculatePracticeSessionMetrics, countCorrectCharacters } from "./utils/typingMetrics";
 
-type PracticeMode = "featured" | "bible" | "saved";
+type PracticeMode = "home" | "featured" | "bible" | "saved";
 
 const DEFAULT_SAVED_CATEGORY = "Memorise";
 const CUSTOM_SAVED_CATEGORY = "Other";
@@ -34,7 +35,7 @@ function getDefaultSavedCategory(theme: string, categories: string[]) {
  * Owns the active mode, current typing state, and the handoff between data hooks and UI panels.
  */
 function App() {
-  const [practiceMode, setPracticeMode] = useState<PracticeMode>("featured");
+  const [practiceMode, setPracticeMode] = useState<PracticeMode>("home");
   const [currentBatchIndex, setCurrentBatchIndex] = useState(0);
   const [typedText, setTypedText] = useState("");
   const [selectedVerseNumbers, setSelectedVerseNumbers] = useState<number[]>([]);
@@ -51,6 +52,12 @@ function App() {
   const savedPassageCategories = useMemo(() => {
     const featuredThemes = featuredLibrary.passages.map((passage) => passage.theme);
     return [...new Set([DEFAULT_SAVED_CATEGORY, ...featuredThemes, CUSTOM_SAVED_CATEGORY])];
+  }, [featuredLibrary.passages]);
+  const featuredHomeCategories = useMemo(() => {
+    return [...new Set(featuredLibrary.passages.map((passage) => passage.theme))].map((theme) => ({
+      count: featuredLibrary.passages.filter((passage) => passage.theme === theme).length,
+      label: theme,
+    }));
   }, [featuredLibrary.passages]);
 
   // Convert the selected featured passage into the same batch shape used by typing practice.
@@ -89,7 +96,9 @@ function App() {
       ? featuredBatches
       : practiceMode === "bible"
         ? bibleBatches
-        : savedBatches;
+        : practiceMode === "saved"
+          ? savedBatches
+          : [];
 
   // Session metrics are calculated from all completed batches, not only the visible one.
   const {
@@ -109,25 +118,33 @@ function App() {
     finishedAt,
   });
   const isLoading =
-    practiceMode === "featured"
+    practiceMode === "home"
+      ? featuredLibrary.isLoading
+      : practiceMode === "featured"
       ? featuredLibrary.isLoading
       : practiceMode === "bible"
         ? bibleLibrary.isLoading
         : savedLibrary.isLoading;
   const error =
-    practiceMode === "featured"
+    practiceMode === "home"
+      ? featuredLibrary.error
+      : practiceMode === "featured"
       ? featuredLibrary.error
       : practiceMode === "bible"
         ? bibleLibrary.error
         : savedLibrary.error;
   const practiceTitle =
-    practiceMode === "featured"
+    practiceMode === "home"
+      ? "Choose Practice"
+      : practiceMode === "featured"
       ? featuredLibrary.passageResponse?.passage.title ?? "Featured Passage"
       : practiceMode === "bible"
         ? `${bibleLibrary.selectedBook?.name ?? "Bible"} ${bibleLibrary.selectedChapter}`
         : savedLibrary.selectedSavedPassage?.title ?? "Saved Passage";
   const practiceReference =
-    practiceMode === "featured"
+    practiceMode === "home"
+      ? ""
+      : practiceMode === "featured"
       ? featuredLibrary.passageResponse?.reference ?? ""
       : practiceMode === "bible"
         ? bibleLibrary.selectedBook
@@ -135,13 +152,17 @@ function App() {
           : ""
         : savedLibrary.selectedSavedPassage?.reference ?? "";
   const practiceSubtitle =
-    practiceMode === "featured"
+    practiceMode === "home"
+      ? "Home"
+      : practiceMode === "featured"
       ? featuredLibrary.passageResponse?.passage.theme ?? "Discovery"
       : practiceMode === "bible"
         ? "Bible reader"
         : "Saved for later practice";
   const translationName =
-    practiceMode === "featured"
+    practiceMode === "home"
+      ? "WEB"
+      : practiceMode === "featured"
       ? featuredLibrary.passageResponse?.translation.abbreviation ?? "WEB"
       : practiceMode === "bible"
         ? bibleLibrary.translations.find(
@@ -231,7 +252,7 @@ function App() {
 
   useEffect(() => {
     if (practiceMode === "saved" && !savedLibrary.savedPassages.length) {
-      setPracticeMode("featured");
+      setPracticeMode("home");
     }
   }, [practiceMode, savedLibrary.savedPassages.length]);
 
@@ -284,6 +305,40 @@ function App() {
   function handleNextFeaturedPassage() {
     featuredLibrary.selectRandomPassage();
     setPracticeMode("featured");
+    resetPractice();
+  }
+
+  function handleStartFeaturedPractice() {
+    featuredLibrary.selectRandomPassage();
+    setPracticeMode("featured");
+    resetPractice();
+  }
+
+  function handleStartFeaturedCategory(category: string) {
+    const categoryPassages = featuredLibrary.passages.filter((passage) => passage.theme === category);
+    const passage = categoryPassages[Math.floor(Math.random() * categoryPassages.length)];
+    if (!passage) return;
+
+    featuredLibrary.selectPassage(passage.id);
+    setPracticeMode("featured");
+    resetPractice();
+  }
+
+  function handleOpenBible() {
+    setPracticeMode("bible");
+    resetPractice();
+  }
+
+  function handleOpenSaved() {
+    const selectedPassageStillExists = savedLibrary.savedPassages.some((passage) => {
+      return passage.id === savedLibrary.selectedSavedPassageId;
+    });
+
+    if (!selectedPassageStillExists && savedLibrary.savedPassages[0]) {
+      savedLibrary.selectSavedPassage(savedLibrary.savedPassages[0].id);
+    }
+
+    setPracticeMode("saved");
     resetPractice();
   }
 
@@ -439,7 +494,7 @@ function App() {
     );
   }
 
-  if (error || (practiceMode !== "bible" && !currentBatch)) {
+  if (error || (practiceMode !== "home" && practiceMode !== "bible" && !currentBatch)) {
     return (
       <PageShell>
         <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800">
@@ -463,6 +518,15 @@ function App() {
             )}
           </div>
           <div className="flex rounded-md border border-slate-300 p-1 text-sm">
+            <button
+              className={`rounded px-3 py-1.5 font-medium ${
+                practiceMode === "home" ? "bg-slate-900 text-white" : "text-slate-600"
+              }`}
+              type="button"
+              onClick={() => setPracticeMode("home")}
+            >
+              Home
+            </button>
             <button
               className={`rounded px-3 py-1.5 font-medium ${
                 practiceMode === "featured" ? "bg-slate-900 text-white" : "text-slate-600"
@@ -542,7 +606,17 @@ function App() {
         )}
       </section>
 
-      {practiceMode === "featured" ? (
+      {practiceMode === "home" ? (
+        <HomeCategoryPicker
+          featuredCategories={featuredHomeCategories}
+          hasSavedPassages={savedLibrary.savedPassages.length > 0}
+          savedPassageCount={savedLibrary.savedPassages.length}
+          onOpenBible={handleOpenBible}
+          onOpenSaved={handleOpenSaved}
+          onStartFeatured={handleStartFeaturedPractice}
+          onStartFeaturedCategory={handleStartFeaturedCategory}
+        />
+      ) : practiceMode === "featured" ? (
         <FeaturedPassageControls
           onNextPassage={handleNextFeaturedPassage}
           onReset={resetPractice}
@@ -583,7 +657,7 @@ function App() {
         />
       )}
 
-      {practiceMode !== "bible" && currentBatch && (
+      {practiceMode !== "home" && practiceMode !== "bible" && currentBatch && (
         <>
           <PracticeBatchDisplay
             batch={currentBatch}
