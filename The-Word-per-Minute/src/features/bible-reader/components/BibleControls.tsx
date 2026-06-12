@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { BookSummary, Translation } from "../types/verse";
+import type { BookSummary, Translation } from "../../../types/verse";
 
 type BibleControlsProps = {
   books: BookSummary[];

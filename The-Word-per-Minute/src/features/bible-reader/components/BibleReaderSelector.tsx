@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { BibleChapter, BookSummary } from "../types/verse";
+import type { BibleChapter, BookSummary } from "../../../types/verse";
 
 type BibleReaderSelectorProps = {
   chapter: BibleChapter | null;

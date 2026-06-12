@@ -1,5 +1,5 @@
-import { BibleControls } from "../components/BibleControls";
-import { BibleReaderSelector } from "../components/BibleReaderSelector";
+import { BibleControls } from "../features/bible-reader/components/BibleControls";
+import { BibleReaderSelector } from "../features/bible-reader/components/BibleReaderSelector";
 import type { BibleChapter, BookSummary, Translation } from "../types/verse";
 
 type BiblePageProps = {
