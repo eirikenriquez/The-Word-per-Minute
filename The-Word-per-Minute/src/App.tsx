@@ -1,18 +1,22 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { ModeHeaderPanel } from "./components/ModeHeaderPanel";
 import { ModeContent } from "./components/ModeContent";
 import { PageShell } from "./components/PageShell";
-import { CUSTOM_SAVED_CATEGORY, DEFAULT_SAVED_CATEGORY } from "./constants/savedPassageCategories";
+import { useAppActions } from "./hooks/useAppActions";
+import { useAppDisplayState } from "./hooks/useAppDisplayState";
+import { useAppModeEffects } from "./hooks/useAppModeEffects";
 import { useFeaturedPassages } from "./hooks/useFeaturedPassages";
 import { usePassageSaveInput } from "./hooks/usePassageSaveInput";
+import { usePassageCategories } from "./hooks/usePassageCategories";
+import { usePracticeBatches } from "./hooks/usePracticeBatches";
 import { usePracticeSession } from "./hooks/usePracticeSession";
 import { usePracticeStats } from "./hooks/usePracticeStats";
+import { useReaderSelection } from "./hooks/useReaderSelection";
+import { useSavePassageForm } from "./hooks/useSavePassageForm";
 import { useSavedPassages } from "./hooks/useSavedPassages";
 import { useTheme } from "./hooks/useTheme";
 import { useVerseLibrary } from "./hooks/useVerseLibrary";
 import type { AppMode, PracticeSource } from "./types/appMode";
-import { buildPracticeBatches } from "./utils/practiceBatches";
-import { formatChapterReference, formatSelectedVerseReference } from "./utils/passageReference";
 
 /**
  * Main practice screen.
@@ -22,64 +26,22 @@ function App() {
   const [appMode, setAppMode] = useState<AppMode>("home");
   const [practiceSource, setPracticeSource] = useState<PracticeSource>("featured");
   const { theme, toggleTheme } = useTheme();
-  const [selectedVerseNumbers, setSelectedVerseNumbers] = useState<number[]>([]);
-  const [readerFocusKey, setReaderFocusKey] = useState(0);
-  const [saveTitle, setSaveTitle] = useState("");
-  const [saveCategory, setSaveCategory] = useState(DEFAULT_SAVED_CATEGORY);
+  const readerSelection = useReaderSelection();
   const { stats, recordCompletedAttempt, resetStats } = usePracticeStats();
   const featuredLibrary = useFeaturedPassages();
   const bibleLibrary = useVerseLibrary();
   const savedLibrary = useSavedPassages();
-  const savedPassageCategories = useMemo(() => {
-    const featuredThemes = featuredLibrary.passages.map((passage) => passage.theme);
-    return [...new Set([DEFAULT_SAVED_CATEGORY, ...featuredThemes, CUSTOM_SAVED_CATEGORY])];
-  }, [featuredLibrary.passages]);
-  const featuredHomeCategories = useMemo(() => {
-    return [...new Set(featuredLibrary.passages.map((passage) => passage.theme))].map((theme) => ({
-      count: featuredLibrary.passages.filter((passage) => passage.theme === theme).length,
-      label: theme,
-    }));
-  }, [featuredLibrary.passages]);
-
-  // Convert the selected featured passage into the same batch shape used by typing practice.
-  const featuredBatches = useMemo(() => {
-    const response = featuredLibrary.passageResponse;
-    if (!response) return [];
-
-    return buildPracticeBatches(response.bookName, response.passage.chapter, response.verses, 2);
-  }, [featuredLibrary.passageResponse]);
-
-  // Convert the Bible reader selection into short, karaoke-style typing batches.
-  const bibleBatches = useMemo(() => {
-    if (!bibleLibrary.chapter || !bibleLibrary.selectedBook) return [];
-    const selectedVerseSet = new Set(selectedVerseNumbers);
-    const selectedVerses = selectedVerseNumbers.length
-      ? bibleLibrary.chapter.verses.filter((verse) => selectedVerseSet.has(verse.number))
-      : bibleLibrary.chapter.verses;
-
-    return buildPracticeBatches(
-      bibleLibrary.selectedBook.name,
-      bibleLibrary.selectedChapter,
-      selectedVerses,
-      2,
-    );
-  }, [bibleLibrary.chapter, bibleLibrary.selectedBook, bibleLibrary.selectedChapter, selectedVerseNumbers]);
-
-  // Saved passages are stored as references, then resolved back into verse text for practice.
-  const savedBatches = useMemo(() => {
-    const response = savedLibrary.passageResponse;
-    if (!response) return [];
-
-    return buildPracticeBatches(response.bookName, response.passage.chapter, response.verses, 2);
-  }, [savedLibrary.passageResponse]);
-  const batches =
-    appMode === "practice" && practiceSource === "featured"
-      ? featuredBatches
-      : appMode === "practice" && practiceSource === "saved"
-        ? savedBatches
-        : appMode === "bible"
-        ? bibleBatches
-          : [];
+  const { featuredHomeCategories, savedPassageCategories } = usePassageCategories(featuredLibrary.passages);
+  const { batches } = usePracticeBatches({
+    appMode,
+    bibleChapter: bibleLibrary.chapter,
+    featuredPassageResponse: featuredLibrary.passageResponse,
+    practiceSource,
+    savedPassageResponse: savedLibrary.passageResponse,
+    selectedBook: bibleLibrary.selectedBook,
+    selectedChapter: bibleLibrary.selectedChapter,
+    selectedVerseNumbers: readerSelection.selectedVerseNumbers,
+  });
 
   const {
     accuracy,
@@ -97,70 +59,25 @@ function App() {
     batches,
     onCompletedAttempt: recordCompletedAttempt,
   });
-  const isLoading =
-    appMode === "home"
-      ? featuredLibrary.isLoading
-      : appMode === "practice"
-      ? practiceSource === "featured"
-        ? featuredLibrary.isLoading
-        : savedLibrary.isLoading
-      : appMode === "bible"
-        ? bibleLibrary.isLoading
-        : false;
-  const error =
-    appMode === "home"
-      ? featuredLibrary.error
-      : appMode === "practice"
-      ? practiceSource === "featured"
-        ? featuredLibrary.error
-        : savedLibrary.error
-      : appMode === "bible"
-        ? bibleLibrary.error
-        : null;
-  const practiceTitle =
-    appMode === "home"
-      ? "Welcome"
-      : appMode === "practice"
-      ? practiceSource === "featured"
-        ? featuredLibrary.passageResponse?.passage.title ?? "Featured Passage"
-        : savedLibrary.selectedSavedPassage?.title ?? "Saved Passage"
-      : appMode === "bible"
-        ? `${bibleLibrary.selectedBook?.name ?? "Bible"} ${bibleLibrary.selectedChapter}`
-        : "Saved Library";
-  const practiceReference =
-    appMode === "home"
-      ? ""
-      : appMode === "practice"
-      ? practiceSource === "featured"
-        ? featuredLibrary.passageResponse?.reference ?? ""
-        : savedLibrary.selectedSavedPassage?.reference ?? ""
-      : appMode === "bible"
-        ? bibleLibrary.selectedBook
-          ? getBibleReaderReference()
-          : ""
-        : `${savedLibrary.savedPassages.length} saved`;
-  const practiceSubtitle =
-    appMode === "home"
-      ? "The Word per Minute"
-      : appMode === "practice"
-      ? practiceSource === "featured"
-        ? `Practice - ${featuredLibrary.passageResponse?.passage.theme ?? "Discovery"}`
-        : "Practice - Saved passage"
-      : appMode === "bible"
-        ? "Bible reader"
-        : "Saved library";
-  const translationName =
-    appMode === "home"
-      ? "WEB"
-      : appMode === "practice"
-      ? practiceSource === "featured"
-        ? featuredLibrary.passageResponse?.translation.abbreviation ?? "WEB"
-        : savedLibrary.selectedSavedPassage?.translationAbbreviation ?? "WEB"
-      : appMode === "bible"
-        ? bibleLibrary.translations.find(
-            (translation) => translation.id === bibleLibrary.selectedTranslationId,
-          )?.abbreviation ?? bibleLibrary.selectedTranslationId.toUpperCase()
-        : "WEB";
+  const { error, isLoading, practiceReference, practiceSubtitle, practiceTitle, translationName } =
+    useAppDisplayState({
+      appMode,
+      bibleError: bibleLibrary.error,
+      bibleIsLoading: bibleLibrary.isLoading,
+      featuredError: featuredLibrary.error,
+      featuredIsLoading: featuredLibrary.isLoading,
+      featuredPassageResponse: featuredLibrary.passageResponse,
+      practiceSource,
+      savedError: savedLibrary.error,
+      savedIsLoading: savedLibrary.isLoading,
+      savedPassageCount: savedLibrary.savedPassages.length,
+      selectedBook: bibleLibrary.selectedBook,
+      selectedChapter: bibleLibrary.selectedChapter,
+      selectedSavedPassage: savedLibrary.selectedSavedPassage,
+      selectedTranslationId: bibleLibrary.selectedTranslationId,
+      selectedVerseNumbers: readerSelection.selectedVerseNumbers,
+      translations: bibleLibrary.translations,
+    });
   const saveInput = usePassageSaveInput({
     appMode,
     bibleChapter: bibleLibrary.chapter,
@@ -170,211 +87,53 @@ function App() {
     selectedBook: bibleLibrary.selectedBook,
     selectedChapter: bibleLibrary.selectedChapter,
     selectedTranslationId: bibleLibrary.selectedTranslationId,
-    selectedVerseNumbers,
+    selectedVerseNumbers: readerSelection.selectedVerseNumbers,
     translations: bibleLibrary.translations,
   });
-  const isCurrentPassageSaved = savedLibrary.isPassageSaved(saveInput);
-
-  useEffect(() => {
-    if (!saveInput) return;
-
-    setSaveTitle(saveInput.title);
-    setSaveCategory(saveInput.category);
-  }, [saveInput]);
-
-  useEffect(() => {
-    if (appMode === "library" && !savedLibrary.savedPassages.length) {
-      setAppMode("home");
-    }
-  }, [appMode, savedLibrary.savedPassages.length]);
-
-  useEffect(() => {
-    if (practiceSource === "saved" && !savedLibrary.savedPassages.length) {
-      setPracticeSource("featured");
-    }
-  }, [practiceSource, savedLibrary.savedPassages.length]);
-
-  // Changing the selected practice source should always restart the typing session.
-  useEffect(() => {
-    resetPractice();
-  }, [
+  const {
+    isCurrentPassageSaved,
+    saveCategory,
+    saveCurrentPassage,
+    saveTitle,
+    setSaveCategory,
+    setSaveTitle,
+  } = useSavePassageForm({
     appMode,
+    isPassageSaved: savedLibrary.isPassageSaved,
+    saveInput,
+    savePassage: savedLibrary.savePassage,
+  });
+  useAppModeEffects({
+    appMode,
+    bibleSelectedBookId: bibleLibrary.selectedBookId,
+    bibleSelectedChapter: bibleLibrary.selectedChapter,
+    featuredSelectedPassageId: featuredLibrary.selectedPassageId,
     practiceSource,
-    featuredLibrary.selectedPassageId,
-    bibleLibrary.selectedBookId,
-    bibleLibrary.selectedChapter,
     resetPractice,
-    selectedVerseNumbers,
-    savedLibrary.selectedSavedPassageId,
-  ]);
-
-  /**
-   * Picks a new curated passage and keeps the user in the featured practice flow.
-   */
-  function handleNextFeaturedPassage() {
-    featuredLibrary.selectRandomPassage();
-    setPracticeSource("featured");
-    setAppMode("practice");
-    resetPractice();
-  }
-
-  function handleStartFeaturedPractice() {
-    featuredLibrary.selectRandomPassage();
-    setPracticeSource("featured");
-    setAppMode("practice");
-    resetPractice();
-  }
-
-  function handleStartFeaturedCategory(category: string) {
-    const categoryPassages = featuredLibrary.passages.filter((passage) => passage.theme === category);
-    const passage = categoryPassages[Math.floor(Math.random() * categoryPassages.length)];
-    if (!passage) return;
-
-    featuredLibrary.selectPassage(passage.id);
-    setPracticeSource("featured");
-    setAppMode("practice");
-    resetPractice();
-  }
-
-  function handleOpenBible() {
-    setAppMode("bible");
-    resetPractice();
-  }
-
-  function handleOpenLibrary() {
-    const selectedPassageStillExists = savedLibrary.savedPassages.some((passage) => {
-      return passage.id === savedLibrary.selectedSavedPassageId;
-    });
-
-    if (!selectedPassageStillExists && savedLibrary.savedPassages[0]) {
-      savedLibrary.selectSavedPassage(savedLibrary.savedPassages[0].id);
-    }
-
-    setAppMode("library");
-    resetPractice();
-  }
-
-  function handleTranslationChange(translationId: string) {
-    bibleLibrary.selectTranslation(translationId);
-    setSelectedVerseNumbers([]);
-    setAppMode("bible");
-    resetPractice();
-  }
-
-  function handleBookChange(bookId: string) {
-    bibleLibrary.selectBook(bookId);
-    setSelectedVerseNumbers([]);
-    setAppMode("bible");
-    resetPractice();
-  }
-
-  function handleBibleChapterChange(chapterNumber: number) {
-    bibleLibrary.selectChapter(chapterNumber);
-    setSelectedVerseNumbers([]);
-    setAppMode("bible");
-    resetPractice();
-  }
-
-  function handleRandomFeaturedReaderPassage() {
-    const passage = featuredLibrary.passages[Math.floor(Math.random() * featuredLibrary.passages.length)];
-    if (!passage) return;
-
-    bibleLibrary.selectTranslation(passage.translationId);
-    bibleLibrary.selectBook(passage.bookId);
-    bibleLibrary.selectChapter(passage.chapter);
-    setSelectedVerseNumbers(
-      Array.from(
-        { length: passage.endVerse - passage.startVerse + 1 },
-        (_, index) => passage.startVerse + index,
-      ),
-    );
-    setReaderFocusKey((currentKey) => currentKey + 1);
-    setAppMode("bible");
-    resetPractice();
-  }
-
-  function handleClearBibleSelection() {
-    setSelectedVerseNumbers([]);
-    resetPractice();
-  }
-
-  /**
-   * Saves the current featured passage or Bible reader selection through the saved-passage hook.
-   */
-  function handleSaveCurrentPassage() {
-    if (!saveInput) return;
-
-    const passageToSave =
-      appMode === "bible"
-        ? {
-            ...saveInput,
-            title: saveTitle.trim() || saveInput.title,
-            category: saveCategory,
-          }
-        : saveInput;
-
-    savedLibrary.savePassage(passageToSave);
-  }
-
-  function handleSelectSavedPassage(passageId: string) {
-    savedLibrary.selectSavedPassage(passageId);
-    setPracticeSource("saved");
-    setAppMode("practice");
-    resetPractice();
-  }
-
-  function handleSelectFeaturedPractice() {
-    setPracticeSource("featured");
-    setAppMode("practice");
-    resetPractice();
-  }
-
-  function handleRemoveSavedPassage(passageId: string) {
-    savedLibrary.removePassage(passageId);
-    resetPractice();
-  }
-
-  /**
-   * Click selection is intentionally single-verse.
-   * Drag selection handles multi-verse ranges in the reader component.
-   */
-  function handleSelectReaderVerse(verseNumber: number) {
-    setSelectedVerseNumbers((currentVerseNumbers) => {
-      if (currentVerseNumbers.includes(verseNumber)) {
-        return currentVerseNumbers.filter((currentVerseNumber) => currentVerseNumber !== verseNumber);
-      }
-
-      return [...currentVerseNumbers, verseNumber].sort((firstVerse, secondVerse) => firstVerse - secondVerse);
-    });
-  }
-
-  function handleSelectReaderRange(startVerse: number, endVerse: number) {
-    const firstVerse = Math.min(startVerse, endVerse);
-    const lastVerse = Math.max(startVerse, endVerse);
-    const verseRange = Array.from(
-      { length: lastVerse - firstVerse + 1 },
-      (_, index) => firstVerse + index,
-    );
-
-    setSelectedVerseNumbers((currentVerseNumbers) => {
-      const nextVerseNumbers = new Set([...currentVerseNumbers, ...verseRange]);
-      return [...nextVerseNumbers].sort((firstSelectedVerse, secondSelectedVerse) => {
-        return firstSelectedVerse - secondSelectedVerse;
-      });
-    });
-  }
-
-  function getBibleReaderReference() {
-    if (!bibleLibrary.selectedBook) return "";
-
-    return selectedVerseNumbers.length
-      ? formatSelectedVerseReference(
-          bibleLibrary.selectedBook.name,
-          bibleLibrary.selectedChapter,
-          selectedVerseNumbers,
-        )
-      : formatChapterReference(bibleLibrary.selectedBook.name, bibleLibrary.selectedChapter);
-  }
+    savedPassageCount: savedLibrary.savedPassages.length,
+    savedSelectedPassageId: savedLibrary.selectedSavedPassageId,
+    selectedVerseNumbers: readerSelection.selectedVerseNumbers,
+    setAppMode,
+    setPracticeSource,
+  });
+  const appActions = useAppActions({
+    clearReaderSelection: readerSelection.clearSelection,
+    featuredPassages: featuredLibrary.passages,
+    focusSelectedVerses: readerSelection.focusSelectedVerses,
+    removeSavedPassage: savedLibrary.removePassage,
+    resetPractice,
+    savedPassages: savedLibrary.savedPassages,
+    selectBibleBook: bibleLibrary.selectBook,
+    selectBibleChapter: bibleLibrary.selectChapter,
+    selectFeaturedPassage: featuredLibrary.selectPassage,
+    selectRandomFeaturedPassage: featuredLibrary.selectRandomPassage,
+    selectSavedPassage: savedLibrary.selectSavedPassage,
+    selectTranslation: bibleLibrary.selectTranslation,
+    selectedSavedPassageId: savedLibrary.selectedSavedPassageId,
+    setAppMode,
+    setPracticeSource,
+    setSelectedVerseNumbers: readerSelection.setSelectedVerseNumbers,
+  });
 
   if (isLoading) {
     return (
@@ -412,7 +171,7 @@ function App() {
           saveTitle={saveTitle}
           showPracticeSave={appMode === "practice" && practiceSource === "featured"}
           onSaveCategoryChange={setSaveCategory}
-          onSaveCurrentPassage={handleSaveCurrentPassage}
+          onSaveCurrentPassage={saveCurrentPassage}
           onSaveTitleChange={setSaveTitle}
           onSelectMode={setAppMode}
         />
@@ -425,7 +184,7 @@ function App() {
           currentBatch={currentBatch}
           currentBatchIndex={currentBatchIndex}
           featuredHomeCategories={featuredHomeCategories}
-          focusSelectedVerseKey={readerFocusKey}
+          focusSelectedVerseKey={readerSelection.focusSelectedVerseKey}
           isBatchComplete={isBatchComplete}
           isPassageComplete={isPassageComplete}
           practiceSource={practiceSource}
@@ -437,7 +196,7 @@ function App() {
           selectedBibleChapter={bibleLibrary.selectedChapter}
           selectedSavedPassageId={savedLibrary.selectedSavedPassageId}
           selectedTranslationId={bibleLibrary.selectedTranslationId}
-          selectedVerseNumbers={selectedVerseNumbers}
+          selectedVerseNumbers={readerSelection.selectedVerseNumbers}
           stats={stats}
           status={status}
           totalBatches={batches.length}
@@ -445,23 +204,23 @@ function App() {
           translationName={translationName}
           typedText={typedText}
           wpm={wpm}
-          onClearBibleSelection={handleClearBibleSelection}
-          onNextFeaturedPassage={handleNextFeaturedPassage}
-          onOpenBible={handleOpenBible}
-          onOpenLibrary={handleOpenLibrary}
-          onRandomFeaturedReaderPassage={handleRandomFeaturedReaderPassage}
-          onRemoveSavedPassage={handleRemoveSavedPassage}
+          onClearBibleSelection={appActions.clearBibleSelection}
+          onNextFeaturedPassage={appActions.nextFeaturedPassage}
+          onOpenBible={appActions.openBible}
+          onOpenLibrary={appActions.openLibrary}
+          onRandomFeaturedReaderPassage={appActions.randomFeaturedReaderPassage}
+          onRemoveSavedPassage={appActions.removeSavedPractice}
           onResetPractice={resetPractice}
           onResetStats={resetStats}
-          onSelectBibleBook={handleBookChange}
-          onSelectBibleChapter={handleBibleChapterChange}
-          onSelectFeaturedCategory={handleStartFeaturedCategory}
-          onSelectFeaturedPractice={handleSelectFeaturedPractice}
-          onSelectReaderRange={handleSelectReaderRange}
-          onSelectReaderVerse={handleSelectReaderVerse}
-          onSelectSavedPassage={handleSelectSavedPassage}
-          onSelectTranslation={handleTranslationChange}
-          onStartFeaturedPractice={handleStartFeaturedPractice}
+          onSelectBibleBook={appActions.selectReaderBook}
+          onSelectBibleChapter={appActions.selectReaderChapter}
+          onSelectFeaturedCategory={appActions.startFeaturedCategory}
+          onSelectFeaturedPractice={appActions.selectFeaturedPractice}
+          onSelectReaderRange={readerSelection.selectRange}
+          onSelectReaderVerse={readerSelection.selectVerse}
+          onSelectSavedPassage={appActions.selectSavedPractice}
+          onSelectTranslation={appActions.selectReaderTranslation}
+          onStartFeaturedPractice={appActions.startFeaturedPractice}
           onTypingChange={handleTyping}
           onUpdateSavedPassage={savedLibrary.updatePassage}
         />
