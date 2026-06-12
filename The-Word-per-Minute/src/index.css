@@ -149,8 +149,37 @@ article {
   background-color: #052e2b;
 }
 
+.dark .bg-emerald-100 {
+  background-color: #064e3b;
+}
+
+.dark .bg-emerald-800 {
+  background-color: #047857;
+}
+
+.dark .hover\:bg-emerald-700:hover {
+  background-color: #059669;
+}
+
+.dark .bg-rose-50 {
+  background-color: #450a0a;
+}
+
+.dark .bg-rose-100 {
+  background-color: #7f1d1d;
+}
+
 .dark .bg-sky-50 {
   background-color: #082f49;
+}
+
+.dark .bg-slate-900,
+.dark .bg-slate-950 {
+  background-color: #020617;
+}
+
+.dark .bg-slate-400 {
+  background-color: #64748b;
 }
 
 .dark .text-slate-950,
@@ -176,6 +205,15 @@ article {
   color: #a7f3d0;
 }
 
+.dark .text-emerald-800 {
+  color: #a7f3d0;
+}
+
+.dark .text-rose-900,
+.dark .text-rose-800 {
+  color: #fecdd3;
+}
+
 .dark .text-sky-900 {
   color: #bae6fd;
 }
@@ -188,6 +226,18 @@ article {
 
 .dark .border-amber-200 {
   border-color: #92400e;
+}
+
+.dark .border-emerald-200 {
+  border-color: #047857;
+}
+
+.dark .border-rose-200 {
+  border-color: #be123c;
+}
+
+.dark .border-sky-200 {
+  border-color: #0369a1;
 }
 
 .dark .ring-slate-100,
@@ -205,4 +255,8 @@ article {
 .dark textarea {
   background-color: #0f172a;
   color: #f8fafc;
+}
+
+.dark .focus\:bg-white:focus {
+  background-color: #0f172a;
 }
