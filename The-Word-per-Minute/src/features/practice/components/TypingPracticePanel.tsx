@@ -1,4 +1,4 @@
-import type { TypingMetrics } from "../types/practice";
+import type { TypingMetrics } from "../../../types/practice";
 
 type TypingPracticePanelProps = {
   accuracy: number;

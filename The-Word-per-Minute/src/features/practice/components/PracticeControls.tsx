@@ -1,4 +1,4 @@
-import type { SavedPassage } from "../types/savedPassage";
+import type { SavedPassage } from "../../../types/savedPassage";
 
 type PracticeSource = "featured" | "saved";
 

@@ -1,4 +1,4 @@
-import type { PracticeStats } from "../types/practice";
+import type { PracticeStats } from "../../../types/practice";
 
 type PersonalBestsProps = {
   stats: PracticeStats;
