@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ModeHeaderPanel } from "./components/ModeHeaderPanel";
 import { ModeContent } from "./components/ModeContent";
 import { PageShell } from "./components/PageShell";
 import { CUSTOM_SAVED_CATEGORY, DEFAULT_SAVED_CATEGORY } from "./constants/savedPassageCategories";
 import { useFeaturedPassages } from "./hooks/useFeaturedPassages";
 import { usePassageSaveInput } from "./hooks/usePassageSaveInput";
+import { usePracticeSession } from "./hooks/usePracticeSession";
 import { usePracticeStats } from "./hooks/usePracticeStats";
 import { useSavedPassages } from "./hooks/useSavedPassages";
 import { useTheme } from "./hooks/useTheme";
@@ -12,7 +13,6 @@ import { useVerseLibrary } from "./hooks/useVerseLibrary";
 import type { AppMode, PracticeSource } from "./types/appMode";
 import { buildPracticeBatches } from "./utils/practiceBatches";
 import { formatChapterReference, formatSelectedVerseReference } from "./utils/passageReference";
-import { calculatePracticeSessionMetrics, countCorrectCharacters } from "./utils/typingMetrics";
 
 /**
  * Main practice screen.
@@ -22,15 +22,10 @@ function App() {
   const [appMode, setAppMode] = useState<AppMode>("home");
   const [practiceSource, setPracticeSource] = useState<PracticeSource>("featured");
   const { theme, toggleTheme } = useTheme();
-  const [currentBatchIndex, setCurrentBatchIndex] = useState(0);
-  const [typedText, setTypedText] = useState("");
   const [selectedVerseNumbers, setSelectedVerseNumbers] = useState<number[]>([]);
   const [readerFocusKey, setReaderFocusKey] = useState(0);
   const [saveTitle, setSaveTitle] = useState("");
   const [saveCategory, setSaveCategory] = useState(DEFAULT_SAVED_CATEGORY);
-  const [startedAt, setStartedAt] = useState<number | null>(null);
-  const [finishedAt, setFinishedAt] = useState<number | null>(null);
-  const savedFinishAt = useRef<number | null>(null);
   const { stats, recordCompletedAttempt, resetStats } = usePracticeStats();
   const featuredLibrary = useFeaturedPassages();
   const bibleLibrary = useVerseLibrary();
@@ -86,22 +81,21 @@ function App() {
         ? bibleBatches
           : [];
 
-  // Session metrics are calculated from all completed batches, not only the visible one.
   const {
     accuracy,
     currentBatch,
+    currentBatchIndex,
+    handleTyping,
     isBatchComplete,
     isPassageComplete,
     progress,
+    resetPractice,
     status,
-    targetText,
-    wpm,
-  } = calculatePracticeSessionMetrics({
-    batches,
-    currentBatchIndex,
     typedText,
-    startedAt,
-    finishedAt,
+    wpm,
+  } = usePracticeSession({
+    batches,
+    onCompletedAttempt: recordCompletedAttempt,
   });
   const isLoading =
     appMode === "home"
@@ -209,40 +203,10 @@ function App() {
     featuredLibrary.selectedPassageId,
     bibleLibrary.selectedBookId,
     bibleLibrary.selectedChapter,
+    resetPractice,
     selectedVerseNumbers,
     savedLibrary.selectedSavedPassageId,
   ]);
-
-  useEffect(() => {
-    if (!isBatchComplete || isPassageComplete) return;
-
-    // Pause briefly so the user can see the completed batch before auto-advancing.
-    const advanceTimer = window.setTimeout(() => {
-      setCurrentBatchIndex((index) => index + 1);
-      setTypedText("");
-    }, 500);
-
-    return () => window.clearTimeout(advanceTimer);
-  }, [isBatchComplete, isPassageComplete]);
-
-  useEffect(() => {
-    if (!isPassageComplete || !finishedAt || savedFinishAt.current === finishedAt) return;
-
-    // Store stats once per completed passage, even if React re-renders the result.
-    savedFinishAt.current = finishedAt;
-    recordCompletedAttempt(wpm, accuracy);
-  }, [accuracy, finishedAt, isPassageComplete, recordCompletedAttempt, wpm]);
-
-  /**
-   * Clears the current attempt while keeping the selected passage or Bible reader location.
-   */
-  function resetPractice() {
-    setCurrentBatchIndex(0);
-    setTypedText("");
-    setStartedAt(null);
-    setFinishedAt(null);
-    savedFinishAt.current = null;
-  }
 
   /**
    * Picks a new curated passage and keeps the user in the featured practice flow.
@@ -410,33 +374,6 @@ function App() {
           selectedVerseNumbers,
         )
       : formatChapterReference(bibleLibrary.selectedBook.name, bibleLibrary.selectedChapter);
-  }
-
-  /**
-   * Starts the timer on the first typed character and locks the finish time at completion.
-   */
-  function handleTyping(nextTypedText: string) {
-    const limitedText = nextTypedText.slice(0, targetText.length);
-
-    if (!startedAt && limitedText.length > 0) {
-      setStartedAt(Date.now());
-    }
-
-    setTypedText(limitedText);
-
-    const nextCorrectCharacters = countCorrectCharacters(targetText, limitedText);
-    const nextBatchComplete =
-      targetText.length > 0 &&
-      limitedText.length === targetText.length &&
-      nextCorrectCharacters === targetText.length;
-    const nextPassageComplete = nextBatchComplete && currentBatchIndex === batches.length - 1;
-
-    if (nextPassageComplete) {
-      setFinishedAt((currentFinishedAt) => currentFinishedAt ?? Date.now());
-      return;
-    }
-
-    setFinishedAt(null);
   }
 
   if (isLoading) {
