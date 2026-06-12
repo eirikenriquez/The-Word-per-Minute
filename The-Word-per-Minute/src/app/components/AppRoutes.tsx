@@ -1,15 +1,23 @@
 import type { ReactNode } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 import type { AppMode } from "../../types/appMode";
 
 type AppRoutesProps = {
-  appMode: AppMode;
   pages: Record<AppMode, ReactNode>;
 };
 
 /**
- * Small app-level router for the current state-based navigation.
- * Each page is built before it gets here, so this component only chooses which page to show.
+ * URL router for the main app pages.
+ * Each page is built before it gets here, so this component only maps paths to screens.
  */
-export function AppRoutes({ appMode, pages }: AppRoutesProps) {
-  return pages[appMode];
+export function AppRoutes({ pages }: AppRoutesProps) {
+  return (
+    <Routes>
+      <Route element={pages.home} path="/" />
+      <Route element={pages.practice} path="/practice" />
+      <Route element={pages.bible} path="/bible" />
+      <Route element={pages.library} path="/library" />
+      <Route element={<Navigate replace to="/" />} path="*" />
+    </Routes>
+  );
 }

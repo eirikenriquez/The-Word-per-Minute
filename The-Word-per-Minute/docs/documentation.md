@@ -1,21 +1,21 @@
 # The Word per Minute Documentation
 
-Document version: `120626.1.d`
-Last updated: 12/06/26
+Document version: `130626.1.a`
+Last updated: 13/06/26
 Update rule: only update this file when explicitly requested by the project owner.
 
 ## Purpose
 
-The Word per Minute is a Bible typing practice app. The app helps users practise typing while reading, discovering, selecting, saving, and revisiting Bible passages.
+The Word per Minute is a Bible typing practice app. It helps users practise typing while reading, discovering, selecting, saving, and revisiting Bible passages.
 
 The current product direction is:
 
-- Home mode gives users a starting screen for choosing how to practise.
-- Practice mode is the central typing page.
-- Featured passages introduce users to curated scripture through Practice mode.
-- Bible mode lets users read chapters and select verses to save.
-- Library mode lets users manage saved passages.
-- Saved passages can be practised from the central Practice mode.
+- Home introduces the app and lets users choose a practice direction.
+- Practice is the central typing page.
+- Featured passages introduce users to curated scripture.
+- Bible lets users read chapters and select verses to save.
+- Library lets users manage saved passages.
+- Saved passages can be practised from Practice.
 
 Version history and documentation update notes live in `docs/update-notes.md`.
 
@@ -24,64 +24,86 @@ Version history and documentation update notes live in `docs/update-notes.md`.
 - Vite
 - React
 - TypeScript
+- React Router
 - Tailwind CSS
 - Local JSON Bible data
-- `localStorage` for saved passages, personal best stats, and light/dark theme preference
+- `localStorage` for saved passages, personal best stats, and theme preference
 
 No backend, database, authentication, or external Bible API is currently used.
 
 ## High-Level Architecture
 
-The app currently follows a simple React architecture:
-
-- Components handle UI rendering.
-- Hooks manage reusable state and data-loading flows.
-- Services provide API-shaped access to local data and browser storage.
-- Utils handle pure calculations and formatting.
-- Types define shared TypeScript data shapes.
-- JSON data provides Bible translations, books, chapters, and featured passages.
-- Global CSS provides first-pass light/dark theme mapping and shared motion behavior.
-
-The current design is closer to:
+The app now uses URL-based React routing with feature folders.
 
 ```txt
-UI components -> hooks -> services -> local JSON / localStorage
+URL route -> App.tsx coordinator -> page component -> feature components/hooks
 ```
 
-## App Modes
+The main architecture layers are:
+
+- `src/app`: app-level routing, navigation header, and coordination hooks.
+- `src/pages`: screen-level page components.
+- `src/features`: feature-specific UI, hooks, and services.
+- `src/shared`: reusable shell/theme pieces.
+- `src/services`: shared service layer for local Bible data.
+- `src/types`: shared TypeScript data shapes.
+- `src/utils`: shared pure helper functions.
+- `src/data`: local Bible and featured-passage JSON data.
+
+## Routes
+
+The app is a single page app with proper URL routes:
+
+```txt
+/          Home
+/practice  Practice
+/bible     Bible
+/library   Library
+```
+
+`BrowserRouter` is installed in `src/main.tsx`.
+
+`src/app/components/AppRoutes.tsx` maps paths to pages:
+
+```txt
+/          -> HomePage
+/practice  -> PracticePage
+/bible     -> BiblePage
+/library   -> LibraryPage
+```
+
+`App.tsx` derives the current `appMode` from the URL path. The URL is now the source of truth for which screen is active.
+
+## App Pages
 
 ### Home
 
-Home mode is the current starting screen.
+Home is the starting screen.
 
 It:
 
 - shows primary entry points for Practice, Bible, and Library,
-- shows a calm intro section and start-practice action,
-- shows featured passage categories generated from curated passage themes,
-- starts a random featured passage when the user chooses Practice,
-- starts a random featured passage from a chosen theme when the user chooses a category,
+- starts a random featured passage,
+- starts a random featured passage from a chosen category,
 - opens the Bible reader,
-- opens Library mode when saved passages exist.
+- opens Library when saved passages exist.
 
 ### Practice
 
-Practice mode is the central typing flow.
+Practice is the central typing flow.
 
 It:
 
-- can practise a featured passage,
-- can practise a saved passage,
-- keeps a `practiceSource` of `featured` or `saved`,
-- resolves passage references into real verse text,
-- presents the selected passage as typing batches,
+- practises a featured passage or saved passage,
+- presents the passage as short typing batches,
 - calculates WPM and accuracy,
-- allows saving featured passages using their original title and category,
-- shows source controls through `PracticeControls`.
+- records personal bests locally,
+- allows featured passages to be saved,
+- lets users switch between Featured and Saved practice sources.
 
 ### Bible
 
-Bible mode is the reader and passage-selection flow.
+Bible is the reader and passage-selection flow.
 
 It:
 
@@ -92,223 +114,212 @@ It:
 - lets the user save selected verses with a custom title and category,
 - can open a random featured passage in context and scroll to the selected verses.
 
-Bible mode does not currently show the typing input directly.
+Bible does not show typing input directly.
 
 ### Library
 
-Library mode is the user's local saved-passage library.
+Library is the saved-passage management flow.
 
 It:
 
 - reads saved passages from `localStorage`,
 - displays saved passages as cards,
 - supports category filtering,
-- lets the user choose a saved passage to practise in Practice mode,
+- lets the user practise a saved passage,
 - lets the user edit saved passage title/category,
 - lets the user remove saved passages.
 
-Library mode does not render the typing input directly.
+Library does not show typing input directly.
 
-## Main Runtime Flow
+## App Runtime Flow
 
 ```txt
-App starts
-  -> loads Featured, Bible, Saved, and Stats hooks
-  -> starts in Home mode
-  -> user chooses Practice, Bible, Library, or a Featured category
-  -> resolves current passage/chapter data
-  -> builds typing batches in Practice mode
-  -> renders mode controls
-  -> renders typing panel for Practice
-  -> records completed stats
+main.tsx
+  -> BrowserRouter
+  -> App.tsx
+    -> derives appMode from URL
+    -> loads feature hooks
+    -> builds display state
+    -> builds cross-page actions
+    -> renders PageShell
+    -> renders ModeHeaderPanel
+    -> renders AppRoutes
+      -> renders HomePage, PracticePage, BiblePage, or LibraryPage
 ```
 
-## Main Files And Responsibilities
+`App.tsx` is the app coordinator. It does not contain the main UI for each screen; pages and features do that.
+
+## Current File Structure
+
+```txt
+src/
+  app/
+    components/
+      AppRoutes.tsx
+      ModeHeaderPanel.tsx
+    hooks/
+      useAppActions.ts
+      useAppDisplayState.ts
+      useAppModeEffects.ts
+  features/
+    bible-reader/
+      components/
+        BibleControls.tsx
+        BibleReaderSelector.tsx
+      hooks/
+        useReaderSelection.ts
+        useVerseLibrary.ts
+    featured-passages/
+      components/
+        HomeCategoryPicker.tsx
+      hooks/
+        useFeaturedPassages.ts
+        usePassageCategories.ts
+    practice/
+      components/
+        PersonalBests.tsx
+        PracticeBatchDisplay.tsx
+        PracticeControls.tsx
+        TypingPracticePanel.tsx
+      hooks/
+        usePracticeBatches.ts
+        usePracticeSession.ts
+        usePracticeStats.ts
+    saved-passages/
+      components/
+        SavedPassageControls.tsx
+      hooks/
+        usePassageSaveInput.ts
+        useSavePassageForm.ts
+        useSavedPassages.ts
+      services/
+        savedPassageRepository.ts
+  pages/
+    BiblePage.tsx
+    HomePage.tsx
+    LibraryPage.tsx
+    PracticePage.tsx
+  shared/
+    components/
+      PageShell.tsx
+    hooks/
+      useTheme.ts
+  services/
+    verseService.ts
+  constants/
+    savedPassageCategories.ts
+  data/
+    bibles/
+    featuredPassages.json
+    translations.json
+  types/
+  utils/
+  App.tsx
+  index.css
+  main.tsx
+```
+
+## Key Files And Responsibilities
+
+### `src/main.tsx`
+
+Mounts React and wraps the app in `BrowserRouter`.
 
 ### `src/App.tsx`
 
-Main coordinator for the app.
+Coordinates the app.
 
 Responsibilities:
 
-- tracks active mode: `home`, `practice`, `bible`, or `library`,
-- tracks practice source: `featured` or `saved`,
-- tracks light/dark theme state,
-- tracks typing state,
-- tracks selected Bible verses,
-- handles save title/category state,
-- connects hooks to UI components,
-- decides which controls and practice panels are visible,
-- records completed attempts,
-- stores the theme preference in `localStorage`.
+- derives `appMode` from the current URL,
+- keeps `practiceSource` state,
+- loads feature hooks,
+- builds practice batches,
+- builds display labels/loading/error state,
+- builds cross-page actions,
+- renders the shell, header, and route table.
 
-This file is currently the largest file and may eventually be worth splitting once the app flow stabilises.
+### `src/app/components/AppRoutes.tsx`
 
-### `src/components/HomeCategoryPicker.tsx`
+Defines the app's URL routes and maps them to page elements.
 
-Displays the Home starting screen.
+### `src/app/components/ModeHeaderPanel.tsx`
 
-Responsibilities:
+Shows:
 
-- calm intro section and start-practice action,
-- primary cards for Practice, Bible, and Library,
-- featured-theme category cards,
-- disabled Library state when no saved passages exist,
-- sends selected direction/category back to `App`.
+- current title/subtitle/reference,
+- Home / Practice / Bible / Library navigation,
+- contextual save controls.
 
-### `src/components/PracticeControls.tsx`
+### `src/shared/components/PageShell.tsx`
 
-Displays Practice mode controls.
+Provides the shared page frame:
 
-Responsibilities:
-
-- switches between Featured and Saved practice sources,
-- shows a saved-passage dropdown when the source is Saved,
-- starts the next featured passage,
-- opens Library from saved practice,
-- resets the current attempt.
-
-### `src/components/BibleControls.tsx`
-
-Displays Bible reader controls.
-
-Responsibilities:
-
-- translation picker,
-- book picker,
-- chapter picker,
-- random featured passage action.
-
-### `src/components/BibleReaderSelector.tsx`
-
-Displays the Bible chapter text.
-
-Responsibilities:
-
-- shows verse numbers,
-- handles click-to-toggle verse selection,
-- handles drag-to-select ranges,
-- clears selection,
-- scrolls to a selected passage when opened from random featured passage.
-
-### `src/components/SavedPassageControls.tsx`
-
-Displays the saved passage library.
-
-Responsibilities:
-
-- category filter,
-- saved passage cards,
-- practice action,
-- edit action,
-- remove action,
-- empty states.
-
-The practice action sends the selected saved passage back to Practice mode.
-
-### Other Components
-
-- `PracticeBatchDisplay.tsx`: shows the current typing batch and character-level progress.
-- `TypingPracticePanel.tsx`: shows typing input, WPM, accuracy, progress, and completion messaging.
-- `PersonalBests.tsx`: shows locally saved personal best stats.
-
-## Theme And Motion
-
-### `src/index.css`
-
-Global styling and first-pass theme behavior.
-
-Responsibilities:
-
-- imports Tailwind CSS,
-- resets body margin,
-- enables smooth scrolling,
-- defines shared button and form-control transitions,
-- defines subtle button hover/active motion,
-- defines page transition animations,
-- respects `prefers-reduced-motion`,
-- maps the current light Tailwind utility palette into a dark-mode palette,
-- adds dark-mode hover glow/border feedback.
-
-Theme state is owned by `App.tsx` and applied by toggling the `dark` class on the document root.
-
-## Hooks
-
-### `src/hooks/useFeaturedPassages.ts`
-
-Loads featured passage references and resolves the selected passage into verse text through `verseService`.
-
-### `src/hooks/useVerseLibrary.ts`
-
-Handles Bible reader state:
-
-- selected translation,
-- selected book,
-- selected chapter,
-- loaded chapter text,
-- loading and error state.
-
-### `src/hooks/useSavedPassages.ts`
-
-Handles saved passage state:
-
-- reading saved passages from storage,
-- saving a passage,
-- updating saved passage title/category,
-- removing a passage,
-- selecting a saved passage,
-- resolving a saved passage into verse text.
-
-### `src/hooks/usePracticeStats.ts`
-
-Handles local typing stats:
-
-- personal best WPM,
-- personal best accuracy,
-- completed attempt recording,
-- stats reset.
-
-## Services
+- app title,
+- theme button,
+- main content width,
+- shared background.
 
 ### `src/services/verseService.ts`
 
-Local Bible data service with an API-shaped interface.
+API-shaped local data service.
 
 Responsibilities:
 
 - list translations,
-- list books for a translation,
+- list books,
 - load a chapter,
 - list featured passages,
-- resolve a featured passage,
-- resolve a saved/custom passage reference.
+- resolve featured passages,
+- resolve saved/custom passage references.
 
-This file is intentionally shaped like an API client so the app can later move from local JSON to hosted data without rewriting the UI.
+This should stay API-shaped so local JSON can later move to hosted data.
 
-### `src/services/savedPassageRepository.ts`
+## Feature Responsibilities
 
-`localStorage` repository for saved passages.
+### `features/practice`
 
-Responsibilities:
+Owns typing practice UI and logic:
 
-- list saved passages,
-- save a passage,
-- update saved passage title/category,
-- remove a passage.
+- source controls,
+- typing batch display,
+- typing input,
+- personal bests,
+- WPM/accuracy session state,
+- practice batch creation.
 
-This is the likely future swap point for a database-backed saved passage repository.
+### `features/bible-reader`
 
-## Utilities
+Owns Bible browsing and verse selection:
 
-- `src/utils/practiceBatches.ts`: splits verses into short typing batches.
-- `src/utils/typingMetrics.ts`: calculates WPM, accuracy, progress, completion state, and punctuation-normalised character matching.
-- `src/utils/passageReference.ts`: formats readable passage references such as `Matthew 5:3-10`.
-- `src/utils/errors.ts`: converts unknown caught errors into displayable messages.
+- translation/book/chapter controls,
+- full chapter reader,
+- click and drag verse selection,
+- reader data-loading state.
+
+### `features/featured-passages`
+
+Owns curated passage discovery:
+
+- featured passage loading,
+- random featured passage selection,
+- category derivation,
+- Home category picker UI.
+
+### `features/saved-passages`
+
+Owns saved passage storage and management:
+
+- save input creation,
+- save form state,
+- saved passage list/edit/remove state,
+- saved passage cards,
+- `localStorage` repository.
 
 ## Data Files
 
-- `src/data/featuredPassages.json`: curated passage list used by featured-source Practice mode and random featured passage in Bible mode.
-- `src/data/translations.json`: list of available Bible translations.
+- `src/data/featuredPassages.json`: curated passage references.
+- `src/data/translations.json`: available translations.
 - `src/data/bibles/web`: local World English Bible data.
 
 Bible data structure:
@@ -322,147 +333,66 @@ src/data/bibles/web/
     ...
 ```
 
-The manifest lets the app list books without loading the whole Bible at once.
+## Theme And Motion
+
+`src/index.css` handles global styling:
+
+- Tailwind import,
+- smooth scrolling,
+- page transitions,
+- reduced-motion support,
+- light/dark color mapping,
+- subtle hover and focus behaviour.
+
+Theme state is managed by `src/shared/hooks/useTheme.ts` and stored in `localStorage`.
 
 ## Important Types
 
+- `src/types/appMode.ts`: route-backed app modes and practice source.
 - `src/types/featuredPassage.ts`: featured passage references and resolved passage responses.
-- `src/types/savedPassage.ts`: saved passages and save inputs.
+- `src/types/savedPassage.ts`: saved passage and save input shapes.
 - `src/types/verse.ts`: Bible translation, book, chapter, and verse shapes.
 - `src/types/practiceBatch.ts`: typing batch shape.
-
-Saved passage sources currently include:
-
-- `featured`
-- `bible`
-- `chapter` for old localStorage compatibility
-
-## Current File Structure
-
-```txt
-The-Word-per-Minute/
-  docs/
-    documentation.md
-    update-notes.md
-  public/
-  scripts/
-    importPublicDomainBible.mjs
-  src/
-    components/
-      BibleControls.tsx
-      BibleReaderSelector.tsx
-      HomeCategoryPicker.tsx
-      PersonalBests.tsx
-      PracticeBatchDisplay.tsx
-      PracticeControls.tsx
-      SavedPassageControls.tsx
-      TypingPracticePanel.tsx
-    data/
-      bibles/
-        web/
-          manifest.json
-          books/
-      featuredPassages.json
-      translations.json
-    hooks/
-      useFeaturedPassages.ts
-      usePracticeStats.ts
-      useSavedPassages.ts
-      useVerseLibrary.ts
-    services/
-      savedPassageRepository.ts
-      verseService.ts
-    types/
-      featuredPassage.ts
-      practice.ts
-      practiceBatch.ts
-      savedPassage.ts
-      verse.ts
-    utils/
-      errors.ts
-      passageReference.ts
-      practiceBatches.ts
-      typingMetrics.ts
-    App.tsx
-    index.css
-    main.tsx
-```
 
 ## Current Architecture Diagram
 
 ```mermaid
-classDiagram
-  class App {
-    appMode
-    practiceSource
-    theme
-    typedText
-    selectedVerseNumbers
-    saveTitle
-    saveCategory
-    handleToggleTheme()
-    resetPractice()
-    handleTyping()
-    handleSaveCurrentPassage()
-  }
-
-  class HomeCategoryPicker
-  class PracticeControls
-  class BibleControls
-  class BibleReaderSelector
-  class SavedPassageControls
-  class PracticeBatchDisplay
-  class TypingPracticePanel
-  class PersonalBests
-
-  class useFeaturedPassages
-  class useVerseLibrary
-  class useSavedPassages
-  class usePracticeStats
-  class verseService
-  class savedPassageRepository
-  class typingMetrics
-
-  App --> HomeCategoryPicker
-  App --> PracticeControls
-  App --> BibleControls
-  App --> BibleReaderSelector
-  App --> SavedPassageControls
-  App --> PracticeBatchDisplay
-  App --> TypingPracticePanel
-  App --> PersonalBests
-  App --> useFeaturedPassages
-  App --> useVerseLibrary
-  App --> useSavedPassages
-  App --> usePracticeStats
-  useFeaturedPassages --> verseService
-  useVerseLibrary --> verseService
-  useSavedPassages --> verseService
-  useSavedPassages --> savedPassageRepository
-  App --> typingMetrics
+flowchart TD
+  main["main.tsx + BrowserRouter"] --> app["App.tsx"]
+  app --> shell["PageShell"]
+  app --> header["ModeHeaderPanel"]
+  app --> routes["AppRoutes"]
+  routes --> home["HomePage"]
+  routes --> practice["PracticePage"]
+  routes --> bible["BiblePage"]
+  routes --> library["LibraryPage"]
+  home --> featured["features/featured-passages"]
+  practice --> practiceFeature["features/practice"]
+  bible --> bibleFeature["features/bible-reader"]
+  library --> savedFeature["features/saved-passages"]
+  featured --> verseService["verseService"]
+  practiceFeature --> verseService
+  bibleFeature --> verseService
+  savedFeature --> verseService
+  savedFeature --> localStorage["localStorage"]
 ```
 
 ## Known Technical Debt
 
-- `App.tsx` is doing a lot of orchestration and may eventually need splitting.
+- `App.tsx` still coordinates many feature hooks and may later benefit from page-specific container hooks.
+- `ModeHeaderPanel` still has shared navigation and save UI mixed together.
 - Category management is still hardcoded/generated from featured themes.
-- The app has local JSON Bible data only; no hosted API yet.
 - User data is local-only through `localStorage`.
-- Theme mapping is currently handled with global CSS overrides rather than full Tailwind design tokens.
-- The current architecture is beginner-friendly, but `App.tsx` is not yet deeply modular.
-- Browser automation from this environment was blocked by the local Windows sandbox, so full click-through testing is still manual for now.
+- The app uses local JSON Bible data only; no hosted API yet.
+- Theme mapping is handled through global CSS rather than formal design tokens.
+- Automated tests are not set up yet.
 
 ## Likely Next Architecture Steps
 
-1. Browser-test the Home, Practice, Bible, and Library flows manually.
-2. Browser-test light/dark mode, hover states, and page transitions manually.
-3. Consider extracting mode-specific containers:
-   - `HomeMode`
-   - `PracticeMode`
-   - `BibleMode`
-   - `LibraryMode`
-4. Consider a small `PassagePracticeController` hook if typing state keeps growing.
+1. Manually test `/`, `/practice`, `/bible`, and `/library`.
+2. Confirm refresh and browser back/forward work correctly on each route.
+3. Consider extracting page-specific container hooks if `App.tsx` grows again.
+4. Consider splitting `ModeHeaderPanel` into navigation and save controls.
 5. Keep `verseService` API-shaped so local JSON can later move to hosted data.
 6. Keep saved passage storage behind `savedPassageRepository` so it can later move to a database.
-7. Consider moving theme colors into named design tokens once the palette stabilises.
-8. Add automated tests later when the project is ready for test tooling.
+7. Add automated tests once the app flow stabilises.

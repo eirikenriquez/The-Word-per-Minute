@@ -1,7 +1,7 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `120626.1.d`
-Last updated: 12/06/26
+Current documentation version: `130626.1.a`
+Last updated: 13/06/26
 
 ## Update Rule
 
@@ -24,18 +24,32 @@ ddmmyy.major.minor
 Example:
 
 ```txt
-120626.1.a
+130626.1.a
 ```
 
-- `120626` means 12/06/26.
+- `130626` means 13/06/26.
 - `1` means the first major documentation snapshot for that day.
 - `a` means the first small revision of that snapshot.
 
 Suggested next versions:
 
-- Small same-day documentation update: `120626.1.e`
-- Larger same-day documentation update: `120626.2.a`
+- Small same-day documentation update: `130626.1.b`
+- Larger same-day documentation update: `130626.2.a`
 - First update on a new day: `ddmmyy.1.a`
+
+## `130626.1.a`
+
+This version updates the documentation after the modularity and routing refactor.
+
+It updates:
+
+- the app architecture from state-based modes to URL-based React Router routes,
+- the current routes: `/`, `/practice`, `/bible`, and `/library`,
+- the current feature-folder structure,
+- the responsibilities of `src/app`, `src/pages`, `src/features`, and `src/shared`,
+- the `App.tsx` runtime flow,
+- the current architecture diagram,
+- known technical debt and likely next architecture steps.
 
 ## `120626.1.d`
 

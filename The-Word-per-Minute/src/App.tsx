@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AppRoutes } from "./app/components/AppRoutes";
 import { ModeHeaderPanel } from "./app/components/ModeHeaderPanel";
 import { useAppActions } from "./app/hooks/useAppActions";
@@ -27,7 +28,9 @@ import type { AppMode, PracticeSource } from "./types/appMode";
  * Owns the active mode, current typing state, and the handoff between data hooks and UI panels.
  */
 function App() {
-  const [appMode, setAppMode] = useState<AppMode>("home");
+  const location = useLocation();
+  const navigate = useNavigate();
+  const appMode = getAppModeFromPathname(location.pathname);
   const [practiceSource, setPracticeSource] = useState<PracticeSource>("featured");
   const { theme, toggleTheme } = useTheme();
   const readerSelection = useReaderSelection();
@@ -107,6 +110,13 @@ function App() {
     saveInput,
     savePassage: savedLibrary.savePassage,
   });
+  const selectAppMode = useCallback(
+    (mode: AppMode) => {
+      navigate(getPathnameFromAppMode(mode));
+    },
+    [navigate],
+  );
+
   useAppModeEffects({
     appMode,
     bibleSelectedBookId: bibleLibrary.selectedBookId,
@@ -117,7 +127,7 @@ function App() {
     savedPassageCount: savedLibrary.savedPassages.length,
     savedSelectedPassageId: savedLibrary.selectedSavedPassageId,
     selectedVerseNumbers: readerSelection.selectedVerseNumbers,
-    setAppMode,
+    setAppMode: selectAppMode,
     setPracticeSource,
   });
   const appActions = useAppActions({
@@ -134,7 +144,7 @@ function App() {
     selectSavedPassage: savedLibrary.selectSavedPassage,
     selectTranslation: bibleLibrary.selectTranslation,
     selectedSavedPassageId: savedLibrary.selectedSavedPassageId,
-    setAppMode,
+    setAppMode: selectAppMode,
     setPracticeSource,
     setSelectedVerseNumbers: readerSelection.setSelectedVerseNumbers,
   });
@@ -177,11 +187,10 @@ function App() {
           onSaveCategoryChange={setSaveCategory}
           onSaveCurrentPassage={saveCurrentPassage}
           onSaveTitleChange={setSaveTitle}
-          onSelectMode={setAppMode}
+          onSelectMode={selectAppMode}
         />
 
         <AppRoutes
-          appMode={appMode}
           pages={{
             bible: (
               <BiblePage
@@ -254,6 +263,20 @@ function App() {
       </div>
     </PageShell>
   );
+}
+
+function getAppModeFromPathname(pathname: string): AppMode {
+  if (pathname.startsWith("/practice")) return "practice";
+  if (pathname.startsWith("/bible")) return "bible";
+  if (pathname.startsWith("/library")) return "library";
+  return "home";
+}
+
+function getPathnameFromAppMode(mode: AppMode) {
+  if (mode === "practice") return "/practice";
+  if (mode === "bible") return "/bible";
+  if (mode === "library") return "/library";
+  return "/";
 }
 
 export default App;
