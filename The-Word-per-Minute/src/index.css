@@ -89,6 +89,10 @@ article {
   background-color: #334155;
 }
 
+.dark .hover\:bg-white:hover {
+  background-color: #334155;
+}
+
 .dark .hover\:bg-slate-800:hover {
   background-color: #475569;
 }
