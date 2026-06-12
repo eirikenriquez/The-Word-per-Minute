@@ -1,21 +1,12 @@
-import { BibleControls } from "./BibleControls";
-import { BibleReaderSelector } from "./BibleReaderSelector";
-import { HomeCategoryPicker } from "./HomeCategoryPicker";
-import { PersonalBests } from "./PersonalBests";
-import { PracticeBatchDisplay } from "./PracticeBatchDisplay";
-import { PracticeControls } from "./PracticeControls";
-import { SavedPassageControls } from "./SavedPassageControls";
-import { TypingPracticePanel } from "./TypingPracticePanel";
+import { BiblePage } from "../pages/BiblePage";
+import { HomePage, type FeaturedHomeCategory } from "../pages/HomePage";
+import { LibraryPage } from "../pages/LibraryPage";
+import { PracticePage } from "../pages/PracticePage";
 import type { AppMode, PracticeSource } from "../types/appMode";
 import type { PracticeStats, TypingMetrics } from "../types/practice";
 import type { PracticeBatch } from "../types/practiceBatch";
 import type { SavedPassage, SavedPassageUpdate } from "../types/savedPassage";
 import type { BibleChapter, BookSummary, Translation } from "../types/verse";
-
-type FeaturedHomeCategory = {
-  count: number;
-  label: string;
-};
 
 type ModeContentProps = {
   accuracy: number;
@@ -49,6 +40,7 @@ type ModeContentProps = {
   onNextFeaturedPassage: () => void;
   onOpenBible: () => void;
   onOpenLibrary: () => void;
+  onRandomFeaturedReaderPassage: () => void;
   onRemoveSavedPassage: (passageId: string) => void;
   onResetPractice: () => void;
   onResetStats: () => void;
@@ -63,12 +55,11 @@ type ModeContentProps = {
   onStartFeaturedPractice: () => void;
   onTypingChange: (typedText: string) => void;
   onUpdateSavedPassage: (passageId: string, update: SavedPassageUpdate) => SavedPassage | null;
-  onRandomFeaturedReaderPassage: () => void;
 };
 
 /**
- * Renders the mode-specific body below the shared mode header.
- * App still owns state; this component keeps the view branching out of App.
+ * Tiny mode switcher.
+ * Each page owns its screen layout, while App still owns cross-page state for now.
  */
 export function ModeContent({
   accuracy,
@@ -102,6 +93,7 @@ export function ModeContent({
   onNextFeaturedPassage,
   onOpenBible,
   onOpenLibrary,
+  onRandomFeaturedReaderPassage,
   onRemoveSavedPassage,
   onResetPractice,
   onResetStats,
@@ -116,101 +108,80 @@ export function ModeContent({
   onStartFeaturedPractice,
   onTypingChange,
   onUpdateSavedPassage,
-  onRandomFeaturedReaderPassage,
 }: ModeContentProps) {
+  if (appMode === "home") {
+    return (
+      <HomePage
+        featuredHomeCategories={featuredHomeCategories}
+        savedPassageCount={savedPassages.length}
+        onOpenBible={onOpenBible}
+        onOpenLibrary={onOpenLibrary}
+        onSelectFeaturedCategory={onSelectFeaturedCategory}
+        onStartFeaturedPractice={onStartFeaturedPractice}
+      />
+    );
+  }
+
+  if (appMode === "practice" && currentBatch) {
+    return (
+      <PracticePage
+        accuracy={accuracy}
+        currentBatch={currentBatch}
+        currentBatchIndex={currentBatchIndex}
+        isBatchComplete={isBatchComplete}
+        isPassageComplete={isPassageComplete}
+        practiceSource={practiceSource}
+        practiceTitle={practiceTitle}
+        progress={progress}
+        savedPassages={savedPassages}
+        selectedSavedPassageId={selectedSavedPassageId}
+        stats={stats}
+        status={status}
+        totalBatches={totalBatches}
+        translationName={translationName}
+        typedText={typedText}
+        wpm={wpm}
+        onNextFeaturedPassage={onNextFeaturedPassage}
+        onOpenLibrary={onOpenLibrary}
+        onResetPractice={onResetPractice}
+        onResetStats={onResetStats}
+        onSelectFeaturedPractice={onSelectFeaturedPractice}
+        onSelectSavedPassage={onSelectSavedPassage}
+        onTypingChange={onTypingChange}
+      />
+    );
+  }
+
+  if (appMode === "bible") {
+    return (
+      <BiblePage
+        bibleBooks={bibleBooks}
+        bibleChapter={bibleChapter}
+        focusSelectedVerseKey={focusSelectedVerseKey}
+        selectedBibleBook={selectedBibleBook}
+        selectedBibleBookId={selectedBibleBookId}
+        selectedBibleChapter={selectedBibleChapter}
+        selectedTranslationId={selectedTranslationId}
+        selectedVerseNumbers={selectedVerseNumbers}
+        translations={translations}
+        onClearBibleSelection={onClearBibleSelection}
+        onRandomFeaturedReaderPassage={onRandomFeaturedReaderPassage}
+        onSelectBibleBook={onSelectBibleBook}
+        onSelectBibleChapter={onSelectBibleChapter}
+        onSelectReaderRange={onSelectReaderRange}
+        onSelectReaderVerse={onSelectReaderVerse}
+        onSelectTranslation={onSelectTranslation}
+      />
+    );
+  }
+
   return (
-    <>
-      {appMode === "home" ? (
-        <HomeCategoryPicker
-          featuredCategories={featuredHomeCategories}
-          hasSavedPassages={savedPassages.length > 0}
-          savedPassageCount={savedPassages.length}
-          onOpenBible={onOpenBible}
-          onOpenLibrary={onOpenLibrary}
-          onStartFeatured={onStartFeaturedPractice}
-          onStartFeaturedCategory={onSelectFeaturedCategory}
-        />
-      ) : appMode === "practice" ? (
-        <PracticeControls
-          hasSavedPassages={savedPassages.length > 0}
-          practiceSource={practiceSource}
-          savedPassages={savedPassages}
-          selectedSavedPassageId={selectedSavedPassageId}
-          onNextFeaturedPassage={onNextFeaturedPassage}
-          onOpenLibrary={onOpenLibrary}
-          onReset={onResetPractice}
-          onSelectFeaturedPractice={onSelectFeaturedPractice}
-          onSelectSavedPractice={onSelectSavedPassage}
-        />
-      ) : appMode === "bible" ? (
-        <>
-          <BibleControls
-            books={bibleBooks}
-            selectedBook={selectedBibleBook}
-            selectedBookId={selectedBibleBookId}
-            selectedChapter={selectedBibleChapter}
-            selectedTranslationId={selectedTranslationId}
-            translations={translations}
-            onSelectBook={onSelectBibleBook}
-            onSelectChapter={onSelectBibleChapter}
-            onSelectTranslation={onSelectTranslation}
-            onRandomFeaturedPassage={onRandomFeaturedReaderPassage}
-          />
-          <BibleReaderSelector
-            chapter={bibleChapter}
-            selectedBook={selectedBibleBook}
-            selectedChapter={selectedBibleChapter}
-            selectedVerseNumbers={selectedVerseNumbers}
-            focusSelectedVerseKey={focusSelectedVerseKey}
-            onClearSelection={onClearBibleSelection}
-            onSelectRange={onSelectReaderRange}
-            onSelectVerse={onSelectReaderVerse}
-          />
-        </>
-      ) : (
-        <SavedPassageControls
-          savedPassages={savedPassages}
-          selectedSavedPassageId={selectedSavedPassageId}
-          onRemovePassage={onRemoveSavedPassage}
-          onSelectSavedPassage={onSelectSavedPassage}
-          onUpdatePassage={onUpdateSavedPassage}
-        />
-      )}
-
-      {appMode === "practice" && currentBatch && (
-        <>
-          <PracticeBatchDisplay
-            batch={currentBatch}
-            batchNumber={currentBatchIndex + 1}
-            totalBatches={totalBatches}
-            translationName={translationName}
-            typedText={typedText}
-          />
-
-          <TypingPracticePanel
-            accuracy={accuracy}
-            completionActionLabel={
-              isPassageComplete && practiceSource === "featured" ? "Next Passage" : undefined
-            }
-            completionMessage={
-              isPassageComplete
-                ? `Complete. You finished ${practiceTitle} at ${wpm} WPM with ${accuracy}% accuracy.`
-                : "Batch complete. Moving to the next verses..."
-            }
-            isComplete={isBatchComplete}
-            onCompletionAction={
-              isPassageComplete && practiceSource === "featured" ? onNextFeaturedPassage : undefined
-            }
-            progress={Math.min(progress, 100)}
-            status={status}
-            typedText={typedText}
-            wpm={wpm}
-            onTypingChange={onTypingChange}
-          />
-
-          <PersonalBests stats={stats} onResetStats={onResetStats} />
-        </>
-      )}
-    </>
+    <LibraryPage
+      savedPassages={savedPassages}
+      selectedSavedPassageId={selectedSavedPassageId}
+      onRemoveSavedPassage={onRemoveSavedPassage}
+      onSelectSavedPassage={onSelectSavedPassage}
+      onUpdateSavedPassage={onUpdateSavedPassage}
+    />
   );
 }
