@@ -1,28 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { ReactNode } from "react";
 import { ModeHeaderPanel } from "./components/ModeHeaderPanel";
 import { ModeContent } from "./components/ModeContent";
+import { PageShell } from "./components/PageShell";
+import { CUSTOM_SAVED_CATEGORY, DEFAULT_SAVED_CATEGORY } from "./constants/savedPassageCategories";
 import { useFeaturedPassages } from "./hooks/useFeaturedPassages";
+import { usePassageSaveInput } from "./hooks/usePassageSaveInput";
 import { usePracticeStats } from "./hooks/usePracticeStats";
 import { useSavedPassages } from "./hooks/useSavedPassages";
+import { useTheme } from "./hooks/useTheme";
 import { useVerseLibrary } from "./hooks/useVerseLibrary";
 import type { AppMode, PracticeSource } from "./types/appMode";
-import type { SavePassageInput } from "./types/savedPassage";
 import { buildPracticeBatches } from "./utils/practiceBatches";
-import {
-  formatChapterReference,
-  formatPassageReference,
-  formatSelectedVerseReference,
-} from "./utils/passageReference";
+import { formatChapterReference, formatSelectedVerseReference } from "./utils/passageReference";
 import { calculatePracticeSessionMetrics, countCorrectCharacters } from "./utils/typingMetrics";
-type Theme = "light" | "dark";
-
-const DEFAULT_SAVED_CATEGORY = "Memorise";
-const CUSTOM_SAVED_CATEGORY = "Other";
-
-function getDefaultSavedCategory(theme: string, categories: string[]) {
-  return categories.includes(theme) ? theme : DEFAULT_SAVED_CATEGORY;
-}
 
 /**
  * Main practice screen.
@@ -31,10 +21,7 @@ function getDefaultSavedCategory(theme: string, categories: string[]) {
 function App() {
   const [appMode, setAppMode] = useState<AppMode>("home");
   const [practiceSource, setPracticeSource] = useState<PracticeSource>("featured");
-  const [theme, setTheme] = useState<Theme>(() => {
-    const savedTheme = window.localStorage.getItem("theme");
-    return savedTheme === "dark" || savedTheme === "light" ? savedTheme : "light";
-  });
+  const { theme, toggleTheme } = useTheme();
   const [currentBatchIndex, setCurrentBatchIndex] = useState(0);
   const [typedText, setTypedText] = useState("");
   const [selectedVerseNumbers, setSelectedVerseNumbers] = useState<number[]>([]);
@@ -180,85 +167,19 @@ function App() {
             (translation) => translation.id === bibleLibrary.selectedTranslationId,
           )?.abbreviation ?? bibleLibrary.selectedTranslationId.toUpperCase()
         : "WEB";
-  const saveInput = useMemo((): SavePassageInput | null => {
-    if (appMode === "practice" && practiceSource === "featured" && featuredLibrary.passageResponse) {
-      const { passage, reference, translation, bookName } = featuredLibrary.passageResponse;
-
-      return {
-        title: passage.title,
-        theme: passage.theme,
-        category: getDefaultSavedCategory(passage.theme, savedPassageCategories),
-        reference,
-        translationId: passage.translationId,
-        translationAbbreviation: translation.abbreviation,
-        bookId: passage.bookId,
-        bookName,
-        chapter: passage.chapter,
-        startVerse: passage.startVerse,
-        endVerse: passage.endVerse,
-        source: "featured",
-      };
-    }
-
-    if (appMode === "bible" && bibleLibrary.chapter && bibleLibrary.selectedBook) {
-      const translation = bibleLibrary.translations.find(
-        (availableTranslation) => availableTranslation.id === bibleLibrary.selectedTranslationId,
-      );
-      const lastVerse = bibleLibrary.chapter.verses[bibleLibrary.chapter.verses.length - 1];
-
-      if (!lastVerse) return null;
-
-      const startVerse = selectedVerseNumbers[0] ?? 1;
-      const endVerse = selectedVerseNumbers[selectedVerseNumbers.length - 1] ?? lastVerse.number;
-      const reference = selectedVerseNumbers.length
-        ? formatSelectedVerseReference(
-            bibleLibrary.selectedBook.name,
-            bibleLibrary.selectedChapter,
-            selectedVerseNumbers,
-          )
-        : formatPassageReference(
-            bibleLibrary.selectedBook.name,
-            bibleLibrary.selectedChapter,
-            startVerse,
-            endVerse,
-          );
-
-      return {
-        title: reference,
-        category: DEFAULT_SAVED_CATEGORY,
-        theme: selectedVerseNumbers.length ? "Selected verses" : "Bible reader",
-        reference,
-        translationId: bibleLibrary.selectedTranslationId,
-        translationAbbreviation: translation?.abbreviation ?? bibleLibrary.selectedTranslationId.toUpperCase(),
-        bookId: bibleLibrary.selectedBook.id,
-        bookName: bibleLibrary.selectedBook.name,
-        chapter: bibleLibrary.selectedChapter,
-        startVerse,
-        endVerse,
-        selectedVerses: selectedVerseNumbers.length ? selectedVerseNumbers : undefined,
-        source: "bible",
-      };
-    }
-
-    return null;
-  }, [
-    bibleLibrary.chapter,
-    bibleLibrary.selectedBook,
-    bibleLibrary.selectedChapter,
-    bibleLibrary.selectedTranslationId,
-    bibleLibrary.translations,
-    featuredLibrary.passageResponse,
+  const saveInput = usePassageSaveInput({
     appMode,
+    bibleChapter: bibleLibrary.chapter,
+    featuredPassageResponse: featuredLibrary.passageResponse,
     practiceSource,
     savedPassageCategories,
+    selectedBook: bibleLibrary.selectedBook,
+    selectedChapter: bibleLibrary.selectedChapter,
+    selectedTranslationId: bibleLibrary.selectedTranslationId,
     selectedVerseNumbers,
-  ]);
+    translations: bibleLibrary.translations,
+  });
   const isCurrentPassageSaved = savedLibrary.isPassageSaved(saveInput);
-
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
-    window.localStorage.setItem("theme", theme);
-  }, [theme]);
 
   useEffect(() => {
     if (!saveInput) return;
@@ -518,13 +439,9 @@ function App() {
     setFinishedAt(null);
   }
 
-  function handleToggleTheme() {
-    setTheme((currentTheme) => (currentTheme === "light" ? "dark" : "light"));
-  }
-
   if (isLoading) {
     return (
-      <PageShell theme={theme} onToggleTheme={handleToggleTheme}>
+      <PageShell theme={theme} onToggleTheme={toggleTheme}>
         <div className="rounded-xl border bg-white p-4 text-slate-600 shadow-sm">
           Loading practice passage...
         </div>
@@ -534,7 +451,7 @@ function App() {
 
   if (error || (appMode === "practice" && !currentBatch)) {
     return (
-      <PageShell theme={theme} onToggleTheme={handleToggleTheme}>
+      <PageShell theme={theme} onToggleTheme={toggleTheme}>
         <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800">
           {error ?? (practiceSource === "saved" ? "Save a passage first." : "No practice passage found.")}
         </div>
@@ -543,7 +460,7 @@ function App() {
   }
 
   return (
-    <PageShell theme={theme} onToggleTheme={handleToggleTheme}>
+    <PageShell theme={theme} onToggleTheme={toggleTheme}>
       <div key={appMode} className="page-transition grid gap-4">
         <ModeHeaderPanel
           appMode={appMode}
@@ -613,36 +530,6 @@ function App() {
         />
       </div>
     </PageShell>
-  );
-}
-
-type PageShellProps = {
-  children: ReactNode;
-  theme: Theme;
-  onToggleTheme: () => void;
-};
-
-/**
- * Shared page frame for loading, error, and practice states.
- */
-function PageShell({ children, theme, onToggleTheme }: PageShellProps) {
-  return (
-    <div className="min-h-screen bg-stone-50 text-slate-900">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-4">
-          <h1 className="text-xl font-bold tracking-normal text-slate-950">The Word per Minute</h1>
-          <button
-            className="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
-            type="button"
-            onClick={onToggleTheme}
-          >
-            {theme === "light" ? "Dark" : "Light"}
-          </button>
-        </div>
-      </header>
-
-      <main className="mx-auto grid max-w-5xl gap-4 px-4 py-6">{children}</main>
-    </div>
   );
 }
 
