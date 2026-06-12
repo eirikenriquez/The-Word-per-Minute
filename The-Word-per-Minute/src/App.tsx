@@ -1,19 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import { BibleControls } from "./components/BibleControls";
-import { BibleReaderSelector } from "./components/BibleReaderSelector";
-import { HomeCategoryPicker } from "./components/HomeCategoryPicker";
 import { ModeHeaderPanel } from "./components/ModeHeaderPanel";
-import { PersonalBests } from "./components/PersonalBests";
-import { PracticeBatchDisplay } from "./components/PracticeBatchDisplay";
-import { PracticeControls } from "./components/PracticeControls";
-import { SavedPassageControls } from "./components/SavedPassageControls";
-import { TypingPracticePanel } from "./components/TypingPracticePanel";
+import { ModeContent } from "./components/ModeContent";
 import { useFeaturedPassages } from "./hooks/useFeaturedPassages";
 import { usePracticeStats } from "./hooks/usePracticeStats";
 import { useSavedPassages } from "./hooks/useSavedPassages";
 import { useVerseLibrary } from "./hooks/useVerseLibrary";
-import type { AppMode } from "./types/appMode";
+import type { AppMode, PracticeSource } from "./types/appMode";
 import type { SavePassageInput } from "./types/savedPassage";
 import { buildPracticeBatches } from "./utils/practiceBatches";
 import {
@@ -22,8 +15,6 @@ import {
   formatSelectedVerseReference,
 } from "./utils/passageReference";
 import { calculatePracticeSessionMetrics, countCorrectCharacters } from "./utils/typingMetrics";
-
-type PracticeSource = "featured" | "saved";
 type Theme = "light" | "dark";
 
 const DEFAULT_SAVED_CATEGORY = "Memorise";
@@ -572,97 +563,54 @@ function App() {
           onSelectMode={setAppMode}
         />
 
-        {appMode === "home" ? (
-          <HomeCategoryPicker
-            featuredCategories={featuredHomeCategories}
-            hasSavedPassages={savedLibrary.savedPassages.length > 0}
-            savedPassageCount={savedLibrary.savedPassages.length}
-            onOpenBible={handleOpenBible}
-            onOpenLibrary={handleOpenLibrary}
-            onStartFeatured={handleStartFeaturedPractice}
-            onStartFeaturedCategory={handleStartFeaturedCategory}
-          />
-        ) : appMode === "practice" ? (
-          <PracticeControls
-            hasSavedPassages={savedLibrary.savedPassages.length > 0}
-            practiceSource={practiceSource}
-            savedPassages={savedLibrary.savedPassages}
-            selectedSavedPassageId={savedLibrary.selectedSavedPassageId}
-            onNextFeaturedPassage={handleNextFeaturedPassage}
-            onOpenLibrary={handleOpenLibrary}
-            onReset={resetPractice}
-            onSelectFeaturedPractice={handleSelectFeaturedPractice}
-            onSelectSavedPractice={handleSelectSavedPassage}
-          />
-        ) : appMode === "bible" ? (
-          <>
-            <BibleControls
-              books={bibleLibrary.books}
-              selectedBook={bibleLibrary.selectedBook}
-              selectedBookId={bibleLibrary.selectedBookId}
-              selectedChapter={bibleLibrary.selectedChapter}
-              selectedTranslationId={bibleLibrary.selectedTranslationId}
-              translations={bibleLibrary.translations}
-              onSelectBook={handleBookChange}
-              onSelectChapter={handleBibleChapterChange}
-              onSelectTranslation={handleTranslationChange}
-              onRandomFeaturedPassage={handleRandomFeaturedReaderPassage}
-            />
-            <BibleReaderSelector
-              chapter={bibleLibrary.chapter}
-              selectedBook={bibleLibrary.selectedBook}
-              selectedChapter={bibleLibrary.selectedChapter}
-              selectedVerseNumbers={selectedVerseNumbers}
-              focusSelectedVerseKey={readerFocusKey}
-              onClearSelection={handleClearBibleSelection}
-              onSelectRange={handleSelectReaderRange}
-              onSelectVerse={handleSelectReaderVerse}
-            />
-          </>
-        ) : (
-          <SavedPassageControls
-            savedPassages={savedLibrary.savedPassages}
-            selectedSavedPassageId={savedLibrary.selectedSavedPassageId}
-            onRemovePassage={handleRemoveSavedPassage}
-            onSelectSavedPassage={handleSelectSavedPassage}
-            onUpdatePassage={savedLibrary.updatePassage}
-          />
-        )}
-
-        {appMode === "practice" && currentBatch && (
-          <>
-            <PracticeBatchDisplay
-              batch={currentBatch}
-              batchNumber={currentBatchIndex + 1}
-              totalBatches={batches.length}
-              translationName={translationName}
-              typedText={typedText}
-            />
-
-            <TypingPracticePanel
-              accuracy={accuracy}
-              completionActionLabel={
-                isPassageComplete && practiceSource === "featured" ? "Next Passage" : undefined
-              }
-              completionMessage={
-                isPassageComplete
-                  ? `Complete. You finished ${practiceTitle} at ${wpm} WPM with ${accuracy}% accuracy.`
-                  : "Batch complete. Moving to the next verses..."
-              }
-              isComplete={isBatchComplete}
-              onCompletionAction={
-                isPassageComplete && practiceSource === "featured" ? handleNextFeaturedPassage : undefined
-              }
-              progress={Math.min(progress, 100)}
-              status={status}
-              typedText={typedText}
-              wpm={wpm}
-              onTypingChange={handleTyping}
-            />
-
-            <PersonalBests stats={stats} onResetStats={resetStats} />
-          </>
-        )}
+        <ModeContent
+          accuracy={accuracy}
+          appMode={appMode}
+          bibleBooks={bibleLibrary.books}
+          bibleChapter={bibleLibrary.chapter}
+          currentBatch={currentBatch}
+          currentBatchIndex={currentBatchIndex}
+          featuredHomeCategories={featuredHomeCategories}
+          focusSelectedVerseKey={readerFocusKey}
+          isBatchComplete={isBatchComplete}
+          isPassageComplete={isPassageComplete}
+          practiceSource={practiceSource}
+          practiceTitle={practiceTitle}
+          progress={progress}
+          savedPassages={savedLibrary.savedPassages}
+          selectedBibleBook={bibleLibrary.selectedBook}
+          selectedBibleBookId={bibleLibrary.selectedBookId}
+          selectedBibleChapter={bibleLibrary.selectedChapter}
+          selectedSavedPassageId={savedLibrary.selectedSavedPassageId}
+          selectedTranslationId={bibleLibrary.selectedTranslationId}
+          selectedVerseNumbers={selectedVerseNumbers}
+          stats={stats}
+          status={status}
+          totalBatches={batches.length}
+          translations={bibleLibrary.translations}
+          translationName={translationName}
+          typedText={typedText}
+          wpm={wpm}
+          onClearBibleSelection={handleClearBibleSelection}
+          onNextFeaturedPassage={handleNextFeaturedPassage}
+          onOpenBible={handleOpenBible}
+          onOpenLibrary={handleOpenLibrary}
+          onRandomFeaturedReaderPassage={handleRandomFeaturedReaderPassage}
+          onRemoveSavedPassage={handleRemoveSavedPassage}
+          onResetPractice={resetPractice}
+          onResetStats={resetStats}
+          onSelectBibleBook={handleBookChange}
+          onSelectBibleChapter={handleBibleChapterChange}
+          onSelectFeaturedCategory={handleStartFeaturedCategory}
+          onSelectFeaturedPractice={handleSelectFeaturedPractice}
+          onSelectReaderRange={handleSelectReaderRange}
+          onSelectReaderVerse={handleSelectReaderVerse}
+          onSelectSavedPassage={handleSelectSavedPassage}
+          onSelectTranslation={handleTranslationChange}
+          onStartFeaturedPractice={handleStartFeaturedPractice}
+          onTypingChange={handleTyping}
+          onUpdateSavedPassage={savedLibrary.updatePassage}
+        />
       </div>
     </PageShell>
   );
