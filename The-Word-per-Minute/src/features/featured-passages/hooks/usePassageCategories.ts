@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { CUSTOM_SAVED_CATEGORY, DEFAULT_SAVED_CATEGORY } from "../constants/savedPassageCategories";
-import type { FeaturedPassage } from "../types/featuredPassage";
+import { CUSTOM_SAVED_CATEGORY, DEFAULT_SAVED_CATEGORY } from "../../../constants/savedPassageCategories";
+import type { FeaturedPassage } from "../../../types/featuredPassage";
 
 /**
  * Builds category lists from featured passage themes.

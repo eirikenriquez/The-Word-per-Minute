@@ -4,6 +4,8 @@ import { ModeContent } from "./components/ModeContent";
 import { PageShell } from "./components/PageShell";
 import { useReaderSelection } from "./features/bible-reader/hooks/useReaderSelection";
 import { useVerseLibrary } from "./features/bible-reader/hooks/useVerseLibrary";
+import { useFeaturedPassages } from "./features/featured-passages/hooks/useFeaturedPassages";
+import { usePassageCategories } from "./features/featured-passages/hooks/usePassageCategories";
 import { usePracticeBatches } from "./features/practice/hooks/usePracticeBatches";
 import { usePracticeSession } from "./features/practice/hooks/usePracticeSession";
 import { usePracticeStats } from "./features/practice/hooks/usePracticeStats";
@@ -13,8 +15,6 @@ import { useSavedPassages } from "./features/saved-passages/hooks/useSavedPassag
 import { useAppActions } from "./hooks/useAppActions";
 import { useAppDisplayState } from "./hooks/useAppDisplayState";
 import { useAppModeEffects } from "./hooks/useAppModeEffects";
-import { useFeaturedPassages } from "./hooks/useFeaturedPassages";
-import { usePassageCategories } from "./hooks/usePassageCategories";
 import { useTheme } from "./hooks/useTheme";
 import type { AppMode, PracticeSource } from "./types/appMode";
 

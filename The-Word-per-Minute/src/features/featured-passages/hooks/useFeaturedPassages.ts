@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { verseService } from "../services/verseService";
-import type { FeaturedPassage, PassageResponse } from "../types/featuredPassage";
-import { getErrorMessage } from "../utils/errors";
+import { verseService } from "../../../services/verseService";
+import type { FeaturedPassage, PassageResponse } from "../../../types/featuredPassage";
+import { getErrorMessage } from "../../../utils/errors";
 
 /**
  * Loads the curated featured-passage list and resolves the selected prompt

@@ -1,4 +1,4 @@
-import { HomeCategoryPicker } from "../components/HomeCategoryPicker";
+import { HomeCategoryPicker } from "../features/featured-passages/components/HomeCategoryPicker";
 
 export type FeaturedHomeCategory = {
   count: number;
