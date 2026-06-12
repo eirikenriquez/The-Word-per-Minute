@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { AppRoutes } from "./app/components/AppRoutes";
 import { ModeHeaderPanel } from "./app/components/ModeHeaderPanel";
-import { ModeContent } from "./app/components/ModeContent";
 import { useAppActions } from "./app/hooks/useAppActions";
 import { useAppDisplayState } from "./app/hooks/useAppDisplayState";
 import { useAppModeEffects } from "./app/hooks/useAppModeEffects";
@@ -14,6 +14,10 @@ import { usePracticeStats } from "./features/practice/hooks/usePracticeStats";
 import { usePassageSaveInput } from "./features/saved-passages/hooks/usePassageSaveInput";
 import { useSavePassageForm } from "./features/saved-passages/hooks/useSavePassageForm";
 import { useSavedPassages } from "./features/saved-passages/hooks/useSavedPassages";
+import { BiblePage } from "./pages/BiblePage";
+import { HomePage } from "./pages/HomePage";
+import { LibraryPage } from "./pages/LibraryPage";
+import { PracticePage } from "./pages/PracticePage";
 import { PageShell } from "./shared/components/PageShell";
 import { useTheme } from "./shared/hooks/useTheme";
 import type { AppMode, PracticeSource } from "./types/appMode";
@@ -176,53 +180,76 @@ function App() {
           onSelectMode={setAppMode}
         />
 
-        <ModeContent
-          accuracy={accuracy}
+        <AppRoutes
           appMode={appMode}
-          bibleBooks={bibleLibrary.books}
-          bibleChapter={bibleLibrary.chapter}
-          currentBatch={currentBatch}
-          currentBatchIndex={currentBatchIndex}
-          featuredHomeCategories={featuredHomeCategories}
-          focusSelectedVerseKey={readerSelection.focusSelectedVerseKey}
-          isBatchComplete={isBatchComplete}
-          isPassageComplete={isPassageComplete}
-          practiceSource={practiceSource}
-          practiceTitle={practiceTitle}
-          progress={progress}
-          savedPassages={savedLibrary.savedPassages}
-          selectedBibleBook={bibleLibrary.selectedBook}
-          selectedBibleBookId={bibleLibrary.selectedBookId}
-          selectedBibleChapter={bibleLibrary.selectedChapter}
-          selectedSavedPassageId={savedLibrary.selectedSavedPassageId}
-          selectedTranslationId={bibleLibrary.selectedTranslationId}
-          selectedVerseNumbers={readerSelection.selectedVerseNumbers}
-          stats={stats}
-          status={status}
-          totalBatches={batches.length}
-          translations={bibleLibrary.translations}
-          translationName={translationName}
-          typedText={typedText}
-          wpm={wpm}
-          onClearBibleSelection={appActions.clearBibleSelection}
-          onNextFeaturedPassage={appActions.nextFeaturedPassage}
-          onOpenBible={appActions.openBible}
-          onOpenLibrary={appActions.openLibrary}
-          onRandomFeaturedReaderPassage={appActions.randomFeaturedReaderPassage}
-          onRemoveSavedPassage={appActions.removeSavedPractice}
-          onResetPractice={resetPractice}
-          onResetStats={resetStats}
-          onSelectBibleBook={appActions.selectReaderBook}
-          onSelectBibleChapter={appActions.selectReaderChapter}
-          onSelectFeaturedCategory={appActions.startFeaturedCategory}
-          onSelectFeaturedPractice={appActions.selectFeaturedPractice}
-          onSelectReaderRange={readerSelection.selectRange}
-          onSelectReaderVerse={readerSelection.selectVerse}
-          onSelectSavedPassage={appActions.selectSavedPractice}
-          onSelectTranslation={appActions.selectReaderTranslation}
-          onStartFeaturedPractice={appActions.startFeaturedPractice}
-          onTypingChange={handleTyping}
-          onUpdateSavedPassage={savedLibrary.updatePassage}
+          pages={{
+            bible: (
+              <BiblePage
+                bibleBooks={bibleLibrary.books}
+                bibleChapter={bibleLibrary.chapter}
+                focusSelectedVerseKey={readerSelection.focusSelectedVerseKey}
+                selectedBibleBook={bibleLibrary.selectedBook}
+                selectedBibleBookId={bibleLibrary.selectedBookId}
+                selectedBibleChapter={bibleLibrary.selectedChapter}
+                selectedTranslationId={bibleLibrary.selectedTranslationId}
+                selectedVerseNumbers={readerSelection.selectedVerseNumbers}
+                translations={bibleLibrary.translations}
+                onClearBibleSelection={appActions.clearBibleSelection}
+                onRandomFeaturedReaderPassage={appActions.randomFeaturedReaderPassage}
+                onSelectBibleBook={appActions.selectReaderBook}
+                onSelectBibleChapter={appActions.selectReaderChapter}
+                onSelectReaderRange={readerSelection.selectRange}
+                onSelectReaderVerse={readerSelection.selectVerse}
+                onSelectTranslation={appActions.selectReaderTranslation}
+              />
+            ),
+            home: (
+              <HomePage
+                featuredHomeCategories={featuredHomeCategories}
+                savedPassageCount={savedLibrary.savedPassages.length}
+                onOpenBible={appActions.openBible}
+                onOpenLibrary={appActions.openLibrary}
+                onSelectFeaturedCategory={appActions.startFeaturedCategory}
+                onStartFeaturedPractice={appActions.startFeaturedPractice}
+              />
+            ),
+            library: (
+              <LibraryPage
+                savedPassages={savedLibrary.savedPassages}
+                selectedSavedPassageId={savedLibrary.selectedSavedPassageId}
+                onRemoveSavedPassage={appActions.removeSavedPractice}
+                onSelectSavedPassage={appActions.selectSavedPractice}
+                onUpdateSavedPassage={savedLibrary.updatePassage}
+              />
+            ),
+            practice: currentBatch ? (
+              <PracticePage
+                accuracy={accuracy}
+                currentBatch={currentBatch}
+                currentBatchIndex={currentBatchIndex}
+                isBatchComplete={isBatchComplete}
+                isPassageComplete={isPassageComplete}
+                practiceSource={practiceSource}
+                practiceTitle={practiceTitle}
+                progress={progress}
+                savedPassages={savedLibrary.savedPassages}
+                selectedSavedPassageId={savedLibrary.selectedSavedPassageId}
+                stats={stats}
+                status={status}
+                totalBatches={batches.length}
+                translationName={translationName}
+                typedText={typedText}
+                wpm={wpm}
+                onNextFeaturedPassage={appActions.nextFeaturedPassage}
+                onOpenLibrary={appActions.openLibrary}
+                onResetPractice={resetPractice}
+                onResetStats={resetStats}
+                onSelectFeaturedPractice={appActions.selectFeaturedPractice}
+                onSelectSavedPassage={appActions.selectSavedPractice}
+                onTypingChange={handleTyping}
+              />
+            ) : null,
+          }}
         />
       </div>
     </PageShell>
