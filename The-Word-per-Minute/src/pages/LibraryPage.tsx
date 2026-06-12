@@ -1,4 +1,4 @@
-import { SavedPassageControls } from "../components/SavedPassageControls";
+import { SavedPassageControls } from "../features/saved-passages/components/SavedPassageControls";
 import type { SavedPassage, SavedPassageUpdate } from "../types/savedPassage";
 
 type LibraryPageProps = {

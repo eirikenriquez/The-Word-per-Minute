@@ -3,10 +3,10 @@ import {
   getSavedPassageId,
   savedPassageRepository,
 } from "../services/savedPassageRepository";
-import { verseService } from "../services/verseService";
-import type { PassageResponse } from "../types/featuredPassage";
-import type { SavedPassage, SavePassageInput, SavedPassageUpdate } from "../types/savedPassage";
-import { getErrorMessage } from "../utils/errors";
+import { verseService } from "../../../services/verseService";
+import type { PassageResponse } from "../../../types/featuredPassage";
+import type { SavedPassage, SavePassageInput, SavedPassageUpdate } from "../../../types/savedPassage";
+import { getErrorMessage } from "../../../utils/errors";
 
 /**
  * Manages saved passages through a repository boundary.

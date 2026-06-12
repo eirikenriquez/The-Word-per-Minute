@@ -7,14 +7,14 @@ import { useVerseLibrary } from "./features/bible-reader/hooks/useVerseLibrary";
 import { usePracticeBatches } from "./features/practice/hooks/usePracticeBatches";
 import { usePracticeSession } from "./features/practice/hooks/usePracticeSession";
 import { usePracticeStats } from "./features/practice/hooks/usePracticeStats";
+import { usePassageSaveInput } from "./features/saved-passages/hooks/usePassageSaveInput";
+import { useSavePassageForm } from "./features/saved-passages/hooks/useSavePassageForm";
+import { useSavedPassages } from "./features/saved-passages/hooks/useSavedPassages";
 import { useAppActions } from "./hooks/useAppActions";
 import { useAppDisplayState } from "./hooks/useAppDisplayState";
 import { useAppModeEffects } from "./hooks/useAppModeEffects";
 import { useFeaturedPassages } from "./hooks/useFeaturedPassages";
-import { usePassageSaveInput } from "./hooks/usePassageSaveInput";
 import { usePassageCategories } from "./hooks/usePassageCategories";
-import { useSavePassageForm } from "./hooks/useSavePassageForm";
-import { useSavedPassages } from "./hooks/useSavedPassages";
 import { useTheme } from "./hooks/useTheme";
 import type { AppMode, PracticeSource } from "./types/appMode";
 
