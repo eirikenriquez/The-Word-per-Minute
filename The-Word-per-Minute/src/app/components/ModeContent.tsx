@@ -1,12 +1,12 @@
-import { BiblePage } from "../pages/BiblePage";
-import { HomePage, type FeaturedHomeCategory } from "../pages/HomePage";
-import { LibraryPage } from "../pages/LibraryPage";
-import { PracticePage } from "../pages/PracticePage";
-import type { AppMode, PracticeSource } from "../types/appMode";
-import type { PracticeStats, TypingMetrics } from "../types/practice";
-import type { PracticeBatch } from "../types/practiceBatch";
-import type { SavedPassage, SavedPassageUpdate } from "../types/savedPassage";
-import type { BibleChapter, BookSummary, Translation } from "../types/verse";
+import { BiblePage } from "../../pages/BiblePage";
+import { HomePage, type FeaturedHomeCategory } from "../../pages/HomePage";
+import { LibraryPage } from "../../pages/LibraryPage";
+import { PracticePage } from "../../pages/PracticePage";
+import type { AppMode, PracticeSource } from "../../types/appMode";
+import type { PracticeStats, TypingMetrics } from "../../types/practice";
+import type { PracticeBatch } from "../../types/practiceBatch";
+import type { SavedPassage, SavedPassageUpdate } from "../../types/savedPassage";
+import type { BibleChapter, BookSummary, Translation } from "../../types/verse";
 
 type ModeContentProps = {
   accuracy: number;

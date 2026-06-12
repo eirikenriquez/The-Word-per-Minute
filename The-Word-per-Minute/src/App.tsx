@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { ModeHeaderPanel } from "./components/ModeHeaderPanel";
-import { ModeContent } from "./components/ModeContent";
-import { PageShell } from "./components/PageShell";
+import { ModeHeaderPanel } from "./app/components/ModeHeaderPanel";
+import { ModeContent } from "./app/components/ModeContent";
+import { useAppActions } from "./app/hooks/useAppActions";
+import { useAppDisplayState } from "./app/hooks/useAppDisplayState";
+import { useAppModeEffects } from "./app/hooks/useAppModeEffects";
 import { useReaderSelection } from "./features/bible-reader/hooks/useReaderSelection";
 import { useVerseLibrary } from "./features/bible-reader/hooks/useVerseLibrary";
 import { useFeaturedPassages } from "./features/featured-passages/hooks/useFeaturedPassages";
@@ -12,10 +14,8 @@ import { usePracticeStats } from "./features/practice/hooks/usePracticeStats";
 import { usePassageSaveInput } from "./features/saved-passages/hooks/usePassageSaveInput";
 import { useSavePassageForm } from "./features/saved-passages/hooks/useSavePassageForm";
 import { useSavedPassages } from "./features/saved-passages/hooks/useSavedPassages";
-import { useAppActions } from "./hooks/useAppActions";
-import { useAppDisplayState } from "./hooks/useAppDisplayState";
-import { useAppModeEffects } from "./hooks/useAppModeEffects";
-import { useTheme } from "./hooks/useTheme";
+import { PageShell } from "./shared/components/PageShell";
+import { useTheme } from "./shared/hooks/useTheme";
 import type { AppMode, PracticeSource } from "./types/appMode";
 
 /**

@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { Theme } from "../types/theme";
+import type { Theme } from "../../types/theme";
 
 type PageShellProps = {
   children: ReactNode;
