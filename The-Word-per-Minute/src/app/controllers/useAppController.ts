@@ -11,12 +11,12 @@ import { usePracticeStats } from "../../features/practice/hooks/usePracticeStats
 import { usePassageSaveInput } from "../../features/saved-passages/hooks/usePassageSaveInput";
 import { useSavePassageForm } from "../../features/saved-passages/hooks/useSavePassageForm";
 import { useSavedPassages } from "../../features/saved-passages/hooks/useSavedPassages";
-import { useTheme } from "../../shared/hooks/useTheme";
 import type { PracticeSource } from "../../types/appMode";
 import { useAppActions } from "../hooks/useAppActions";
 import { useAppDisplayState } from "../hooks/useAppDisplayState";
 import { useAppModeEffects } from "../hooks/useAppModeEffects";
 import { useAppNavigation } from "../hooks/useAppNavigation";
+import { useTheme } from "../hooks/useTheme";
 import { useBiblePageController } from "./useBiblePageController";
 import { useHomePageController } from "./useHomePageController";
 import { useLibraryPageController } from "./useLibraryPageController";

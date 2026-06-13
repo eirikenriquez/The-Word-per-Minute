@@ -8,7 +8,7 @@ type PageShellProps = {
 };
 
 /**
- * Shared page frame for loading, error, and practice states.
+ * App page frame for loading, error, and practice states.
  */
 export function PageShell({ children, theme, onToggleTheme }: PageShellProps) {
   return (

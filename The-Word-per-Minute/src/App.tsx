@@ -2,8 +2,8 @@ import { AppErrorState } from "./app/components/AppErrorState";
 import { AppHeader } from "./app/components/AppHeader";
 import { AppLoadingState } from "./app/components/AppLoadingState";
 import { AppPageRoutes } from "./app/components/AppPageRoutes";
+import { PageShell } from "./app/components/PageShell";
 import { useAppController } from "./app/controllers/useAppController";
-import { PageShell } from "./shared/components/PageShell";
 
 /**
  * Main practice screen.
