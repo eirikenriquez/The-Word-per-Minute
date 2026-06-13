@@ -13,7 +13,7 @@ import type { usePracticeSession } from "../../features/practice/hooks/usePracti
 import type { useSavedPassages } from "../../features/saved-passages/hooks/useSavedPassages";
 import { AppRoutes } from "./AppRoutes";
 
-type AppPageRoutesProps = {
+export type AppPageRoutesProps = {
   appActions: ReturnType<typeof useAppActions>;
   bibleLibrary: ReturnType<typeof useVerseLibrary>;
   batches: PracticeBatch[];

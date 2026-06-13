@@ -1,7 +1,7 @@
 import { ModeHeaderPanel } from "./ModeHeaderPanel";
 import type { AppMode } from "../../types/appMode";
 
-type AppHeaderProps = {
+export type AppHeaderProps = {
   appMode: AppMode;
   canSaveCurrentPassage: boolean;
   hasSavedPassages: boolean;
