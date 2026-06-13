@@ -1,9 +1,9 @@
 import { useCallback, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AppErrorState } from "./app/components/AppErrorState";
+import { AppHeader } from "./app/components/AppHeader";
 import { AppLoadingState } from "./app/components/AppLoadingState";
 import { AppPageRoutes } from "./app/components/AppPageRoutes";
-import { ModeHeaderPanel } from "./app/components/ModeHeaderPanel";
 import { useAppActions } from "./app/hooks/useAppActions";
 import { useAppDisplayState } from "./app/hooks/useAppDisplayState";
 import { useAppModeEffects } from "./app/hooks/useAppModeEffects";
@@ -27,17 +27,23 @@ import type { AppMode, PracticeSource } from "./types/appMode";
  * Owns the active mode, current typing state, and the handoff between data hooks and UI panels.
  */
 function App() {
+  // App shell setup: URL mode, theme, and the selected practice source.
   const location = useLocation();
   const navigate = useNavigate();
   const appMode = getAppModeFromPathname(location.pathname);
   const [practiceSource, setPracticeSource] = useState<PracticeSource>("featured");
   const { theme, toggleTheme } = useTheme();
+
+  // Feature data sources. These hooks own their own loading, error, and selection state.
   const readerSelection = useReaderSelection();
   const { stats, recordCompletedAttempt, resetStats } = usePracticeStats();
   const featuredLibrary = useFeaturedPassages();
   const bibleLibrary = useVerseLibrary();
   const savedLibrary = useSavedPassages();
+  const savedPassageCount = savedLibrary.savedPassages.length;
   const { featuredHomeCategories, savedPassageCategories } = usePassageCategories(featuredLibrary.passages);
+
+  // Practice state is built from whichever source the user is currently typing from.
   const { batches } = usePracticeBatches({
     appMode,
     bibleChapter: bibleLibrary.chapter,
@@ -54,6 +60,8 @@ function App() {
     onCompletedAttempt: recordCompletedAttempt,
   });
   const { currentBatch, resetPractice } = practiceSession;
+
+  // Display and save state are derived from the active mode and selected passage.
   const { error, isLoading, practiceReference, practiceSubtitle, practiceTitle, translationName } =
     useAppDisplayState({
       appMode,
@@ -65,7 +73,7 @@ function App() {
       practiceSource,
       savedError: savedLibrary.error,
       savedIsLoading: savedLibrary.isLoading,
-      savedPassageCount: savedLibrary.savedPassages.length,
+      savedPassageCount,
       selectedBook: bibleLibrary.selectedBook,
       selectedChapter: bibleLibrary.selectedChapter,
       selectedSavedPassage: savedLibrary.selectedSavedPassage,
@@ -98,6 +106,8 @@ function App() {
     saveInput,
     savePassage: savedLibrary.savePassage,
   });
+
+  // Navigation helpers translate app modes into real browser paths.
   const selectAppMode = useCallback(
     (mode: AppMode) => {
       navigate(getPathnameFromAppMode(mode));
@@ -105,6 +115,7 @@ function App() {
     [navigate],
   );
 
+  // App-level effects and actions keep cross-feature behaviour in one place.
   useAppModeEffects({
     appMode,
     bibleSelectedBookId: bibleLibrary.selectedBookId,
@@ -112,7 +123,7 @@ function App() {
     featuredSelectedPassageId: featuredLibrary.selectedPassageId,
     practiceSource,
     resetPractice,
-    savedPassageCount: savedLibrary.savedPassages.length,
+    savedPassageCount,
     savedSelectedPassageId: savedLibrary.selectedSavedPassageId,
     selectedVerseNumbers: readerSelection.selectedVerseNumbers,
     setAppMode: selectAppMode,
@@ -137,6 +148,7 @@ function App() {
     setSelectedVerseNumbers: readerSelection.setSelectedVerseNumbers,
   });
 
+  // App-level guards keep incomplete data out of the page tree.
   if (isLoading) {
     return (
       <PageShell theme={theme} onToggleTheme={toggleTheme}>
@@ -159,10 +171,10 @@ function App() {
   return (
     <PageShell theme={theme} onToggleTheme={toggleTheme}>
       <div key={appMode} className="page-transition grid gap-4">
-        <ModeHeaderPanel
+        <AppHeader
           appMode={appMode}
           canSaveCurrentPassage={Boolean(saveInput)}
-          hasSavedPassages={savedLibrary.savedPassages.length > 0}
+          hasSavedPassages={savedPassageCount > 0}
           isCurrentPassageSaved={isCurrentPassageSaved}
           practiceReference={practiceReference}
           practiceSubtitle={practiceSubtitle}
