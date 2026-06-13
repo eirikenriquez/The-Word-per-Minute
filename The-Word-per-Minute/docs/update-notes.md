@@ -1,6 +1,6 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260614.1.a`
+Current documentation version: `260614.1.b`
 Last updated: 14/06/26
 
 ## Update Rule
@@ -33,9 +33,25 @@ Example:
 
 Suggested next versions:
 
-- Small same-day documentation update: `260614.1.b`
+- Small same-day documentation update: `260614.1.c`
 - Larger same-day documentation update: `260614.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260614.1.b`
+
+This version updates the architecture snapshot after the app modularisation cleanup.
+
+It updates:
+
+- the documented architecture from an `App.tsx` coordinator to an app shell plus app/page controllers,
+- the `src/app` responsibilities to include app shell, route setup, controllers, navigation, and theme,
+- the current file structure after removing the `src/shared` layer,
+- the responsibilities for `useAppController` and the page controllers,
+- the runtime flow from URL route to app controller to page controllers to pages,
+- the architecture diagram,
+- known technical debt and likely next architecture steps.
+
+This does not change product scope. It documents the refactor that made app composition more explicit and moved formerly shared shell/theme code into `src/app`.
 
 ## `260614.1.a`
 

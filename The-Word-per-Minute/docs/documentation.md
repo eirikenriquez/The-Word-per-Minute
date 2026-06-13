@@ -1,6 +1,6 @@
 # The Word per Minute Documentation
 
-Document version: `260614.1.a`
+Document version: `260614.1.b`
 Last updated: 14/06/26
 Update rule: only update this file when explicitly requested by the project owner.
 
@@ -33,18 +33,17 @@ No backend, database, authentication, or external Bible API is currently used.
 
 ## High-Level Architecture
 
-The app now uses URL-based React routing with feature folders.
+The app now uses URL-based React routing with feature folders and app/page controllers.
 
 ```txt
-URL route -> App.tsx coordinator -> page component -> feature components/hooks
+URL route -> App shell -> app controller -> page controller -> page component -> feature components/hooks
 ```
 
 The main architecture layers are:
 
-- `src/app`: app-level routing, navigation header, and coordination hooks.
+- `src/app`: app-level shell, routing, controllers, navigation, and coordination hooks.
 - `src/pages`: screen-level page components.
 - `src/features`: feature-specific UI, hooks, and services.
-- `src/shared`: reusable shell/theme pieces.
 - `src/services`: shared service layer for local Bible data.
 - `src/types`: shared TypeScript data shapes.
 - `src/utils`: shared pure helper functions.
@@ -137,17 +136,20 @@ Library does not show typing input directly.
 main.tsx
   -> BrowserRouter
   -> App.tsx
-    -> derives appMode from URL
-    -> loads feature hooks
-    -> builds display state
-    -> builds cross-page actions
+    -> calls useAppController
+      -> derives appMode from URL
+      -> loads feature hooks
+      -> builds display state
+      -> builds cross-page actions
+      -> delegates page props to page controllers
     -> renders PageShell
-    -> renders ModeHeaderPanel
-    -> renders AppRoutes
+    -> renders AppHeader
+    -> renders AppPageRoutes
+      -> renders AppRoutes
       -> renders HomePage, PracticePage, BiblePage, or LibraryPage
 ```
 
-`App.tsx` is the app coordinator. It does not contain the main UI for each screen; pages and features do that.
+`App.tsx` is now mostly the app shell. App-wide coordination lives in `src/app/controllers/useAppController.ts`, while page-specific prop wiring lives in the page controllers.
 
 ## Current File Structure
 
@@ -155,12 +157,27 @@ main.tsx
 src/
   app/
     components/
+      AppErrorState.tsx
+      AppHeader.tsx
+      AppLoadingState.tsx
+      AppPageRoutes.tsx
       AppRoutes.tsx
       ModeHeaderPanel.tsx
+      PageShell.tsx
+    controllers/
+      useAppController.ts
+      useBiblePageController.ts
+      useHomePageController.ts
+      useLibraryPageController.ts
+      usePracticePageController.ts
     hooks/
       useAppActions.ts
       useAppDisplayState.ts
       useAppModeEffects.ts
+      useAppNavigation.ts
+      useTheme.ts
+    routes/
+      appRoutePaths.ts
   features/
     bible-reader/
       components/
@@ -199,11 +216,6 @@ src/
     HomePage.tsx
     LibraryPage.tsx
     PracticePage.tsx
-  shared/
-    components/
-      PageShell.tsx
-    hooks/
-      useTheme.ts
   services/
     verseService.ts
   constants/
@@ -227,21 +239,54 @@ Mounts React and wraps the app in `BrowserRouter`.
 
 ### `src/App.tsx`
 
-Coordinates the app.
+Renders the app shell.
 
 Responsibilities:
 
-- derives `appMode` from the current URL,
+- calls `useAppController`,
+- renders loading and error states,
+- renders `PageShell`,
+- renders `AppHeader`,
+- renders `AppPageRoutes`.
+
+### `src/app/controllers/useAppController.ts`
+
+Coordinates app-wide state and cross-feature wiring.
+
+Responsibilities:
+
+- derives `appMode` through `useAppNavigation`,
 - keeps `practiceSource` state,
 - loads feature hooks,
 - builds practice batches,
 - builds display labels/loading/error state,
 - builds cross-page actions,
-- renders the shell, header, and route table.
+- prepares header props,
+- delegates page props to page controllers.
+
+### `src/app/controllers/useHomePageController.ts`
+
+Prepares props for `HomePage`.
+
+### `src/app/controllers/usePracticePageController.ts`
+
+Prepares props for `PracticePage`.
+
+### `src/app/controllers/useBiblePageController.ts`
+
+Prepares props for `BiblePage`.
+
+### `src/app/controllers/useLibraryPageController.ts`
+
+Prepares props for `LibraryPage`.
 
 ### `src/app/components/AppRoutes.tsx`
 
 Defines the app's URL routes and maps them to page elements.
+
+### `src/app/components/AppPageRoutes.tsx`
+
+Maps prepared page props into routed page elements.
 
 ### `src/app/components/ModeHeaderPanel.tsx`
 
@@ -251,14 +296,18 @@ Shows:
 - Home / Practice / Bible / Library navigation,
 - contextual save controls.
 
-### `src/shared/components/PageShell.tsx`
+### `src/app/components/PageShell.tsx`
 
-Provides the shared page frame:
+Provides the app page frame:
 
 - app title,
 - theme button,
 - main content width,
-- shared background.
+- app background.
+
+### `src/app/hooks/useTheme.ts`
+
+Owns the browser theme preference and stores it in `localStorage`.
 
 ### `src/services/verseService.ts`
 
@@ -344,7 +393,7 @@ src/data/bibles/web/
 - light/dark color mapping,
 - subtle hover and focus behaviour.
 
-Theme state is managed by `src/shared/hooks/useTheme.ts` and stored in `localStorage`.
+Theme state is managed by `src/app/hooks/useTheme.ts` and stored in `localStorage`.
 
 ## Important Types
 
@@ -359,9 +408,14 @@ Theme state is managed by `src/shared/hooks/useTheme.ts` and stored in `localSto
 ```mermaid
 flowchart TD
   main["main.tsx + BrowserRouter"] --> app["App.tsx"]
+  app --> controller["useAppController"]
   app --> shell["PageShell"]
-  app --> header["ModeHeaderPanel"]
-  app --> routes["AppRoutes"]
+  controller --> headerController["Header props"]
+  controller --> pageControllers["Page controllers"]
+  app --> header["AppHeader + ModeHeaderPanel"]
+  app --> pageRoutes["AppPageRoutes"]
+  pageControllers --> pageRoutes
+  pageRoutes --> routes["AppRoutes"]
   routes --> home["HomePage"]
   routes --> practice["PracticePage"]
   routes --> bible["BiblePage"]
@@ -379,7 +433,7 @@ flowchart TD
 
 ## Known Technical Debt
 
-- `App.tsx` still coordinates many feature hooks and may later benefit from page-specific container hooks.
+- `useAppController` is the main app composition root and should not become a dumping ground for feature logic.
 - `ModeHeaderPanel` still has shared navigation and save UI mixed together.
 - Category management is still hardcoded/generated from featured themes.
 - User data is local-only through `localStorage`.
@@ -391,8 +445,9 @@ flowchart TD
 
 1. Manually test `/`, `/practice`, `/bible`, and `/library`.
 2. Confirm refresh and browser back/forward work correctly on each route.
-3. Consider extracting page-specific container hooks if `App.tsx` grows again.
+3. Review `useAppController` and keep it limited to cross-feature composition.
 4. Consider splitting `ModeHeaderPanel` into navigation and save controls.
-5. Keep `verseService` API-shaped so local JSON can later move to hosted data.
-6. Keep saved passage storage behind `savedPassageRepository` so it can later move to a database.
-7. Add automated tests once the app flow stabilises.
+5. Consider moving more page-specific logic into page controllers only when it improves clarity.
+6. Keep `verseService` API-shaped so local JSON can later move to hosted data.
+7. Keep saved passage storage behind `savedPassageRepository` so it can later move to a database.
+8. Add automated tests once the app flow stabilises.
