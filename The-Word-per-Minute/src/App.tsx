@@ -2,7 +2,7 @@ import { useCallback, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AppErrorState } from "./app/components/AppErrorState";
 import { AppLoadingState } from "./app/components/AppLoadingState";
-import { AppRoutes } from "./app/components/AppRoutes";
+import { AppPageRoutes } from "./app/components/AppPageRoutes";
 import { ModeHeaderPanel } from "./app/components/ModeHeaderPanel";
 import { useAppActions } from "./app/hooks/useAppActions";
 import { useAppDisplayState } from "./app/hooks/useAppDisplayState";
@@ -18,10 +18,6 @@ import { usePracticeStats } from "./features/practice/hooks/usePracticeStats";
 import { usePassageSaveInput } from "./features/saved-passages/hooks/usePassageSaveInput";
 import { useSavePassageForm } from "./features/saved-passages/hooks/useSavePassageForm";
 import { useSavedPassages } from "./features/saved-passages/hooks/useSavedPassages";
-import { BiblePage } from "./pages/BiblePage";
-import { HomePage } from "./pages/HomePage";
-import { LibraryPage } from "./pages/LibraryPage";
-import { PracticePage } from "./pages/PracticePage";
 import { PageShell } from "./shared/components/PageShell";
 import { useTheme } from "./shared/hooks/useTheme";
 import type { AppMode, PracticeSource } from "./types/appMode";
@@ -53,22 +49,11 @@ function App() {
     selectedVerseNumbers: readerSelection.selectedVerseNumbers,
   });
 
-  const {
-    accuracy,
-    currentBatch,
-    currentBatchIndex,
-    handleTyping,
-    isBatchComplete,
-    isPassageComplete,
-    progress,
-    resetPractice,
-    status,
-    typedText,
-    wpm,
-  } = usePracticeSession({
+  const practiceSession = usePracticeSession({
     batches,
     onCompletedAttempt: recordCompletedAttempt,
   });
+  const { currentBatch, resetPractice } = practiceSession;
   const { error, isLoading, practiceReference, practiceSubtitle, practiceTitle, translationName } =
     useAppDisplayState({
       appMode,
@@ -192,75 +177,20 @@ function App() {
           onSelectMode={selectAppMode}
         />
 
-        <AppRoutes
-          pages={{
-            bible: (
-              <BiblePage
-                bibleBooks={bibleLibrary.books}
-                bibleChapter={bibleLibrary.chapter}
-                focusSelectedVerseKey={readerSelection.focusSelectedVerseKey}
-                selectedBibleBook={bibleLibrary.selectedBook}
-                selectedBibleBookId={bibleLibrary.selectedBookId}
-                selectedBibleChapter={bibleLibrary.selectedChapter}
-                selectedTranslationId={bibleLibrary.selectedTranslationId}
-                selectedVerseNumbers={readerSelection.selectedVerseNumbers}
-                translations={bibleLibrary.translations}
-                onClearBibleSelection={appActions.clearBibleSelection}
-                onRandomFeaturedReaderPassage={appActions.randomFeaturedReaderPassage}
-                onSelectBibleBook={appActions.selectReaderBook}
-                onSelectBibleChapter={appActions.selectReaderChapter}
-                onSelectReaderRange={readerSelection.selectRange}
-                onSelectReaderVerse={readerSelection.selectVerse}
-                onSelectTranslation={appActions.selectReaderTranslation}
-              />
-            ),
-            home: (
-              <HomePage
-                featuredHomeCategories={featuredHomeCategories}
-                savedPassageCount={savedLibrary.savedPassages.length}
-                onOpenBible={appActions.openBible}
-                onOpenLibrary={appActions.openLibrary}
-                onSelectFeaturedCategory={appActions.startFeaturedCategory}
-                onStartFeaturedPractice={appActions.startFeaturedPractice}
-              />
-            ),
-            library: (
-              <LibraryPage
-                savedPassages={savedLibrary.savedPassages}
-                selectedSavedPassageId={savedLibrary.selectedSavedPassageId}
-                onRemoveSavedPassage={appActions.removeSavedPractice}
-                onSelectSavedPassage={appActions.selectSavedPractice}
-                onUpdateSavedPassage={savedLibrary.updatePassage}
-              />
-            ),
-            practice: currentBatch ? (
-              <PracticePage
-                accuracy={accuracy}
-                currentBatch={currentBatch}
-                currentBatchIndex={currentBatchIndex}
-                isBatchComplete={isBatchComplete}
-                isPassageComplete={isPassageComplete}
-                practiceSource={practiceSource}
-                practiceTitle={practiceTitle}
-                progress={progress}
-                savedPassages={savedLibrary.savedPassages}
-                selectedSavedPassageId={savedLibrary.selectedSavedPassageId}
-                stats={stats}
-                status={status}
-                totalBatches={batches.length}
-                translationName={translationName}
-                typedText={typedText}
-                wpm={wpm}
-                onNextFeaturedPassage={appActions.nextFeaturedPassage}
-                onOpenLibrary={appActions.openLibrary}
-                onResetPractice={resetPractice}
-                onResetStats={resetStats}
-                onSelectFeaturedPractice={appActions.selectFeaturedPractice}
-                onSelectSavedPassage={appActions.selectSavedPractice}
-                onTypingChange={handleTyping}
-              />
-            ) : null,
-          }}
+        <AppPageRoutes
+          appActions={appActions}
+          bibleLibrary={bibleLibrary}
+          batches={batches}
+          currentBatch={currentBatch}
+          featuredHomeCategories={featuredHomeCategories}
+          practiceSession={practiceSession}
+          practiceSource={practiceSource}
+          practiceTitle={practiceTitle}
+          readerSelection={readerSelection}
+          resetStats={resetStats}
+          savedLibrary={savedLibrary}
+          stats={stats}
+          translationName={translationName}
         />
       </div>
     </PageShell>
