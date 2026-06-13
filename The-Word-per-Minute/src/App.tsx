@@ -1,10 +1,13 @@
 import { useCallback, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { AppErrorState } from "./app/components/AppErrorState";
+import { AppLoadingState } from "./app/components/AppLoadingState";
 import { AppRoutes } from "./app/components/AppRoutes";
 import { ModeHeaderPanel } from "./app/components/ModeHeaderPanel";
 import { useAppActions } from "./app/hooks/useAppActions";
 import { useAppDisplayState } from "./app/hooks/useAppDisplayState";
 import { useAppModeEffects } from "./app/hooks/useAppModeEffects";
+import { getAppModeFromPathname, getPathnameFromAppMode } from "./app/routes/appRoutePaths";
 import { useReaderSelection } from "./features/bible-reader/hooks/useReaderSelection";
 import { useVerseLibrary } from "./features/bible-reader/hooks/useVerseLibrary";
 import { useFeaturedPassages } from "./features/featured-passages/hooks/useFeaturedPassages";
@@ -152,19 +155,18 @@ function App() {
   if (isLoading) {
     return (
       <PageShell theme={theme} onToggleTheme={toggleTheme}>
-        <div className="rounded-xl border bg-white p-4 text-slate-600 shadow-sm">
-          Loading practice passage...
-        </div>
+        <AppLoadingState />
       </PageShell>
     );
   }
 
   if (error || (appMode === "practice" && !currentBatch)) {
+    const errorMessage =
+      error ?? (practiceSource === "saved" ? "Save a passage first." : "No practice passage found.");
+
     return (
       <PageShell theme={theme} onToggleTheme={toggleTheme}>
-        <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800">
-          {error ?? (practiceSource === "saved" ? "Save a passage first." : "No practice passage found.")}
-        </div>
+        <AppErrorState message={errorMessage} />
       </PageShell>
     );
   }
@@ -263,20 +265,6 @@ function App() {
       </div>
     </PageShell>
   );
-}
-
-function getAppModeFromPathname(pathname: string): AppMode {
-  if (pathname.startsWith("/practice")) return "practice";
-  if (pathname.startsWith("/bible")) return "bible";
-  if (pathname.startsWith("/library")) return "library";
-  return "home";
-}
-
-function getPathnameFromAppMode(mode: AppMode) {
-  if (mode === "practice") return "/practice";
-  if (mode === "bible") return "/bible";
-  if (mode === "library") return "/library";
-  return "/";
 }
 
 export default App;
