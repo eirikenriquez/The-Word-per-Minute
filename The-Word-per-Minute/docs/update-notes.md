@@ -1,7 +1,7 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `130626.1.a`
-Last updated: 13/06/26
+Current documentation version: `260614.1.a`
+Last updated: 14/06/26
 
 ## Update Rule
 
@@ -18,24 +18,36 @@ When documentation changes, include:
 Documentation versions use this format:
 
 ```txt
-ddmmyy.major.minor
+yymmdd.major.minor
 ```
 
 Example:
 
 ```txt
-130626.1.a
+260614.1.a
 ```
 
-- `130626` means 13/06/26.
+- `260614` means 14/06/26.
 - `1` means the first major documentation snapshot for that day.
 - `a` means the first small revision of that snapshot.
 
 Suggested next versions:
 
-- Small same-day documentation update: `130626.1.b`
-- Larger same-day documentation update: `130626.2.a`
-- First update on a new day: `ddmmyy.1.a`
+- Small same-day documentation update: `260614.1.b`
+- Larger same-day documentation update: `260614.2.a`
+- First update on a new day: `yymmdd.1.a`
+
+## `260614.1.a`
+
+This version changes the documentation version format.
+
+It updates:
+
+- `docs/documentation.md` current version metadata,
+- `docs/update-notes.md` current version metadata,
+- the documented version format from `ddmmyy.major.minor` to `yymmdd.major.minor`.
+
+This does not change the app architecture. Earlier version history entries keep their original labels for historical traceability.
 
 ## `130626.1.a`
 

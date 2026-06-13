@@ -1,7 +1,7 @@
 # The Word per Minute Documentation
 
-Document version: `130626.1.a`
-Last updated: 13/06/26
+Document version: `260614.1.a`
+Last updated: 14/06/26
 Update rule: only update this file when explicitly requested by the project owner.
 
 ## Purpose
