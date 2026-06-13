@@ -1,5 +1,4 @@
-import { useCallback, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { AppErrorState } from "./app/components/AppErrorState";
 import { AppHeader } from "./app/components/AppHeader";
 import { AppLoadingState } from "./app/components/AppLoadingState";
@@ -7,7 +6,7 @@ import { AppPageRoutes } from "./app/components/AppPageRoutes";
 import { useAppActions } from "./app/hooks/useAppActions";
 import { useAppDisplayState } from "./app/hooks/useAppDisplayState";
 import { useAppModeEffects } from "./app/hooks/useAppModeEffects";
-import { getAppModeFromPathname, getPathnameFromAppMode } from "./app/routes/appRoutePaths";
+import { useAppNavigation } from "./app/hooks/useAppNavigation";
 import { useReaderSelection } from "./features/bible-reader/hooks/useReaderSelection";
 import { useVerseLibrary } from "./features/bible-reader/hooks/useVerseLibrary";
 import { useFeaturedPassages } from "./features/featured-passages/hooks/useFeaturedPassages";
@@ -20,7 +19,7 @@ import { useSavePassageForm } from "./features/saved-passages/hooks/useSavePassa
 import { useSavedPassages } from "./features/saved-passages/hooks/useSavedPassages";
 import { PageShell } from "./shared/components/PageShell";
 import { useTheme } from "./shared/hooks/useTheme";
-import type { AppMode, PracticeSource } from "./types/appMode";
+import type { PracticeSource } from "./types/appMode";
 
 /**
  * Main practice screen.
@@ -28,9 +27,7 @@ import type { AppMode, PracticeSource } from "./types/appMode";
  */
 function App() {
   // App shell setup: URL mode, theme, and the selected practice source.
-  const location = useLocation();
-  const navigate = useNavigate();
-  const appMode = getAppModeFromPathname(location.pathname);
+  const { appMode, selectAppMode } = useAppNavigation();
   const [practiceSource, setPracticeSource] = useState<PracticeSource>("featured");
   const { theme, toggleTheme } = useTheme();
 
@@ -106,14 +103,6 @@ function App() {
     saveInput,
     savePassage: savedLibrary.savePassage,
   });
-
-  // Navigation helpers translate app modes into real browser paths.
-  const selectAppMode = useCallback(
-    (mode: AppMode) => {
-      navigate(getPathnameFromAppMode(mode));
-    },
-    [navigate],
-  );
 
   // App-level effects and actions keep cross-feature behaviour in one place.
   useAppModeEffects({
