@@ -2,7 +2,7 @@ import { AppErrorState } from "./app/components/AppErrorState";
 import { AppHeader } from "./app/components/AppHeader";
 import { AppLoadingState } from "./app/components/AppLoadingState";
 import { AppPageRoutes } from "./app/components/AppPageRoutes";
-import { useAppController } from "./app/hooks/useAppController";
+import { useAppController } from "./app/controllers/useAppController";
 import { PageShell } from "./shared/components/PageShell";
 
 /**

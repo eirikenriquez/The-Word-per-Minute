@@ -2,7 +2,7 @@ import { BibleControls } from "../features/bible-reader/components/BibleControls
 import { BibleReaderSelector } from "../features/bible-reader/components/BibleReaderSelector";
 import type { BibleChapter, BookSummary, Translation } from "../types/verse";
 
-type BiblePageProps = {
+export type BiblePageProps = {
   bibleBooks: BookSummary[];
   bibleChapter: BibleChapter | null;
   focusSelectedVerseKey: number;

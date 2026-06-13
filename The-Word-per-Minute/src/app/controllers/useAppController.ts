@@ -13,14 +13,18 @@ import { useSavePassageForm } from "../../features/saved-passages/hooks/useSaveP
 import { useSavedPassages } from "../../features/saved-passages/hooks/useSavedPassages";
 import { useTheme } from "../../shared/hooks/useTheme";
 import type { PracticeSource } from "../../types/appMode";
-import { useAppActions } from "./useAppActions";
-import { useAppDisplayState } from "./useAppDisplayState";
-import { useAppModeEffects } from "./useAppModeEffects";
-import { useAppNavigation } from "./useAppNavigation";
+import { useAppActions } from "../hooks/useAppActions";
+import { useAppDisplayState } from "../hooks/useAppDisplayState";
+import { useAppModeEffects } from "../hooks/useAppModeEffects";
+import { useAppNavigation } from "../hooks/useAppNavigation";
+import { useBiblePageController } from "./useBiblePageController";
+import { useHomePageController } from "./useHomePageController";
+import { useLibraryPageController } from "./useLibraryPageController";
+import { usePracticePageController } from "./usePracticePageController";
 
 /**
  * App-level controller for cross-feature state.
- * It keeps App.tsx focused on layout while feature hooks still own their own domain logic.
+ * Page-specific prop wiring is delegated to page controllers below this layer.
  */
 export function useAppController() {
   const { appMode, selectAppMode } = useAppNavigation();
@@ -155,19 +159,32 @@ export function useAppController() {
   };
 
   const pageRoutesProps: AppPageRoutesProps = {
-    appActions,
-    bibleLibrary,
-    batches,
-    currentBatch,
-    featuredHomeCategories,
-    practiceSession,
-    practiceSource,
-    practiceTitle,
-    readerSelection,
-    resetStats,
-    savedLibrary,
-    stats,
-    translationName,
+    biblePageProps: useBiblePageController({
+      appActions,
+      bibleLibrary,
+      readerSelection,
+    }),
+    homePageProps: useHomePageController({
+      appActions,
+      featuredHomeCategories,
+      savedPassageCount,
+    }),
+    libraryPageProps: useLibraryPageController({
+      appActions,
+      savedLibrary,
+    }),
+    practicePageProps: usePracticePageController({
+      appActions,
+      batches,
+      currentBatch,
+      practiceSession,
+      practiceSource,
+      practiceTitle,
+      resetStats,
+      savedLibrary,
+      stats,
+      translationName,
+    }),
   };
 
   return {

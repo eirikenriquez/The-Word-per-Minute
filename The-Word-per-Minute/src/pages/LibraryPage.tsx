@@ -1,7 +1,7 @@
 import { SavedPassageControls } from "../features/saved-passages/components/SavedPassageControls";
 import type { SavedPassage, SavedPassageUpdate } from "../types/savedPassage";
 
-type LibraryPageProps = {
+export type LibraryPageProps = {
   savedPassages: SavedPassage[];
   selectedSavedPassageId: string;
   onRemoveSavedPassage: (passageId: string) => void;

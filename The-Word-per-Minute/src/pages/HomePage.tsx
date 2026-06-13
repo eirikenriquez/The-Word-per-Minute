@@ -5,7 +5,7 @@ export type FeaturedHomeCategory = {
   label: string;
 };
 
-type HomePageProps = {
+export type HomePageProps = {
   featuredHomeCategories: FeaturedHomeCategory[];
   savedPassageCount: number;
   onOpenBible: () => void;

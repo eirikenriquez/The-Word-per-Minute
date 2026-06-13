@@ -7,7 +7,7 @@ import type { PracticeStats, TypingMetrics } from "../types/practice";
 import type { PracticeBatch } from "../types/practiceBatch";
 import type { SavedPassage } from "../types/savedPassage";
 
-type PracticePageProps = {
+export type PracticePageProps = {
   accuracy: number;
   currentBatch: PracticeBatch;
   currentBatchIndex: number;
