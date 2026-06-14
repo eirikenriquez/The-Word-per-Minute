@@ -20,13 +20,12 @@ export type AppHeaderProps = {
 };
 
 /**
- * Wires app-level display and save state into the visible page header.
- * ModeHeaderPanel stays focused on rendering the UI controls.
+ * Wires app-level display and save state into the visible page title area.
+ * Global navigation lives in PageShell so this component can stay focused on page context.
  */
 export function AppHeader({
   appMode,
   canSaveCurrentPassage,
-  hasSavedPassages,
   isCurrentPassageSaved,
   practiceReference,
   practiceSubtitle,
@@ -38,13 +37,11 @@ export function AppHeader({
   onSaveCategoryChange,
   onSaveCurrentPassage,
   onSaveTitleChange,
-  onSelectMode,
 }: AppHeaderProps) {
   return (
     <ModeHeaderPanel
       appMode={appMode}
       canSaveCurrentPassage={canSaveCurrentPassage}
-      hasSavedPassages={hasSavedPassages}
       isCurrentPassageSaved={isCurrentPassageSaved}
       practiceReference={practiceReference}
       practiceSubtitle={practiceSubtitle}
@@ -56,7 +53,6 @@ export function AppHeader({
       onSaveCategoryChange={onSaveCategoryChange}
       onSaveCurrentPassage={onSaveCurrentPassage}
       onSaveTitleChange={onSaveTitleChange}
-      onSelectMode={onSelectMode}
     />
   );
 }

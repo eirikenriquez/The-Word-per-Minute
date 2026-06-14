@@ -11,7 +11,7 @@ type AppNavigationProps = {
  */
 export function AppNavigation({ appMode, hasSavedPassages, onSelectMode }: AppNavigationProps) {
   return (
-    <div className="grid grid-cols-4 rounded-md border border-slate-300 bg-slate-100 p-1 text-sm sm:flex">
+    <nav className="grid grid-cols-4 gap-1 text-sm sm:flex sm:items-center">
       <ModeButton isSelected={appMode === "home"} label="Home" onSelect={() => onSelectMode("home")} />
       <ModeButton isSelected={appMode === "practice"} label="Practice" onSelect={() => onSelectMode("practice")} />
       <ModeButton isSelected={appMode === "bible"} label="Bible" onSelect={() => onSelectMode("bible")} />
@@ -21,7 +21,7 @@ export function AppNavigation({ appMode, hasSavedPassages, onSelectMode }: AppNa
         label="Library"
         onSelect={() => onSelectMode("library")}
       />
-    </div>
+    </nav>
   );
 }
 
@@ -35,8 +35,8 @@ type ModeButtonProps = {
 function ModeButton({ disabled = false, isSelected, label, onSelect }: ModeButtonProps) {
   return (
     <button
-      className={`rounded px-3 py-1.5 font-medium ${
-        isSelected ? "bg-white text-slate-950 shadow-sm" : "text-slate-600 hover:text-slate-900"
+      className={`rounded-md px-3 py-2 font-medium transition ${
+        isSelected ? "bg-slate-100 text-slate-950" : "text-slate-600 hover:bg-slate-100 hover:text-slate-950"
       } disabled:cursor-not-allowed disabled:text-slate-400`}
       disabled={disabled}
       type="button"

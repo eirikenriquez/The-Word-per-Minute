@@ -1,4 +1,3 @@
-import { AppNavigation } from "./AppNavigation";
 import { HeaderTitleBlock } from "./HeaderTitleBlock";
 import { PassageSaveControls } from "./PassageSaveControls";
 import type { AppMode } from "../../types/appMode";
@@ -6,7 +5,6 @@ import type { AppMode } from "../../types/appMode";
 type ModeHeaderPanelProps = {
   appMode: AppMode;
   canSaveCurrentPassage: boolean;
-  hasSavedPassages: boolean;
   isCurrentPassageSaved: boolean;
   practiceReference: string;
   practiceSubtitle: string;
@@ -18,17 +16,15 @@ type ModeHeaderPanelProps = {
   onSaveCategoryChange: (category: string) => void;
   onSaveCurrentPassage: () => void;
   onSaveTitleChange: (title: string) => void;
-  onSelectMode: (mode: AppMode) => void;
 };
 
 /**
- * Top mode summary, navigation, and contextual save controls.
- * Keeping this outside App makes the main coordinator easier to scan.
+ * Open page title area with contextual save controls.
+ * Navigation lives in the global shell so this section does not feel like a floating card.
  */
 export function ModeHeaderPanel({
   appMode,
   canSaveCurrentPassage,
-  hasSavedPassages,
   isCurrentPassageSaved,
   practiceReference,
   practiceSubtitle,
@@ -40,15 +36,10 @@ export function ModeHeaderPanel({
   onSaveCategoryChange,
   onSaveCurrentPassage,
   onSaveTitleChange,
-  onSelectMode,
 }: ModeHeaderPanelProps) {
   return (
-    <section className="rounded-lg border border-slate-200 bg-white px-5 py-4 shadow-sm">
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
-        <HeaderTitleBlock reference={practiceReference} subtitle={practiceSubtitle} title={practiceTitle} />
-
-        <AppNavigation appMode={appMode} hasSavedPassages={hasSavedPassages} onSelectMode={onSelectMode} />
-      </div>
+    <section className="border-b border-slate-200 pb-5">
+      <HeaderTitleBlock reference={practiceReference} subtitle={practiceSubtitle} title={practiceTitle} />
 
       {showPracticeSave && (
         <PassageSaveControls

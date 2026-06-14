@@ -31,9 +31,15 @@ function App() {
   }
 
   return (
-    <PageShell theme={theme} onToggleTheme={toggleTheme}>
+    <PageShell
+      appMode={appMode}
+      hasSavedPassages={headerProps.hasSavedPassages}
+      theme={theme}
+      onSelectMode={headerProps.onSelectMode}
+      onToggleTheme={toggleTheme}
+    >
       <div key={appMode} className="page-transition grid gap-4">
-        <AppHeader {...headerProps} />
+        {appMode !== "home" && <AppHeader {...headerProps} />}
 
         <AppPageRoutes {...pageRoutesProps} />
       </div>
