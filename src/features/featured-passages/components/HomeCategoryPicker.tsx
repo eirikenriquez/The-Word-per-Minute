@@ -29,8 +29,8 @@ export function HomeCategoryPicker({
   const totalFeaturedPassages = featuredCategories.reduce((total, category) => total + category.count, 0);
 
   return (
-    <section className="grid gap-12">
-      <section className="grid gap-8 py-8 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-end lg:py-12">
+    <section className="grid gap-10">
+      <section className="py-8 lg:py-12">
         <div className="max-w-3xl">
           <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">Quiet typing practice</p>
           <h2 className="mt-3 text-4xl font-bold text-slate-950 sm:text-5xl">
@@ -40,34 +40,7 @@ export function HomeCategoryPicker({
             Start with a passage chosen for you, read through a chapter, or return to verses you have saved
             for memorisation.
           </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <button
-              className="rounded-md bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
-              type="button"
-              onClick={onStartFeatured}
-            >
-              Start Practice
-            </button>
-            <button
-              className="rounded-md border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-100"
-              type="button"
-              onClick={onOpenBible}
-            >
-              Read Bible
-            </button>
-          </div>
         </div>
-
-        <dl className="grid grid-cols-2 gap-x-6 gap-y-4 border-t border-slate-200 pt-6 lg:border-t-0 lg:pt-0">
-          <div>
-            <dt className="text-sm text-slate-500">Featured passages</dt>
-            <dd className="mt-1 text-2xl font-bold text-slate-950">{totalFeaturedPassages}</dd>
-          </div>
-          <div>
-            <dt className="text-sm text-slate-500">Saved passages</dt>
-            <dd className="mt-1 text-2xl font-bold text-slate-950">{savedPassageCount}</dd>
-          </div>
-        </dl>
       </section>
 
       <section className="grid gap-4">
