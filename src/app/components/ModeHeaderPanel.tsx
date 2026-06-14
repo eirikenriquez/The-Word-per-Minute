@@ -43,8 +43,8 @@ export function ModeHeaderPanel({
   onSelectMode,
 }: ModeHeaderPanelProps) {
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <section className="rounded-lg border border-slate-200 bg-white px-5 py-4 shadow-sm">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
         <HeaderTitleBlock reference={practiceReference} subtitle={practiceSubtitle} title={practiceTitle} />
 
         <AppNavigation appMode={appMode} hasSavedPassages={hasSavedPassages} onSelectMode={onSelectMode} />
