@@ -1,6 +1,6 @@
 # The Word per Minute Documentation
 
-Document version: `260615.1.a`
+Document version: `260615.1.b`
 Last updated: 15/06/26
 Update rule: only update this file when explicitly requested by the project owner.
 
@@ -145,14 +145,16 @@ main.tsx
       -> builds display state
       -> builds cross-page actions
       -> delegates page props to page controllers
-    -> renders PageShell
-    -> renders AppHeader
+    -> renders PageShell with global brand/navigation/theme controls
+    -> renders AppHeader on non-Home pages
     -> renders AppPageRoutes
       -> renders AppRoutes
       -> renders HomePage, PracticePage, BiblePage, or LibraryPage
 ```
 
 `App.tsx` is now mostly the app shell. App-wide coordination lives in `src/app/controllers/useAppController.ts`, while page-specific prop wiring lives in the page controllers.
+
+Home intentionally hides `AppHeader` so the Home hero is the first page content. Practice, Bible, and Library still show the contextual page title/reference area.
 
 ## Current File Structure
 
@@ -163,10 +165,13 @@ src/
       AppErrorState.tsx
       AppHeader.tsx
       AppLoadingState.tsx
+      AppNavigation.tsx
       AppPageRoutes.tsx
       AppRoutes.tsx
+      HeaderTitleBlock.tsx
       ModeHeaderPanel.tsx
       PageShell.tsx
+      PassageSaveControls.tsx
     controllers/
       useAppController.ts
       useBiblePageController.ts
@@ -252,8 +257,8 @@ Responsibilities:
 
 - calls `useAppController`,
 - renders loading and error states,
-- renders `PageShell`,
-- renders `AppHeader`,
+- renders `PageShell` with global navigation state,
+- renders `AppHeader` on non-Home pages,
 - renders `AppPageRoutes`.
 
 ### `src/app/controllers/useAppController.ts`
@@ -300,14 +305,20 @@ Maps prepared page props into routed page elements.
 Shows:
 
 - current title/subtitle/reference,
-- Home / Practice / Bible / Library navigation,
 - contextual save controls.
+
+It should stay as an open page-title section, not a floating page card.
+
+### `src/app/components/AppNavigation.tsx`
+
+Shows the global Home / Practice / Bible / Library navigation in the app shell.
 
 ### `src/app/components/PageShell.tsx`
 
 Provides the app page frame:
 
 - app title,
+- global navigation,
 - theme button,
 - main content width,
 - app background.
@@ -394,16 +405,14 @@ src/data/bibles/web/
 
 ## Theme And Motion
 
-`src/index.css` handles global styling:
+`src/index.css` is currently intentionally minimal:
 
 - Tailwind import,
-- smooth scrolling,
-- page transitions,
-- reduced-motion support,
-- light/dark color mapping,
-- subtle hover and focus behaviour.
+- browser body margin reset.
 
 Theme state is managed by `src/app/hooks/useTheme.ts` and stored in `localStorage`.
+
+Light/dark mode still exists as app state, but the current UI overhaul is using mostly default Tailwind utility classes. Any future theme system should be added carefully instead of rebuilding a large custom CSS layer too early.
 
 ## Important Types
 
@@ -419,10 +428,10 @@ Theme state is managed by `src/app/hooks/useTheme.ts` and stored in `localStorag
 flowchart TD
   main["main.tsx + BrowserRouter"] --> app["App.tsx"]
   app --> controller["useAppController"]
-  app --> shell["PageShell"]
+  app --> shell["PageShell + AppNavigation"]
   controller --> headerController["Header props"]
   controller --> pageControllers["Page controllers"]
-  app --> header["AppHeader + ModeHeaderPanel"]
+  app --> header["AppHeader + ModeHeaderPanel on non-Home pages"]
   app --> pageRoutes["AppPageRoutes"]
   pageControllers --> pageRoutes
   pageRoutes --> routes["AppRoutes"]
@@ -444,20 +453,20 @@ flowchart TD
 ## Known Technical Debt
 
 - `useAppController` is the main app composition root and should not become a dumping ground for feature logic.
-- `ModeHeaderPanel` still has shared navigation and save UI mixed together.
+- The UI overhaul is in progress; main content containers should keep moving away from unnecessary floating cards.
 - Category management is still hardcoded/generated from featured themes.
 - Library filtering is UI-only and still backed by local saved passage data.
 - User data is local-only through `localStorage`.
 - The app uses local JSON Bible data only; no hosted API yet.
-- Theme mapping is handled through global CSS rather than formal design tokens.
+- The theme system is still basic and does not yet have formal design tokens.
 - Automated tests are not set up yet.
 
 ## Likely Next Architecture Steps
 
 1. Manually test `/`, `/practice`, `/bible`, and `/library`.
 2. Confirm refresh and browser back/forward work correctly on each route.
-3. Review `useAppController` and keep it limited to cross-feature composition.
-4. Consider splitting `ModeHeaderPanel` into navigation and save controls.
+3. Continue the UI overhaul page by page, starting with Practice layout and reducing unnecessary card containers.
+4. Review `useAppController` and keep it limited to cross-feature composition.
 5. Consider moving more page-specific logic into page controllers only when it improves clarity.
 6. Keep `verseService` API-shaped so local JSON can later move to hosted data.
 7. Keep saved passage storage behind `savedPassageRepository` so it can later move to a database.

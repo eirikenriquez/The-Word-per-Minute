@@ -1,6 +1,6 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260615.1.a`
+Current documentation version: `260615.1.b`
 Last updated: 15/06/26
 
 ## Update Rule
@@ -33,9 +33,25 @@ Example:
 
 Suggested next versions:
 
-- Small same-day documentation update: `260615.1.b`
+- Small same-day documentation update: `260615.1.c`
 - Larger same-day documentation update: `260615.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260615.1.b`
+
+This version updates the architecture snapshot after the Home and app shell UI layout changes.
+
+It updates:
+
+- the runtime flow to show that `PageShell` now owns the global brand/navigation/theme controls,
+- the Home page behaviour to note that the contextual `AppHeader` is hidden on Home,
+- the app component list to include `AppNavigation`, `HeaderTitleBlock`, and `PassageSaveControls`,
+- the responsibilities for `App.tsx`, `PageShell`, `AppNavigation`, and `ModeHeaderPanel`,
+- the theme/motion section to show that `src/index.css` is intentionally minimal again,
+- the architecture diagram to separate global shell navigation from the non-Home contextual page header,
+- known technical debt and next steps for the ongoing UI overhaul.
+
+This does not change product scope. It documents the move away from floating main content cards toward a cleaner web app shell.
 
 ## `260615.1.a`
 
