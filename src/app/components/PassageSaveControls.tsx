@@ -1,0 +1,90 @@
+type PassageSaveControlsProps = {
+  canSaveCurrentPassage: boolean;
+  isCurrentPassageSaved: boolean;
+  saveCategory: string;
+  savedPassageCategories: string[];
+  saveTitle: string;
+  showFields: boolean;
+  onSaveCategoryChange: (category: string) => void;
+  onSaveCurrentPassage: () => void;
+  onSaveTitleChange: (title: string) => void;
+};
+
+/**
+ * Header controls for saving the current featured or Bible-selected passage.
+ */
+export function PassageSaveControls({
+  canSaveCurrentPassage,
+  isCurrentPassageSaved,
+  saveCategory,
+  savedPassageCategories,
+  saveTitle,
+  showFields,
+  onSaveCategoryChange,
+  onSaveCurrentPassage,
+  onSaveTitleChange,
+}: PassageSaveControlsProps) {
+  if (!showFields) {
+    return (
+      <div className="mt-4 flex justify-end border-t border-slate-200 pt-4">
+        <SaveButton
+          disabled={!canSaveCurrentPassage || isCurrentPassageSaved}
+          isSaved={isCurrentPassageSaved}
+          onSave={onSaveCurrentPassage}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-4 grid gap-3 border-t border-slate-200 pt-4 sm:grid-cols-[1fr_12rem_auto] sm:items-end">
+      <label className="grid gap-1">
+        <span className="text-sm font-medium text-slate-600">Saved Title</span>
+        <input
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+          placeholder="Name this saved passage"
+          value={saveTitle}
+          onChange={(event) => onSaveTitleChange(event.target.value)}
+        />
+      </label>
+      <label className="grid gap-1">
+        <span className="text-sm font-medium text-slate-600">Category</span>
+        <select
+          className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+          value={saveCategory}
+          onChange={(event) => onSaveCategoryChange(event.target.value)}
+        >
+          {savedPassageCategories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+      </label>
+      <SaveButton
+        disabled={!canSaveCurrentPassage || isCurrentPassageSaved}
+        isSaved={isCurrentPassageSaved}
+        onSave={onSaveCurrentPassage}
+      />
+    </div>
+  );
+}
+
+type SaveButtonProps = {
+  disabled: boolean;
+  isSaved: boolean;
+  onSave: () => void;
+};
+
+function SaveButton({ disabled, isSaved, onSave }: SaveButtonProps) {
+  return (
+    <button
+      className="rounded-md bg-slate-950 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+      disabled={disabled}
+      type="button"
+      onClick={onSave}
+    >
+      {isSaved ? "Saved" : "Save Passage"}
+    </button>
+  );
+}
