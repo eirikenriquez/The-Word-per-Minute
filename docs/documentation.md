@@ -1,7 +1,7 @@
 # The Word per Minute Documentation
 
-Document version: `260614.1.b`
-Last updated: 14/06/26
+Document version: `260615.1.a`
+Last updated: 15/06/26
 Update rule: only update this file when explicitly requested by the project owner.
 
 ## Purpose
@@ -97,7 +97,7 @@ It:
 - presents the passage as short typing batches,
 - calculates WPM and accuracy,
 - records personal bests locally,
-- allows featured passages to be saved,
+- allows featured passages to be saved from the Practice controls,
 - lets users switch between Featured and Saved practice sources.
 
 ### Bible
@@ -123,10 +123,13 @@ It:
 
 - reads saved passages from `localStorage`,
 - displays saved passages as cards,
+- supports search by title, reference, category, book, or translation,
 - supports category filtering,
+- supports source filtering by All sources, Featured, or Saved,
 - lets the user practise a saved passage,
 - lets the user edit saved passage title/category,
-- lets the user remove saved passages.
+- lets the user remove saved passages,
+- shows clearer card metadata, source labels, saved dates, and active practice state.
 
 Library does not show typing input directly.
 
@@ -194,9 +197,13 @@ src/
         usePassageCategories.ts
     practice/
       components/
+        FeaturedSaveAction.tsx
         PersonalBests.tsx
+        PracticeActionButtons.tsx
         PracticeBatchDisplay.tsx
         PracticeControls.tsx
+        SavedPassageSelect.tsx
+        SourcePicker.tsx
         TypingPracticePanel.tsx
       hooks/
         usePracticeBatches.ts
@@ -331,6 +338,9 @@ This should stay API-shaped so local JSON can later move to hosted data.
 Owns typing practice UI and logic:
 
 - source controls,
+- featured passage save action,
+- saved passage picker,
+- practice action buttons,
 - typing batch display,
 - typing input,
 - personal bests,
@@ -361,7 +371,7 @@ Owns saved passage storage and management:
 
 - save input creation,
 - save form state,
-- saved passage list/edit/remove state,
+- saved passage search/filter/list/edit/remove state,
 - saved passage cards,
 - `localStorage` repository.
 
@@ -436,6 +446,7 @@ flowchart TD
 - `useAppController` is the main app composition root and should not become a dumping ground for feature logic.
 - `ModeHeaderPanel` still has shared navigation and save UI mixed together.
 - Category management is still hardcoded/generated from featured themes.
+- Library filtering is UI-only and still backed by local saved passage data.
 - User data is local-only through `localStorage`.
 - The app uses local JSON Bible data only; no hosted API yet.
 - Theme mapping is handled through global CSS rather than formal design tokens.

@@ -1,7 +1,7 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260614.1.b`
-Last updated: 14/06/26
+Current documentation version: `260615.1.a`
+Last updated: 15/06/26
 
 ## Update Rule
 
@@ -33,9 +33,23 @@ Example:
 
 Suggested next versions:
 
-- Small same-day documentation update: `260614.1.c`
-- Larger same-day documentation update: `260614.2.a`
+- Small same-day documentation update: `260615.1.b`
+- Larger same-day documentation update: `260615.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260615.1.a`
+
+This version updates the architecture snapshot after the Practice controls and Library polish work.
+
+It updates:
+
+- the Practice responsibilities to show that featured passage saving now lives in the Practice controls,
+- the current file structure for the split Practice control components,
+- the Library responsibilities to include search, category filtering, source filtering, clearer metadata, saved dates, and active practice state,
+- the saved-passages feature responsibilities to include search and filter state,
+- known technical debt to note that Library filtering is still local/UI-only.
+
+This does not add backend scope. It documents UI and modularity improvements while keeping saved passages behind local state and `localStorage`.
 
 ## `260614.1.b`
 
