@@ -3,13 +3,16 @@ import type { SavedPassage } from "../../../types/savedPassage";
 type PracticeSource = "featured" | "saved";
 
 type PracticeControlsProps = {
+  canSaveCurrentPassage: boolean;
   hasSavedPassages: boolean;
+  isCurrentPassageSaved: boolean;
   practiceSource: PracticeSource;
   savedPassages: SavedPassage[];
   selectedSavedPassageId: string;
   onNextFeaturedPassage: () => void;
   onOpenLibrary: () => void;
   onReset: () => void;
+  onSaveCurrentPassage: () => void;
   onSelectFeaturedPractice: () => void;
   onSelectSavedPractice: (passageId: string) => void;
 };
@@ -19,13 +22,16 @@ type PracticeControlsProps = {
  * Keeps Practice focused while still letting the user switch between curated and saved passages.
  */
 export function PracticeControls({
+  canSaveCurrentPassage,
   hasSavedPassages,
+  isCurrentPassageSaved,
   practiceSource,
   savedPassages,
   selectedSavedPassageId,
   onNextFeaturedPassage,
   onOpenLibrary,
   onReset,
+  onSaveCurrentPassage,
   onSelectFeaturedPractice,
   onSelectSavedPractice,
 }: PracticeControlsProps) {
@@ -45,6 +51,14 @@ export function PracticeControls({
             onSelectFeaturedPractice={onSelectFeaturedPractice}
             onSelectSavedPractice={onSelectSavedPractice}
           />
+
+          {practiceSource === "featured" && (
+            <FeaturedSaveAction
+              canSaveCurrentPassage={canSaveCurrentPassage}
+              isCurrentPassageSaved={isCurrentPassageSaved}
+              onSaveCurrentPassage={onSaveCurrentPassage}
+            />
+          )}
 
           {practiceSource === "saved" && (
             <SavedPassageSelect
@@ -106,6 +120,34 @@ function SourcePicker({
           }}
         />
       </div>
+    </div>
+  );
+}
+
+type FeaturedSaveActionProps = {
+  canSaveCurrentPassage: boolean;
+  isCurrentPassageSaved: boolean;
+  onSaveCurrentPassage: () => void;
+};
+
+function FeaturedSaveAction({
+  canSaveCurrentPassage,
+  isCurrentPassageSaved,
+  onSaveCurrentPassage,
+}: FeaturedSaveActionProps) {
+  return (
+    <div className="flex flex-wrap items-center gap-2">
+      <button
+        className="rounded-md bg-slate-900 px-3 py-2 text-sm font-medium text-white transition hover:bg-slate-700 disabled:cursor-not-allowed disabled:bg-slate-400"
+        disabled={!canSaveCurrentPassage || isCurrentPassageSaved}
+        type="button"
+        onClick={onSaveCurrentPassage}
+      >
+        {isCurrentPassageSaved ? "Saved" : "Save Passage"}
+      </button>
+      <span className="text-xs text-slate-500">
+        {isCurrentPassageSaved ? "This featured passage is in your library." : "Add this passage to your library."}
+      </span>
     </div>
   );
 }

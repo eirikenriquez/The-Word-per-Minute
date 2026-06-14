@@ -9,7 +9,9 @@ import type { PracticeBatch } from "../../types/practiceBatch";
 type UsePracticePageControllerParams = {
   appActions: ReturnType<typeof useAppActions>;
   batches: PracticeBatch[];
+  canSaveCurrentPassage: boolean;
   currentBatch: PracticeBatch | undefined;
+  isCurrentPassageSaved: boolean;
   practiceSession: ReturnType<typeof usePracticeSession>;
   practiceSource: PracticeSource;
   practiceTitle: string;
@@ -17,6 +19,7 @@ type UsePracticePageControllerParams = {
   savedLibrary: ReturnType<typeof useSavedPassages>;
   stats: PracticeStats;
   translationName: string;
+  onSaveCurrentPassage: () => void;
 };
 
 /**
@@ -26,7 +29,9 @@ type UsePracticePageControllerParams = {
 export function usePracticePageController({
   appActions,
   batches,
+  canSaveCurrentPassage,
   currentBatch,
+  isCurrentPassageSaved,
   practiceSession,
   practiceSource,
   practiceTitle,
@@ -34,6 +39,7 @@ export function usePracticePageController({
   savedLibrary,
   stats,
   translationName,
+  onSaveCurrentPassage,
 }: UsePracticePageControllerParams): PracticePageProps | null {
   if (!currentBatch) return null;
 
@@ -41,6 +47,8 @@ export function usePracticePageController({
     accuracy: practiceSession.accuracy,
     currentBatch,
     currentBatchIndex: practiceSession.currentBatchIndex,
+    canSaveCurrentPassage,
+    isCurrentPassageSaved,
     isBatchComplete: practiceSession.isBatchComplete,
     isPassageComplete: practiceSession.isPassageComplete,
     practiceSource,
@@ -58,6 +66,7 @@ export function usePracticePageController({
     onOpenLibrary: appActions.openLibrary,
     onResetPractice: practiceSession.resetPractice,
     onResetStats: resetStats,
+    onSaveCurrentPassage,
     onSelectFeaturedPractice: appActions.selectFeaturedPractice,
     onSelectSavedPassage: appActions.selectSavedPractice,
     onTypingChange: practiceSession.handleTyping,

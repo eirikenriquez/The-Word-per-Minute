@@ -9,8 +9,10 @@ import type { SavedPassage } from "../types/savedPassage";
 
 export type PracticePageProps = {
   accuracy: number;
+  canSaveCurrentPassage: boolean;
   currentBatch: PracticeBatch;
   currentBatchIndex: number;
+  isCurrentPassageSaved: boolean;
   isBatchComplete: boolean;
   isPassageComplete: boolean;
   practiceSource: PracticeSource;
@@ -28,6 +30,7 @@ export type PracticePageProps = {
   onOpenLibrary: () => void;
   onResetPractice: () => void;
   onResetStats: () => void;
+  onSaveCurrentPassage: () => void;
   onSelectFeaturedPractice: () => void;
   onSelectSavedPassage: (passageId: string) => void;
   onTypingChange: (typedText: string) => void;
@@ -38,8 +41,10 @@ export type PracticePageProps = {
  */
 export function PracticePage({
   accuracy,
+  canSaveCurrentPassage,
   currentBatch,
   currentBatchIndex,
+  isCurrentPassageSaved,
   isBatchComplete,
   isPassageComplete,
   practiceSource,
@@ -57,6 +62,7 @@ export function PracticePage({
   onOpenLibrary,
   onResetPractice,
   onResetStats,
+  onSaveCurrentPassage,
   onSelectFeaturedPractice,
   onSelectSavedPassage,
   onTypingChange,
@@ -64,13 +70,16 @@ export function PracticePage({
   return (
     <>
       <PracticeControls
+        canSaveCurrentPassage={canSaveCurrentPassage}
         hasSavedPassages={savedPassages.length > 0}
+        isCurrentPassageSaved={isCurrentPassageSaved}
         practiceSource={practiceSource}
         savedPassages={savedPassages}
         selectedSavedPassageId={selectedSavedPassageId}
         onNextFeaturedPassage={onNextFeaturedPassage}
         onOpenLibrary={onOpenLibrary}
         onReset={onResetPractice}
+        onSaveCurrentPassage={onSaveCurrentPassage}
         onSelectFeaturedPractice={onSelectFeaturedPractice}
         onSelectSavedPractice={onSelectSavedPassage}
       />

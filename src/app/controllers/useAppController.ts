@@ -151,7 +151,7 @@ export function useAppController() {
     saveCategory,
     savedPassageCategories,
     saveTitle,
-    showPracticeSave: appMode === "practice" && practiceSource === "featured",
+    showPracticeSave: false,
     onSaveCategoryChange: setSaveCategory,
     onSaveCurrentPassage: saveCurrentPassage,
     onSaveTitleChange: setSaveTitle,
@@ -176,7 +176,9 @@ export function useAppController() {
     practicePageProps: usePracticePageController({
       appActions,
       batches,
+      canSaveCurrentPassage: Boolean(saveInput),
       currentBatch,
+      isCurrentPassageSaved,
       practiceSession,
       practiceSource,
       practiceTitle,
@@ -184,6 +186,7 @@ export function useAppController() {
       savedLibrary,
       stats,
       translationName,
+      onSaveCurrentPassage: saveCurrentPassage,
     }),
   };
 
