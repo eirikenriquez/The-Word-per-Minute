@@ -49,11 +49,11 @@ export function TypingPracticePanel({
       </div>
 
       {isComplete && (
-        <div className="flex flex-col gap-3 rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm font-medium text-emerald-800 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 rounded-md border border-slate-200 bg-slate-50 p-3 text-sm font-medium text-slate-700 sm:flex-row sm:items-center sm:justify-between">
           <p>{completionMessage}</p>
           {completionActionLabel && onCompletionAction && (
             <button
-              className="w-fit rounded-md bg-emerald-800 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
+              className="w-fit rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-700"
               type="button"
               onClick={onCompletionAction}
             >

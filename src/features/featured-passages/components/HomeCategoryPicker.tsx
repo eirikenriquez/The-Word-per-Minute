@@ -29,10 +29,10 @@ export function HomeCategoryPicker({
 
   return (
     <section className="grid gap-4">
-      <section className="rounded-lg border border-amber-200 bg-amber-50 p-6 shadow-sm">
+      <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
         <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end">
           <div className="max-w-2xl">
-            <p className="text-sm font-semibold uppercase text-amber-900">Quiet typing practice</p>
+            <p className="text-sm font-semibold uppercase text-slate-500">Quiet typing practice</p>
             <h2 className="mt-2 text-3xl font-bold text-slate-950 sm:text-4xl">
               Slow down with scripture and build your rhythm.
             </h2>
@@ -57,14 +57,12 @@ export function HomeCategoryPicker({
           description="Start with a curated scripture prompt"
           label="Practice"
           meta={`${totalFeaturedPassages} passages`}
-          tone="amber"
           onSelect={onStartFeatured}
         />
         <HomeCard
           description="Read and select verses"
           label="Bible"
           meta="Book and chapter"
-          tone="emerald"
           onSelect={onOpenBible}
         />
         <HomeCard
@@ -72,7 +70,6 @@ export function HomeCategoryPicker({
           disabled={!hasSavedPassages}
           label="Library"
           meta={`${savedPassageCount} saved`}
-          tone="sky"
           onSelect={onOpenLibrary}
         />
       </div>
@@ -92,7 +89,6 @@ export function HomeCategoryPicker({
               key={category.label}
               label={category.label}
               meta={`${category.count} ${category.count === 1 ? "passage" : "passages"}`}
-              tone="slate"
               onSelect={() => onStartFeaturedCategory(category.label)}
             />
           ))}
@@ -107,18 +103,10 @@ type HomeCardProps = {
   disabled?: boolean;
   label: string;
   meta: string;
-  tone?: "amber" | "emerald" | "sky" | "slate";
   onSelect: () => void;
 };
 
-function HomeCard({ description, disabled = false, label, meta, tone = "slate", onSelect }: HomeCardProps) {
-  const toneClassNames = {
-    amber: "border-amber-200 bg-amber-50 text-amber-900",
-    emerald: "border-emerald-200 bg-emerald-50 text-emerald-900",
-    sky: "border-sky-200 bg-sky-50 text-sky-900",
-    slate: "border-slate-200 bg-slate-50 text-slate-700",
-  };
-
+function HomeCard({ description, disabled = false, label, meta, onSelect }: HomeCardProps) {
   return (
     <button
       className="group min-h-32 rounded-lg border border-slate-200 bg-white p-4 text-left shadow-sm transition hover:border-slate-400 hover:shadow-md disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400 disabled:shadow-none"
@@ -126,7 +114,7 @@ function HomeCard({ description, disabled = false, label, meta, tone = "slate", 
       type="button"
       onClick={onSelect}
     >
-      <span className={`mb-4 inline-flex rounded-md border px-2 py-1 text-xs font-bold ${toneClassNames[tone]}`}>
+      <span className="mb-4 inline-flex rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-xs font-bold text-slate-700">
         {meta}
       </span>
       <span className="block text-lg font-bold text-slate-950 group-disabled:text-slate-400">{label}</span>

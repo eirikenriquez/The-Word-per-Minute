@@ -117,7 +117,7 @@ export function BibleReaderSelector({
             <button
               className={`mr-1 rounded px-1 text-left transition ${
                 isSelected
-                  ? "bg-amber-100 text-slate-950 ring-1 ring-amber-300"
+                  ? "bg-slate-200 text-slate-950 ring-1 ring-slate-300"
                   : "text-slate-700 hover:bg-white"
               }`}
               key={verse.number}

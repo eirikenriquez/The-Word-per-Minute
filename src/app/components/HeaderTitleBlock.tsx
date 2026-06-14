@@ -13,7 +13,7 @@ export function HeaderTitleBlock({ reference, subtitle, title }: HeaderTitleBloc
       <p className="text-sm font-semibold uppercase text-slate-500">{subtitle}</p>
       <h2 className="mt-1 text-2xl font-bold text-slate-950">{title}</h2>
       {reference && (
-        <p className="mt-2 w-fit rounded-md bg-amber-50 px-2.5 py-1 text-sm font-semibold text-amber-900 ring-1 ring-amber-200">
+        <p className="mt-2 w-fit rounded-md bg-slate-100 px-2.5 py-1 text-sm font-semibold text-slate-700 ring-1 ring-slate-200">
           {reference}
         </p>
       )}

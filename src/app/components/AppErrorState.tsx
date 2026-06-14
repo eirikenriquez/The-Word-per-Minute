@@ -7,7 +7,7 @@ type AppErrorStateProps = {
  */
 export function AppErrorState({ message }: AppErrorStateProps) {
   return (
-    <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800 dark:border-rose-800/60 dark:bg-rose-950/50 dark:text-rose-100">
+    <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-800 dark:border-red-800/60 dark:bg-red-950/50 dark:text-red-100">
       {message}
     </div>
   );
