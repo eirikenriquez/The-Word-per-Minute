@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import type { SavedPassage, SavedPassageUpdate } from "../../../types/savedPassage";
 
+type SourceFilter = "all" | "featured" | "saved";
+
 type SavedPassageControlsProps = {
   savedPassages: SavedPassage[];
   selectedSavedPassageId: string;
@@ -21,21 +23,46 @@ export function SavedPassageControls({
   onUpdatePassage,
 }: SavedPassageControlsProps) {
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedSource, setSelectedSource] = useState<SourceFilter>("all");
+  const [searchTerm, setSearchTerm] = useState("");
   const hasSavedPassages = savedPassages.length > 0;
   const categories = useMemo(() => {
     const savedCategories = savedPassages.map((passage) => passage.category || "Other");
     return ["All", ...new Set(savedCategories)];
   }, [savedPassages]);
   const editableCategories = useMemo(() => categories.filter((category) => category !== "All"), [categories]);
-  const visiblePassages =
-    selectedCategory === "All"
-      ? savedPassages
-      : savedPassages.filter((passage) => passage.category === selectedCategory);
+  const visiblePassages = useMemo(
+    () =>
+      savedPassages.filter(
+        (passage) =>
+          matchesSelectedCategory(passage, selectedCategory) &&
+          matchesSelectedSource(passage, selectedSource) &&
+          matchesSearchTerm(passage, searchTerm),
+      ),
+    [savedPassages, searchTerm, selectedCategory, selectedSource],
+  );
+  const resultSummary = hasSavedPassages
+    ? `${visiblePassages.length} of ${savedPassages.length} passage${savedPassages.length === 1 ? "" : "s"}`
+    : "0 passages";
 
   return (
     <section className="rounded-lg border bg-white p-5 shadow-sm">
       <div className="grid gap-4">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div className="grid gap-3 lg:grid-cols-[1fr_auto] lg:items-end">
+          <label className="grid gap-1">
+            <span className="text-sm font-medium text-slate-600">Search</span>
+            <input
+              className="rounded-md border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100 disabled:text-slate-500"
+              disabled={!hasSavedPassages}
+              placeholder="Search title, reference, category, or book"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+            />
+          </label>
+          <p className="text-sm font-medium text-slate-500 lg:text-right">{resultSummary}</p>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[14rem_14rem]">
           <label className="grid gap-1 sm:w-56">
             <span className="text-sm font-medium text-slate-600">Category</span>
             <select
@@ -49,6 +76,19 @@ export function SavedPassageControls({
                   {category}
                 </option>
               ))}
+            </select>
+          </label>
+          <label className="grid gap-1 sm:w-56">
+            <span className="text-sm font-medium text-slate-600">Source</span>
+            <select
+              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm disabled:bg-slate-100 disabled:text-slate-500"
+              disabled={!hasSavedPassages}
+              value={selectedSource}
+              onChange={(event) => setSelectedSource(event.target.value as SourceFilter)}
+            >
+              <option value="all">All sources</option>
+              <option value="featured">Featured</option>
+              <option value="saved">Saved</option>
             </select>
           </label>
         </div>
@@ -73,12 +113,33 @@ export function SavedPassageControls({
           </div>
         ) : (
           <div className="rounded-md border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
-            No saved passages in this category yet.
+            No saved passages match those filters yet.
           </div>
         )}
       </div>
     </section>
   );
+}
+
+function matchesSelectedCategory(passage: SavedPassage, selectedCategory: string) {
+  return selectedCategory === "All" || passage.category === selectedCategory;
+}
+
+function matchesSelectedSource(passage: SavedPassage, selectedSource: SourceFilter) {
+  if (selectedSource === "all") return true;
+  if (selectedSource === "saved") return passage.source !== "featured";
+
+  return passage.source === selectedSource;
+}
+
+function matchesSearchTerm(passage: SavedPassage, searchTerm: string) {
+  const normalizedSearchTerm = searchTerm.trim().toLowerCase();
+  if (!normalizedSearchTerm) return true;
+
+  return [passage.title, passage.reference, passage.category, passage.bookName, passage.translationAbbreviation]
+    .join(" ")
+    .toLowerCase()
+    .includes(normalizedSearchTerm);
 }
 
 type SavedPassageCardProps = {
