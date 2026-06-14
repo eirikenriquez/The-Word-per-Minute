@@ -39,30 +39,18 @@ export function PracticeControls({
   onSelectFeaturedPractice,
   onSelectSavedPractice,
 }: PracticeControlsProps) {
-  const selectedSavedPassage = savedPassages.find((passage) => passage.id === selectedSavedPassageId);
-  const savedPassageLabel = selectedSavedPassage?.title ?? savedPassages[0]?.title ?? "No saved passages yet";
-
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
-        <div className="grid gap-4">
+    <section className="rounded-lg border border-slate-200 bg-white px-4 py-3 shadow-sm">
+      <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+        <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
           <SourcePicker
             hasSavedPassages={hasSavedPassages}
             practiceSource={practiceSource}
-            savedPassageLabel={savedPassageLabel}
             savedPassages={savedPassages}
             selectedSavedPassageId={selectedSavedPassageId}
             onSelectFeaturedPractice={onSelectFeaturedPractice}
             onSelectSavedPractice={onSelectSavedPractice}
           />
-
-          {practiceSource === "featured" && (
-            <FeaturedSaveAction
-              canSaveCurrentPassage={canSaveCurrentPassage}
-              isCurrentPassageSaved={isCurrentPassageSaved}
-              onSaveCurrentPassage={onSaveCurrentPassage}
-            />
-          )}
 
           {practiceSource === "saved" && (
             <SavedPassageSelect
@@ -73,12 +61,22 @@ export function PracticeControls({
           )}
         </div>
 
-        <PracticeActionButtons
-          practiceSource={practiceSource}
-          onNextFeaturedPassage={onNextFeaturedPassage}
-          onOpenLibrary={onOpenLibrary}
-          onReset={onReset}
-        />
+        <div className="flex flex-wrap gap-2 lg:justify-end">
+          {practiceSource === "featured" && (
+            <FeaturedSaveAction
+              canSaveCurrentPassage={canSaveCurrentPassage}
+              isCurrentPassageSaved={isCurrentPassageSaved}
+              onSaveCurrentPassage={onSaveCurrentPassage}
+            />
+          )}
+
+          <PracticeActionButtons
+            practiceSource={practiceSource}
+            onNextFeaturedPassage={onNextFeaturedPassage}
+            onOpenLibrary={onOpenLibrary}
+            onReset={onReset}
+          />
+        </div>
       </div>
     </section>
   );

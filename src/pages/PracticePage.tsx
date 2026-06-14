@@ -68,7 +68,7 @@ export function PracticePage({
   onTypingChange,
 }: PracticePageProps) {
   return (
-    <>
+    <div className="grid gap-5">
       <PracticeControls
         canSaveCurrentPassage={canSaveCurrentPassage}
         hasSavedPassages={savedPassages.length > 0}
@@ -92,24 +92,26 @@ export function PracticePage({
         typedText={typedText}
       />
 
-      <TypingPracticePanel
-        accuracy={accuracy}
-        completionActionLabel={isPassageComplete && practiceSource === "featured" ? "Next Passage" : undefined}
-        completionMessage={
-          isPassageComplete
-            ? `Complete. You finished ${practiceTitle} at ${wpm} WPM with ${accuracy}% accuracy.`
-            : "Batch complete. Moving to the next verses..."
-        }
-        isComplete={isBatchComplete}
-        onCompletionAction={isPassageComplete && practiceSource === "featured" ? onNextFeaturedPassage : undefined}
-        progress={Math.min(progress, 100)}
-        status={status}
-        typedText={typedText}
-        wpm={wpm}
-        onTypingChange={onTypingChange}
-      />
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start">
+        <TypingPracticePanel
+          accuracy={accuracy}
+          completionActionLabel={isPassageComplete && practiceSource === "featured" ? "Next Passage" : undefined}
+          completionMessage={
+            isPassageComplete
+              ? `Complete. You finished ${practiceTitle} at ${wpm} WPM with ${accuracy}% accuracy.`
+              : "Batch complete. Moving to the next verses..."
+          }
+          isComplete={isBatchComplete}
+          onCompletionAction={isPassageComplete && practiceSource === "featured" ? onNextFeaturedPassage : undefined}
+          progress={Math.min(progress, 100)}
+          status={status}
+          typedText={typedText}
+          wpm={wpm}
+          onTypingChange={onTypingChange}
+        />
 
-      <PersonalBests stats={stats} onResetStats={onResetStats} />
-    </>
+        <PersonalBests stats={stats} onResetStats={onResetStats} />
+      </div>
+    </div>
   );
 }

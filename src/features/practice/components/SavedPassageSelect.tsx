@@ -15,10 +15,10 @@ export function SavedPassageSelect({
   onSelectSavedPractice,
 }: SavedPassageSelectProps) {
   return (
-    <label className="grid gap-1 sm:max-w-md">
-      <span className="text-sm font-medium text-slate-600">Saved Passage</span>
+    <label className="flex flex-col gap-2 sm:flex-row sm:items-center">
+      <span className="text-sm font-medium text-slate-600">Saved passage</span>
       <select
-        className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+        className="h-9 min-w-52 rounded-md border border-slate-300 bg-white px-3 text-sm outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
         value={selectedSavedPassageId}
         onChange={(event) => onSelectSavedPractice(event.target.value)}
       >

@@ -88,6 +88,7 @@ export function useAppDisplayState({
       practiceTitle: getPracticeTitle({
         appMode,
         featuredPassageResponse,
+        practiceSource,
         selectedBook,
         selectedChapter,
         selectedSavedPassage,
@@ -152,18 +153,21 @@ function getModeError({
 function getPracticeTitle({
   appMode,
   featuredPassageResponse,
+  practiceSource,
   selectedBook,
   selectedChapter,
   selectedSavedPassage,
 }: Pick<
   UseAppDisplayStateParams,
-  "appMode" | "featuredPassageResponse" | "selectedBook" | "selectedChapter" | "selectedSavedPassage"
+  "appMode" | "featuredPassageResponse" | "practiceSource" | "selectedBook" | "selectedChapter" | "selectedSavedPassage"
 >) {
   if (appMode === "home") return "Welcome";
   if (appMode === "bible") return `${selectedBook?.name ?? "Bible"} ${selectedChapter}`;
   if (appMode === "library") return "Saved Library";
 
-  return featuredPassageResponse?.passage.title ?? selectedSavedPassage?.title ?? "Saved Passage";
+  return practiceSource === "featured"
+    ? featuredPassageResponse?.passage.title ?? "Featured Passage"
+    : selectedSavedPassage?.title ?? "Saved Passage";
 }
 
 function getPracticeReference({
