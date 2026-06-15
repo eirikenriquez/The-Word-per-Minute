@@ -44,7 +44,7 @@ export function BiblePage({
   onSelectTranslation,
 }: BiblePageProps) {
   return (
-    <>
+    <div className="grid gap-8">
       <BibleControls
         books={bibleBooks}
         selectedBook={selectedBibleBook}
@@ -67,6 +67,6 @@ export function BiblePage({
         onSelectRange={onSelectReaderRange}
         onSelectVerse={onSelectReaderVerse}
       />
-    </>
+    </div>
   );
 }

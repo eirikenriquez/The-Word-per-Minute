@@ -77,16 +77,16 @@ export function BibleReaderSelector({
   }
 
   return (
-    <section className="rounded-lg border bg-white p-5 shadow-sm">
-      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="mx-auto grid w-full max-w-5xl gap-5">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-medium text-slate-500">Read / Select</p>
-          <h2 className="text-lg font-bold">
+          <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">Read / Select</p>
+          <h2 className="mt-1 text-3xl font-bold text-slate-950">
             {selectedBook.name} {selectedChapter}
           </h2>
         </div>
         <button
-          className="w-fit rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:text-slate-400"
+          className="w-fit rounded-md px-3 py-2 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-950 disabled:cursor-not-allowed disabled:text-slate-400"
           disabled={!hasSelectedVerses}
           type="button"
           onClick={onClearSelection}
@@ -96,7 +96,7 @@ export function BibleReaderSelector({
       </div>
 
       <div
-        className="rounded-md border border-slate-200 bg-slate-50 p-4 text-lg leading-9"
+        className="text-xl leading-10 text-slate-700 sm:text-2xl sm:leading-[3rem]"
         role="presentation"
         onClick={() => {
           if (shouldSkipNextClear.current) {
@@ -118,7 +118,7 @@ export function BibleReaderSelector({
               className={`mr-1 rounded px-1 text-left transition ${
                 isSelected
                   ? "bg-slate-200 text-slate-950 ring-1 ring-slate-300"
-                  : "text-slate-700 hover:bg-white"
+                  : "text-slate-700 hover:bg-slate-100"
               }`}
               key={verse.number}
               ref={(buttonElement) => {
