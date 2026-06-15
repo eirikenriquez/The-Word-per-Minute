@@ -68,7 +68,7 @@ export function PracticePage({
   onTypingChange,
 }: PracticePageProps) {
   return (
-    <div className="grid gap-5">
+    <div className="grid gap-8">
       <PracticeControls
         canSaveCurrentPassage={canSaveCurrentPassage}
         hasSavedPassages={savedPassages.length > 0}
@@ -84,34 +84,36 @@ export function PracticePage({
         onSelectSavedPractice={onSelectSavedPassage}
       />
 
-      <PracticeBatchDisplay
-        batch={currentBatch}
-        batchNumber={currentBatchIndex + 1}
-        totalBatches={totalBatches}
-        translationName={translationName}
-        typedText={typedText}
-      />
-
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_22rem] xl:items-start">
-        <TypingPracticePanel
-          accuracy={accuracy}
-          completionActionLabel={isPassageComplete && practiceSource === "featured" ? "Next Passage" : undefined}
-          completionMessage={
-            isPassageComplete
-              ? `Complete. You finished ${practiceTitle} at ${wpm} WPM with ${accuracy}% accuracy.`
-              : "Batch complete. Moving to the next verses..."
-          }
-          isComplete={isBatchComplete}
-          onCompletionAction={isPassageComplete && practiceSource === "featured" ? onNextFeaturedPassage : undefined}
-          progress={Math.min(progress, 100)}
-          status={status}
+      <section className="mx-auto grid w-full max-w-5xl gap-8">
+        <PracticeBatchDisplay
+          batch={currentBatch}
+          batchNumber={currentBatchIndex + 1}
+          totalBatches={totalBatches}
+          translationName={translationName}
           typedText={typedText}
-          wpm={wpm}
-          onTypingChange={onTypingChange}
         />
 
-        <PersonalBests stats={stats} onResetStats={onResetStats} />
-      </div>
+        <div className="grid gap-6 border-t border-slate-200 pt-6">
+          <TypingPracticePanel
+            accuracy={accuracy}
+            completionActionLabel={isPassageComplete && practiceSource === "featured" ? "Next Passage" : undefined}
+            completionMessage={
+              isPassageComplete
+                ? `Complete. You finished ${practiceTitle} at ${wpm} WPM with ${accuracy}% accuracy.`
+                : "Batch complete. Moving to the next verses..."
+            }
+            isComplete={isBatchComplete}
+            onCompletionAction={isPassageComplete && practiceSource === "featured" ? onNextFeaturedPassage : undefined}
+            progress={Math.min(progress, 100)}
+            status={status}
+            typedText={typedText}
+            wpm={wpm}
+            onTypingChange={onTypingChange}
+          />
+        </div>
+      </section>
+
+      <PersonalBests stats={stats} onResetStats={onResetStats} />
     </div>
   );
 }

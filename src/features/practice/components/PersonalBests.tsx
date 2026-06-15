@@ -10,10 +10,10 @@ type PersonalBestsProps = {
  */
 export function PersonalBests({ stats, onResetStats }: PersonalBestsProps) {
   return (
-    <section className="rounded-lg border bg-white p-5 shadow-sm">
-      <div className="flex flex-col gap-3">
+    <section className="border-t border-slate-200 pt-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="text-base font-bold">Personal bests</h2>
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Personal bests</h2>
           <p className="text-sm text-slate-500">Saved in this browser.</p>
         </div>
         <button
@@ -25,7 +25,7 @@ export function PersonalBests({ stats, onResetStats }: PersonalBestsProps) {
         </button>
       </div>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-3 xl:grid-cols-1">
+      <div className="mt-4 grid gap-3 sm:grid-cols-3">
         <BestStat label="Best WPM" value={stats.bestWpm} />
         <BestStat label="Best Accuracy" value={`${stats.bestAccuracy}%`} />
         <BestStat label="Completed" value={stats.completedAttempts} />
@@ -44,7 +44,7 @@ type BestStatProps = {
  */
 function BestStat({ label, value }: BestStatProps) {
   return (
-    <div className="rounded-md bg-slate-100 p-3">
+    <div className="rounded-md border border-slate-200 bg-white p-3">
       <p className="text-xs font-medium uppercase text-slate-500">{label}</p>
       <p className="text-2xl font-bold">{value}</p>
     </div>

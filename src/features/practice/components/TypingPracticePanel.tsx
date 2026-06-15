@@ -30,11 +30,11 @@ export function TypingPracticePanel({
   wpm,
 }: TypingPracticePanelProps) {
   return (
-    <section className="grid gap-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="grid gap-4">
       <label className="grid gap-2">
-        <span className="text-sm font-semibold text-slate-700">Type the passage</span>
+        <span className="text-sm font-semibold uppercase tracking-wide text-slate-500">Type the passage</span>
         <textarea
-          className="min-h-36 resize-y rounded-md border border-slate-300 bg-stone-50 p-3 leading-7 outline-none transition focus:border-slate-500 focus:bg-white focus:ring-2 focus:ring-slate-200"
+          className="min-h-40 resize-y rounded-md border border-slate-300 bg-white p-4 leading-7 outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
           placeholder="Start typing here..."
           value={typedText}
           onChange={(event) => onTypingChange(event.target.value)}
@@ -49,7 +49,7 @@ export function TypingPracticePanel({
       </div>
 
       {isComplete && (
-        <div className="flex flex-col gap-3 rounded-md border border-slate-200 bg-slate-50 p-3 text-sm font-medium text-slate-700 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 border-l-4 border-slate-300 bg-slate-50 p-4 text-sm font-medium text-slate-700 sm:flex-row sm:items-center sm:justify-between">
           <p>{completionMessage}</p>
           {completionActionLabel && onCompletionAction && (
             <button

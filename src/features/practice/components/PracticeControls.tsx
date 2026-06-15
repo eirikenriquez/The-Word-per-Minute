@@ -40,25 +40,28 @@ export function PracticeControls({
   onSelectSavedPractice,
 }: PracticeControlsProps) {
   return (
-    <section className="rounded-lg border border-slate-200 bg-white px-4 py-3 shadow-sm">
-      <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
-        <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
-          <SourcePicker
-            hasSavedPassages={hasSavedPassages}
-            practiceSource={practiceSource}
-            savedPassages={savedPassages}
-            selectedSavedPassageId={selectedSavedPassageId}
-            onSelectFeaturedPractice={onSelectFeaturedPractice}
-            onSelectSavedPractice={onSelectSavedPractice}
-          />
-
-          {practiceSource === "saved" && (
-            <SavedPassageSelect
+    <section className="border-b border-slate-200 pb-5">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+        <div className="grid gap-3">
+          <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">Practice setup</p>
+          <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
+            <SourcePicker
+              hasSavedPassages={hasSavedPassages}
+              practiceSource={practiceSource}
               savedPassages={savedPassages}
               selectedSavedPassageId={selectedSavedPassageId}
+              onSelectFeaturedPractice={onSelectFeaturedPractice}
               onSelectSavedPractice={onSelectSavedPractice}
             />
-          )}
+
+            {practiceSource === "saved" && (
+              <SavedPassageSelect
+                savedPassages={savedPassages}
+                selectedSavedPassageId={selectedSavedPassageId}
+                onSelectSavedPractice={onSelectSavedPractice}
+              />
+            )}
+          </div>
         </div>
 
         <div className="flex flex-wrap gap-2 lg:justify-end">
