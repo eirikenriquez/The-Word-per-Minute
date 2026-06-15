@@ -30,7 +30,7 @@ export function HomeCategoryPicker({
 
   return (
     <section className="grid gap-10">
-      <section className="py-8 lg:py-12">
+      <section className="grid gap-8 py-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-center lg:py-12">
         <div className="max-w-3xl">
           <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">Quiet typing practice</p>
           <h2 className="mt-3 text-4xl font-bold text-slate-950 sm:text-5xl">
@@ -41,6 +41,17 @@ export function HomeCategoryPicker({
             for memorisation.
           </p>
         </div>
+
+        <dl className="grid grid-cols-2 gap-6 border-t border-slate-200 pt-6 lg:grid-cols-1 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
+          <div>
+            <dt className="text-sm font-medium text-slate-500">Curated passages</dt>
+            <dd className="mt-1 text-4xl font-bold text-slate-950">{totalFeaturedPassages}</dd>
+          </div>
+          <div>
+            <dt className="text-sm font-medium text-slate-500">Saved passages</dt>
+            <dd className="mt-1 text-4xl font-bold text-slate-950">{savedPassageCount}</dd>
+          </div>
+        </dl>
       </section>
 
       <section className="grid gap-4">
