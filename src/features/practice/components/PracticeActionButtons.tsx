@@ -20,7 +20,7 @@ export function PracticeActionButtons({
     <>
       {practiceSource === "featured" ? (
         <button
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+          className="rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
           type="button"
           onClick={onNextFeaturedPassage}
         >
@@ -28,7 +28,7 @@ export function PracticeActionButtons({
         </button>
       ) : (
         <button
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+          className="rounded-md bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
           type="button"
           onClick={onOpenLibrary}
         >
@@ -36,7 +36,7 @@ export function PracticeActionButtons({
         </button>
       )}
       <button
-        className="rounded-md bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-700"
+        className="rounded-md px-3 py-2 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-950"
         type="button"
         onClick={onReset}
       >
