@@ -31,7 +31,7 @@ export function HomeCategoryPicker({
   return (
     <section className="grid gap-10">
       <section className="grid gap-8 py-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-center lg:py-12">
-        <div className="max-w-3xl">
+        <div className="rise-in max-w-3xl">
           <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">Quiet typing practice</p>
           <h2 className="mt-3 text-4xl font-bold text-slate-950 sm:text-5xl">
             Slow down with scripture and build your rhythm.
@@ -42,7 +42,7 @@ export function HomeCategoryPicker({
           </p>
         </div>
 
-        <dl className="grid grid-cols-2 gap-6 border-t border-slate-200 pt-6 lg:grid-cols-1 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
+        <dl className="rise-in rise-in-delay-1 grid grid-cols-2 gap-6 border-t border-slate-200 pt-6 lg:grid-cols-1 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
           <div>
             <dt className="text-sm font-medium text-slate-500">Curated passages</dt>
             <dd className="mt-1 text-4xl font-bold text-slate-950">{totalFeaturedPassages}</dd>
@@ -54,7 +54,7 @@ export function HomeCategoryPicker({
         </dl>
       </section>
 
-      <section className="grid gap-4">
+      <section className="rise-in rise-in-delay-2 grid gap-4">
         <div>
           <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Practice paths</h3>
           <p className="mt-2 text-sm text-slate-600">Choose the kind of session you want to start.</p>
@@ -82,7 +82,7 @@ export function HomeCategoryPicker({
         </div>
       </section>
 
-      <section className="grid gap-4 border-t border-slate-200 pt-8">
+      <section className="rise-in rise-in-delay-3 grid gap-4 border-t border-slate-200 pt-8">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500">Featured categories</h3>
@@ -116,7 +116,7 @@ type HomePathButtonProps = {
 function HomePathButton({ description, disabled = false, label, meta, onSelect }: HomePathButtonProps) {
   return (
     <button
-      className="group rounded-lg border border-slate-200 bg-white p-4 text-left transition hover:border-slate-400 hover:shadow-sm disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400 disabled:shadow-none"
+      className="soft-hover group rounded-lg border border-slate-200 bg-white p-4 text-left hover:border-slate-400 hover:shadow-sm disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400 disabled:shadow-none"
       disabled={disabled}
       type="button"
       onClick={onSelect}
@@ -137,7 +137,7 @@ type HomeCategoryButtonProps = {
 function HomeCategoryButton({ label, meta, onSelect }: HomeCategoryButtonProps) {
   return (
     <button
-      className="group flex items-center justify-between gap-4 border-b border-slate-200 py-3 text-left transition hover:border-slate-400"
+      className="soft-hover group flex items-center justify-between gap-4 border-b border-slate-200 py-3 text-left hover:border-slate-400"
       type="button"
       onClick={onSelect}
     >
