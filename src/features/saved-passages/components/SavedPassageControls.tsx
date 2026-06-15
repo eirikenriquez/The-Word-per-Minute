@@ -46,13 +46,13 @@ export function SavedPassageControls({
     : "0 passages";
 
   return (
-    <section className="rounded-lg border bg-white p-5 shadow-sm">
-      <div className="grid gap-4">
+    <section className="grid gap-6">
+      <div className="grid gap-4 border-b border-slate-200 pb-5">
         <div className="grid gap-3 lg:grid-cols-[1fr_auto] lg:items-end">
           <label className="grid gap-1">
             <span className="text-sm font-medium text-slate-600">Search</span>
             <input
-              className="rounded-md border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-100 disabled:text-slate-500"
+              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200 disabled:bg-slate-100 disabled:text-slate-500"
               disabled={!hasSavedPassages}
               placeholder="Search title, reference, category, or book"
               value={searchTerm}
@@ -66,7 +66,7 @@ export function SavedPassageControls({
           <label className="grid gap-1 sm:w-56">
             <span className="text-sm font-medium text-slate-600">Category</span>
             <select
-              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm disabled:bg-slate-100 disabled:text-slate-500"
+              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200 disabled:bg-slate-100 disabled:text-slate-500"
               disabled={!hasSavedPassages}
               value={selectedCategory}
               onChange={(event) => setSelectedCategory(event.target.value)}
@@ -81,7 +81,7 @@ export function SavedPassageControls({
           <label className="grid gap-1 sm:w-56">
             <span className="text-sm font-medium text-slate-600">Source</span>
             <select
-              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm disabled:bg-slate-100 disabled:text-slate-500"
+              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200 disabled:bg-slate-100 disabled:text-slate-500"
               disabled={!hasSavedPassages}
               value={selectedSource}
               onChange={(event) => setSelectedSource(event.target.value as SourceFilter)}
@@ -92,31 +92,31 @@ export function SavedPassageControls({
             </select>
           </label>
         </div>
-
-        {!hasSavedPassages ? (
-          <div className="rounded-md border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
-            Saved passages will appear here after you save one from Featured or Bible.
-          </div>
-        ) : visiblePassages.length ? (
-          <div className="grid gap-3">
-            {visiblePassages.map((passage) => (
-              <SavedPassageCard
-                isSelected={passage.id === selectedSavedPassageId}
-                key={passage.id}
-                passage={passage}
-                onRemovePassage={onRemovePassage}
-                onSelectSavedPassage={onSelectSavedPassage}
-                onUpdatePassage={onUpdatePassage}
-                savedCategories={editableCategories}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="rounded-md border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
-            No saved passages match those filters yet.
-          </div>
-        )}
       </div>
+
+      {!hasSavedPassages ? (
+        <div className="rounded-md border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
+          Saved passages will appear here after you save one from Featured or Bible.
+        </div>
+      ) : visiblePassages.length ? (
+        <div className="grid gap-3">
+          {visiblePassages.map((passage) => (
+            <SavedPassageCard
+              isSelected={passage.id === selectedSavedPassageId}
+              key={passage.id}
+              passage={passage}
+              onRemovePassage={onRemovePassage}
+              onSelectSavedPassage={onSelectSavedPassage}
+              onUpdatePassage={onUpdatePassage}
+              savedCategories={editableCategories}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-md border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
+          No saved passages match those filters yet.
+        </div>
+      )}
     </section>
   );
 }
@@ -195,7 +195,7 @@ function SavedPassageCard({
   return (
     <article
       className={`rounded-md border p-4 transition ${
-        isSelected ? "border-slate-900 bg-slate-50" : "border-slate-200 bg-white"
+        isSelected ? "border-slate-900 bg-slate-50" : "border-slate-200 bg-white hover:border-slate-300"
       }`}
     >
       <div className="grid gap-4">
@@ -273,7 +273,7 @@ function SavedPassageCard({
           ) : (
             <>
               <button
-                className="rounded-md bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:cursor-default disabled:bg-slate-700"
+                className="rounded-md bg-slate-950 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:cursor-default disabled:bg-slate-700"
                 disabled={isSelected}
                 type="button"
                 onClick={() => onSelectSavedPassage(passage.id)}
@@ -281,14 +281,14 @@ function SavedPassageCard({
                 Practice
               </button>
               <button
-                className="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+                className="rounded-md px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-950"
                 type="button"
                 onClick={startEditing}
               >
                 Edit
               </button>
               <button
-                className="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+                className="rounded-md px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-950"
                 type="button"
                 onClick={() => onRemovePassage(passage.id)}
               >
