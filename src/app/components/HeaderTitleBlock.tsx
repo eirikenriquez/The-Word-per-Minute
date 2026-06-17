@@ -10,10 +10,10 @@ type HeaderTitleBlockProps = {
 export function HeaderTitleBlock({ reference, subtitle, title }: HeaderTitleBlockProps) {
   return (
     <div className="min-w-0">
-      <p className="text-sm font-semibold uppercase text-slate-500">{subtitle}</p>
-      <h2 className="mt-1 text-2xl font-bold text-slate-950">{title}</h2>
+      <p className="text-sm font-semibold uppercase text-slate-500 dark:text-slate-400">{subtitle}</p>
+      <h2 className="mt-1 text-2xl font-bold text-slate-950 dark:text-slate-100">{title}</h2>
       {reference && (
-        <p className="mt-2 w-fit rounded-md bg-blue-50 px-2.5 py-1 text-sm font-semibold text-blue-800 ring-1 ring-blue-100">
+        <p className="mt-2 w-fit rounded-md bg-blue-50 px-2.5 py-1 text-sm font-semibold text-blue-800 ring-1 ring-blue-100 dark:bg-blue-950 dark:text-blue-200 dark:ring-blue-900">
           {reference}
         </p>
       )}

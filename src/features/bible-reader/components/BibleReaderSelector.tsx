@@ -80,13 +80,13 @@ export function BibleReaderSelector({
     <section className="mx-auto grid w-full max-w-5xl gap-5">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">Read / Select</p>
-          <h2 className="mt-1 text-3xl font-bold text-slate-950">
+          <p className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Read / Select</p>
+          <h2 className="mt-1 text-3xl font-bold text-slate-950 dark:text-slate-100">
             {selectedBook.name} {selectedChapter}
           </h2>
         </div>
         <button
-          className="w-fit rounded-md px-3 py-2 text-sm font-medium text-slate-500 transition hover:bg-blue-50 hover:text-blue-800 disabled:cursor-not-allowed disabled:text-slate-400"
+          className="w-fit rounded-md px-3 py-2 text-sm font-medium text-slate-500 transition hover:bg-blue-50 hover:text-blue-800 disabled:cursor-not-allowed disabled:text-slate-400 dark:text-slate-400 dark:hover:bg-blue-950 dark:hover:text-blue-200 dark:disabled:text-slate-600"
           disabled={!hasSelectedVerses}
           type="button"
           onClick={onClearSelection}
@@ -96,7 +96,7 @@ export function BibleReaderSelector({
       </div>
 
       <div
-        className="text-xl leading-10 text-slate-700 sm:text-2xl sm:leading-[3rem]"
+        className="text-xl leading-10 text-slate-700 sm:text-2xl sm:leading-[3rem] dark:text-slate-300"
         role="presentation"
         onClick={() => {
           if (shouldSkipNextClear.current) {
@@ -117,8 +117,8 @@ export function BibleReaderSelector({
             <button
               className={`mr-1 rounded px-1 text-left transition ${
                 isSelected
-                  ? "bg-blue-100 text-blue-950 ring-1 ring-blue-200"
-                  : "text-slate-700 hover:bg-blue-50"
+                  ? "bg-blue-900 text-blue-100 ring-1 ring-blue-700"
+                  : "text-slate-700 hover:bg-blue-50 dark:text-slate-300 dark:hover:bg-blue-950"
               }`}
               key={verse.number}
               ref={(buttonElement) => {
@@ -142,7 +142,7 @@ export function BibleReaderSelector({
                 finishVerseSelection(verse.number);
               }}
             >
-              <sup className="mr-1 text-xs font-bold text-slate-400">{verse.number}</sup>
+              <sup className="mr-1 text-xs font-bold text-slate-400 dark:text-slate-500">{verse.number}</sup>
               {verse.text}
             </button>
           );

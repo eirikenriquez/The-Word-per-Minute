@@ -38,7 +38,7 @@ export function ModeHeaderPanel({
   onSaveTitleChange,
 }: ModeHeaderPanelProps) {
   return (
-    <section className="border-b border-slate-200 pb-5">
+    <section className="border-b border-slate-200 pb-5 dark:border-slate-800">
       <HeaderTitleBlock reference={practiceReference} subtitle={practiceSubtitle} title={practiceTitle} />
 
       {showPracticeSave && (
