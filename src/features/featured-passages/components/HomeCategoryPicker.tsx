@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+
 type HomeCategory = {
   count: number;
   label: string;
@@ -45,11 +47,15 @@ export function HomeCategoryPicker({
         <dl className="rise-in rise-in-delay-1 grid grid-cols-2 gap-6 border-t border-slate-200 pt-6 lg:grid-cols-1 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0 dark:border-slate-800">
           <div>
             <dt className="text-sm font-medium text-slate-500 dark:text-slate-400">Curated passages</dt>
-            <dd className="mt-1 text-4xl font-bold text-slate-950 dark:text-slate-100">{totalFeaturedPassages}</dd>
+            <dd className="mt-1 text-4xl font-bold text-slate-950 dark:text-slate-100">
+              <CountUpNumber value={totalFeaturedPassages} />
+            </dd>
           </div>
           <div>
             <dt className="text-sm font-medium text-slate-500 dark:text-slate-400">Saved passages</dt>
-            <dd className="mt-1 text-4xl font-bold text-slate-950 dark:text-slate-100">{savedPassageCount}</dd>
+            <dd className="mt-1 text-4xl font-bold text-slate-950 dark:text-slate-100">
+              <CountUpNumber value={savedPassageCount} />
+            </dd>
           </div>
         </dl>
       </section>
@@ -103,6 +109,41 @@ export function HomeCategoryPicker({
       </section>
     </section>
   );
+}
+
+type CountUpNumberProps = {
+  durationMs?: number;
+  value: number;
+};
+
+/**
+ * Animates a small dashboard number from 0 to its latest value.
+ * requestAnimationFrame keeps the count smooth without adding an animation library.
+ */
+function CountUpNumber({ durationMs = 950, value }: CountUpNumberProps) {
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    let animationFrameId = 0;
+    let startTime: number | null = null;
+
+    function updateCount(currentTime: number) {
+      startTime ??= currentTime;
+      const progress = Math.min((currentTime - startTime) / durationMs, 1);
+      const easedProgress = 1 - (1 - progress) ** 3;
+      setDisplayValue(Math.round(value * easedProgress));
+
+      if (progress < 1) {
+        animationFrameId = window.requestAnimationFrame(updateCount);
+      }
+    }
+
+    animationFrameId = window.requestAnimationFrame(updateCount);
+
+    return () => window.cancelAnimationFrame(animationFrameId);
+  }, [durationMs, value]);
+
+  return displayValue;
 }
 
 type HomePathButtonProps = {
