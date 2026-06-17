@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { AppNavigation } from "./AppNavigation";
+import { BackToTopButton } from "./BackToTopButton";
 import type { AppMode } from "../../types/appMode";
 import type { Theme } from "../../types/theme";
 
@@ -45,6 +46,7 @@ export function PageShell({
       </header>
 
       <main className="mx-auto grid max-w-7xl gap-5 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">{children}</main>
+      <BackToTopButton isEnabled={appMode === "bible" || appMode === "library"} />
     </div>
   );
 }
