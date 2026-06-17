@@ -1,7 +1,7 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260615.1.b`
-Last updated: 15/06/26
+Current documentation version: `260618.1.a`
+Last updated: 18/06/26
 
 ## Update Rule
 
@@ -33,9 +33,24 @@ Example:
 
 Suggested next versions:
 
-- Small same-day documentation update: `260615.1.c`
-- Larger same-day documentation update: `260615.2.a`
+- Small same-day documentation update: `260618.1.b`
+- Larger same-day documentation update: `260618.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260618.1.a`
+
+This version updates the architecture snapshot after the UI theme, motion, and navigation polish work.
+
+It updates:
+
+- the documented `PageShell` responsibilities to include sticky navigation and the back-to-top button,
+- the current file structure to include `BackToTopButton.tsx`,
+- the Home page responsibilities to include animated curated and saved passage counters,
+- the theme and motion section to document Tailwind v4 class-based dark mode, blue accent styling, page motion, and hover helpers,
+- known technical debt to focus on visual QA and possible future style helpers,
+- likely next steps to include desktop/mobile visual QA and the later Monkeytype-style typing surface.
+
+This does not change product scope. It documents the current UI polish layer while keeping the app simple and Tailwind-based.
 
 ## `260615.1.b`
 

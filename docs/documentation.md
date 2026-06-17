@@ -1,7 +1,7 @@
 # The Word per Minute Documentation
 
-Document version: `260615.1.b`
-Last updated: 15/06/26
+Document version: `260618.1.a`
+Last updated: 18/06/26
 Update rule: only update this file when explicitly requested by the project owner.
 
 ## Purpose
@@ -82,6 +82,7 @@ Home is the starting screen.
 It:
 
 - shows primary entry points for Practice, Bible, and Library,
+- shows animated counters for curated and saved passage counts,
 - starts a random featured passage,
 - starts a random featured passage from a chosen category,
 - opens the Bible reader,
@@ -145,7 +146,7 @@ main.tsx
       -> builds display state
       -> builds cross-page actions
       -> delegates page props to page controllers
-    -> renders PageShell with global brand/navigation/theme controls
+    -> renders PageShell with sticky global brand/navigation/theme controls
     -> renders AppHeader on non-Home pages
     -> renders AppPageRoutes
       -> renders AppRoutes
@@ -165,6 +166,7 @@ src/
       AppErrorState.tsx
       AppHeader.tsx
       AppLoadingState.tsx
+      BackToTopButton.tsx
       AppNavigation.tsx
       AppPageRoutes.tsx
       AppRoutes.tsx
@@ -257,7 +259,7 @@ Responsibilities:
 
 - calls `useAppController`,
 - renders loading and error states,
-- renders `PageShell` with global navigation state,
+- renders `PageShell` with global navigation/theme state,
 - renders `AppHeader` on non-Home pages,
 - renders `AppPageRoutes`.
 
@@ -318,10 +320,22 @@ Shows the global Home / Practice / Bible / Library navigation in the app shell.
 Provides the app page frame:
 
 - app title,
-- global navigation,
+- sticky global navigation,
 - theme button,
 - main content width,
-- app background.
+- app background,
+- back-to-top button on long reader/list pages.
+
+### `src/app/components/BackToTopButton.tsx`
+
+Shows a small circular floating arrow button on long pages.
+
+Current behaviour:
+
+- only enabled on Bible and Library,
+- appears after the user scrolls down,
+- smoothly scrolls the window back to the top,
+- supports light and dark mode.
 
 ### `src/app/hooks/useTheme.ts`
 
@@ -405,14 +419,26 @@ src/data/bibles/web/
 
 ## Theme And Motion
 
-`src/index.css` is currently intentionally minimal:
+`src/index.css` contains the small global CSS needed for Tailwind and motion:
 
 - Tailwind import,
-- browser body margin reset.
+- Tailwind v4 class-based dark mode variant,
+- browser body margin reset,
+- page enter animation,
+- Home section rise-in animation,
+- subtle hover motion helpers.
 
 Theme state is managed by `src/app/hooks/useTheme.ts` and stored in `localStorage`.
 
-Light/dark mode still exists as app state, but the current UI overhaul is using mostly default Tailwind utility classes. Any future theme system should be added carefully instead of rebuilding a large custom CSS layer too early.
+Theme styling is handled with Tailwind utility classes, using:
+
+- `dark:` variants for dark mode,
+- blue as the main accent color,
+- slate/stone as neutral structure colors,
+- soft blue states for selected items,
+- blue/rose/slate feedback states for typing.
+
+The current approach intentionally avoids a full custom design-token system. If repeated Tailwind classes become hard to maintain, extract shared button/input styles later.
 
 ## Important Types
 
@@ -453,21 +479,22 @@ flowchart TD
 ## Known Technical Debt
 
 - `useAppController` is the main app composition root and should not become a dumping ground for feature logic.
-- The UI overhaul is in progress; main content containers should keep moving away from unnecessary floating cards.
+- The UI overhaul still needs visual QA across desktop/mobile and light/dark mode.
 - Category management is still hardcoded/generated from featured themes.
 - Library filtering is UI-only and still backed by local saved passage data.
 - User data is local-only through `localStorage`.
 - The app uses local JSON Bible data only; no hosted API yet.
-- The theme system is still basic and does not yet have formal design tokens.
+- Theme styling is repeated across components and may later benefit from small shared style helpers.
 - Automated tests are not set up yet.
 
 ## Likely Next Architecture Steps
 
 1. Manually test `/`, `/practice`, `/bible`, and `/library`.
 2. Confirm refresh and browser back/forward work correctly on each route.
-3. Continue the UI overhaul page by page, starting with Practice layout and reducing unnecessary card containers.
+3. Visually QA the sticky header, dark mode, and back-to-top button on mobile widths.
 4. Review `useAppController` and keep it limited to cross-feature composition.
 5. Consider moving more page-specific logic into page controllers only when it improves clarity.
-6. Keep `verseService` API-shaped so local JSON can later move to hosted data.
-7. Keep saved passage storage behind `savedPassageRepository` so it can later move to a database.
-8. Add automated tests once the app flow stabilises.
+6. Consider the Monkeytype-style typing surface after the layout/theme pass settles.
+7. Keep `verseService` API-shaped so local JSON can later move to hosted data.
+8. Keep saved passage storage behind `savedPassageRepository` so it can later move to a database.
+9. Add automated tests once the app flow stabilises.
