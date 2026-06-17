@@ -41,7 +41,7 @@ export function PassageSaveControls({
       <label className="grid gap-1">
         <span className="text-sm font-medium text-slate-600">Saved Title</span>
         <input
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+          className="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           placeholder="Name this saved passage"
           value={saveTitle}
           onChange={(event) => onSaveTitleChange(event.target.value)}
@@ -50,7 +50,7 @@ export function PassageSaveControls({
       <label className="grid gap-1">
         <span className="text-sm font-medium text-slate-600">Category</span>
         <select
-          className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+          className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           value={saveCategory}
           onChange={(event) => onSaveCategoryChange(event.target.value)}
         >
@@ -79,7 +79,7 @@ type SaveButtonProps = {
 function SaveButton({ disabled, isSaved, onSave }: SaveButtonProps) {
   return (
     <button
-      className="rounded-md bg-slate-950 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400"
+      className="rounded-md bg-blue-700 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-800 disabled:cursor-not-allowed disabled:bg-slate-400"
       disabled={disabled}
       type="button"
       onClick={onSave}

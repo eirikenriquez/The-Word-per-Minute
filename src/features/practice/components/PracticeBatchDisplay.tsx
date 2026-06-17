@@ -28,12 +28,12 @@ type DisplayPart =
  */
 function getCharacterClass(targetCharacter: string, typedCharacter: string | undefined, isCurrent: boolean) {
   if (typedCharacter === undefined) {
-    return isCurrent ? "bg-slate-200 text-slate-900" : "text-slate-500";
+    return isCurrent ? "bg-blue-100 text-slate-950" : "text-slate-500";
   }
 
   return areCharactersEquivalent(targetCharacter, typedCharacter)
     ? "bg-slate-100 text-slate-900"
-    : "bg-slate-300 text-slate-950";
+    : "bg-rose-100 text-rose-950";
 }
 
 /**

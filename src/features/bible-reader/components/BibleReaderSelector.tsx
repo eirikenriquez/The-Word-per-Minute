@@ -86,7 +86,7 @@ export function BibleReaderSelector({
           </h2>
         </div>
         <button
-          className="w-fit rounded-md px-3 py-2 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-950 disabled:cursor-not-allowed disabled:text-slate-400"
+          className="w-fit rounded-md px-3 py-2 text-sm font-medium text-slate-500 transition hover:bg-blue-50 hover:text-blue-800 disabled:cursor-not-allowed disabled:text-slate-400"
           disabled={!hasSelectedVerses}
           type="button"
           onClick={onClearSelection}
@@ -117,8 +117,8 @@ export function BibleReaderSelector({
             <button
               className={`mr-1 rounded px-1 text-left transition ${
                 isSelected
-                  ? "bg-slate-200 text-slate-950 ring-1 ring-slate-300"
-                  : "text-slate-700 hover:bg-slate-100"
+                  ? "bg-blue-100 text-blue-950 ring-1 ring-blue-200"
+                  : "text-slate-700 hover:bg-blue-50"
               }`}
               key={verse.number}
               ref={(buttonElement) => {

@@ -116,7 +116,7 @@ type HomePathButtonProps = {
 function HomePathButton({ description, disabled = false, label, meta, onSelect }: HomePathButtonProps) {
   return (
     <button
-      className="soft-hover group rounded-lg border border-slate-200 bg-white p-4 text-left hover:border-slate-400 hover:shadow-sm disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400 disabled:shadow-none"
+      className="soft-hover group rounded-lg border border-slate-200 bg-white p-4 text-left hover:border-blue-200 hover:shadow-sm disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400 disabled:shadow-none"
       disabled={disabled}
       type="button"
       onClick={onSelect}
@@ -137,7 +137,7 @@ type HomeCategoryButtonProps = {
 function HomeCategoryButton({ label, meta, onSelect }: HomeCategoryButtonProps) {
   return (
     <button
-      className="soft-hover group flex items-center justify-between gap-4 border-b border-slate-200 py-3 text-left hover:border-slate-400"
+      className="soft-hover group flex items-center justify-between gap-4 border-b border-slate-200 py-3 text-left hover:border-blue-200"
       type="button"
       onClick={onSelect}
     >
@@ -145,7 +145,7 @@ function HomeCategoryButton({ label, meta, onSelect }: HomeCategoryButtonProps) 
         <span className="block text-sm font-semibold text-slate-950">{label}</span>
         <span className="mt-1 block text-xs text-slate-500">{meta}</span>
       </span>
-      <span className="text-sm text-slate-400 transition group-hover:translate-x-1 group-hover:text-slate-700">Start</span>
+      <span className="text-sm text-slate-400 transition group-hover:translate-x-1 group-hover:text-blue-700">Start</span>
     </button>
   );
 }

@@ -52,7 +52,7 @@ export function SavedPassageControls({
           <label className="grid gap-1">
             <span className="text-sm font-medium text-slate-600">Search</span>
             <input
-              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200 disabled:bg-slate-100 disabled:text-slate-500"
+              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-100 disabled:text-slate-500"
               disabled={!hasSavedPassages}
               placeholder="Search title, reference, category, or book"
               value={searchTerm}
@@ -66,7 +66,7 @@ export function SavedPassageControls({
           <label className="grid gap-1 sm:w-56">
             <span className="text-sm font-medium text-slate-600">Category</span>
             <select
-              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200 disabled:bg-slate-100 disabled:text-slate-500"
+              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-100 disabled:text-slate-500"
               disabled={!hasSavedPassages}
               value={selectedCategory}
               onChange={(event) => setSelectedCategory(event.target.value)}
@@ -81,7 +81,7 @@ export function SavedPassageControls({
           <label className="grid gap-1 sm:w-56">
             <span className="text-sm font-medium text-slate-600">Source</span>
             <select
-              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200 disabled:bg-slate-100 disabled:text-slate-500"
+              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-slate-100 disabled:text-slate-500"
               disabled={!hasSavedPassages}
               value={selectedSource}
               onChange={(event) => setSelectedSource(event.target.value as SourceFilter)}
@@ -195,7 +195,7 @@ function SavedPassageCard({
   return (
     <article
       className={`rounded-md border p-4 transition ${
-        isSelected ? "border-slate-900 bg-slate-50" : "border-slate-200 bg-white hover:border-slate-300"
+        isSelected ? "border-blue-300 bg-blue-50" : "border-slate-200 bg-white hover:border-blue-200"
       }`}
     >
       <div className="grid gap-4">
@@ -232,7 +232,7 @@ function SavedPassageCard({
                   <div className="flex flex-wrap items-center gap-2">
                     <h3 className="font-semibold text-slate-900">{passage.title}</h3>
                     {isSelected && (
-                      <span className="rounded bg-slate-900 px-2 py-1 text-xs font-semibold text-white">
+                      <span className="rounded bg-blue-700 px-2 py-1 text-xs font-semibold text-white">
                         Practicing
                       </span>
                     )}
@@ -256,7 +256,7 @@ function SavedPassageCard({
           {isEditing ? (
             <>
               <button
-                className="rounded-md bg-slate-900 px-3 py-2 text-sm font-medium text-white hover:bg-slate-700"
+                className="rounded-md bg-blue-700 px-3 py-2 text-sm font-medium text-white hover:bg-blue-800"
                 type="button"
                 onClick={saveEdits}
               >
@@ -273,7 +273,7 @@ function SavedPassageCard({
           ) : (
             <>
               <button
-                className="rounded-md bg-slate-950 px-3 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:cursor-default disabled:bg-slate-700"
+                className="rounded-md bg-blue-700 px-3 py-2 text-sm font-medium text-white hover:bg-blue-800 disabled:cursor-default disabled:bg-blue-400"
                 disabled={isSelected}
                 type="button"
                 onClick={() => onSelectSavedPassage(passage.id)}

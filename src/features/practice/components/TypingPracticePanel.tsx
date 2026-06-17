@@ -34,7 +34,7 @@ export function TypingPracticePanel({
       <label className="grid gap-2">
         <span className="text-sm font-semibold uppercase tracking-wide text-slate-500">Type the passage</span>
         <textarea
-          className="min-h-40 resize-y rounded-md border border-slate-300 bg-white p-4 leading-7 outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
+          className="min-h-40 resize-y rounded-md border border-slate-300 bg-white p-4 leading-7 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           placeholder="Start typing here..."
           value={typedText}
           onChange={(event) => onTypingChange(event.target.value)}
@@ -53,7 +53,7 @@ export function TypingPracticePanel({
           <p>{completionMessage}</p>
           {completionActionLabel && onCompletionAction && (
             <button
-              className="w-fit rounded-md bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-700"
+              className="w-fit rounded-md bg-blue-700 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-800"
               type="button"
               onClick={onCompletionAction}
             >
