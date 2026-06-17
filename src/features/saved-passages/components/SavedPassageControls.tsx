@@ -196,7 +196,7 @@ function SavedPassageCard({
     <article
       className={`rounded-md border p-4 transition ${
         isSelected
-          ? "border-blue-700 bg-blue-950/60"
+          ? "border-blue-300 bg-blue-50 dark:border-blue-700 dark:bg-blue-950/60"
           : "border-slate-200 bg-white hover:border-blue-200 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-800"
       }`}
     >
