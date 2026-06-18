@@ -1,6 +1,6 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260619.1.a`
+Current documentation version: `260619.1.b`
 Last updated: 19/06/26
 
 ## Update Rule
@@ -33,9 +33,23 @@ Example:
 
 Suggested next versions:
 
-- Small same-day documentation update: `260619.1.b`
+- Small same-day documentation update: `260619.1.c`
 - Larger same-day documentation update: `260619.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260619.1.b`
+
+This version documents the Practice metric improvements.
+
+It updates:
+
+- Practice behaviour to state that WPM refreshes while an attempt is active and freezes on completion,
+- Practice behaviour to state that accuracy retains mistakes after they are corrected,
+- the accuracy rule to clarify that deleting text is neutral,
+- the Practice feature responsibilities to include live timing and mistake-aware scoring,
+- known technical debt and likely next steps now that corrected-mistake accuracy has been implemented.
+
+This update documents the runtime changes introduced by `Track typing mistakes in accuracy` and `Update WPM while typing`. It does not add further runtime behaviour.
 
 ## `260619.1.a`
 
