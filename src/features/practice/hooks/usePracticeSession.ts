@@ -20,6 +20,7 @@ export function usePracticeSession({ batches, onCompletedAttempt }: UsePracticeS
   const [mistakeCount, setMistakeCount] = useState(0);
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [finishedAt, setFinishedAt] = useState<number | null>(null);
+  const [metricTime, setMetricTime] = useState(Date.now);
   const savedFinishAt = useRef<number | null>(null);
 
   const {
@@ -38,7 +39,18 @@ export function usePracticeSession({ batches, onCompletedAttempt }: UsePracticeS
     mistakeCount,
     startedAt,
     finishedAt,
+    now: metricTime,
   });
+
+  useEffect(() => {
+    if (!startedAt || finishedAt) return;
+
+    const metricTimer = window.setInterval(() => {
+      setMetricTime(Date.now());
+    }, 500);
+
+    return () => window.clearInterval(metricTimer);
+  }, [finishedAt, startedAt]);
 
   useEffect(() => {
     if (!isBatchComplete || isPassageComplete) return;
@@ -72,7 +84,9 @@ export function usePracticeSession({ batches, onCompletedAttempt }: UsePracticeS
     const newMistakes = countNewTypingMistakes(targetText, typedText, limitedText);
 
     if (!startedAt && limitedText.length > 0) {
-      setStartedAt(Date.now());
+      const startTime = Date.now();
+      setStartedAt(startTime);
+      setMetricTime(startTime);
     }
 
     if (newMistakes) {
