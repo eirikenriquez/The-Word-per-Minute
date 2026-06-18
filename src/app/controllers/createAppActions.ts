@@ -1,8 +1,8 @@
-import type { AppMode, PracticeSource } from "../../types/appMode";
+import type { AppMode, PracticeSource } from "../../types/app";
 import type { FeaturedPassage } from "../../types/featuredPassage";
 import type { SavedPassage } from "../../types/savedPassage";
 
-type UseAppActionsParams = {
+type CreateAppActionsParams = {
   clearReaderSelection: () => void;
   focusSelectedVerses: () => void;
   removeSavedPassage: (passageId: string) => void;
@@ -25,7 +25,7 @@ type UseAppActionsParams = {
  * Centralises cross-page actions that coordinate several stores at once.
  * Pure page-local interactions should stay inside their page or feature hooks.
  */
-export function useAppActions({
+export function createAppActions({
   clearReaderSelection,
   featuredPassages,
   focusSelectedVerses,
@@ -42,7 +42,7 @@ export function useAppActions({
   setAppMode,
   setPracticeSource,
   setSelectedVerseNumbers,
-}: UseAppActionsParams) {
+}: CreateAppActionsParams) {
   function openBible() {
     setAppMode("bible");
     resetPractice();

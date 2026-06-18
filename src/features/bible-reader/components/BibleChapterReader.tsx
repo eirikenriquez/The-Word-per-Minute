@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { BibleChapter, BookSummary } from "../../../types/verse";
 
-type BibleReaderSelectorProps = {
+type BibleChapterReaderProps = {
   chapter: BibleChapter | null;
   focusSelectedVerseKey: number;
   selectedBook?: BookSummary;
@@ -16,7 +16,7 @@ type BibleReaderSelectorProps = {
  * Bible-reader style chapter view.
  * Verse clicks select one verse; dragging across verses selects a contiguous passage range.
  */
-export function BibleReaderSelector({
+export function BibleChapterReader({
   chapter,
   focusSelectedVerseKey,
   selectedBook,
@@ -25,7 +25,7 @@ export function BibleReaderSelector({
   onClearSelection,
   onSelectRange,
   onSelectVerse,
-}: BibleReaderSelectorProps) {
+}: BibleChapterReaderProps) {
   const [dragStartVerse, setDragStartVerse] = useState<number | null>(null);
   const [hasDragged, setHasDragged] = useState(false);
   const shouldSkipNextClear = useRef(false);

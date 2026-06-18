@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { BookSummary, Translation } from "../../../types/verse";
 
-type BibleControlsProps = {
+type BibleReaderControlsProps = {
   books: BookSummary[];
   selectedBook?: BookSummary;
   selectedBookId: string;
@@ -17,7 +17,7 @@ type BibleControlsProps = {
 /**
  * Manual Bible reader controls for translation, book, and chapter selection.
  */
-export function BibleControls({
+export function BibleReaderControls({
   books,
   selectedBook,
   selectedBookId,
@@ -28,7 +28,7 @@ export function BibleControls({
   onSelectBook,
   onSelectChapter,
   onSelectTranslation,
-}: BibleControlsProps) {
+}: BibleReaderControlsProps) {
   return (
     <section className="border-b border-slate-200 pb-5 dark:border-slate-800">
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">

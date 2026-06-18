@@ -1,4 +1,4 @@
-type PracticeSource = "featured" | "saved";
+import type { PracticeSource } from "../../../types/app";
 
 type PracticeActionButtonsProps = {
   practiceSource: PracticeSource;

@@ -1,4 +1,4 @@
-import { SavedPassageControls } from "../features/saved-passages/components/SavedPassageControls";
+import { SavedPassageLibrary } from "../features/saved-passages/components/SavedPassageLibrary";
 import type { SavedPassage, SavedPassageUpdate } from "../types/savedPassage";
 
 export type LibraryPageProps = {
@@ -20,7 +20,7 @@ export function LibraryPage({
   onUpdateSavedPassage,
 }: LibraryPageProps) {
   return (
-    <SavedPassageControls
+    <SavedPassageLibrary
       savedPassages={savedPassages}
       selectedSavedPassageId={selectedSavedPassageId}
       onRemovePassage={onRemoveSavedPassage}

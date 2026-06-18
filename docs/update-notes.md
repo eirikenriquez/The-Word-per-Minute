@@ -1,7 +1,7 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260618.1.a`
-Last updated: 18/06/26
+Current documentation version: `260619.1.a`
+Last updated: 19/06/26
 
 ## Update Rule
 
@@ -33,9 +33,27 @@ Example:
 
 Suggested next versions:
 
-- Small same-day documentation update: `260618.1.b`
-- Larger same-day documentation update: `260618.2.a`
+- Small same-day documentation update: `260619.1.b`
+- Larger same-day documentation update: `260619.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260619.1.a`
+
+This version updates the architecture snapshot after the final project-structure simplification pass and records clarified product decisions.
+
+It updates:
+
+- the runtime flow to use `createAppActions` and the page-prop factories in `createPageProps`,
+- the current file structure after removing pass-through header layers, separate page-controller files, one-use utility folders, and tiny type files,
+- component and controller responsibilities to match the current repository,
+- Practice utility and type locations,
+- Bible behaviour to state that saving with no selected verses intentionally saves the whole chapter,
+- known technical debt to record that final accuracy should count corrected mistakes,
+- known technical debt around featured-passage scroll timing, reduced-motion support, deletion recovery, and automated tests,
+- Vercel as the intended future deployment platform while noting that deployment configuration is not yet present,
+- the likely next architecture steps based on the current code review.
+
+This documentation update does not implement new runtime behaviour. It brings the written architecture up to date and records the owner's current product decisions.
 
 ## `260618.1.a`
 

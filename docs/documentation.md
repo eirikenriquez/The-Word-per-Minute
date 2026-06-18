@@ -1,7 +1,7 @@
 # The Word per Minute Documentation
 
-Document version: `260618.1.a`
-Last updated: 18/06/26
+Document version: `260619.1.a`
+Last updated: 19/06/26
 Update rule: only update this file when explicitly requested by the project owner.
 
 ## Purpose
@@ -33,10 +33,10 @@ No backend, database, authentication, or external Bible API is currently used.
 
 ## High-Level Architecture
 
-The app now uses URL-based React routing with feature folders and app/page controllers.
+The app uses URL-based React routing with feature folders and a central app controller.
 
 ```txt
-URL route -> App shell -> app controller -> page controller -> page component -> feature components/hooks
+URL route -> App shell -> app controller -> page-prop factories -> page component -> feature components/hooks
 ```
 
 The main architecture layers are:
@@ -71,7 +71,7 @@ The app is a single page app with proper URL routes:
 /library   -> LibraryPage
 ```
 
-`App.tsx` derives the current `appMode` from the URL path. The URL is now the source of truth for which screen is active.
+`useAppNavigation` derives the current `appMode` from the URL path. The URL is the source of truth for which screen is active.
 
 ## App Pages
 
@@ -111,7 +111,9 @@ It:
 - displays the whole chapter,
 - lets the user click individual verses,
 - lets the user drag-select verse ranges,
+- treats an empty verse selection as the whole current chapter,
 - lets the user save selected verses with a custom title and category,
+- lets the user save the whole chapter when no individual verses are selected,
 - can open a random featured passage in context and scroll to the selected verses.
 
 Bible does not show typing input directly.
@@ -145,15 +147,14 @@ main.tsx
       -> loads feature hooks
       -> builds display state
       -> builds cross-page actions
-      -> delegates page props to page controllers
+      -> prepares page props through plain factory functions
     -> renders PageShell with sticky global brand/navigation/theme controls
     -> renders AppHeader on non-Home pages
-    -> renders AppPageRoutes
-      -> renders AppRoutes
+    -> renders AppRoutes
       -> renders HomePage, PracticePage, BiblePage, or LibraryPage
 ```
 
-`App.tsx` is now mostly the app shell. App-wide coordination lives in `src/app/controllers/useAppController.ts`, while page-specific prop wiring lives in the page controllers.
+`App.tsx` is mostly the app shell. App-wide coordination lives in `src/app/controllers/useAppController.ts`. Cross-page actions are created by `createAppActions.ts`, while page-specific prop wiring is grouped into the plain factory functions in `createPageProps.ts`.
 
 Home intentionally hides `AppHeader` so the Home hero is the first page content. Practice, Bible, and Library still show the contextual page title/reference area.
 
@@ -167,21 +168,15 @@ src/
       AppHeader.tsx
       AppLoadingState.tsx
       BackToTopButton.tsx
-      AppNavigation.tsx
-      AppPageRoutes.tsx
       AppRoutes.tsx
-      HeaderTitleBlock.tsx
-      ModeHeaderPanel.tsx
+      AppNavigation.tsx
       PageShell.tsx
       PassageSaveControls.tsx
     controllers/
+      createAppActions.ts
+      createPageProps.ts
       useAppController.ts
-      useBiblePageController.ts
-      useHomePageController.ts
-      useLibraryPageController.ts
-      usePracticePageController.ts
     hooks/
-      useAppActions.ts
       useAppDisplayState.ts
       useAppModeEffects.ts
       useAppNavigation.ts
@@ -191,14 +186,12 @@ src/
   features/
     bible-reader/
       components/
-        BibleControls.tsx
-        BibleReaderSelector.tsx
+        BibleChapterReader.tsx
+        BibleReaderControls.tsx
       hooks/
         useReaderSelection.ts
         useVerseLibrary.ts
     featured-passages/
-      components/
-        HomeCategoryPicker.tsx
       hooks/
         useFeaturedPassages.ts
         usePassageCategories.ts
@@ -216,9 +209,16 @@ src/
         usePracticeBatches.ts
         usePracticeSession.ts
         usePracticeStats.ts
+      utils/
+        practiceBatches.ts
+        typingMetrics.ts
     saved-passages/
       components/
-        SavedPassageControls.tsx
+        SavedPassageCard.tsx
+        SavedPassageFilters.tsx
+        SavedPassageLibrary.tsx
+      constants/
+        savedPassageCategories.ts
       hooks/
         usePassageSaveInput.ts
         useSavePassageForm.ts
@@ -232,14 +232,19 @@ src/
     PracticePage.tsx
   services/
     verseService.ts
-  constants/
-    savedPassageCategories.ts
   data/
     bibles/
     featuredPassages.json
     translations.json
   types/
+    app.ts
+    featuredPassage.ts
+    practice.ts
+    savedPassage.ts
+    verse.ts
   utils/
+    errors.ts
+    passageReference.ts
   App.tsx
   index.css
   main.tsx
@@ -261,7 +266,7 @@ Responsibilities:
 - renders loading and error states,
 - renders `PageShell` with global navigation/theme state,
 - renders `AppHeader` on non-Home pages,
-- renders `AppPageRoutes`.
+- renders `AppRoutes`.
 
 ### `src/app/controllers/useAppController.ts`
 
@@ -276,40 +281,30 @@ Responsibilities:
 - builds display labels/loading/error state,
 - builds cross-page actions,
 - prepares header props,
-- delegates page props to page controllers.
+- prepares routed page props through plain factory functions.
 
-### `src/app/controllers/useHomePageController.ts`
+### `src/app/controllers/createAppActions.ts`
 
-Prepares props for `HomePage`.
+Creates the cross-page action functions used to coordinate navigation and multiple feature stores.
 
-### `src/app/controllers/usePracticePageController.ts`
+The name intentionally does not use the React `use` prefix because this module does not call hooks.
 
-Prepares props for `PracticePage`.
+### `src/app/controllers/createPageProps.ts`
 
-### `src/app/controllers/useBiblePageController.ts`
+Contains the plain page-prop factory functions:
 
-Prepares props for `BiblePage`.
-
-### `src/app/controllers/useLibraryPageController.ts`
-
-Prepares props for `LibraryPage`.
+- `createHomePageProps`
+- `createPracticePageProps`
+- `createBiblePageProps`
+- `createLibraryPageProps`
 
 ### `src/app/components/AppRoutes.tsx`
 
-Defines the app's URL routes and maps them to page elements.
+Defines the app's URL routes and maps prepared page props directly to page elements.
 
-### `src/app/components/AppPageRoutes.tsx`
+### `src/app/components/AppHeader.tsx`
 
-Maps prepared page props into routed page elements.
-
-### `src/app/components/ModeHeaderPanel.tsx`
-
-Shows:
-
-- current title/subtitle/reference,
-- contextual save controls.
-
-It should stay as an open page-title section, not a floating page card.
+Shows the current title, subtitle, reference, and contextual passage-save controls on non-Home pages.
 
 ### `src/app/components/AppNavigation.tsx`
 
@@ -370,7 +365,8 @@ Owns typing practice UI and logic:
 - typing input,
 - personal bests,
 - WPM/accuracy session state,
-- practice batch creation.
+- practice batch creation,
+- pure typing metric and character-equivalence logic.
 
 ### `features/bible-reader`
 
@@ -396,7 +392,7 @@ Owns saved passage storage and management:
 
 - save input creation,
 - save form state,
-- saved passage search/filter/list/edit/remove state,
+- saved passage search/filter/list/edit/remove UI,
 - saved passage cards,
 - `localStorage` repository.
 
@@ -442,11 +438,11 @@ The current approach intentionally avoids a full custom design-token system. If 
 
 ## Important Types
 
-- `src/types/appMode.ts`: route-backed app modes and practice source.
+- `src/types/app.ts`: route-backed app modes, practice source, and theme.
 - `src/types/featuredPassage.ts`: featured passage references and resolved passage responses.
+- `src/types/practice.ts`: practice statistics, typing metrics, and batch shapes.
 - `src/types/savedPassage.ts`: saved passage and save input shapes.
 - `src/types/verse.ts`: Bible translation, book, chapter, and verse shapes.
-- `src/types/practiceBatch.ts`: typing batch shape.
 
 ## Current Architecture Diagram
 
@@ -455,12 +451,12 @@ flowchart TD
   main["main.tsx + BrowserRouter"] --> app["App.tsx"]
   app --> controller["useAppController"]
   app --> shell["PageShell + AppNavigation"]
-  controller --> headerController["Header props"]
-  controller --> pageControllers["Page controllers"]
-  app --> header["AppHeader + ModeHeaderPanel on non-Home pages"]
-  app --> pageRoutes["AppPageRoutes"]
-  pageControllers --> pageRoutes
-  pageRoutes --> routes["AppRoutes"]
+  controller --> actions["createAppActions"]
+  controller --> pageProps["createPageProps factories"]
+  controller --> headerProps["Header props"]
+  app --> header["AppHeader on non-Home pages"]
+  app --> routes["AppRoutes"]
+  pageProps --> routes
   routes --> home["HomePage"]
   routes --> practice["PracticePage"]
   routes --> bible["BiblePage"]
@@ -479,22 +475,36 @@ flowchart TD
 ## Known Technical Debt
 
 - `useAppController` is the main app composition root and should not become a dumping ground for feature logic.
+- Accuracy currently reflects only the text presently entered. Because completion requires a fully correct passage, completed attempts always finish at 100% accuracy. The intended future behaviour is to count mistakes even when the user later corrects them.
+- The random featured-passage reader action may request scrolling before the newly selected chapter has finished rendering.
 - The UI overhaul still needs visual QA across desktop/mobile and light/dark mode.
 - Category management is still hardcoded/generated from featured themes.
 - Library filtering is UI-only and still backed by local saved passage data.
 - User data is local-only through `localStorage`.
 - The app uses local JSON Bible data only; no hosted API yet.
 - Theme styling is repeated across components and may later benefit from small shared style helpers.
+- Motion does not yet account for the user's reduced-motion preference.
+- Saved-passage removal has no confirmation or undo.
 - Automated tests are not set up yet.
+- Vercel is the intended future deployment target, but deployment and SPA rewrite configuration are not yet included.
+
+## Confirmed Product Decisions
+
+- Accuracy should count mistakes made during an attempt, including mistakes that are later corrected.
+- In Bible mode, saving with no selected verses intentionally saves the whole current chapter.
+- Vercel is the planned future deployment platform.
+- The next development priority will be chosen after further discussion.
 
 ## Likely Next Architecture Steps
 
-1. Manually test `/`, `/practice`, `/bible`, and `/library`.
-2. Confirm refresh and browser back/forward work correctly on each route.
-3. Visually QA the sticky header, dark mode, and back-to-top button on mobile widths.
-4. Review `useAppController` and keep it limited to cross-feature composition.
-5. Consider moving more page-specific logic into page controllers only when it improves clarity.
-6. Consider the Monkeytype-style typing surface after the layout/theme pass settles.
-7. Keep `verseService` API-shaped so local JSON can later move to hosted data.
-8. Keep saved passage storage behind `savedPassageRepository` so it can later move to a database.
-9. Add automated tests once the app flow stabilises.
+1. Redesign accuracy tracking so corrected mistakes remain part of the final score.
+2. Add focused automated tests for typing metrics, practice batches, passage references, saved-passage identity, and route conversion.
+3. Make featured-passage reader scrolling wait for the selected chapter to render.
+4. Manually test `/`, `/practice`, `/bible`, and `/library`.
+5. Confirm refresh and browser back/forward work correctly on each route.
+6. Visually QA the sticky header, dark mode, and back-to-top button on mobile widths.
+7. Add reduced-motion handling.
+8. Keep `useAppController` limited to cross-feature composition.
+9. Keep `verseService` API-shaped so local JSON can later move to hosted data.
+10. Keep saved passage storage behind `savedPassageRepository` so it can later move to a database.
+11. Add Vercel configuration and verify SPA route fallbacks when deployment work begins.

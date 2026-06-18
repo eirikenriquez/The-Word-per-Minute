@@ -1,10 +1,9 @@
+import type { PracticeSource } from "../../../types/app";
 import type { SavedPassage } from "../../../types/savedPassage";
 import { FeaturedSaveAction } from "./FeaturedSaveAction";
 import { PracticeActionButtons } from "./PracticeActionButtons";
 import { SavedPassageSelect } from "./SavedPassageSelect";
 import { SourcePicker } from "./SourcePicker";
-
-type PracticeSource = "featured" | "saved";
 
 type PracticeControlsProps = {
   canSaveCurrentPassage: boolean;

@@ -1,3 +1,5 @@
+import type { BibleVerse } from "./verse";
+
 export type PracticeStats = {
   bestWpm: number;
   bestAccuracy: number;
@@ -11,4 +13,12 @@ export type TypingMetrics = {
   wpm: number;
   isComplete: boolean;
   status: "Ready" | "Typing" | "Complete";
+};
+
+export type PracticeBatch = {
+  startVerse: number;
+  endVerse: number;
+  ref: string;
+  text: string;
+  verses: BibleVerse[];
 };

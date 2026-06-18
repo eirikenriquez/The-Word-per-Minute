@@ -1,5 +1,8 @@
 import { useMemo } from "react";
-import { CUSTOM_SAVED_CATEGORY, DEFAULT_SAVED_CATEGORY } from "../../../constants/savedPassageCategories";
+import {
+  CUSTOM_SAVED_CATEGORY,
+  DEFAULT_SAVED_CATEGORY,
+} from "../../saved-passages/constants/savedPassageCategories";
 import type { FeaturedPassage } from "../../../types/featuredPassage";
 
 /**

@@ -1,4 +1,4 @@
-import type { AppMode } from "../../types/appMode";
+import type { AppMode } from "../../types/app";
 
 /**
  * Single source of truth for the app's URL paths.

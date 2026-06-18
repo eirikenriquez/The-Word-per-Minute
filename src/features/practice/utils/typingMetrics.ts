@@ -1,13 +1,4 @@
-import type { TypingMetrics } from "../types/practice";
-import type { PracticeBatch } from "../types/practiceBatch";
-
-type TypingMetricsInput = {
-  targetText: string;
-  typedText: string;
-  startedAt: number | null;
-  finishedAt: number | null;
-  now?: number;
-};
+import type { PracticeBatch, TypingMetrics } from "../../../types/practice";
 
 type PracticeSessionMetricsInput = {
   batches: PracticeBatch[];
@@ -57,41 +48,6 @@ function normalizeComparableCharacter(character: string) {
     .replace(/[\u201C\u201D\u201E\u201F]/g, '"')
     .replace(/[\u2010-\u2015]/g, "-")
     .replace(/[\u00A0\u202F]/g, " ");
-}
-
-/**
- * Calculates live typing stats for the current passage session.
- * WPM uses the common typing-test convention of five correct characters per word.
- */
-export function calculateTypingMetrics({
-  targetText,
-  typedText,
-  startedAt,
-  finishedAt,
-  now = Date.now(),
-}: TypingMetricsInput): TypingMetrics {
-  const correctCharacters = countCorrectCharacters(targetText, typedText);
-  const progress = targetText.length
-    ? Math.round((typedText.length / targetText.length) * 100)
-    : 0;
-  const accuracy = typedText.length
-    ? Math.round((correctCharacters / typedText.length) * 100)
-    : 100;
-  const elapsedMs = startedAt ? (finishedAt ?? now) - startedAt : 0;
-  const elapsedMinutes = elapsedMs / 1000 / 60;
-  const wpm = elapsedMinutes > 0 ? Math.round(correctCharacters / 5 / elapsedMinutes) : 0;
-  const isComplete = Boolean(
-    targetText && typedText.length === targetText.length && correctCharacters === targetText.length,
-  );
-
-  return {
-    correctCharacters,
-    progress: Math.min(progress, 100),
-    accuracy,
-    wpm,
-    isComplete,
-    status: isComplete ? "Complete" : startedAt ? "Typing" : "Ready",
-  };
 }
 
 /**

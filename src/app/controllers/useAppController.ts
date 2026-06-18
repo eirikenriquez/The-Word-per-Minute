@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { AppHeaderProps } from "../components/AppHeader";
-import type { AppPageRoutesProps } from "../components/AppPageRoutes";
+import type { AppRoutesProps } from "../components/AppRoutes";
 import { useReaderSelection } from "../../features/bible-reader/hooks/useReaderSelection";
 import { useVerseLibrary } from "../../features/bible-reader/hooks/useVerseLibrary";
 import { useFeaturedPassages } from "../../features/featured-passages/hooks/useFeaturedPassages";
@@ -11,16 +11,18 @@ import { usePracticeStats } from "../../features/practice/hooks/usePracticeStats
 import { usePassageSaveInput } from "../../features/saved-passages/hooks/usePassageSaveInput";
 import { useSavePassageForm } from "../../features/saved-passages/hooks/useSavePassageForm";
 import { useSavedPassages } from "../../features/saved-passages/hooks/useSavedPassages";
-import type { PracticeSource } from "../../types/appMode";
-import { useAppActions } from "../hooks/useAppActions";
+import type { PracticeSource } from "../../types/app";
 import { useAppDisplayState } from "../hooks/useAppDisplayState";
 import { useAppModeEffects } from "../hooks/useAppModeEffects";
 import { useAppNavigation } from "../hooks/useAppNavigation";
 import { useTheme } from "../hooks/useTheme";
-import { useBiblePageController } from "./useBiblePageController";
-import { useHomePageController } from "./useHomePageController";
-import { useLibraryPageController } from "./useLibraryPageController";
-import { usePracticePageController } from "./usePracticePageController";
+import { createAppActions } from "./createAppActions";
+import {
+  createBiblePageProps,
+  createHomePageProps,
+  createLibraryPageProps,
+  createPracticePageProps,
+} from "./createPageProps";
 
 /**
  * App-level controller for cross-feature state.
@@ -114,7 +116,7 @@ export function useAppController() {
     setAppMode: selectAppMode,
     setPracticeSource,
   });
-  const appActions = useAppActions({
+  const appActions = createAppActions({
     clearReaderSelection: readerSelection.clearSelection,
     featuredPassages: featuredLibrary.passages,
     focusSelectedVerses: readerSelection.focusSelectedVerses,
@@ -158,22 +160,22 @@ export function useAppController() {
     onSelectMode: selectAppMode,
   };
 
-  const pageRoutesProps: AppPageRoutesProps = {
-    biblePageProps: useBiblePageController({
+  const pageRoutesProps: AppRoutesProps = {
+    biblePageProps: createBiblePageProps({
       appActions,
       bibleLibrary,
       readerSelection,
     }),
-    homePageProps: useHomePageController({
+    homePageProps: createHomePageProps({
       appActions,
       featuredHomeCategories,
       savedPassageCount,
     }),
-    libraryPageProps: useLibraryPageController({
+    libraryPageProps: createLibraryPageProps({
       appActions,
       savedLibrary,
     }),
-    practicePageProps: usePracticePageController({
+    practicePageProps: createPracticePageProps({
       appActions,
       batches,
       canSaveCurrentPassage: Boolean(saveInput),

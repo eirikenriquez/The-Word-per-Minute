@@ -1,9 +1,9 @@
 import { useMemo } from "react";
-import type { AppMode, PracticeSource } from "../../../types/appMode";
+import type { AppMode, PracticeSource } from "../../../types/app";
 import type { PassageResponse } from "../../../types/featuredPassage";
-import type { PracticeBatch } from "../../../types/practiceBatch";
+import type { PracticeBatch } from "../../../types/practice";
 import type { BibleChapter, BookSummary } from "../../../types/verse";
-import { buildPracticeBatches } from "../../../utils/practiceBatches";
+import { buildPracticeBatches } from "../utils/practiceBatches";
 
 type UsePracticeBatchesParams = {
   appMode: AppMode;

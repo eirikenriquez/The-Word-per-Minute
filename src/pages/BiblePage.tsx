@@ -1,5 +1,5 @@
-import { BibleControls } from "../features/bible-reader/components/BibleControls";
-import { BibleReaderSelector } from "../features/bible-reader/components/BibleReaderSelector";
+import { BibleChapterReader } from "../features/bible-reader/components/BibleChapterReader";
+import { BibleReaderControls } from "../features/bible-reader/components/BibleReaderControls";
 import type { BibleChapter, BookSummary, Translation } from "../types/verse";
 
 export type BiblePageProps = {
@@ -45,7 +45,7 @@ export function BiblePage({
 }: BiblePageProps) {
   return (
     <div className="grid gap-8">
-      <BibleControls
+      <BibleReaderControls
         books={bibleBooks}
         selectedBook={selectedBibleBook}
         selectedBookId={selectedBibleBookId}
@@ -57,7 +57,7 @@ export function BiblePage({
         onSelectChapter={onSelectBibleChapter}
         onSelectTranslation={onSelectTranslation}
       />
-      <BibleReaderSelector
+      <BibleChapterReader
         chapter={bibleChapter}
         focusSelectedVerseKey={focusSelectedVerseKey}
         selectedBook={selectedBibleBook}

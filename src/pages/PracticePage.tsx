@@ -2,9 +2,8 @@ import { PersonalBests } from "../features/practice/components/PersonalBests";
 import { PracticeBatchDisplay } from "../features/practice/components/PracticeBatchDisplay";
 import { PracticeControls } from "../features/practice/components/PracticeControls";
 import { TypingPracticePanel } from "../features/practice/components/TypingPracticePanel";
-import type { PracticeSource } from "../types/appMode";
-import type { PracticeStats, TypingMetrics } from "../types/practice";
-import type { PracticeBatch } from "../types/practiceBatch";
+import type { PracticeSource } from "../types/app";
+import type { PracticeBatch, PracticeStats, TypingMetrics } from "../types/practice";
 import type { SavedPassage } from "../types/savedPassage";
 
 export type PracticePageProps = {
