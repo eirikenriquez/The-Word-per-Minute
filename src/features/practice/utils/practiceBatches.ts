@@ -1,5 +1,5 @@
-import type { PracticeBatch } from "../types/practiceBatch";
-import type { BibleVerse } from "../types/verse";
+import type { PracticeBatch } from "../../../types/practice";
+import type { BibleVerse } from "../../../types/verse";
 
 /**
  * Splits a passage into small typing chunks.

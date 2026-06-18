@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Theme } from "../../types/theme";
+import type { Theme } from "../../types/app";
 
 /**
  * Owns the browser theme preference and mirrors it onto the document root.

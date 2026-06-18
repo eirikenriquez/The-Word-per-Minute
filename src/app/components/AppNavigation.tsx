@@ -1,4 +1,4 @@
-import type { AppMode } from "../../types/appMode";
+import type { AppMode } from "../../types/app";
 
 type AppNavigationProps = {
   appMode: AppMode;

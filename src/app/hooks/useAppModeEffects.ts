@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import type { AppMode, PracticeSource } from "../../types/appMode";
+import type { AppMode, PracticeSource } from "../../types/app";
 
 type UseAppModeEffectsParams = {
   appMode: AppMode;

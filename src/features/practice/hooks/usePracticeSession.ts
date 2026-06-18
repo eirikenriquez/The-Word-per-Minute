@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { PracticeBatch } from "../../../types/practiceBatch";
-import { calculatePracticeSessionMetrics, countCorrectCharacters } from "../../../utils/typingMetrics";
+import type { PracticeBatch } from "../../../types/practice";
+import { calculatePracticeSessionMetrics, countCorrectCharacters } from "../utils/typingMetrics";
 
 type UsePracticeSessionParams = {
   batches: PracticeBatch[];

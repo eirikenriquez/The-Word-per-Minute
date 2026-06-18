@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
 import { AppNavigation } from "./AppNavigation";
 import { BackToTopButton } from "./BackToTopButton";
-import type { AppMode } from "../../types/appMode";
-import type { Theme } from "../../types/theme";
+import type { AppMode, Theme } from "../../types/app";
 
 type PageShellProps = {
   appMode?: AppMode;
