@@ -1,13 +1,13 @@
 import { AppErrorState } from "./app/components/AppErrorState";
 import { AppHeader } from "./app/components/AppHeader";
 import { AppLoadingState } from "./app/components/AppLoadingState";
-import { AppPageRoutes } from "./app/components/AppPageRoutes";
+import { AppRoutes } from "./app/components/AppRoutes";
 import { PageShell } from "./app/components/PageShell";
 import { useAppController } from "./app/controllers/useAppController";
 
 /**
- * Main practice screen.
- * Owns the active mode, current typing state, and the handoff between data hooks and UI panels.
+ * Root application shell.
+ * Renders global loading/error states, navigation, contextual headers, and URL routes.
  */
 function App() {
   const { appMode, errorMessage, headerProps, isLoading, pageRoutesProps, theme, toggleTheme } =
@@ -41,7 +41,7 @@ function App() {
       <div key={appMode} className="page-transition grid gap-4">
         {appMode !== "home" && <AppHeader {...headerProps} />}
 
-        <AppPageRoutes {...pageRoutesProps} />
+        <AppRoutes {...pageRoutesProps} />
       </div>
     </PageShell>
   );

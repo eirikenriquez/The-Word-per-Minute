@@ -1,4 +1,5 @@
 import type { SavedPassage, SavePassageInput, SavedPassageUpdate } from "../../../types/savedPassage";
+import { DEFAULT_SAVED_CATEGORY } from "../constants/savedPassageCategories";
 
 const SAVED_PASSAGES_STORAGE_KEY = "the-word-per-minute-saved-passages";
 
@@ -36,7 +37,7 @@ export const savedPassageRepository: SavedPassageRepository = {
       const parsedPassages = JSON.parse(savedPassages) as SavedPassage[];
       return parsedPassages.map((passage) => ({
         ...passage,
-        category: passage.category ?? passage.theme ?? "Memorise",
+        category: passage.category ?? passage.theme ?? DEFAULT_SAVED_CATEGORY,
       }));
     } catch {
       return [];

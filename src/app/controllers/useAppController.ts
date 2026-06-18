@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { AppHeaderProps } from "../components/AppHeader";
-import type { AppPageRoutesProps } from "../components/AppPageRoutes";
+import type { AppRoutesProps } from "../components/AppRoutes";
 import { useReaderSelection } from "../../features/bible-reader/hooks/useReaderSelection";
 import { useVerseLibrary } from "../../features/bible-reader/hooks/useVerseLibrary";
 import { useFeaturedPassages } from "../../features/featured-passages/hooks/useFeaturedPassages";
@@ -158,7 +158,7 @@ export function useAppController() {
     onSelectMode: selectAppMode,
   };
 
-  const pageRoutesProps: AppPageRoutesProps = {
+  const pageRoutesProps: AppRoutesProps = {
     biblePageProps: useBiblePageController({
       appActions,
       bibleLibrary,

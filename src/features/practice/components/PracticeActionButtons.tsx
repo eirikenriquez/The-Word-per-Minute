@@ -1,4 +1,4 @@
-type PracticeSource = "featured" | "saved";
+import type { PracticeSource } from "../../../types/appMode";
 
 type PracticeActionButtonsProps = {
   practiceSource: PracticeSource;

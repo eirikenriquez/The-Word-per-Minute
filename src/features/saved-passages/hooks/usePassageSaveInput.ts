@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { DEFAULT_SAVED_CATEGORY, getDefaultSavedCategory } from "../../../constants/savedPassageCategories";
+import { DEFAULT_SAVED_CATEGORY, getDefaultSavedCategory } from "../constants/savedPassageCategories";
 import type { AppMode, PracticeSource } from "../../../types/appMode";
 import type { PassageResponse } from "../../../types/featuredPassage";
 import type { SavePassageInput } from "../../../types/savedPassage";

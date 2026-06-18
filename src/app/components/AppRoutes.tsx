@@ -1,23 +1,39 @@
-import type { ReactNode } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
-import type { AppMode } from "../../types/appMode";
+import type { BiblePageProps } from "../../pages/BiblePage";
+import { BiblePage } from "../../pages/BiblePage";
+import type { HomePageProps } from "../../pages/HomePage";
+import { HomePage } from "../../pages/HomePage";
+import type { LibraryPageProps } from "../../pages/LibraryPage";
+import { LibraryPage } from "../../pages/LibraryPage";
+import type { PracticePageProps } from "../../pages/PracticePage";
+import { PracticePage } from "../../pages/PracticePage";
 import { APP_ROUTE_PATHS } from "../routes/appRoutePaths";
 
-type AppRoutesProps = {
-  pages: Record<AppMode, ReactNode>;
+export type AppRoutesProps = {
+  biblePageProps: BiblePageProps;
+  homePageProps: HomePageProps;
+  libraryPageProps: LibraryPageProps;
+  practicePageProps: PracticePageProps | null;
 };
 
 /**
- * URL router for the main app pages.
- * Each page is built before it gets here, so this component only maps paths to screens.
+ * Maps URL paths to the app's prepared page components.
  */
-export function AppRoutes({ pages }: AppRoutesProps) {
+export function AppRoutes({
+  biblePageProps,
+  homePageProps,
+  libraryPageProps,
+  practicePageProps,
+}: AppRoutesProps) {
   return (
     <Routes>
-      <Route element={pages.home} path={APP_ROUTE_PATHS.home} />
-      <Route element={pages.practice} path={APP_ROUTE_PATHS.practice} />
-      <Route element={pages.bible} path={APP_ROUTE_PATHS.bible} />
-      <Route element={pages.library} path={APP_ROUTE_PATHS.library} />
+      <Route element={<HomePage {...homePageProps} />} path={APP_ROUTE_PATHS.home} />
+      <Route
+        element={practicePageProps ? <PracticePage {...practicePageProps} /> : null}
+        path={APP_ROUTE_PATHS.practice}
+      />
+      <Route element={<BiblePage {...biblePageProps} />} path={APP_ROUTE_PATHS.bible} />
+      <Route element={<LibraryPage {...libraryPageProps} />} path={APP_ROUTE_PATHS.library} />
       <Route element={<Navigate replace to={APP_ROUTE_PATHS.home} />} path="*" />
     </Routes>
   );
