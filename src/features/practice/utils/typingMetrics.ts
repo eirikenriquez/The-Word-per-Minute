@@ -4,6 +4,7 @@ type PracticeSessionMetricsInput = {
   batches: PracticeBatch[];
   currentBatchIndex: number;
   typedText: string;
+  mistakeCount: number;
   startedAt: number | null;
   finishedAt: number | null;
   now?: number;
@@ -27,6 +28,52 @@ export function countCorrectCharacters(targetText: string, typedText: string) {
   return typedText
     .split("")
     .filter((character, index) => areCharactersEquivalent(targetText[index], character)).length;
+}
+
+/**
+ * Counts newly entered incorrect characters between two input states.
+ * Deleting text is neutral, while replacements and pasted text are treated as new typing.
+ */
+export function countNewTypingMistakes(
+  targetText: string,
+  previousTypedText: string,
+  nextTypedText: string,
+) {
+  let sharedPrefixLength = 0;
+
+  while (
+    sharedPrefixLength < previousTypedText.length &&
+    sharedPrefixLength < nextTypedText.length &&
+    previousTypedText[sharedPrefixLength] === nextTypedText[sharedPrefixLength]
+  ) {
+    sharedPrefixLength += 1;
+  }
+
+  let sharedSuffixLength = 0;
+  const previousRemainingLength = previousTypedText.length - sharedPrefixLength;
+  const nextRemainingLength = nextTypedText.length - sharedPrefixLength;
+
+  while (
+    sharedSuffixLength < previousRemainingLength &&
+    sharedSuffixLength < nextRemainingLength &&
+    previousTypedText[previousTypedText.length - 1 - sharedSuffixLength] ===
+      nextTypedText[nextTypedText.length - 1 - sharedSuffixLength]
+  ) {
+    sharedSuffixLength += 1;
+  }
+
+  const newlyEnteredText = nextTypedText.slice(
+    sharedPrefixLength,
+    nextTypedText.length - sharedSuffixLength,
+  );
+
+  return newlyEnteredText
+    .split("")
+    .filter((character, index) => {
+      const targetIndex = sharedPrefixLength + index;
+      return !areCharactersEquivalent(targetText[targetIndex], character);
+    })
+    .length;
 }
 
 /**
@@ -58,6 +105,7 @@ export function calculatePracticeSessionMetrics({
   batches,
   currentBatchIndex,
   typedText,
+  mistakeCount,
   startedAt,
   finishedAt,
   now = Date.now(),
@@ -74,8 +122,9 @@ export function calculatePracticeSessionMetrics({
   const progress = totalCharacterCount
     ? Math.round((totalTypedCharacters / totalCharacterCount) * 100)
     : 0;
-  const accuracy = totalTypedCharacters
-    ? Math.round((totalCorrectCharacters / totalTypedCharacters) * 100)
+  const scoredCharacterCount = totalCorrectCharacters + mistakeCount;
+  const accuracy = scoredCharacterCount
+    ? Math.round((totalCorrectCharacters / scoredCharacterCount) * 100)
     : 100;
   const elapsedMs = startedAt ? (finishedAt ?? now) - startedAt : 0;
   const elapsedMinutes = elapsedMs / 1000 / 60;

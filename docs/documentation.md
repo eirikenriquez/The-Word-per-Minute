@@ -1,6 +1,6 @@
 # The Word per Minute Documentation
 
-Document version: `260619.1.a`
+Document version: `260619.1.b`
 Last updated: 19/06/26
 Update rule: only update this file when explicitly requested by the project owner.
 
@@ -96,7 +96,10 @@ It:
 
 - practises a featured passage or saved passage,
 - presents the passage as short typing batches,
-- calculates WPM and accuracy,
+- calculates WPM continuously while an attempt is active,
+- counts typing mistakes in accuracy even when the user later corrects them,
+- treats deletion as neutral rather than as an additional mistake,
+- freezes the final WPM and accuracy when the passage is completed,
 - records personal bests locally,
 - allows featured passages to be saved from the Practice controls,
 - lets users switch between Featured and Saved practice sources.
@@ -364,7 +367,8 @@ Owns typing practice UI and logic:
 - typing batch display,
 - typing input,
 - personal bests,
-- WPM/accuracy session state,
+- live WPM timing,
+- mistake-aware accuracy session state,
 - practice batch creation,
 - pure typing metric and character-equivalence logic.
 
@@ -475,7 +479,6 @@ flowchart TD
 ## Known Technical Debt
 
 - `useAppController` is the main app composition root and should not become a dumping ground for feature logic.
-- Accuracy currently reflects only the text presently entered. Because completion requires a fully correct passage, completed attempts always finish at 100% accuracy. The intended future behaviour is to count mistakes even when the user later corrects them.
 - The random featured-passage reader action may request scrolling before the newly selected chapter has finished rendering.
 - The UI overhaul still needs visual QA across desktop/mobile and light/dark mode.
 - Category management is still hardcoded/generated from featured themes.
@@ -490,21 +493,20 @@ flowchart TD
 
 ## Confirmed Product Decisions
 
-- Accuracy should count mistakes made during an attempt, including mistakes that are later corrected.
+- Accuracy counts mistakes made during an attempt, including mistakes that are later corrected. Deletion itself is neutral.
+- WPM updates while an attempt is active and freezes when the passage is completed.
 - In Bible mode, saving with no selected verses intentionally saves the whole current chapter.
 - Vercel is the planned future deployment platform.
 - The next development priority will be chosen after further discussion.
 
 ## Likely Next Architecture Steps
 
-1. Redesign accuracy tracking so corrected mistakes remain part of the final score.
-2. Add focused automated tests for typing metrics, practice batches, passage references, saved-passage identity, and route conversion.
-3. Make featured-passage reader scrolling wait for the selected chapter to render.
-4. Manually test `/`, `/practice`, `/bible`, and `/library`.
-5. Confirm refresh and browser back/forward work correctly on each route.
-6. Visually QA the sticky header, dark mode, and back-to-top button on mobile widths.
-7. Add reduced-motion handling.
-8. Keep `useAppController` limited to cross-feature composition.
-9. Keep `verseService` API-shaped so local JSON can later move to hosted data.
-10. Keep saved passage storage behind `savedPassageRepository` so it can later move to a database.
-11. Add Vercel configuration and verify SPA route fallbacks when deployment work begins.
+1. Make featured-passage reader scrolling wait for the selected chapter to render.
+2. Manually test `/`, `/practice`, `/bible`, and `/library`.
+3. Confirm refresh and browser back/forward work correctly on each route.
+4. Visually QA the sticky header, dark mode, and back-to-top button on mobile widths.
+5. Add reduced-motion handling.
+6. Keep `useAppController` limited to cross-feature composition.
+7. Keep `verseService` API-shaped so local JSON can later move to hosted data.
+8. Keep saved passage storage behind `savedPassageRepository` so it can later move to a database.
+9. Add Vercel configuration and verify SPA route fallbacks when deployment work begins.

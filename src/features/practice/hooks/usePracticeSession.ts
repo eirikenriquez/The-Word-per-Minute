@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { PracticeBatch } from "../../../types/practice";
-import { calculatePracticeSessionMetrics, countCorrectCharacters } from "../utils/typingMetrics";
+import {
+  calculatePracticeSessionMetrics,
+  countCorrectCharacters,
+  countNewTypingMistakes,
+} from "../utils/typingMetrics";
 
 type UsePracticeSessionParams = {
   batches: PracticeBatch[];
@@ -13,8 +17,10 @@ type UsePracticeSessionParams = {
 export function usePracticeSession({ batches, onCompletedAttempt }: UsePracticeSessionParams) {
   const [currentBatchIndex, setCurrentBatchIndex] = useState(0);
   const [typedText, setTypedText] = useState("");
+  const [mistakeCount, setMistakeCount] = useState(0);
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [finishedAt, setFinishedAt] = useState<number | null>(null);
+  const [metricTime, setMetricTime] = useState(Date.now);
   const savedFinishAt = useRef<number | null>(null);
 
   const {
@@ -30,9 +36,21 @@ export function usePracticeSession({ batches, onCompletedAttempt }: UsePracticeS
     batches,
     currentBatchIndex,
     typedText,
+    mistakeCount,
     startedAt,
     finishedAt,
+    now: metricTime,
   });
+
+  useEffect(() => {
+    if (!startedAt || finishedAt) return;
+
+    const metricTimer = window.setInterval(() => {
+      setMetricTime(Date.now());
+    }, 500);
+
+    return () => window.clearInterval(metricTimer);
+  }, [finishedAt, startedAt]);
 
   useEffect(() => {
     if (!isBatchComplete || isPassageComplete) return;
@@ -55,6 +73,7 @@ export function usePracticeSession({ batches, onCompletedAttempt }: UsePracticeS
   const resetPractice = useCallback(() => {
     setCurrentBatchIndex(0);
     setTypedText("");
+    setMistakeCount(0);
     setStartedAt(null);
     setFinishedAt(null);
     savedFinishAt.current = null;
@@ -62,9 +81,16 @@ export function usePracticeSession({ batches, onCompletedAttempt }: UsePracticeS
 
   const handleTyping = useCallback((nextTypedText: string) => {
     const limitedText = nextTypedText.slice(0, targetText.length);
+    const newMistakes = countNewTypingMistakes(targetText, typedText, limitedText);
 
     if (!startedAt && limitedText.length > 0) {
-      setStartedAt(Date.now());
+      const startTime = Date.now();
+      setStartedAt(startTime);
+      setMetricTime(startTime);
+    }
+
+    if (newMistakes) {
+      setMistakeCount((currentMistakeCount) => currentMistakeCount + newMistakes);
     }
 
     setTypedText(limitedText);
@@ -82,7 +108,7 @@ export function usePracticeSession({ batches, onCompletedAttempt }: UsePracticeS
     }
 
     setFinishedAt(null);
-  }, [batches.length, currentBatchIndex, startedAt, targetText]);
+  }, [batches.length, currentBatchIndex, startedAt, targetText, typedText]);
 
   return {
     accuracy,
