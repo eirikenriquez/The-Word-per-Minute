@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { SavedPassage } from "../../../types/savedPassage";
 
 type SavedPassageSelectProps = {
@@ -20,9 +20,7 @@ export function SavedPassageSelect({
     const savedCategories = savedPassages.map((passage) => getSavedCategory(passage));
     return ["All", ...Array.from(new Set(savedCategories))];
   }, [savedPassages]);
-
-  const selectedPassage = savedPassages.find((passage) => passage.id === selectedSavedPassageId);
-  const selectedCategory = selectedPassage ? getSavedCategory(selectedPassage) : "All";
+  const [selectedCategory, setSelectedCategory] = useState("All");
 
   const visiblePassages = useMemo(
     () =>
@@ -32,7 +30,12 @@ export function SavedPassageSelect({
     [savedPassages, selectedCategory],
   );
 
+  useEffect(() => {
+    if (!categories.includes(selectedCategory)) setSelectedCategory("All");
+  }, [categories, selectedCategory]);
+
   function handleCategoryChange(category: string) {
+    setSelectedCategory(category);
     const firstPassage = category === "All" ? savedPassages[0] : savedPassages.find((passage) => getSavedCategory(passage) === category);
     if (firstPassage) onSelectSavedPractice(firstPassage.id);
   }

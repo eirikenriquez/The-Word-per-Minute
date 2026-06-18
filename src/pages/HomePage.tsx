@@ -1,12 +1,9 @@
-import { HomeCategoryPicker } from "../features/featured-passages/components/HomeCategoryPicker";
+import { HomeContent, type HomeCategory } from "./components/HomeContent";
 
-export type FeaturedHomeCategory = {
-  count: number;
-  label: string;
-};
+export type { HomeCategory };
 
 export type HomePageProps = {
-  featuredHomeCategories: FeaturedHomeCategory[];
+  featuredHomeCategories: HomeCategory[];
   savedPassageCount: number;
   onOpenBible: () => void;
   onOpenLibrary: () => void;
@@ -26,7 +23,7 @@ export function HomePage({
   onStartFeaturedPractice,
 }: HomePageProps) {
   return (
-    <HomeCategoryPicker
+    <HomeContent
       featuredCategories={featuredHomeCategories}
       hasSavedPassages={savedPassageCount > 0}
       savedPassageCount={savedPassageCount}

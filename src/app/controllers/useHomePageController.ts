@@ -1,9 +1,9 @@
 import type { useAppActions } from "../hooks/useAppActions";
-import type { FeaturedHomeCategory, HomePageProps } from "../../pages/HomePage";
+import type { HomeCategory, HomePageProps } from "../../pages/HomePage";
 
 type UseHomePageControllerParams = {
   appActions: ReturnType<typeof useAppActions>;
-  featuredHomeCategories: FeaturedHomeCategory[];
+  featuredHomeCategories: HomeCategory[];
   savedPassageCount: number;
 };
 

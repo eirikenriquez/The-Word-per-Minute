@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 
-type HomeCategory = {
+export type HomeCategory = {
   count: number;
   label: string;
 };
 
-type HomeCategoryPickerProps = {
+type HomeContentProps = {
   featuredCategories: HomeCategory[];
   hasSavedPassages: boolean;
   savedPassageCount: number;
@@ -19,7 +19,7 @@ type HomeCategoryPickerProps = {
  * First-screen entry point for the app.
  * The page uses open sections for the main content and reserves card-like styling for selectable items.
  */
-export function HomeCategoryPicker({
+export function HomeContent({
   featuredCategories,
   hasSavedPassages,
   savedPassageCount,
@@ -27,7 +27,7 @@ export function HomeCategoryPicker({
   onOpenLibrary,
   onStartFeatured,
   onStartFeaturedCategory,
-}: HomeCategoryPickerProps) {
+}: HomeContentProps) {
   const totalFeaturedPassages = featuredCategories.reduce((total, category) => total + category.count, 0);
 
   return (
