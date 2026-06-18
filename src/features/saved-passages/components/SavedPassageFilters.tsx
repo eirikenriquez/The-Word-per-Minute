@@ -1,4 +1,4 @@
-import type { SavedPassageSourceFilter } from "../utils/savedPassageFilters";
+export type SavedPassageSourceFilter = "all" | "featured" | "saved";
 
 type SavedPassageFiltersProps = {
   categories: string[];

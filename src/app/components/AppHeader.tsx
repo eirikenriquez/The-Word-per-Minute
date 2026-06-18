@@ -1,5 +1,5 @@
-import { ModeHeaderPanel } from "./ModeHeaderPanel";
 import type { AppMode } from "../../types/appMode";
+import { PassageSaveControls } from "./PassageSaveControls";
 
 export type AppHeaderProps = {
   appMode: AppMode;
@@ -20,8 +20,7 @@ export type AppHeaderProps = {
 };
 
 /**
- * Wires app-level display and save state into the visible page title area.
- * Global navigation lives in PageShell so this component can stay focused on page context.
+ * Displays the current page title and contextual passage-save controls.
  */
 export function AppHeader({
   appMode,
@@ -38,21 +37,37 @@ export function AppHeader({
   onSaveCurrentPassage,
   onSaveTitleChange,
 }: AppHeaderProps) {
+  const showSaveControls = showPracticeSave || appMode === "bible";
+
   return (
-    <ModeHeaderPanel
-      appMode={appMode}
-      canSaveCurrentPassage={canSaveCurrentPassage}
-      isCurrentPassageSaved={isCurrentPassageSaved}
-      practiceReference={practiceReference}
-      practiceSubtitle={practiceSubtitle}
-      practiceTitle={practiceTitle}
-      saveCategory={saveCategory}
-      savedPassageCategories={savedPassageCategories}
-      saveTitle={saveTitle}
-      showPracticeSave={showPracticeSave}
-      onSaveCategoryChange={onSaveCategoryChange}
-      onSaveCurrentPassage={onSaveCurrentPassage}
-      onSaveTitleChange={onSaveTitleChange}
-    />
+    <section className="border-b border-slate-200 pb-5 dark:border-slate-800">
+      <div className="min-w-0">
+        <p className="text-sm font-semibold uppercase text-slate-500 dark:text-slate-400">
+          {practiceSubtitle}
+        </p>
+        <h2 className="mt-1 text-2xl font-bold text-slate-950 dark:text-slate-100">
+          {practiceTitle}
+        </h2>
+        {practiceReference && (
+          <p className="mt-2 w-fit rounded-md bg-blue-50 px-2.5 py-1 text-sm font-semibold text-blue-800 ring-1 ring-blue-100 dark:bg-blue-950 dark:text-blue-200 dark:ring-blue-900">
+            {practiceReference}
+          </p>
+        )}
+      </div>
+
+      {showSaveControls && (
+        <PassageSaveControls
+          canSaveCurrentPassage={canSaveCurrentPassage}
+          isCurrentPassageSaved={isCurrentPassageSaved}
+          saveCategory={saveCategory}
+          savedPassageCategories={savedPassageCategories}
+          saveTitle={saveTitle}
+          showFields={appMode === "bible"}
+          onSaveCategoryChange={onSaveCategoryChange}
+          onSaveCurrentPassage={onSaveCurrentPassage}
+          onSaveTitleChange={onSaveTitleChange}
+        />
+      )}
+    </section>
   );
 }

@@ -1,13 +1,10 @@
 import { useMemo, useState } from "react";
 import type { SavedPassage, SavedPassageUpdate } from "../../../types/savedPassage";
-import {
-  matchesSavedPassageCategory,
-  matchesSavedPassageSearch,
-  matchesSavedPassageSource,
-  type SavedPassageSourceFilter,
-} from "../utils/savedPassageFilters";
 import { SavedPassageCard } from "./SavedPassageCard";
-import { SavedPassageFilters } from "./SavedPassageFilters";
+import {
+  SavedPassageFilters,
+  type SavedPassageSourceFilter,
+} from "./SavedPassageFilters";
 
 type SavedPassageLibraryProps = {
   savedPassages: SavedPassage[];
@@ -100,4 +97,34 @@ function LibraryMessage({ children }: { children: string }) {
       {children}
     </div>
   );
+}
+
+function matchesSavedPassageCategory(passage: SavedPassage, selectedCategory: string) {
+  return selectedCategory === "All" || passage.category === selectedCategory;
+}
+
+function matchesSavedPassageSource(
+  passage: SavedPassage,
+  selectedSource: SavedPassageSourceFilter,
+) {
+  if (selectedSource === "all") return true;
+  if (selectedSource === "saved") return passage.source !== "featured";
+
+  return passage.source === selectedSource;
+}
+
+function matchesSavedPassageSearch(passage: SavedPassage, searchTerm: string) {
+  const normalizedSearchTerm = searchTerm.trim().toLowerCase();
+  if (!normalizedSearchTerm) return true;
+
+  return [
+    passage.title,
+    passage.reference,
+    passage.category,
+    passage.bookName,
+    passage.translationAbbreviation,
+  ]
+    .join(" ")
+    .toLowerCase()
+    .includes(normalizedSearchTerm);
 }
