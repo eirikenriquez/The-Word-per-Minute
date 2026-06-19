@@ -1,4 +1,5 @@
 import type { PracticeStats } from "../../../types/practice";
+import { Button } from "../../../ui/Button";
 
 type PersonalBestsProps = {
   stats: PracticeStats;
@@ -16,13 +17,12 @@ export function PersonalBests({ stats, onResetStats }: PersonalBestsProps) {
           <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Personal bests</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400">Saved in this browser.</p>
         </div>
-        <button
-          className="w-fit rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-600 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800 dark:border-slate-700 dark:text-slate-300 dark:hover:border-blue-800 dark:hover:bg-blue-950 dark:hover:text-blue-200"
-          type="button"
+        <Button
+          className="w-fit"
           onClick={onResetStats}
         >
           Reset Stats
-        </button>
+        </Button>
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-3">

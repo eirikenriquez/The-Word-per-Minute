@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { SavedPassage, SavedPassageUpdate } from "../../../types/savedPassage";
+import { Button } from "../../../ui/Button";
 
 type SavedPassageCardProps = {
   isSelected: boolean;
@@ -115,52 +116,44 @@ export function SavedPassageCard({
         <div className="flex flex-wrap gap-2 border-t border-slate-200 pt-3 sm:justify-end dark:border-slate-800">
           {isEditing ? (
             <>
-              <button
-                className="rounded-md bg-blue-700 px-3 py-2 text-sm font-medium text-white hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500"
-                type="button"
+              <Button
+                variant="primary"
                 onClick={saveEdits}
               >
                 Save
-              </button>
-              <button
-                className="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
-                type="button"
+              </Button>
+              <Button
                 onClick={cancelEditing}
               >
                 Cancel
-              </button>
+              </Button>
             </>
           ) : (
             <>
-              <button
-                className="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800 dark:border-slate-700 dark:text-slate-300 dark:hover:border-blue-800 dark:hover:bg-blue-950 dark:hover:text-blue-200"
-                type="button"
+              <Button
                 onClick={() => onReadPassage(passage.id)}
               >
                 Read in Bible
-              </button>
-              <button
-                className="rounded-md bg-blue-700 px-3 py-2 text-sm font-medium text-white hover:bg-blue-800 disabled:cursor-default disabled:bg-blue-400 dark:bg-blue-600 dark:hover:bg-blue-500 dark:disabled:bg-blue-900"
+              </Button>
+              <Button
                 disabled={isSelected}
-                type="button"
+                variant="primary"
                 onClick={() => onSelectSavedPassage(passage.id)}
               >
                 Practice
-              </button>
-              <button
-                className="rounded-md px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
-                type="button"
+              </Button>
+              <Button
+                variant="ghost"
                 onClick={startEditing}
               >
                 Edit
-              </button>
-              <button
-                className="rounded-md px-3 py-2 text-sm font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-950 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
-                type="button"
+              </Button>
+              <Button
+                variant="ghost"
                 onClick={() => onRemovePassage(passage.id)}
               >
                 Remove
-              </button>
+              </Button>
             </>
           )}
         </div>

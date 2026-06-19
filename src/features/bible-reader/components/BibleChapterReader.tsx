@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { BibleChapter, BookSummary } from "../../../types/verse";
+import { Button } from "../../../ui/Button";
 
 type BibleChapterReaderProps = {
   chapter: BibleChapter | null;
@@ -94,14 +95,14 @@ export function BibleChapterReader({
             {selectedBook.name} {selectedChapter}
           </h2>
         </div>
-        <button
-          className="w-fit rounded-md px-3 py-2 text-sm font-medium text-slate-500 transition hover:bg-blue-50 hover:text-blue-800 disabled:cursor-not-allowed disabled:text-slate-400 dark:text-slate-400 dark:hover:bg-blue-950 dark:hover:text-blue-200 dark:disabled:text-slate-600"
+        <Button
+          className="w-fit"
           disabled={!hasSelectedVerses}
-          type="button"
+          variant="ghost"
           onClick={onClearSelection}
         >
           Clear Selection
-        </button>
+        </Button>
       </div>
 
       <div

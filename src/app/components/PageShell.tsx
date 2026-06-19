@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { AppNavigation } from "./AppNavigation";
 import { BackToTopButton } from "./BackToTopButton";
 import type { AppMode, Theme } from "../../types/app";
+import { Button } from "../../ui/Button";
 
 type PageShellProps = {
   appMode?: AppMode;
@@ -33,13 +34,12 @@ export function PageShell({
             {appMode && onSelectMode && (
               <AppNavigation appMode={appMode} hasSavedPassages={hasSavedPassages} onSelectMode={onSelectMode} />
             )}
-            <button
-              className="w-fit rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-600 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800 dark:border-slate-700 dark:text-slate-300 dark:hover:border-blue-800 dark:hover:bg-blue-950 dark:hover:text-blue-200"
-              type="button"
+            <Button
+              className="w-fit"
               onClick={onToggleTheme}
             >
               {theme === "light" ? "Dark" : "Light"}
-            </button>
+            </Button>
           </div>
         </div>
       </header>
