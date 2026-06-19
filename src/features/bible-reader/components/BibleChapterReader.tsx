@@ -33,15 +33,24 @@ export function BibleChapterReader({
   const hasSelectedVerses = selectedVerseNumbers.length > 0;
 
   useEffect(() => {
-    if (!focusSelectedVerseKey || !selectedVerseNumbers.length) return;
+    if (
+      !focusSelectedVerseKey ||
+      chapter?.chapter !== selectedChapter ||
+      !selectedVerseNumbers.length
+    ) {
+      return;
+    }
 
     const firstSelectedVerse = selectedVerseNumbers[0];
-    verseButtonRefs.current.get(firstSelectedVerse)?.scrollIntoView({
+    const selectedVerseButton = verseButtonRefs.current.get(firstSelectedVerse);
+    if (!selectedVerseButton) return;
+
+    selectedVerseButton.scrollIntoView({
       behavior: "smooth",
       block: "center",
       inline: "nearest",
     });
-  }, [focusSelectedVerseKey, selectedVerseNumbers]);
+  }, [chapter, focusSelectedVerseKey, selectedChapter, selectedVerseNumbers]);
 
   if (!chapter || !selectedBook) return null;
 
