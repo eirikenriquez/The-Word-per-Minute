@@ -126,7 +126,7 @@ export function BibleChapterReader({
             <button
               className={`mr-1 rounded px-1 text-left transition ${
                 isSelected
-                  ? "bg-blue-900 text-blue-100 ring-1 ring-blue-700"
+                  ? "bg-blue-100 text-blue-950 ring-1 ring-blue-200 dark:bg-blue-900 dark:text-blue-100 dark:ring-blue-700"
                   : "text-slate-700 hover:bg-blue-50 dark:text-slate-300 dark:hover:bg-blue-950"
               }`}
               key={verse.number}
