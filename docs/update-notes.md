@@ -1,7 +1,7 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260619.1.b`
-Last updated: 19/06/26
+Current documentation version: `260620.1.a`
+Last updated: 20/06/26
 
 ## Update Rule
 
@@ -33,9 +33,25 @@ Example:
 
 Suggested next versions:
 
-- Small same-day documentation update: `260619.1.c`
-- Larger same-day documentation update: `260619.2.a`
+- Small same-day documentation update: `260620.1.b`
+- Larger same-day documentation update: `260620.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260620.1.a`
+
+This version documents the Bible reader and saved-passage navigation improvements.
+
+It updates:
+
+- Bible behaviour to state that selected-verse scrolling waits for the requested chapter to render,
+- Library behaviour to include opening saved passages in their original Bible context,
+- the selection rules for saved featured passages, exact custom selections, and whole-chapter saves,
+- Bible reader and saved-passage feature responsibilities,
+- selected-verse styling to describe the softer light-mode treatment,
+- the architecture diagram to show the saved-passage feature opening content in the Bible reader,
+- known technical debt and likely next steps now that reader scrolling has been synchronized.
+
+This update documents the runtime changes introduced by `Synchronize featured passage scrolling`, `Open saved passages in Bible`, and `Soften selected verse highlight`.
 
 ## `260619.1.b`
 
