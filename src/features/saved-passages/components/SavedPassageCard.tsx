@@ -51,13 +51,13 @@ export function SavedPassageCard({
 
   return (
     <article
-      className={`rounded-md border p-4 transition ${
+      className={`rounded-md border p-5 transition ${
         isSelected
-          ? "border-blue-300 bg-blue-50 dark:border-blue-700 dark:bg-blue-950/60"
-          : "border-slate-200 bg-white hover:border-blue-200 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-800"
+          ? "border-blue-300 bg-blue-50/50 ring-1 ring-blue-100 dark:border-blue-700 dark:bg-blue-950/30 dark:ring-blue-900"
+          : "border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700"
       }`}
     >
-      <div className="grid gap-4">
+      <div className="grid gap-5">
         <div className="grid flex-1 gap-3">
           {isEditing ? (
             <div className="grid gap-3 sm:grid-cols-[1fr_12rem]">
@@ -89,33 +89,37 @@ export function SavedPassageCard({
               <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="font-semibold text-slate-900 dark:text-slate-100">{passage.title}</h3>
+                    <h3 className="text-lg font-semibold text-slate-950 dark:text-slate-100">
+                      {passage.title}
+                    </h3>
                     {isSelected && (
-                      <span className="rounded bg-blue-700 px-2 py-1 text-xs font-semibold text-white dark:bg-blue-600">
+                      <span className="rounded bg-blue-100 px-2 py-1 text-xs font-semibold text-blue-800 dark:bg-blue-900 dark:text-blue-200">
                         Practicing
                       </span>
                     )}
                   </div>
-                  <p className="mt-1 text-sm font-medium text-slate-600 dark:text-slate-300">
+                  <p className="mt-1 text-sm font-semibold text-slate-600 dark:text-slate-300">
                     {passage.reference}
                   </p>
                 </div>
-                <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-slate-500 dark:text-slate-400">
                   {getSavedDateLabel(passage.createdAt)}
                 </p>
               </div>
-              <div className="flex flex-wrap gap-2 text-xs font-medium">
-                <MetadataTag>{passage.category}</MetadataTag>
-                <MetadataTag>{passage.translationAbbreviation}</MetadataTag>
-                <MetadataTag>{getSourceLabel(passage)}</MetadataTag>
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
+                <span>{passage.category}</span>
+                <MetadataDivider />
+                <span>{passage.translationAbbreviation}</span>
+                <MetadataDivider />
+                <span>{getSourceLabel(passage)}</span>
               </div>
             </>
           )}
         </div>
 
-        <div className="flex flex-wrap gap-2 border-t border-slate-200 pt-3 sm:justify-end dark:border-slate-800">
+        <div className="border-t border-slate-200 pt-4 dark:border-slate-800">
           {isEditing ? (
-            <>
+            <div className="flex flex-wrap gap-2 sm:justify-end">
               <Button
                 variant="primary"
                 onClick={saveEdits}
@@ -127,34 +131,34 @@ export function SavedPassageCard({
               >
                 Cancel
               </Button>
-            </>
+            </div>
           ) : (
-            <>
-              <Button
-                onClick={() => onReadPassage(passage.id)}
-              >
-                Read in Bible
-              </Button>
-              <Button
-                disabled={isSelected}
-                variant="primary"
-                onClick={() => onSelectSavedPassage(passage.id)}
-              >
-                Practice
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={startEditing}
-              >
-                Edit
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={() => onRemovePassage(passage.id)}
-              >
-                Remove
-              </Button>
-            </>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-wrap gap-2">
+                <Button onClick={() => onReadPassage(passage.id)}>Read in Bible</Button>
+                <Button
+                  disabled={isSelected}
+                  variant="primary"
+                  onClick={() => onSelectSavedPassage(passage.id)}
+                >
+                  {isSelected ? "Practicing" : "Practice"}
+                </Button>
+              </div>
+              <div className="flex flex-wrap gap-1">
+                <Button
+                  variant="ghost"
+                  onClick={startEditing}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="danger"
+                  onClick={() => onRemovePassage(passage.id)}
+                >
+                  Remove
+                </Button>
+              </div>
+            </div>
           )}
         </div>
       </div>
@@ -162,12 +166,8 @@ export function SavedPassageCard({
   );
 }
 
-function MetadataTag({ children }: { children: string }) {
-  return (
-    <span className="rounded bg-slate-100 px-2 py-1 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
-      {children}
-    </span>
-  );
+function MetadataDivider() {
+  return <span aria-hidden="true">·</span>;
 }
 
 function getSourceLabel(passage: SavedPassage) {
