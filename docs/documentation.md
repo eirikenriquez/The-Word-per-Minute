@@ -1,6 +1,6 @@
 # The Word per Minute Documentation
 
-Document version: `260620.1.a`
+Document version: `260620.1.b`
 Last updated: 20/06/26
 Update rule: only update this file when explicitly requested by the project owner.
 
@@ -46,6 +46,7 @@ The main architecture layers are:
 - `src/features`: feature-specific UI, hooks, and services.
 - `src/services`: shared service layer for local Bible data.
 - `src/types`: shared TypeScript data shapes.
+- `src/ui`: small reusable UI primitives used across features.
 - `src/utils`: shared pure helper functions.
 - `src/data`: local Bible and featured-passage JSON data.
 
@@ -102,7 +103,9 @@ It:
 - freezes the final WPM and accuracy when the passage is completed,
 - records personal bests locally,
 - allows featured passages to be saved from the Practice controls,
-- lets users switch between Featured and Saved practice sources.
+- lets users switch between Featured and Saved practice sources,
+- presents source and saved-passage controls in a responsive, label-first layout,
+- shows WPM, accuracy, progress, and status as one quiet horizontal summary instead of separate dashboard cards.
 
 ### Bible
 
@@ -141,7 +144,9 @@ It:
 - opens whole-chapter saves without individual verse highlighting,
 - lets the user edit saved passage title/category,
 - lets the user remove saved passages,
-- shows clearer card metadata, source labels, saved dates, and active practice state.
+- shows clearer card metadata, source labels, saved dates, and active practice state,
+- separates passage actions from edit/remove actions,
+- gives removal a restrained destructive treatment.
 
 Library does not show typing input directly.
 
@@ -251,6 +256,8 @@ src/
     practice.ts
     savedPassage.ts
     verse.ts
+  ui/
+    Button.tsx
   utils/
     errors.ts
     passageReference.ts
@@ -341,6 +348,19 @@ Current behaviour:
 - smoothly scrolls the window back to the top,
 - supports light and dark mode.
 
+### `src/ui/Button.tsx`
+
+Provides the shared visual hierarchy for ordinary app actions.
+
+Current variants:
+
+- primary,
+- secondary,
+- ghost,
+- danger.
+
+Specialized controls such as navigation tabs, Practice source choices, verse buttons, and the back-to-top button retain their own styling.
+
 ### `src/app/hooks/useTheme.ts`
 
 Owns the browser theme preference and stores it in `localStorage`.
@@ -372,6 +392,8 @@ Owns typing practice UI and logic:
 - practice action buttons,
 - typing batch display,
 - typing input,
+- responsive Practice setup layout,
+- compact horizontal typing metrics,
 - personal bests,
 - live WPM timing,
 - mistake-aware accuracy session state,
@@ -405,7 +427,7 @@ Owns saved passage storage and management:
 - save input creation,
 - save form state,
 - saved passage search/filter/list/edit/remove UI,
-- saved passage cards,
+- saved passage cards with clear information and action hierarchy,
 - Library-to-Bible passage navigation,
 - `localStorage` repository.
 
@@ -447,7 +469,7 @@ Theme styling is handled with Tailwind utility classes, using:
 - soft blue states for selected items,
 - blue/rose/slate feedback states for typing.
 
-The current approach intentionally avoids a full custom design-token system. If repeated Tailwind classes become hard to maintain, extract shared button/input styles later.
+The current approach intentionally avoids a full custom design-token system. Ordinary buttons share `src/ui/Button.tsx`, while form controls remain styled directly in their owning components. A shared form primitive should only be introduced if those styles become difficult to maintain.
 
 ## Important Types
 
@@ -494,7 +516,7 @@ flowchart TD
 - Library filtering is UI-only and still backed by local saved passage data.
 - User data is local-only through `localStorage`.
 - The app uses local JSON Bible data only; no hosted API yet.
-- Theme styling is repeated across components and may later benefit from small shared style helpers.
+- Form-control styling is repeated across components and may later benefit from a small shared primitive if it begins to drift.
 - Motion does not yet account for the user's reduced-motion preference.
 - Saved-passage removal has no confirmation or undo.
 - Automated tests are not set up yet.
@@ -508,7 +530,7 @@ flowchart TD
 - Saved passages can be reopened from Library in their original Bible context.
 - Saved featured passages highlight their full verse range, exact custom selections retain their selected verses, and whole-chapter saves open without individual highlights.
 - Vercel is the planned future deployment platform.
-- The next development priority will be chosen after further discussion.
+- The current UI pass is prioritizing consistency and hierarchy before icons or image assets are introduced.
 
 ## Likely Next Architecture Steps
 

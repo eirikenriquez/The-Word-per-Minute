@@ -1,6 +1,6 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260620.1.a`
+Current documentation version: `260620.1.b`
 Last updated: 20/06/26
 
 ## Update Rule
@@ -33,9 +33,27 @@ Example:
 
 Suggested next versions:
 
-- Small same-day documentation update: `260620.1.b`
+- Small same-day documentation update: `260620.1.c`
 - Larger same-day documentation update: `260620.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260620.1.b`
+
+This version documents the icon-free UI consistency pass across the app.
+
+It updates:
+
+- the architecture layers and file tree to include the shared `src/ui/Button.tsx` primitive,
+- the button hierarchy to document primary, secondary, ghost, and danger variants,
+- Practice behaviour to include the responsive source/passage control layout,
+- Practice behaviour to include the quieter horizontal WPM, accuracy, progress, and status summary,
+- Library behaviour to describe the refined card hierarchy and separated action groups,
+- Library behaviour to record the destructive visual treatment for passage removal,
+- the theme guidance to clarify that buttons are shared while form-control styles remain local,
+- known technical debt to focus future extraction decisions on form controls rather than buttons,
+- the current product direction to continue consistency work before adding icons or image assets.
+
+This update documents the UI work introduced by the button hierarchy, heading hierarchy, form-control consistency, Practice control layout, Practice metrics, and Library card refinement commits.
 
 ## `260620.1.a`
 
