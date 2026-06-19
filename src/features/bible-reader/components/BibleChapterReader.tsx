@@ -90,10 +90,12 @@ export function BibleChapterReader({
     <section className="mx-auto grid w-full max-w-5xl gap-5">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Read / Select</p>
-          <h2 className="mt-1 text-3xl font-bold text-slate-950 dark:text-slate-100">
+          <h2 className="text-2xl font-bold text-slate-950 dark:text-slate-100">
             {selectedBook.name} {selectedChapter}
           </h2>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            Select individual verses or drag across a range.
+          </p>
         </div>
         <Button
           className="w-fit"

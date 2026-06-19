@@ -2,8 +2,7 @@ import { useMemo } from "react";
 import type { AppMode, PracticeSource } from "../../types/app";
 import type { PassageResponse } from "../../types/featuredPassage";
 import type { SavedPassage } from "../../types/savedPassage";
-import type { BookSummary, Translation } from "../../types/verse";
-import { formatChapterReference, formatSelectedVerseReference } from "../../utils/passageReference";
+import type { Translation } from "../../types/verse";
 
 type UseAppDisplayStateParams = {
   appMode: AppMode;
@@ -16,11 +15,8 @@ type UseAppDisplayStateParams = {
   savedError: string | null;
   savedIsLoading: boolean;
   savedPassageCount: number;
-  selectedBook?: BookSummary;
-  selectedChapter: number;
   selectedSavedPassage?: SavedPassage;
   selectedTranslationId: string;
-  selectedVerseNumbers: number[];
   translations: Translation[];
 };
 
@@ -39,20 +35,11 @@ export function useAppDisplayState({
   savedError,
   savedIsLoading,
   savedPassageCount,
-  selectedBook,
-  selectedChapter,
   selectedSavedPassage,
   selectedTranslationId,
-  selectedVerseNumbers,
   translations,
 }: UseAppDisplayStateParams) {
   return useMemo(() => {
-    const bibleReference = selectedBook
-      ? selectedVerseNumbers.length
-        ? formatSelectedVerseReference(selectedBook.name, selectedChapter, selectedVerseNumbers)
-        : formatChapterReference(selectedBook.name, selectedChapter)
-      : "";
-
     const selectedTranslation =
       translations.find((translation) => translation.id === selectedTranslationId)?.abbreviation ??
       selectedTranslationId.toUpperCase();
@@ -74,7 +61,6 @@ export function useAppDisplayState({
       }),
       practiceReference: getPracticeReference({
         appMode,
-        bibleReference,
         featuredPassageResponse,
         practiceSource,
         savedPassageCount,
@@ -89,8 +75,6 @@ export function useAppDisplayState({
         appMode,
         featuredPassageResponse,
         practiceSource,
-        selectedBook,
-        selectedChapter,
         selectedSavedPassage,
       }),
       translationName: getTranslationName({
@@ -112,11 +96,8 @@ export function useAppDisplayState({
     savedError,
     savedIsLoading,
     savedPassageCount,
-    selectedBook,
-    selectedChapter,
     selectedSavedPassage,
     selectedTranslationId,
-    selectedVerseNumbers,
     translations,
   ]);
 }
@@ -154,15 +135,13 @@ function getPracticeTitle({
   appMode,
   featuredPassageResponse,
   practiceSource,
-  selectedBook,
-  selectedChapter,
   selectedSavedPassage,
 }: Pick<
   UseAppDisplayStateParams,
-  "appMode" | "featuredPassageResponse" | "practiceSource" | "selectedBook" | "selectedChapter" | "selectedSavedPassage"
+  "appMode" | "featuredPassageResponse" | "practiceSource" | "selectedSavedPassage"
 >) {
   if (appMode === "home") return "Welcome";
-  if (appMode === "bible") return `${selectedBook?.name ?? "Bible"} ${selectedChapter}`;
+  if (appMode === "bible") return "Bible Reader";
   if (appMode === "library") return "Saved Library";
 
   return practiceSource === "featured"
@@ -172,7 +151,6 @@ function getPracticeTitle({
 
 function getPracticeReference({
   appMode,
-  bibleReference,
   featuredPassageResponse,
   practiceSource,
   savedPassageCount,
@@ -180,11 +158,9 @@ function getPracticeReference({
 }: Pick<
   UseAppDisplayStateParams,
   "appMode" | "featuredPassageResponse" | "practiceSource" | "savedPassageCount" | "selectedSavedPassage"
-> & {
-  bibleReference: string;
-}) {
+>) {
   if (appMode === "home") return "";
-  if (appMode === "bible") return bibleReference;
+  if (appMode === "bible") return "";
   if (appMode === "library") return `${savedPassageCount} saved`;
 
   return practiceSource === "featured"
@@ -198,7 +174,7 @@ function getPracticeSubtitle({
   practiceSource,
 }: Pick<UseAppDisplayStateParams, "appMode" | "featuredPassageResponse" | "practiceSource">) {
   if (appMode === "home") return "The Word per Minute";
-  if (appMode === "bible") return "Bible reader";
+  if (appMode === "bible") return "Read and save scripture";
   if (appMode === "library") return "Saved library";
 
   return practiceSource === "featured"

@@ -28,6 +28,13 @@ export function SavedPassageFilters({
 }: SavedPassageFiltersProps) {
   return (
     <div className="grid gap-4 border-b border-slate-200 pb-5 dark:border-slate-800">
+      <div>
+        <h2 className="text-lg font-semibold text-slate-950 dark:text-slate-100">Find a passage</h2>
+        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          Search or narrow your saved library.
+        </p>
+      </div>
+
       <div className="grid gap-3 lg:grid-cols-[1fr_auto] lg:items-end">
         <label className="grid gap-1">
           <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Search</span>

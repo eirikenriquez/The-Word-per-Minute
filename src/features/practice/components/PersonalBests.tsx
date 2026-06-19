@@ -14,8 +14,8 @@ export function PersonalBests({ stats, onResetStats }: PersonalBestsProps) {
     <section className="border-t border-slate-200 pt-6 dark:border-slate-800">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Personal bests</h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400">Saved in this browser.</p>
+          <h2 className="text-lg font-semibold text-slate-950 dark:text-slate-100">Personal bests</h2>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Saved in this browser.</p>
         </div>
         <Button
           className="w-fit"

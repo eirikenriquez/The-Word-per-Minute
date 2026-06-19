@@ -42,7 +42,7 @@ export function PracticeControls({
     <section className="border-b border-slate-200 pb-5 dark:border-slate-800">
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
         <div className="grid gap-3">
-          <p className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Practice setup</p>
+          <h2 className="text-lg font-semibold text-slate-950 dark:text-slate-100">Practice setup</h2>
           <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
             <SourcePicker
               hasSavedPassages={hasSavedPassages}
