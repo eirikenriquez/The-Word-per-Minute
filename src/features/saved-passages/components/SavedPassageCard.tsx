@@ -64,7 +64,7 @@ export function SavedPassageCard({
               <label className="grid gap-1">
                 <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Title</span>
                 <input
-                  className="rounded-md border border-slate-300 px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                  className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-blue-950"
                   value={draftTitle}
                   onChange={(event) => setDraftTitle(event.target.value)}
                 />
@@ -72,7 +72,7 @@ export function SavedPassageCard({
               <label className="grid gap-1">
                 <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Category</span>
                 <select
-                  className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                  className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-blue-950"
                   value={draftCategory}
                   onChange={(event) => setDraftCategory(event.target.value)}
                 >

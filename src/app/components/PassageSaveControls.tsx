@@ -43,7 +43,7 @@ export function PassageSaveControls({
       <label className="grid gap-1">
         <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Saved Title</span>
         <input
-          className="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-blue-950"
+          className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:ring-blue-950"
           placeholder="Name this saved passage"
           value={saveTitle}
           onChange={(event) => onSaveTitleChange(event.target.value)}
@@ -52,7 +52,7 @@ export function PassageSaveControls({
       <label className="grid gap-1">
         <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Category</span>
         <select
-          className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-blue-950"
+          className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-blue-950"
           value={saveCategory}
           onChange={(event) => onSaveCategoryChange(event.target.value)}
         >
