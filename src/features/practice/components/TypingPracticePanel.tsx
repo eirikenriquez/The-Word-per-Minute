@@ -15,7 +15,7 @@ type TypingPracticePanelProps = {
 };
 
 /**
- * Typing input plus live result cards.
+ * Typing input plus a quiet live-results summary.
  * This component is presentational; the parent owns timing, scoring, and selected text.
  */
 export function TypingPracticePanel({
@@ -42,11 +42,19 @@ export function TypingPracticePanel({
         />
       </label>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <MetricCard label="WPM" value={wpm} />
-        <MetricCard label="Accuracy" value={`${accuracy}%`} />
-        <MetricCard label="Progress" value={`${progress}%`} />
-        <MetricCard label="Status" value={status} valueClassName="text-lg" />
+      <div className="flex flex-wrap items-center gap-x-8 gap-y-2 text-base text-slate-600 dark:text-slate-300">
+        <p>
+          <strong className="font-semibold text-slate-950 dark:text-slate-100">{wpm}</strong> WPM
+        </p>
+        <p>
+          <strong className="font-semibold text-slate-950 dark:text-slate-100">{accuracy}%</strong>{" "}
+          accuracy
+        </p>
+        <p>
+          <strong className="font-semibold text-slate-950 dark:text-slate-100">{progress}%</strong>{" "}
+          complete
+        </p>
+        <p className="font-medium text-slate-500 sm:ml-auto dark:text-slate-400">{status}</p>
       </div>
 
       {isComplete && (
@@ -64,23 +72,5 @@ export function TypingPracticePanel({
         </div>
       )}
     </section>
-  );
-}
-
-type MetricCardProps = {
-  label: string;
-  value: number | string;
-  valueClassName?: string;
-};
-
-/**
- * Small reusable stat tile for the live typing metrics.
- */
-function MetricCard({ label, value, valueClassName = "text-2xl" }: MetricCardProps) {
-  return (
-    <div className="rounded-md border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900">
-      <p className="text-xs font-medium uppercase text-slate-500 dark:text-slate-400">{label}</p>
-      <p className={`${valueClassName} font-bold text-slate-950 dark:text-slate-100`}>{value}</p>
-    </div>
   );
 }
