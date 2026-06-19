@@ -175,7 +175,7 @@ function getPracticeSubtitle({
 }: Pick<UseAppDisplayStateParams, "appMode" | "featuredPassageResponse" | "practiceSource">) {
   if (appMode === "home") return "The Word per Minute";
   if (appMode === "bible") return "Read and save scripture";
-  if (appMode === "library") return "Saved library";
+  if (appMode === "library") return "Manage your saved passages";
 
   return practiceSource === "featured"
     ? `Practice - ${featuredPassageResponse?.passage.theme ?? "Discovery"}`
