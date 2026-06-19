@@ -4,6 +4,7 @@ import type { SavedPassage, SavedPassageUpdate } from "../types/savedPassage";
 export type LibraryPageProps = {
   savedPassages: SavedPassage[];
   selectedSavedPassageId: string;
+  onReadSavedPassage: (passageId: string) => void;
   onRemoveSavedPassage: (passageId: string) => void;
   onSelectSavedPassage: (passageId: string) => void;
   onUpdateSavedPassage: (passageId: string, update: SavedPassageUpdate) => SavedPassage | null;
@@ -15,6 +16,7 @@ export type LibraryPageProps = {
 export function LibraryPage({
   savedPassages,
   selectedSavedPassageId,
+  onReadSavedPassage,
   onRemoveSavedPassage,
   onSelectSavedPassage,
   onUpdateSavedPassage,
@@ -23,6 +25,7 @@ export function LibraryPage({
     <SavedPassageLibrary
       savedPassages={savedPassages}
       selectedSavedPassageId={selectedSavedPassageId}
+      onReadPassage={onReadSavedPassage}
       onRemovePassage={onRemoveSavedPassage}
       onSelectSavedPassage={onSelectSavedPassage}
       onUpdatePassage={onUpdateSavedPassage}

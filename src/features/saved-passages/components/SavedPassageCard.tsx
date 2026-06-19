@@ -5,6 +5,7 @@ type SavedPassageCardProps = {
   isSelected: boolean;
   passage: SavedPassage;
   savedCategories: string[];
+  onReadPassage: (passageId: string) => void;
   onRemovePassage: (passageId: string) => void;
   onSelectSavedPassage: (passageId: string) => void;
   onUpdatePassage: (passageId: string, update: SavedPassageUpdate) => SavedPassage | null;
@@ -17,6 +18,7 @@ export function SavedPassageCard({
   isSelected,
   passage,
   savedCategories,
+  onReadPassage,
   onRemovePassage,
   onSelectSavedPassage,
   onUpdatePassage,
@@ -130,6 +132,13 @@ export function SavedPassageCard({
             </>
           ) : (
             <>
+              <button
+                className="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800 dark:border-slate-700 dark:text-slate-300 dark:hover:border-blue-800 dark:hover:bg-blue-950 dark:hover:text-blue-200"
+                type="button"
+                onClick={() => onReadPassage(passage.id)}
+              >
+                Read in Bible
+              </button>
               <button
                 className="rounded-md bg-blue-700 px-3 py-2 text-sm font-medium text-white hover:bg-blue-800 disabled:cursor-default disabled:bg-blue-400 dark:bg-blue-600 dark:hover:bg-blue-500 dark:disabled:bg-blue-900"
                 disabled={isSelected}

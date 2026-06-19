@@ -1,7 +1,7 @@
 # The Word per Minute Documentation
 
-Document version: `260619.1.b`
-Last updated: 19/06/26
+Document version: `260620.1.a`
+Last updated: 20/06/26
 Update rule: only update this file when explicitly requested by the project owner.
 
 ## Purpose
@@ -117,7 +117,9 @@ It:
 - treats an empty verse selection as the whole current chapter,
 - lets the user save selected verses with a custom title and category,
 - lets the user save the whole chapter when no individual verses are selected,
-- can open a random featured passage in context and scroll to the selected verses.
+- can open a random featured passage in context,
+- waits for the selected chapter to render before scrolling to highlighted verses,
+- uses a softer selected-verse treatment in light mode while retaining strong dark-mode contrast.
 
 Bible does not show typing input directly.
 
@@ -133,6 +135,10 @@ It:
 - supports category filtering,
 - supports source filtering by All sources, Featured, or Saved,
 - lets the user practise a saved passage,
+- lets the user open a saved passage in its original Bible context,
+- restores exact custom verse selections when opening them in Bible,
+- highlights the full range for saved featured passages,
+- opens whole-chapter saves without individual verse highlighting,
 - lets the user edit saved passage title/category,
 - lets the user remove saved passages,
 - shows clearer card metadata, source labels, saved dates, and active practice state.
@@ -379,6 +385,8 @@ Owns Bible browsing and verse selection:
 - translation/book/chapter controls,
 - full chapter reader,
 - click and drag verse selection,
+- selected-verse focus after asynchronous chapter loading,
+- light and dark selected-verse styling,
 - reader data-loading state.
 
 ### `features/featured-passages`
@@ -398,6 +406,7 @@ Owns saved passage storage and management:
 - save form state,
 - saved passage search/filter/list/edit/remove UI,
 - saved passage cards,
+- Library-to-Bible passage navigation,
 - `localStorage` repository.
 
 ## Data Files
@@ -469,6 +478,7 @@ flowchart TD
   practice --> practiceFeature["features/practice"]
   bible --> bibleFeature["features/bible-reader"]
   library --> savedFeature["features/saved-passages"]
+  savedFeature --> bibleFeature
   featured --> verseService["verseService"]
   practiceFeature --> verseService
   bibleFeature --> verseService
@@ -479,7 +489,6 @@ flowchart TD
 ## Known Technical Debt
 
 - `useAppController` is the main app composition root and should not become a dumping ground for feature logic.
-- The random featured-passage reader action may request scrolling before the newly selected chapter has finished rendering.
 - The UI overhaul still needs visual QA across desktop/mobile and light/dark mode.
 - Category management is still hardcoded/generated from featured themes.
 - Library filtering is UI-only and still backed by local saved passage data.
@@ -496,17 +505,18 @@ flowchart TD
 - Accuracy counts mistakes made during an attempt, including mistakes that are later corrected. Deletion itself is neutral.
 - WPM updates while an attempt is active and freezes when the passage is completed.
 - In Bible mode, saving with no selected verses intentionally saves the whole current chapter.
+- Saved passages can be reopened from Library in their original Bible context.
+- Saved featured passages highlight their full verse range, exact custom selections retain their selected verses, and whole-chapter saves open without individual highlights.
 - Vercel is the planned future deployment platform.
 - The next development priority will be chosen after further discussion.
 
 ## Likely Next Architecture Steps
 
-1. Make featured-passage reader scrolling wait for the selected chapter to render.
-2. Manually test `/`, `/practice`, `/bible`, and `/library`.
-3. Confirm refresh and browser back/forward work correctly on each route.
-4. Visually QA the sticky header, dark mode, and back-to-top button on mobile widths.
-5. Add reduced-motion handling.
-6. Keep `useAppController` limited to cross-feature composition.
-7. Keep `verseService` API-shaped so local JSON can later move to hosted data.
-8. Keep saved passage storage behind `savedPassageRepository` so it can later move to a database.
-9. Add Vercel configuration and verify SPA route fallbacks when deployment work begins.
+1. Manually test `/`, `/practice`, `/bible`, and `/library`.
+2. Confirm refresh and browser back/forward work correctly on each route.
+3. Visually QA the sticky header, dark mode, and back-to-top button on mobile widths.
+4. Add reduced-motion handling.
+5. Keep `useAppController` limited to cross-feature composition.
+6. Keep `verseService` API-shaped so local JSON can later move to hosted data.
+7. Keep saved passage storage behind `savedPassageRepository` so it can later move to a database.
+8. Add Vercel configuration and verify SPA route fallbacks when deployment work begins.
