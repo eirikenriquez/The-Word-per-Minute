@@ -9,6 +9,7 @@ import {
 type SavedPassageLibraryProps = {
   savedPassages: SavedPassage[];
   selectedSavedPassageId: string;
+  onReadPassage: (passageId: string) => void;
   onRemovePassage: (passageId: string) => void;
   onSelectSavedPassage: (passageId: string) => void;
   onUpdatePassage: (passageId: string, update: SavedPassageUpdate) => SavedPassage | null;
@@ -20,6 +21,7 @@ type SavedPassageLibraryProps = {
 export function SavedPassageLibrary({
   savedPassages,
   selectedSavedPassageId,
+  onReadPassage,
   onRemovePassage,
   onSelectSavedPassage,
   onUpdatePassage,
@@ -78,6 +80,7 @@ export function SavedPassageLibrary({
               key={passage.id}
               passage={passage}
               savedCategories={editableCategories}
+              onReadPassage={onReadPassage}
               onRemovePassage={onRemovePassage}
               onSelectSavedPassage={onSelectSavedPassage}
               onUpdatePassage={onUpdatePassage}

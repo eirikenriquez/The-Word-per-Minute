@@ -70,6 +70,7 @@ export function createLibraryPageProps({
   return {
     savedPassages: savedLibrary.savedPassages,
     selectedSavedPassageId: savedLibrary.selectedSavedPassageId,
+    onReadSavedPassage: appActions.readSavedPassage,
     onRemoveSavedPassage: appActions.removeSavedPractice,
     onSelectSavedPassage: appActions.selectSavedPractice,
     onUpdateSavedPassage: savedLibrary.updatePassage,

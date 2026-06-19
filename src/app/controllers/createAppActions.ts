@@ -127,16 +127,38 @@ export function createAppActions({
     const passage = featuredPassages[Math.floor(Math.random() * featuredPassages.length)];
     if (!passage) return;
 
+    openReaderPassage(
+      passage,
+      createVerseRange(passage.startVerse, passage.endVerse),
+    );
+  }
+
+  function readSavedPassage(passageId: string) {
+    const passage = savedPassages.find((savedPassage) => savedPassage.id === passageId);
+    if (!passage) return;
+
+    const selectedVerses = passage.selectedVerses?.length
+      ? passage.selectedVerses
+      : passage.source === "featured"
+        ? createVerseRange(passage.startVerse, passage.endVerse)
+        : [];
+
+    openReaderPassage(passage, selectedVerses);
+  }
+
+  function openReaderPassage(
+    passage: Pick<SavedPassage | FeaturedPassage, "bookId" | "chapter" | "translationId">,
+    selectedVerses: number[],
+  ) {
     selectTranslation(passage.translationId);
     selectBibleBook(passage.bookId);
     selectBibleChapter(passage.chapter);
-    setSelectedVerseNumbers(
-      Array.from(
-        { length: passage.endVerse - passage.startVerse + 1 },
-        (_, index) => passage.startVerse + index,
-      ),
-    );
-    focusSelectedVerses();
+    setSelectedVerseNumbers(selectedVerses);
+
+    if (selectedVerses.length) {
+      focusSelectedVerses();
+    }
+
     setAppMode("bible");
     resetPractice();
   }
@@ -152,6 +174,7 @@ export function createAppActions({
     openBible,
     openLibrary,
     randomFeaturedReaderPassage,
+    readSavedPassage,
     removeSavedPractice,
     selectFeaturedPractice,
     selectReaderBook,
@@ -161,4 +184,11 @@ export function createAppActions({
     startFeaturedCategory,
     startFeaturedPractice,
   };
+}
+
+function createVerseRange(startVerse: number, endVerse: number) {
+  return Array.from(
+    { length: endVerse - startVerse + 1 },
+    (_, index) => startVerse + index,
+  );
 }
