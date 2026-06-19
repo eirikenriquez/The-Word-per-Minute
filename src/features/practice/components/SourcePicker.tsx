@@ -22,8 +22,8 @@ export function SourcePicker({
   onSelectSavedPractice,
 }: SourcePickerProps) {
   return (
-    <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-      <span className="text-sm font-semibold text-slate-600 dark:text-slate-300">Practice source</span>
+    <div className="grid gap-1">
+      <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Practice source</span>
       <div className="inline-flex w-fit gap-1">
         <SourceButton
           isSelected={practiceSource === "featured"}
