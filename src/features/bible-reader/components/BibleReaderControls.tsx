@@ -31,7 +31,7 @@ export function BibleReaderControls({
   onSelectTranslation,
 }: BibleReaderControlsProps) {
   return (
-    <section className="border-b border-slate-200 pb-5 dark:border-slate-800">
+    <section>
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
         <div className="grid gap-3 sm:grid-cols-3">
           <PickerLabel label="Translation">

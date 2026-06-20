@@ -11,7 +11,7 @@ type PersonalBestsProps = {
  */
 export function PersonalBests({ stats, onResetStats }: PersonalBestsProps) {
   return (
-    <section className="border-t border-slate-200 pt-6 dark:border-slate-800">
+    <section>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h2 className="text-lg font-semibold text-slate-950 dark:text-slate-100">Personal bests</h2>

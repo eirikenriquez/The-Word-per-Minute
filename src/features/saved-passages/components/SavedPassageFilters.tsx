@@ -27,7 +27,7 @@ export function SavedPassageFilters({
   onSelectedSourceChange,
 }: SavedPassageFiltersProps) {
   return (
-    <div className="grid gap-4 border-b border-slate-200 pb-5 dark:border-slate-800">
+    <div className="grid gap-4">
       <div>
         <h2 className="text-lg font-semibold text-slate-950 dark:text-slate-100">Find a passage</h2>
         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
