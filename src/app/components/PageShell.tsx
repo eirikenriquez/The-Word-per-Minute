@@ -1,5 +1,6 @@
 import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
 import type { ReactNode } from "react";
+import { Link } from "react-router-dom";
 import { AppNavigation } from "./AppNavigation";
 import { BackToTopButton } from "./BackToTopButton";
 import type { AppMode, Theme } from "../../types/app";
@@ -28,7 +29,23 @@ export function PageShell({
     <div className="min-h-screen bg-canvas text-ink">
       <header className="sticky top-0 z-50 border-b border-line bg-surface/90 backdrop-blur">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-          <h1 className="text-xl font-bold tracking-normal text-ink">The Word per Minute</h1>
+          <h1>
+            <Link className="inline-flex items-center gap-3" to="/" aria-label="The Word per Minute home">
+              <span className="relative h-9 w-8 shrink-0" aria-hidden="true">
+                <img
+                  alt=""
+                  className="absolute inset-0 h-full w-full object-contain dark:hidden"
+                  src="/brand/symbol-light.svg"
+                />
+                <img
+                  alt=""
+                  className="absolute inset-0 hidden h-full w-full object-contain dark:block"
+                  src="/brand/symbol-dark.svg"
+                />
+              </span>
+              <span className="text-xl font-bold tracking-normal text-ink">The Word per Minute</span>
+            </Link>
+          </h1>
 
           {appMode && onSelectMode && (
             <AppNavigation appMode={appMode} hasSavedPassages={hasSavedPassages} onSelectMode={onSelectMode} />
