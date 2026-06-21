@@ -36,7 +36,7 @@ export function TypingPracticePanel({
       <label className="grid gap-2">
         <span className="text-base font-semibold text-ink">Type the passage</span>
         <textarea
-          className="min-h-40 resize-y rounded-md border border-line-strong bg-surface p-4 text-ink leading-7 outline-none transition placeholder:text-ink-subtle focus:border-accent focus:ring-2 focus:ring-accent-soft"
+          className="h-40 resize-none rounded-md border border-line-strong bg-surface p-4 text-ink leading-7 outline-none transition placeholder:text-ink-subtle focus:border-accent focus:ring-2 focus:ring-accent-soft"
           placeholder="Start typing here..."
           value={typedText}
           onChange={(event) => onTypingChange(event.target.value)}

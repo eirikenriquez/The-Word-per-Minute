@@ -1,19 +1,17 @@
 import { PersonalBests } from "../features/practice/components/PersonalBests";
-import { PracticeBatchDisplay } from "../features/practice/components/PracticeBatchDisplay";
 import { PracticeControls } from "../features/practice/components/PracticeControls";
+import { PracticePassageDisplay } from "../features/practice/components/PracticePassageDisplay";
 import { TypingPracticePanel } from "../features/practice/components/TypingPracticePanel";
 import type { PracticeSource } from "../types/app";
-import type { PracticeBatch, PracticeStats, TypingMetrics } from "../types/practice";
+import type { PracticePassage, PracticeStats, TypingMetrics } from "../types/practice";
 import type { SavedPassage } from "../types/savedPassage";
 
 export type PracticePageProps = {
   accuracy: number;
   canSaveCurrentPassage: boolean;
-  currentBatch: PracticeBatch;
-  currentBatchIndex: number;
   isCurrentPassageSaved: boolean;
-  isBatchComplete: boolean;
   isPassageComplete: boolean;
+  passage: PracticePassage;
   practiceSource: PracticeSource;
   practiceTitle: string;
   progress: number;
@@ -21,7 +19,6 @@ export type PracticePageProps = {
   selectedSavedPassageId: string;
   stats: PracticeStats;
   status: TypingMetrics["status"];
-  totalBatches: number;
   translationName: string;
   typedText: string;
   wpm: number;
@@ -41,11 +38,9 @@ export type PracticePageProps = {
 export function PracticePage({
   accuracy,
   canSaveCurrentPassage,
-  currentBatch,
-  currentBatchIndex,
   isCurrentPassageSaved,
-  isBatchComplete,
   isPassageComplete,
+  passage,
   practiceSource,
   practiceTitle,
   progress,
@@ -53,7 +48,6 @@ export function PracticePage({
   selectedSavedPassageId,
   stats,
   status,
-  totalBatches,
   translationName,
   typedText,
   wpm,
@@ -84,10 +78,8 @@ export function PracticePage({
       />
 
       <section className="mx-auto grid w-full max-w-5xl gap-8">
-        <PracticeBatchDisplay
-          batch={currentBatch}
-          batchNumber={currentBatchIndex + 1}
-          totalBatches={totalBatches}
+        <PracticePassageDisplay
+          passage={passage}
           translationName={translationName}
           typedText={typedText}
         />
@@ -97,11 +89,9 @@ export function PracticePage({
             accuracy={accuracy}
             completionActionLabel={isPassageComplete && practiceSource === "featured" ? "Next Passage" : undefined}
             completionMessage={
-              isPassageComplete
-                ? `Complete. You finished ${practiceTitle} at ${wpm} WPM with ${accuracy}% accuracy.`
-                : "Batch complete. Moving to the next verses..."
+              `Complete. You finished ${practiceTitle} at ${wpm} WPM with ${accuracy}% accuracy.`
             }
-            isComplete={isBatchComplete}
+            isComplete={isPassageComplete}
             onCompletionAction={isPassageComplete && practiceSource === "featured" ? onNextFeaturedPassage : undefined}
             progress={Math.min(progress, 100)}
             status={status}

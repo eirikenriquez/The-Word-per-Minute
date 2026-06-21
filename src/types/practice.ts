@@ -15,7 +15,7 @@ export type TypingMetrics = {
   status: "Ready" | "Typing" | "Complete";
 };
 
-export type PracticeBatch = {
+export type PracticePassage = {
   startVerse: number;
   endVerse: number;
   ref: string;

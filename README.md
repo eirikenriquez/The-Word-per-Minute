@@ -7,6 +7,7 @@ The app helps users discover scripture, practise typing curated passages, read B
 ## Current Features
 
 - Featured passage typing practice
+- Fixed-height, automatically scrolling passage view
 - WPM and accuracy tracking
 - Responsive Practice source controls and a compact live-metrics summary
 - Local personal-best statistics
@@ -14,6 +15,7 @@ The app helps users discover scripture, practise typing curated passages, read B
 - Saved passage library with search, filters, editing, and Bible/Practice actions
 - Warm light and dark themes with semantic color tokens
 - Branded navigation, contextual action icons, and an adaptive favicon
+- Branded footer with Bible attribution and local-data notice
 - Responsive page layouts
 
 ## Run Locally
