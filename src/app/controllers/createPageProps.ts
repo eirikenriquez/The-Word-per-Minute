@@ -7,7 +7,7 @@ import type { HomeCategory, HomePageProps } from "../../pages/HomePage";
 import type { LibraryPageProps } from "../../pages/LibraryPage";
 import type { PracticePageProps } from "../../pages/PracticePage";
 import type { PracticeSource } from "../../types/app";
-import type { PracticeBatch, PracticeStats } from "../../types/practice";
+import type { PracticePassage, PracticeStats } from "../../types/practice";
 import type { createAppActions } from "./createAppActions";
 
 type AppActions = ReturnType<typeof createAppActions>;
@@ -79,10 +79,9 @@ export function createLibraryPageProps({
 
 export function createPracticePageProps({
   appActions,
-  batches,
   canSaveCurrentPassage,
-  currentBatch,
   isCurrentPassageSaved,
+  passage,
   practiceSession,
   practiceSource,
   practiceTitle,
@@ -93,10 +92,9 @@ export function createPracticePageProps({
   onSaveCurrentPassage,
 }: {
   appActions: AppActions;
-  batches: PracticeBatch[];
   canSaveCurrentPassage: boolean;
-  currentBatch: PracticeBatch | undefined;
   isCurrentPassageSaved: boolean;
+  passage: PracticePassage | undefined;
   practiceSession: ReturnType<typeof usePracticeSession>;
   practiceSource: PracticeSource;
   practiceTitle: string;
@@ -106,16 +104,14 @@ export function createPracticePageProps({
   translationName: string;
   onSaveCurrentPassage: () => void;
 }): PracticePageProps | null {
-  if (!currentBatch) return null;
+  if (!passage) return null;
 
   return {
     accuracy: practiceSession.accuracy,
     canSaveCurrentPassage,
-    currentBatch,
-    currentBatchIndex: practiceSession.currentBatchIndex,
     isCurrentPassageSaved,
-    isBatchComplete: practiceSession.isBatchComplete,
     isPassageComplete: practiceSession.isPassageComplete,
+    passage,
     practiceSource,
     practiceTitle,
     progress: practiceSession.progress,
@@ -123,7 +119,6 @@ export function createPracticePageProps({
     selectedSavedPassageId: savedLibrary.selectedSavedPassageId,
     stats,
     status: practiceSession.status,
-    totalBatches: batches.length,
     translationName,
     typedText: practiceSession.typedText,
     wpm: practiceSession.wpm,

@@ -5,7 +5,7 @@ import { useReaderSelection } from "../../features/bible-reader/hooks/useReaderS
 import { useVerseLibrary } from "../../features/bible-reader/hooks/useVerseLibrary";
 import { useFeaturedPassages } from "../../features/featured-passages/hooks/useFeaturedPassages";
 import { usePassageCategories } from "../../features/featured-passages/hooks/usePassageCategories";
-import { usePracticeBatches } from "../../features/practice/hooks/usePracticeBatches";
+import { usePracticePassage } from "../../features/practice/hooks/usePracticePassage";
 import { usePracticeSession } from "../../features/practice/hooks/usePracticeSession";
 import { usePracticeStats } from "../../features/practice/hooks/usePracticeStats";
 import { usePassageSaveInput } from "../../features/saved-passages/hooks/usePassageSaveInput";
@@ -41,7 +41,7 @@ export function useAppController() {
   const savedPassageCount = savedLibrary.savedPassages.length;
   const { featuredHomeCategories, savedPassageCategories } = usePassageCategories(featuredLibrary.passages);
 
-  const { batches } = usePracticeBatches({
+  const practicePassage = usePracticePassage({
     appMode,
     bibleChapter: bibleLibrary.chapter,
     featuredPassageResponse: featuredLibrary.passageResponse,
@@ -53,10 +53,10 @@ export function useAppController() {
   });
 
   const practiceSession = usePracticeSession({
-    batches,
+    passage: practicePassage,
     onCompletedAttempt: recordCompletedAttempt,
   });
-  const { currentBatch, resetPractice } = practiceSession;
+  const { resetPractice } = practiceSession;
 
   const { error, isLoading, practiceReference, practiceSubtitle, practiceTitle, translationName } =
     useAppDisplayState({
@@ -133,7 +133,7 @@ export function useAppController() {
   });
 
   const errorMessage =
-    error ?? (appMode === "practice" && !currentBatch
+    error ?? (appMode === "practice" && !practicePassage
       ? practiceSource === "saved"
         ? "Save a passage first."
         : "No practice passage found."
@@ -174,10 +174,9 @@ export function useAppController() {
     }),
     practicePageProps: createPracticePageProps({
       appActions,
-      batches,
       canSaveCurrentPassage: Boolean(saveInput),
-      currentBatch,
       isCurrentPassageSaved,
+      passage: practicePassage,
       practiceSession,
       practiceSource,
       practiceTitle,

@@ -1,8 +1,7 @@
-import type { PracticeBatch, TypingMetrics } from "../../../types/practice";
+import type { PracticePassage, TypingMetrics } from "../../../types/practice";
 
 type PracticeSessionMetricsInput = {
-  batches: PracticeBatch[];
-  currentBatchIndex: number;
+  passage: PracticePassage | undefined;
   typedText: string;
   mistakeCount: number;
   startedAt: number | null;
@@ -12,8 +11,6 @@ type PracticeSessionMetricsInput = {
 
 type PracticeSessionMetrics = {
   accuracy: number;
-  currentBatch: PracticeBatch | undefined;
-  isBatchComplete: boolean;
   isPassageComplete: boolean;
   progress: number;
   status: TypingMetrics["status"];
@@ -98,46 +95,34 @@ function normalizeComparableCharacter(character: string) {
 }
 
 /**
- * Calculates stats across every completed batch plus the batch currently on screen.
- * This keeps longer Bible selections and featured passages scored as one session.
+ * Calculates live stats for one continuous passage.
  */
 export function calculatePracticeSessionMetrics({
-  batches,
-  currentBatchIndex,
+  passage,
   typedText,
   mistakeCount,
   startedAt,
   finishedAt,
   now = Date.now(),
 }: PracticeSessionMetricsInput): PracticeSessionMetrics {
-  const currentBatch = batches[currentBatchIndex];
-  const targetText = currentBatch?.text ?? "";
-  const currentCorrectCharacters = countCorrectCharacters(targetText, typedText);
-  const completedCharacterCount = batches
-    .slice(0, currentBatchIndex)
-    .reduce((total, batch) => total + batch.text.length, 0);
-  const totalCharacterCount = batches.reduce((total, batch) => total + batch.text.length, 0);
-  const totalCorrectCharacters = completedCharacterCount + currentCorrectCharacters;
-  const totalTypedCharacters = completedCharacterCount + typedText.length;
-  const progress = totalCharacterCount
-    ? Math.round((totalTypedCharacters / totalCharacterCount) * 100)
+  const targetText = passage?.text ?? "";
+  const correctCharacters = countCorrectCharacters(targetText, typedText);
+  const progress = targetText.length
+    ? Math.round((typedText.length / targetText.length) * 100)
     : 0;
-  const scoredCharacterCount = totalCorrectCharacters + mistakeCount;
+  const scoredCharacterCount = correctCharacters + mistakeCount;
   const accuracy = scoredCharacterCount
-    ? Math.round((totalCorrectCharacters / scoredCharacterCount) * 100)
+    ? Math.round((correctCharacters / scoredCharacterCount) * 100)
     : 100;
   const elapsedMs = startedAt ? (finishedAt ?? now) - startedAt : 0;
   const elapsedMinutes = elapsedMs / 1000 / 60;
-  const wpm = elapsedMinutes > 0 ? Math.round(totalCorrectCharacters / 5 / elapsedMinutes) : 0;
-  const isBatchComplete = Boolean(
-    targetText && typedText.length === targetText.length && currentCorrectCharacters === targetText.length,
+  const wpm = elapsedMinutes > 0 ? Math.round(correctCharacters / 5 / elapsedMinutes) : 0;
+  const isPassageComplete = Boolean(
+    targetText && typedText.length === targetText.length && correctCharacters === targetText.length,
   );
-  const isPassageComplete = isBatchComplete && currentBatchIndex === batches.length - 1;
 
   return {
     accuracy,
-    currentBatch,
-    isBatchComplete,
     isPassageComplete,
     progress: Math.min(progress, 100),
     status: isPassageComplete ? "Complete" : startedAt ? "Typing" : "Ready",

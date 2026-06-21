@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { PracticeBatch } from "../../../types/practice";
+import type { PracticePassage } from "../../../types/practice";
 import {
   calculatePracticeSessionMetrics,
   countCorrectCharacters,
@@ -7,15 +7,14 @@ import {
 } from "../utils/typingMetrics";
 
 type UsePracticeSessionParams = {
-  batches: PracticeBatch[];
+  passage: PracticePassage | undefined;
   onCompletedAttempt: (wpm: number, accuracy: number) => void;
 };
 
 /**
- * Owns the active typing attempt: timers, typed text, batch progression, and completion recording.
+ * Owns the active typing attempt: timers, typed text, scoring, and completion recording.
  */
-export function usePracticeSession({ batches, onCompletedAttempt }: UsePracticeSessionParams) {
-  const [currentBatchIndex, setCurrentBatchIndex] = useState(0);
+export function usePracticeSession({ passage, onCompletedAttempt }: UsePracticeSessionParams) {
   const [typedText, setTypedText] = useState("");
   const [mistakeCount, setMistakeCount] = useState(0);
   const [startedAt, setStartedAt] = useState<number | null>(null);
@@ -25,16 +24,13 @@ export function usePracticeSession({ batches, onCompletedAttempt }: UsePracticeS
 
   const {
     accuracy,
-    currentBatch,
-    isBatchComplete,
     isPassageComplete,
     progress,
     status,
     targetText,
     wpm,
   } = calculatePracticeSessionMetrics({
-    batches,
-    currentBatchIndex,
+    passage,
     typedText,
     mistakeCount,
     startedAt,
@@ -53,17 +49,6 @@ export function usePracticeSession({ batches, onCompletedAttempt }: UsePracticeS
   }, [finishedAt, startedAt]);
 
   useEffect(() => {
-    if (!isBatchComplete || isPassageComplete) return;
-
-    const advanceTimer = window.setTimeout(() => {
-      setCurrentBatchIndex((index) => index + 1);
-      setTypedText("");
-    }, 500);
-
-    return () => window.clearTimeout(advanceTimer);
-  }, [isBatchComplete, isPassageComplete]);
-
-  useEffect(() => {
     if (!isPassageComplete || !finishedAt || savedFinishAt.current === finishedAt) return;
 
     savedFinishAt.current = finishedAt;
@@ -71,7 +56,6 @@ export function usePracticeSession({ batches, onCompletedAttempt }: UsePracticeS
   }, [accuracy, finishedAt, isPassageComplete, onCompletedAttempt, wpm]);
 
   const resetPractice = useCallback(() => {
-    setCurrentBatchIndex(0);
     setTypedText("");
     setMistakeCount(0);
     setStartedAt(null);
@@ -96,11 +80,10 @@ export function usePracticeSession({ batches, onCompletedAttempt }: UsePracticeS
     setTypedText(limitedText);
 
     const nextCorrectCharacters = countCorrectCharacters(targetText, limitedText);
-    const nextBatchComplete =
+    const nextPassageComplete =
       targetText.length > 0 &&
       limitedText.length === targetText.length &&
       nextCorrectCharacters === targetText.length;
-    const nextPassageComplete = nextBatchComplete && currentBatchIndex === batches.length - 1;
 
     if (nextPassageComplete) {
       setFinishedAt((currentFinishedAt) => currentFinishedAt ?? Date.now());
@@ -108,14 +91,11 @@ export function usePracticeSession({ batches, onCompletedAttempt }: UsePracticeS
     }
 
     setFinishedAt(null);
-  }, [batches.length, currentBatchIndex, startedAt, targetText, typedText]);
+  }, [startedAt, targetText, typedText]);
 
   return {
     accuracy,
-    currentBatch,
-    currentBatchIndex,
     handleTyping,
-    isBatchComplete,
     isPassageComplete,
     progress,
     resetPractice,

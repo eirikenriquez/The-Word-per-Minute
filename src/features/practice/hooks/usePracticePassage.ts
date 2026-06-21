@@ -1,11 +1,11 @@
 import { useMemo } from "react";
 import type { AppMode, PracticeSource } from "../../../types/app";
 import type { PassageResponse } from "../../../types/featuredPassage";
-import type { PracticeBatch } from "../../../types/practice";
+import type { PracticePassage } from "../../../types/practice";
 import type { BibleChapter, BookSummary } from "../../../types/verse";
-import { buildPracticeBatches } from "../utils/practiceBatches";
+import { buildPracticePassage } from "../utils/practicePassage";
 
-type UsePracticeBatchesParams = {
+type UsePracticePassageParams = {
   appMode: AppMode;
   bibleChapter: BibleChapter | null;
   featuredPassageResponse: PassageResponse | null;
@@ -17,10 +17,10 @@ type UsePracticeBatchesParams = {
 };
 
 /**
- * Converts whichever source is active into the shared practice-batch shape.
+ * Converts whichever source is active into one continuous practice passage.
  * Keeping this separate lets App choose a mode without knowing how passages are assembled.
  */
-export function usePracticeBatches({
+export function usePracticePassage({
   appMode,
   bibleChapter,
   featuredPassageResponse,
@@ -29,40 +29,40 @@ export function usePracticeBatches({
   selectedBook,
   selectedChapter,
   selectedVerseNumbers,
-}: UsePracticeBatchesParams) {
-  const featuredBatches = useMemo(() => {
-    return getBatchesFromPassageResponse(featuredPassageResponse);
+}: UsePracticePassageParams) {
+  const featuredPassage = useMemo(() => {
+    return getPracticePassageFromResponse(featuredPassageResponse);
   }, [featuredPassageResponse]);
 
-  const bibleBatches = useMemo(() => {
-    if (!bibleChapter || !selectedBook) return [];
+  const biblePassage = useMemo(() => {
+    if (!bibleChapter || !selectedBook) return undefined;
 
     const selectedVerseSet = new Set(selectedVerseNumbers);
     const selectedVerses = selectedVerseNumbers.length
       ? bibleChapter.verses.filter((verse) => selectedVerseSet.has(verse.number))
       : bibleChapter.verses;
 
-    return buildPracticeBatches(selectedBook.name, selectedChapter, selectedVerses, 2);
+    return buildPracticePassage(selectedBook.name, selectedChapter, selectedVerses);
   }, [bibleChapter, selectedBook, selectedChapter, selectedVerseNumbers]);
 
-  const savedBatches = useMemo(() => {
-    return getBatchesFromPassageResponse(savedPassageResponse);
+  const savedPassage = useMemo(() => {
+    return getPracticePassageFromResponse(savedPassageResponse);
   }, [savedPassageResponse]);
 
-  const batches =
+  const passage =
     appMode === "practice" && practiceSource === "featured"
-      ? featuredBatches
+      ? featuredPassage
       : appMode === "practice" && practiceSource === "saved"
-        ? savedBatches
+        ? savedPassage
         : appMode === "bible"
-          ? bibleBatches
-          : [];
+          ? biblePassage
+          : undefined;
 
-  return { batches, bibleBatches, featuredBatches, savedBatches };
+  return passage;
 }
 
-function getBatchesFromPassageResponse(response: PassageResponse | null): PracticeBatch[] {
-  if (!response) return [];
+function getPracticePassageFromResponse(response: PassageResponse | null): PracticePassage | undefined {
+  if (!response) return undefined;
 
-  return buildPracticeBatches(response.bookName, response.passage.chapter, response.verses, 2);
+  return buildPracticePassage(response.bookName, response.passage.chapter, response.verses);
 }
