@@ -1,0 +1,62 @@
+:root {
+  --app-canvas: var(--color-stone-50);
+  --app-surface: var(--color-white);
+  --app-surface-muted: var(--color-stone-100);
+
+  --app-text: var(--color-slate-900);
+  --app-text-muted: var(--color-slate-600);
+  --app-text-subtle: var(--color-slate-500);
+
+  --app-border: var(--color-stone-200);
+  --app-border-strong: var(--color-slate-300);
+
+  --app-action: var(--color-slate-100);
+  --app-action-hover: var(--color-slate-200);
+  --app-action-text: var(--color-slate-900);
+
+  --app-accent: var(--color-blue-600);
+  --app-accent-soft: var(--color-blue-50);
+  --app-accent-text: var(--color-blue-800);
+}
+
+.dark {
+  --app-canvas: var(--color-stone-950);
+  --app-surface: var(--color-stone-900);
+  --app-surface-muted: var(--color-stone-800);
+
+  --app-text: var(--color-stone-100);
+  --app-text-muted: var(--color-stone-300);
+  --app-text-subtle: var(--color-stone-400);
+
+  --app-border: var(--color-stone-800);
+  --app-border-strong: var(--color-stone-700);
+
+  --app-action: var(--color-stone-800);
+  --app-action-hover: var(--color-stone-700);
+  --app-action-text: var(--color-stone-100);
+
+  --app-accent: var(--color-blue-400);
+  --app-accent-soft: var(--color-blue-950);
+  --app-accent-text: var(--color-blue-200);
+}
+
+@theme inline {
+  --color-canvas: var(--app-canvas);
+  --color-surface: var(--app-surface);
+  --color-surface-muted: var(--app-surface-muted);
+
+  --color-ink: var(--app-text);
+  --color-ink-muted: var(--app-text-muted);
+  --color-ink-subtle: var(--app-text-subtle);
+
+  --color-line: var(--app-border);
+  --color-line-strong: var(--app-border-strong);
+
+  --color-action: var(--app-action);
+  --color-action-hover: var(--app-action-hover);
+  --color-action-ink: var(--app-action-text);
+
+  --color-accent: var(--app-accent);
+  --color-accent-soft: var(--app-accent-soft);
+  --color-accent-ink: var(--app-accent-text);
+}
