@@ -1,3 +1,4 @@
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import type { PracticeStats } from "../../../types/practice";
 import { Button } from "../../../ui/Button";
 
@@ -21,6 +22,7 @@ export function PersonalBests({ stats, onResetStats }: PersonalBestsProps) {
           className="w-fit"
           onClick={onResetStats}
         >
+          <ArrowPathIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
           Reset Stats
         </Button>
       </div>

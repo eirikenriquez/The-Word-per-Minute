@@ -1,3 +1,11 @@
+import {
+  BookOpenIcon,
+  BookmarkIcon,
+  CheckIcon,
+  PencilSquareIcon,
+  PlayIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import { useState } from "react";
 import type { SavedPassage, SavedPassageUpdate } from "../../../types/savedPassage";
 import { Button } from "../../../ui/Button";
@@ -124,6 +132,7 @@ export function SavedPassageCard({
                 variant="primary"
                 onClick={saveEdits}
               >
+                <BookmarkIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
                 Save
               </Button>
               <Button
@@ -135,12 +144,20 @@ export function SavedPassageCard({
           ) : (
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex flex-wrap gap-2">
-                <Button onClick={() => onReadPassage(passage.id)}>Read in Bible</Button>
+                <Button onClick={() => onReadPassage(passage.id)}>
+                  <BookOpenIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
+                  Read in Bible
+                </Button>
                 <Button
                   disabled={isSelected}
                   variant="primary"
                   onClick={() => onSelectSavedPassage(passage.id)}
                 >
+                  {isSelected ? (
+                    <CheckIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
+                  ) : (
+                    <PlayIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
+                  )}
                   {isSelected ? "Practicing" : "Practice"}
                 </Button>
               </div>
@@ -149,12 +166,14 @@ export function SavedPassageCard({
                   variant="ghost"
                   onClick={startEditing}
                 >
+                  <PencilSquareIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
                   Edit
                 </Button>
                 <Button
                   variant="danger"
                   onClick={() => onRemovePassage(passage.id)}
                 >
+                  <TrashIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
                   Remove
                 </Button>
               </div>

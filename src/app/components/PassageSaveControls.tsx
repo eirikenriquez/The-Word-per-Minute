@@ -1,3 +1,4 @@
+import { BookmarkIcon } from "@heroicons/react/24/outline";
 import { Button } from "../../ui/Button";
 
 type PassageSaveControlsProps = {
@@ -85,6 +86,7 @@ function SaveButton({ disabled, isSaved, onSave }: SaveButtonProps) {
       variant="primary"
       onClick={onSave}
     >
+      <BookmarkIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
       {isSaved ? "Saved" : "Save Passage"}
     </Button>
   );

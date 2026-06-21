@@ -1,3 +1,4 @@
+import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import type { TypingMetrics } from "../../../types/practice";
 import { Button } from "../../../ui/Button";
 
@@ -66,6 +67,7 @@ export function TypingPracticePanel({
               variant="primary"
               onClick={onCompletionAction}
             >
+              <ArrowRightIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
               {completionActionLabel}
             </Button>
           )}

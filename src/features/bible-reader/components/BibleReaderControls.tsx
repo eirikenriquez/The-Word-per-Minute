@@ -1,3 +1,4 @@
+import { SparklesIcon } from "@heroicons/react/24/outline";
 import type { ReactNode } from "react";
 import type { BookSummary, Translation } from "../../../types/verse";
 import { Button } from "../../../ui/Button";
@@ -81,6 +82,7 @@ export function BibleReaderControls({
 
         <div className="lg:flex lg:justify-end">
           <Button onClick={onRandomFeaturedPassage}>
+            <SparklesIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
             Random Featured Passage
           </Button>
         </div>

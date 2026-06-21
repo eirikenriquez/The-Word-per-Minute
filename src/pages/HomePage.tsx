@@ -1,4 +1,10 @@
+import {
+  BookOpenIcon,
+  BookmarkSquareIcon,
+  SparklesIcon,
+} from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
 
 export type HomeCategory = {
   count: number;
@@ -75,12 +81,14 @@ export function HomePage({
         <div className="grid gap-3 md:grid-cols-3">
           <HomePathButton
             description="Start with a curated scripture prompt"
+            icon={<SparklesIcon aria-hidden="true" className="h-5 w-5 shrink-0" />}
             label="Featured"
             meta={`${totalFeaturedPassages} passages`}
             onSelect={onStartFeaturedPractice}
           />
           <HomePathButton
             description="Read and select verses"
+            icon={<BookOpenIcon aria-hidden="true" className="h-5 w-5 shrink-0" />}
             label="Bible"
             meta="Book and chapter"
             onSelect={onOpenBible}
@@ -88,6 +96,7 @@ export function HomePage({
           <HomePathButton
             description="Your practice library"
             disabled={!hasSavedPassages}
+            icon={<BookmarkSquareIcon aria-hidden="true" className="h-5 w-5 shrink-0" />}
             label="Library"
             meta={`${savedPassageCount} saved`}
             onSelect={onOpenLibrary}
@@ -155,12 +164,20 @@ function CountUpNumber({ durationMs = 950, value }: CountUpNumberProps) {
 type HomePathButtonProps = {
   description: string;
   disabled?: boolean;
+  icon: ReactNode;
   label: string;
   meta: string;
   onSelect: () => void;
 };
 
-function HomePathButton({ description, disabled = false, label, meta, onSelect }: HomePathButtonProps) {
+function HomePathButton({
+  description,
+  disabled = false,
+  icon,
+  label,
+  meta,
+  onSelect,
+}: HomePathButtonProps) {
   return (
     <button
       className="soft-hover group rounded-lg border border-line bg-surface p-4 text-left hover:border-accent-line hover:shadow-sm disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-ink-subtle disabled:shadow-none"
@@ -168,8 +185,9 @@ function HomePathButton({ description, disabled = false, label, meta, onSelect }
       type="button"
       onClick={onSelect}
     >
-      <span className="block text-base font-bold text-ink group-disabled:text-ink-subtle">
-        {label}
+      <span className="flex items-center gap-2 text-base font-bold text-ink group-disabled:text-ink-subtle">
+        {icon}
+        <span>{label}</span>
       </span>
       <span className="mt-2 block text-sm leading-6 text-ink-muted">
         {description}
