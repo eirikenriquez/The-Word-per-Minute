@@ -1,7 +1,7 @@
 # The Word per Minute Documentation
 
-Document version: `260620.1.b`
-Last updated: 20/06/26
+Document version: `260622.1.a`
+Last updated: 22/06/26
 Update rule: only update this file when explicitly requested by the project owner.
 
 ## Purpose
@@ -49,6 +49,8 @@ The main architecture layers are:
 - `src/ui`: small reusable UI primitives used across features.
 - `src/utils`: shared pure helper functions.
 - `src/data`: local Bible and featured-passage JSON data.
+- `src/theme.css`: semantic light/dark color tokens exposed through Tailwind.
+- `public/brand`: theme-aware application symbol assets.
 
 ## Routes
 
@@ -162,7 +164,7 @@ main.tsx
       -> builds display state
       -> builds cross-page actions
       -> prepares page props through plain factory functions
-    -> renders PageShell with sticky global brand/navigation/theme controls
+    -> renders PageShell with sticky branded navigation and floating utility controls
     -> renders AppHeader on non-Home pages
     -> renders AppRoutes
       -> renders HomePage, PracticePage, BiblePage, or LibraryPage
@@ -264,6 +266,13 @@ src/
   App.tsx
   index.css
   main.tsx
+  theme.css
+
+public/
+  brand/
+    symbol-dark.svg
+    symbol-light.svg
+  favicon.svg
 ```
 
 ## Key Files And Responsibilities
@@ -330,9 +339,9 @@ Shows the global Home / Practice / Bible / Library navigation in the app shell.
 
 Provides the app page frame:
 
-- app title,
-- sticky global navigation,
-- theme button,
+- linked brand symbol and app title,
+- sticky icon-supported global navigation,
+- floating light/dark theme button,
 - main content width,
 - app background,
 - back-to-top button on long reader/list pages.
@@ -344,7 +353,7 @@ Shows a small circular floating arrow button on long pages.
 Current behaviour:
 
 - only enabled on Bible and Library,
-- appears after the user scrolls down,
+- fades into view after the user scrolls down,
 - smoothly scrolls the window back to the top,
 - supports light and dark mode.
 
@@ -364,6 +373,19 @@ Specialized controls such as navigation tabs, Practice source choices, verse but
 ### `src/app/hooks/useTheme.ts`
 
 Owns the browser theme preference and stores it in `localStorage`.
+
+### `src/theme.css`
+
+Defines the app's semantic Tailwind v4 color system.
+
+It maps light and dark CSS variables to utilities for:
+
+- canvas and surfaces,
+- primary, muted, and subtle text,
+- ordinary and strong borders,
+- neutral actions,
+- ember accents,
+- selected states.
 
 ### `src/services/verseService.ts`
 
@@ -450,9 +472,10 @@ src/data/bibles/web/
 
 ## Theme And Motion
 
-`src/index.css` contains the small global CSS needed for Tailwind and motion:
+`src/index.css` contains the global CSS entry point and motion helpers:
 
 - Tailwind import,
+- semantic theme import,
 - Tailwind v4 class-based dark mode variant,
 - browser body margin reset,
 - page enter animation,
@@ -461,15 +484,19 @@ src/data/bibles/web/
 
 Theme state is managed by `src/app/hooks/useTheme.ts` and stored in `localStorage`.
 
-Theme styling is handled with Tailwind utility classes, using:
+`src/theme.css` defines semantic colors with CSS variables and Tailwind v4's `@theme inline`. Components use names such as `canvas`, `surface`, `ink`, `line`, `action`, `accent`, and `selected` instead of depending directly on palette shades.
 
-- `dark:` variants for dark mode,
-- blue as the main accent color,
-- slate/stone as neutral structure colors,
-- soft blue states for selected items,
-- blue/rose/slate feedback states for typing.
+The current visual direction uses:
 
-The current approach intentionally avoids a full custom design-token system. Ordinary buttons share `src/ui/Button.tsx`, while form controls remain styled directly in their owning components. A shared form primitive should only be introduced if those styles become difficult to maintain.
+- warm stone surfaces for the light and dark foundations,
+- slate-influenced text for clear reading contrast,
+- a restrained roasted-ember orange for active, selected, and primary states,
+- neutral action colors for ordinary controls,
+- rose feedback for destructive and typing-error states.
+
+Ordinary buttons share `src/ui/Button.tsx`, while specialized controls retain local styling backed by the same semantic palette. Form controls remain in their owning components and should only become a shared primitive if those styles begin to drift again.
+
+Heroicons supplies interface icons. Icons support labels and meaning rather than replacing important action text. The header uses separate light/dark transparent symbol assets, while `public/favicon.svg` adapts to the browser's color scheme.
 
 ## Important Types
 
@@ -511,7 +538,7 @@ flowchart TD
 ## Known Technical Debt
 
 - `useAppController` is the main app composition root and should not become a dumping ground for feature logic.
-- The UI overhaul still needs visual QA across desktop/mobile and light/dark mode.
+- The UI overhaul still needs a final desktop visual QA pass in light and dark mode.
 - Category management is still hardcoded/generated from featured themes.
 - Library filtering is UI-only and still backed by local saved passage data.
 - User data is local-only through `localStorage`.
@@ -530,13 +557,16 @@ flowchart TD
 - Saved passages can be reopened from Library in their original Bible context.
 - Saved featured passages highlight their full verse range, exact custom selections retain their selected verses, and whole-chapter saves open without individual highlights.
 - Vercel is the planned future deployment platform.
-- The current UI pass is prioritizing consistency and hierarchy before icons or image assets are introduced.
+- The app uses a warm stone foundation with a restrained ember accent rather than bright blue primary actions.
+- Interface icons are contextual aids and should remain paired with text for important actions.
+- The header brand uses the standalone symbol beside live HTML text rather than embedding the full wordmark.
+- Desktop keyboard practice is the current priority; mobile-specific optimization is not a near-term focus.
 
 ## Likely Next Architecture Steps
 
 1. Manually test `/`, `/practice`, `/bible`, and `/library`.
 2. Confirm refresh and browser back/forward work correctly on each route.
-3. Visually QA the sticky header, dark mode, and back-to-top button on mobile widths.
+3. Visually QA the branded header, semantic colors, icons, floating theme control, and back-to-top button in both themes.
 4. Add reduced-motion handling.
 5. Keep `useAppController` limited to cross-feature composition.
 6. Keep `verseService` API-shaped so local JSON can later move to hosted data.

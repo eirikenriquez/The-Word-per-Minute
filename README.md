@@ -12,7 +12,8 @@ The app helps users discover scripture, practise typing curated passages, read B
 - Local personal-best statistics
 - Bible chapter reader with verse selection
 - Saved passage library with search, filters, editing, and Bible/Practice actions
-- Light and dark mode
+- Warm light and dark themes with semantic color tokens
+- Branded navigation, contextual action icons, and an adaptive favicon
 - Responsive page layouts
 
 ## Run Locally
