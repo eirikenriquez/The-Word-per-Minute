@@ -39,7 +39,7 @@ export function SavedPassageFilters({
         <label className="grid gap-1">
           <span className="text-sm font-medium text-ink-muted">Search</span>
           <input
-            className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition placeholder:text-ink-subtle focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-surface-muted disabled:text-ink-subtle dark:focus:ring-blue-950"
+            className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition placeholder:text-ink-subtle focus:border-accent focus:ring-2 focus:ring-accent-soft disabled:bg-surface-muted disabled:text-ink-subtle"
             disabled={!hasSavedPassages}
             placeholder="Search title, reference, category, or book"
             value={searchTerm}
@@ -55,7 +55,7 @@ export function SavedPassageFilters({
         <label className="grid gap-1 sm:w-56">
           <span className="text-sm font-medium text-ink-muted">Category</span>
           <select
-            className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-surface-muted disabled:text-ink-subtle dark:focus:ring-blue-950"
+            className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft disabled:bg-surface-muted disabled:text-ink-subtle"
             disabled={!hasSavedPassages}
             value={selectedCategory}
             onChange={(event) => onSelectedCategoryChange(event.target.value)}
@@ -71,7 +71,7 @@ export function SavedPassageFilters({
         <label className="grid gap-1 sm:w-56">
           <span className="text-sm font-medium text-ink-muted">Source</span>
           <select
-            className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-surface-muted disabled:text-ink-subtle dark:focus:ring-blue-950"
+            className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft disabled:bg-surface-muted disabled:text-ink-subtle"
             disabled={!hasSavedPassages}
             value={selectedSource}
             onChange={(event) =>

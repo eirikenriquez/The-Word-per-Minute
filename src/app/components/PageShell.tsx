@@ -39,7 +39,7 @@ export function PageShell({
       <main className="mx-auto grid max-w-7xl gap-5 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">{children}</main>
       <button
         aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
-        className="fixed bottom-5 left-5 z-40 grid h-11 w-11 place-items-center rounded-full border border-line-strong bg-surface/90 text-ink-muted shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800 dark:hover:border-blue-800 dark:hover:bg-blue-950 dark:hover:text-blue-200"
+        className="fixed bottom-5 left-5 z-40 grid h-11 w-11 place-items-center rounded-full border border-line-strong bg-surface/90 text-ink-muted shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:border-accent-line hover:bg-accent-soft hover:text-accent-ink"
         type="button"
         onClick={onToggleTheme}
       >

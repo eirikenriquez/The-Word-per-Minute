@@ -17,6 +17,9 @@
   --app-accent: var(--color-blue-600);
   --app-accent-soft: var(--color-blue-50);
   --app-accent-text: var(--color-blue-800);
+  --app-accent-border: var(--color-blue-200);
+  --app-selected: var(--color-blue-100);
+  --app-selected-text: var(--color-blue-950);
 }
 
 .dark {
@@ -38,6 +41,9 @@
   --app-accent: var(--color-blue-400);
   --app-accent-soft: var(--color-blue-950);
   --app-accent-text: var(--color-blue-200);
+  --app-accent-border: var(--color-blue-800);
+  --app-selected: var(--color-blue-900);
+  --app-selected-text: var(--color-blue-100);
 }
 
 @theme inline {
@@ -59,4 +65,7 @@
   --color-accent: var(--app-accent);
   --color-accent-soft: var(--app-accent-soft);
   --color-accent-ink: var(--app-accent-text);
+  --color-accent-line: var(--app-accent-border);
+  --color-selected: var(--app-selected);
+  --color-selected-ink: var(--app-selected-text);
 }

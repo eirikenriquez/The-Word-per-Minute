@@ -33,7 +33,7 @@ export function BackToTopButton({ isEnabled }: BackToTopButtonProps) {
   return (
     <button
       aria-label="Back to top"
-      className="fixed bottom-5 right-5 z-40 grid h-11 w-11 place-items-center rounded-full border border-line-strong bg-surface/90 text-ink-muted shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800 dark:hover:border-blue-800 dark:hover:bg-blue-950 dark:hover:text-blue-200"
+      className="fixed bottom-5 right-5 z-40 grid h-11 w-11 place-items-center rounded-full border border-line-strong bg-surface/90 text-ink-muted shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:border-accent-line hover:bg-accent-soft hover:text-accent-ink"
       type="button"
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
     >

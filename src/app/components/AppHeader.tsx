@@ -49,7 +49,7 @@ export function AppHeader({
           {practiceTitle}
         </h2>
         {practiceReference && (
-          <p className="mt-2 w-fit rounded-md bg-blue-50 px-2.5 py-1 text-sm font-semibold text-blue-800 ring-1 ring-blue-100 dark:bg-blue-950 dark:text-blue-200 dark:ring-blue-900">
+          <p className="mt-2 w-fit rounded-md bg-accent-soft px-2.5 py-1 text-sm font-semibold text-accent-ink ring-1 ring-accent-line">
             {practiceReference}
           </p>
         )}

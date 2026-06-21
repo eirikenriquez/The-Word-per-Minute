@@ -163,7 +163,7 @@ type HomePathButtonProps = {
 function HomePathButton({ description, disabled = false, label, meta, onSelect }: HomePathButtonProps) {
   return (
     <button
-      className="soft-hover group rounded-lg border border-line bg-surface p-4 text-left hover:border-blue-200 hover:shadow-sm disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-ink-subtle disabled:shadow-none dark:hover:border-blue-800"
+      className="soft-hover group rounded-lg border border-line bg-surface p-4 text-left hover:border-accent-line hover:shadow-sm disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-ink-subtle disabled:shadow-none"
       disabled={disabled}
       type="button"
       onClick={onSelect}
@@ -190,7 +190,7 @@ type HomeCategoryButtonProps = {
 function HomeCategoryButton({ label, meta, onSelect }: HomeCategoryButtonProps) {
   return (
     <button
-      className="soft-hover group flex items-center justify-between gap-4 border-b border-line py-3 text-left hover:border-blue-200 dark:hover:border-blue-800"
+      className="soft-hover group flex items-center justify-between gap-4 border-b border-line py-3 text-left hover:border-accent-line"
       type="button"
       onClick={onSelect}
     >
@@ -198,7 +198,7 @@ function HomeCategoryButton({ label, meta, onSelect }: HomeCategoryButtonProps) 
         <span className="block text-sm font-semibold text-ink">{label}</span>
         <span className="mt-1 block text-xs text-ink-subtle">{meta}</span>
       </span>
-      <span className="text-sm text-slate-400 transition group-hover:translate-x-1 group-hover:text-blue-700 dark:group-hover:text-blue-300">
+      <span className="text-sm text-ink-subtle transition group-hover:translate-x-1 group-hover:text-accent">
         Start
       </span>
     </button>
