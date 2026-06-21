@@ -1,6 +1,7 @@
 import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
+import { AppFooter } from "./AppFooter";
 import { AppNavigation } from "./AppNavigation";
 import { BackToTopButton } from "./BackToTopButton";
 import type { AppMode, Theme } from "../../types/app";
@@ -26,7 +27,7 @@ export function PageShell({
   onSelectMode,
 }: PageShellProps) {
   return (
-    <div className="min-h-screen bg-canvas text-ink">
+    <div className="flex min-h-screen flex-col bg-canvas text-ink">
       <header className="sticky top-0 z-50 border-b border-line bg-surface/90 backdrop-blur">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
           <h1>
@@ -53,7 +54,10 @@ export function PageShell({
         </div>
       </header>
 
-      <main className="mx-auto grid max-w-7xl gap-5 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">{children}</main>
+      <main className="mx-auto grid w-full max-w-7xl flex-1 gap-5 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        {children}
+      </main>
+      <AppFooter />
       <button
         aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
         className="fixed bottom-5 left-5 z-40 grid h-11 w-11 place-items-center rounded-full border border-line-strong bg-surface/90 text-ink-muted shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:border-accent-line hover:bg-accent-soft hover:text-accent-ink"
