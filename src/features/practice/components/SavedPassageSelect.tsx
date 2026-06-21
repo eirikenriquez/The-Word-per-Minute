@@ -43,9 +43,9 @@ export function SavedPassageSelect({
   return (
     <div className="grid gap-3 sm:grid-cols-[minmax(10rem,14rem)_minmax(16rem,1fr)]">
       <label className="grid gap-1">
-        <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Category</span>
+        <span className="text-sm font-medium text-ink-muted">Category</span>
         <select
-          className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-blue-950"
+          className="w-full rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-950"
           value={selectedCategory}
           onChange={(event) => handleCategoryChange(event.target.value)}
         >
@@ -58,9 +58,9 @@ export function SavedPassageSelect({
       </label>
 
       <label className="grid gap-1">
-        <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Saved passage</span>
+        <span className="text-sm font-medium text-ink-muted">Saved passage</span>
         <select
-          className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-blue-950"
+          className="w-full rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-950"
           value={selectedSavedPassageId}
           onChange={(event) => onSelectSavedPractice(event.target.value)}
         >

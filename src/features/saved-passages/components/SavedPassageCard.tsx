@@ -54,7 +54,7 @@ export function SavedPassageCard({
       className={`rounded-md border p-5 transition ${
         isSelected
           ? "border-blue-300 bg-blue-50/50 ring-1 ring-blue-100 dark:border-blue-700 dark:bg-blue-950/30 dark:ring-blue-900"
-          : "border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700"
+          : "border-line bg-surface hover:border-line-strong"
       }`}
     >
       <div className="grid gap-5">
@@ -62,17 +62,17 @@ export function SavedPassageCard({
           {isEditing ? (
             <div className="grid gap-3 sm:grid-cols-[1fr_12rem]">
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Title</span>
+                <span className="text-sm font-medium text-ink-muted">Title</span>
                 <input
-                  className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-blue-950"
+                  className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-950"
                   value={draftTitle}
                   onChange={(event) => setDraftTitle(event.target.value)}
                 />
               </label>
               <label className="grid gap-1">
-                <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Category</span>
+                <span className="text-sm font-medium text-ink-muted">Category</span>
                 <select
-                  className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-blue-950"
+                  className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-950"
                   value={draftCategory}
                   onChange={(event) => setDraftCategory(event.target.value)}
                 >
@@ -89,7 +89,7 @@ export function SavedPassageCard({
               <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-lg font-semibold text-slate-950 dark:text-slate-100">
+                    <h3 className="text-lg font-semibold text-ink">
                       {passage.title}
                     </h3>
                     {isSelected && (
@@ -98,15 +98,15 @@ export function SavedPassageCard({
                       </span>
                     )}
                   </div>
-                  <p className="mt-1 text-sm font-semibold text-slate-600 dark:text-slate-300">
+                  <p className="mt-1 text-sm font-semibold text-ink-muted">
                     {passage.reference}
                   </p>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-ink-subtle">
                   {getSavedDateLabel(passage.createdAt)}
                 </p>
               </div>
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-ink-subtle">
                 <span>{passage.category}</span>
                 <MetadataDivider />
                 <span>{passage.translationAbbreviation}</span>
@@ -117,7 +117,7 @@ export function SavedPassageCard({
           )}
         </div>
 
-        <div className="border-t border-slate-200 pt-4 dark:border-slate-800">
+        <div className="border-t border-line pt-4">
           {isEditing ? (
             <div className="flex flex-wrap gap-2 sm:justify-end">
               <Button

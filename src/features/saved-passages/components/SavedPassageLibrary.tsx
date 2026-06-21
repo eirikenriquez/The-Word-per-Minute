@@ -96,7 +96,7 @@ export function SavedPassageLibrary({
 
 function LibraryMessage({ children }: { children: string }) {
   return (
-    <div className="rounded-md border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+    <div className="rounded-md border border-dashed border-line-strong bg-surface-muted p-4 text-sm text-ink-muted">
       {children}
     </div>
   );

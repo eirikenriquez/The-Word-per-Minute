@@ -40,12 +40,12 @@ export function AppHeader({
   const showSaveControls = showPracticeSave || appMode === "bible";
 
   return (
-    <section className="border-b border-slate-200 pb-5 dark:border-slate-800">
+    <section className="border-b border-line pb-5">
       <div className="min-w-0">
-        <p className="text-sm font-semibold uppercase text-slate-500 dark:text-slate-400">
+        <p className="text-sm font-semibold uppercase text-ink-subtle">
           {practiceSubtitle}
         </p>
-        <h2 className="mt-1 text-2xl font-bold text-slate-950 dark:text-slate-100">
+        <h2 className="mt-1 text-2xl font-bold text-ink">
           {practiceTitle}
         </h2>
         {practiceReference && (

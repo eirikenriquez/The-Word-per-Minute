@@ -42,7 +42,7 @@ export function PracticeControls({
     <section>
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
         <div className="grid gap-3">
-          <h2 className="text-lg font-semibold text-slate-950 dark:text-slate-100">Practice setup</h2>
+          <h2 className="text-lg font-semibold text-ink">Practice setup</h2>
           <div className="grid gap-3 xl:min-h-16 xl:grid-cols-[auto_minmax(0,1fr)] xl:items-end">
             <SourcePicker
               hasSavedPassages={hasSavedPassages}

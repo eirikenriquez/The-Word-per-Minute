@@ -23,7 +23,7 @@ export function SourcePicker({
 }: SourcePickerProps) {
   return (
     <div className="grid gap-1">
-      <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Practice source</span>
+      <span className="text-sm font-medium text-ink-muted">Practice source</span>
       <div className="inline-flex w-fit gap-1">
         <SourceButton
           isSelected={practiceSource === "featured"}

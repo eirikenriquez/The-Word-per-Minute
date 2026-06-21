@@ -7,7 +7,7 @@ type AppLoadingStateProps = {
  */
 export function AppLoadingState({ message = "Loading practice passage..." }: AppLoadingStateProps) {
   return (
-    <div className="rounded-xl border bg-white p-4 text-slate-600 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+    <div className="rounded-xl border border-line bg-surface p-4 text-ink-muted shadow-sm">
       {message}
     </div>
   );

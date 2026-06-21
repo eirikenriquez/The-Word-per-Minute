@@ -90,10 +90,10 @@ export function BibleChapterReader({
     <section className="mx-auto grid w-full max-w-5xl gap-5">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-slate-950 dark:text-slate-100">
+          <h2 className="text-2xl font-bold text-ink">
             {selectedBook.name} {selectedChapter}
           </h2>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+          <p className="mt-1 text-sm text-ink-subtle">
             Select individual verses or drag across a range.
           </p>
         </div>
@@ -108,7 +108,7 @@ export function BibleChapterReader({
       </div>
 
       <div
-        className="text-xl leading-10 text-slate-700 sm:text-2xl sm:leading-[3rem] dark:text-slate-300"
+        className="text-xl leading-10 text-ink-muted sm:text-2xl sm:leading-[3rem]"
         role="presentation"
         onClick={() => {
           if (shouldSkipNextClear.current) {
@@ -130,7 +130,7 @@ export function BibleChapterReader({
               className={`mr-1 rounded px-1 text-left transition ${
                 isSelected
                   ? "bg-blue-100 text-blue-950 ring-1 ring-blue-200 dark:bg-blue-900 dark:text-blue-100 dark:ring-blue-700"
-                  : "text-slate-700 hover:bg-blue-50 dark:text-slate-300 dark:hover:bg-blue-950"
+                  : "text-ink-muted hover:bg-blue-50 dark:hover:bg-blue-950"
               }`}
               key={verse.number}
               ref={(buttonElement) => {
@@ -154,7 +154,7 @@ export function BibleChapterReader({
                 finishVerseSelection(verse.number);
               }}
             >
-              <sup className="mr-1 text-xs font-bold text-slate-400 dark:text-slate-500">{verse.number}</sup>
+              <sup className="mr-1 text-xs font-bold text-ink-subtle">{verse.number}</sup>
               {verse.text}
             </button>
           );

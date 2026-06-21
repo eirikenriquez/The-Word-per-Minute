@@ -36,7 +36,7 @@ export function BibleReaderControls({
         <div className="grid gap-3 sm:grid-cols-3">
           <PickerLabel label="Translation">
             <select
-              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-blue-950"
+              className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-950"
               value={selectedTranslationId}
               onChange={(event) => onSelectTranslation(event.target.value)}
             >
@@ -50,7 +50,7 @@ export function BibleReaderControls({
 
           <PickerLabel label="Book">
             <select
-              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-blue-950"
+              className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-950"
               value={selectedBookId}
               onChange={(event) => onSelectBook(event.target.value)}
             >
@@ -64,7 +64,7 @@ export function BibleReaderControls({
 
           <PickerLabel label="Chapter">
             <select
-              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-blue-950"
+              className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:focus:ring-blue-950"
               value={selectedChapter}
               onChange={(event) => onSelectChapter(Number(event.target.value))}
             >
@@ -100,7 +100,7 @@ type PickerLabelProps = {
 function PickerLabel({ children, label }: PickerLabelProps) {
   return (
     <label className="grid gap-1">
-      <span className="text-sm font-medium text-slate-600 dark:text-slate-300">{label}</span>
+      <span className="text-sm font-medium text-ink-muted">{label}</span>
       {children}
     </label>
   );
