@@ -1,3 +1,4 @@
+import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
 import type { ReactNode } from "react";
 import { AppNavigation } from "./AppNavigation";
 import { BackToTopButton } from "./BackToTopButton";
@@ -35,9 +36,14 @@ export function PageShell({
               <AppNavigation appMode={appMode} hasSavedPassages={hasSavedPassages} onSelectMode={onSelectMode} />
             )}
             <Button
-              className="w-fit"
+              className="w-fit gap-2"
               onClick={onToggleTheme}
             >
+              {theme === "light" ? (
+                <MoonIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
+              ) : (
+                <SunIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
+              )}
               {theme === "light" ? "Dark" : "Light"}
             </Button>
           </div>
