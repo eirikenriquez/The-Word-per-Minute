@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <style>
+    .text-lines {
+      stroke: #20272d;
+    }
+
+    .caret {
+      stroke: #e6531a;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .text-lines {
+        stroke: #f5f5f4;
+      }
+
+      .caret {
+        stroke: #fb923c;
+      }
+    }
+  </style>
+  <g fill="none" stroke-linecap="round" stroke-width="4.5">
+    <path class="text-lines" d="M11 18H22 M42 18H53 M11 32H24 M40 32H53 M11 46H24 M40 46H53"/>
+    <path class="caret" d="M32 10V54 M24 18H40"/>
+  </g>
+</svg>

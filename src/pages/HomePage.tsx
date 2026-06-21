@@ -1,4 +1,10 @@
+import {
+  BookOpenIcon,
+  BookmarkSquareIcon,
+  SparklesIcon,
+} from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
 
 export type HomeCategory = {
   count: number;
@@ -35,28 +41,28 @@ export function HomePage({
     <section className="grid gap-10">
       <section className="grid gap-8 py-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-center lg:py-12">
         <div className="rise-in max-w-3xl">
-          <p className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          <p className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
             Quiet typing practice
           </p>
-          <h2 className="mt-3 text-4xl font-bold text-slate-950 sm:text-5xl dark:text-slate-100">
+          <h2 className="mt-3 text-4xl font-bold text-ink sm:text-5xl">
             Slow down with scripture and build your rhythm.
           </h2>
-          <p className="mt-5 max-w-2xl text-base leading-7 text-slate-700 dark:text-slate-300">
+          <p className="mt-5 max-w-2xl text-base leading-7 text-ink-muted">
             Start with a passage chosen for you, read through a chapter, or return to verses you have saved
             for memorisation.
           </p>
         </div>
 
-        <dl className="rise-in rise-in-delay-1 grid grid-cols-2 gap-6 border-t border-slate-200 pt-6 lg:grid-cols-1 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0 dark:border-slate-800">
+        <dl className="rise-in rise-in-delay-1 grid grid-cols-2 gap-6 border-t border-line pt-6 lg:grid-cols-1 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
           <div>
-            <dt className="text-sm font-medium text-slate-500 dark:text-slate-400">Curated passages</dt>
-            <dd className="mt-1 text-4xl font-bold text-slate-950 dark:text-slate-100">
+            <dt className="text-sm font-medium text-ink-subtle">Curated passages</dt>
+            <dd className="mt-1 text-4xl font-bold text-ink">
               <CountUpNumber value={totalFeaturedPassages} />
             </dd>
           </div>
           <div>
-            <dt className="text-sm font-medium text-slate-500 dark:text-slate-400">Saved passages</dt>
-            <dd className="mt-1 text-4xl font-bold text-slate-950 dark:text-slate-100">
+            <dt className="text-sm font-medium text-ink-subtle">Saved passages</dt>
+            <dd className="mt-1 text-4xl font-bold text-ink">
               <CountUpNumber value={savedPassageCount} />
             </dd>
           </div>
@@ -65,22 +71,24 @@ export function HomePage({
 
       <section className="rise-in rise-in-delay-2 grid gap-4">
         <div>
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+          <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
             Practice paths
           </h3>
-          <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+          <p className="mt-2 text-sm text-ink-muted">
             Choose the kind of session you want to start.
           </p>
         </div>
         <div className="grid gap-3 md:grid-cols-3">
           <HomePathButton
             description="Start with a curated scripture prompt"
+            icon={<SparklesIcon aria-hidden="true" className="h-5 w-5 shrink-0" />}
             label="Featured"
             meta={`${totalFeaturedPassages} passages`}
             onSelect={onStartFeaturedPractice}
           />
           <HomePathButton
             description="Read and select verses"
+            icon={<BookOpenIcon aria-hidden="true" className="h-5 w-5 shrink-0" />}
             label="Bible"
             meta="Book and chapter"
             onSelect={onOpenBible}
@@ -88,6 +96,7 @@ export function HomePage({
           <HomePathButton
             description="Your practice library"
             disabled={!hasSavedPassages}
+            icon={<BookmarkSquareIcon aria-hidden="true" className="h-5 w-5 shrink-0" />}
             label="Library"
             meta={`${savedPassageCount} saved`}
             onSelect={onOpenLibrary}
@@ -95,17 +104,17 @@ export function HomePage({
         </div>
       </section>
 
-      <section className="rise-in rise-in-delay-3 grid gap-4 border-t border-slate-200 pt-8 dark:border-slate-800">
+      <section className="rise-in rise-in-delay-3 grid gap-4 border-t border-line pt-8">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+            <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
               Featured categories
             </h3>
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+            <p className="mt-2 text-sm text-ink-muted">
               Pick a theme when you want a more focused passage.
             </p>
           </div>
-          <span className="text-sm font-medium text-slate-500 dark:text-slate-400">
+          <span className="text-sm font-medium text-ink-subtle">
             {featuredHomeCategories.length} themes
           </span>
         </div>
@@ -155,26 +164,35 @@ function CountUpNumber({ durationMs = 950, value }: CountUpNumberProps) {
 type HomePathButtonProps = {
   description: string;
   disabled?: boolean;
+  icon: ReactNode;
   label: string;
   meta: string;
   onSelect: () => void;
 };
 
-function HomePathButton({ description, disabled = false, label, meta, onSelect }: HomePathButtonProps) {
+function HomePathButton({
+  description,
+  disabled = false,
+  icon,
+  label,
+  meta,
+  onSelect,
+}: HomePathButtonProps) {
   return (
     <button
-      className="soft-hover group rounded-lg border border-slate-200 bg-white p-4 text-left hover:border-blue-200 hover:shadow-sm disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400 disabled:shadow-none dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-800 dark:disabled:bg-slate-900/60"
+      className="soft-hover group rounded-lg border border-line bg-surface p-4 text-left hover:border-accent-line hover:shadow-sm disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-ink-subtle disabled:shadow-none"
       disabled={disabled}
       type="button"
       onClick={onSelect}
     >
-      <span className="block text-base font-bold text-slate-950 group-disabled:text-slate-400 dark:text-slate-100">
-        {label}
+      <span className="flex items-center gap-2 text-base font-bold text-ink group-disabled:text-ink-subtle">
+        {icon}
+        <span>{label}</span>
       </span>
-      <span className="mt-2 block text-sm leading-6 text-slate-600 dark:text-slate-300">
+      <span className="mt-2 block text-sm leading-6 text-ink-muted">
         {description}
       </span>
-      <span className="mt-4 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+      <span className="mt-4 block text-xs font-semibold uppercase tracking-wide text-ink-subtle">
         {meta}
       </span>
     </button>
@@ -190,15 +208,15 @@ type HomeCategoryButtonProps = {
 function HomeCategoryButton({ label, meta, onSelect }: HomeCategoryButtonProps) {
   return (
     <button
-      className="soft-hover group flex items-center justify-between gap-4 border-b border-slate-200 py-3 text-left hover:border-blue-200 dark:border-slate-800 dark:hover:border-blue-800"
+      className="soft-hover group flex items-center justify-between gap-4 border-b border-line py-3 text-left hover:border-accent-line"
       type="button"
       onClick={onSelect}
     >
       <span>
-        <span className="block text-sm font-semibold text-slate-950 dark:text-slate-100">{label}</span>
-        <span className="mt-1 block text-xs text-slate-500 dark:text-slate-400">{meta}</span>
+        <span className="block text-sm font-semibold text-ink">{label}</span>
+        <span className="mt-1 block text-xs text-ink-subtle">{meta}</span>
       </span>
-      <span className="text-sm text-slate-400 transition group-hover:translate-x-1 group-hover:text-blue-700 dark:group-hover:text-blue-300">
+      <span className="text-sm text-ink-subtle transition group-hover:translate-x-1 group-hover:text-accent">
         Start
       </span>
     </button>

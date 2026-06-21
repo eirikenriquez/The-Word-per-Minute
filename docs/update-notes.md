@@ -1,7 +1,7 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260620.1.a`
-Last updated: 20/06/26
+Current documentation version: `260622.1.a`
+Last updated: 22/06/26
 
 ## Update Rule
 
@@ -33,9 +33,45 @@ Example:
 
 Suggested next versions:
 
-- Small same-day documentation update: `260620.1.b`
-- Larger same-day documentation update: `260620.2.a`
+- Small same-day documentation update: `260622.1.b`
+- Larger same-day documentation update: `260622.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260622.1.a`
+
+This version documents the completed UI consistency, theme, icon, and branding branch.
+
+It updates:
+
+- the architecture and file tree to include `src/theme.css` and the public brand assets,
+- the app shell responsibilities to describe the linked brand symbol, icon-supported navigation, and floating theme control,
+- the back-to-top behaviour to include its fade transition,
+- the theme guidance to document semantic Tailwind v4 tokens,
+- the visual direction from bright blue controls to warm stone foundations and a restrained ember accent,
+- the use of Heroicons for navigation and contextual actions,
+- the header symbol and adaptive favicon implementation,
+- the current desktop-first product priority,
+- known technical debt and the remaining visual QA work.
+
+This update records the UI branch from the shared button, heading, form, Practice, and Library refinements through semantic colors, icons, floating controls, and final brand integration.
+
+## `260620.1.b`
+
+This version documents the icon-free UI consistency pass across the app.
+
+It updates:
+
+- the architecture layers and file tree to include the shared `src/ui/Button.tsx` primitive,
+- the button hierarchy to document primary, secondary, ghost, and danger variants,
+- Practice behaviour to include the responsive source/passage control layout,
+- Practice behaviour to include the quieter horizontal WPM, accuracy, progress, and status summary,
+- Library behaviour to describe the refined card hierarchy and separated action groups,
+- Library behaviour to record the destructive visual treatment for passage removal,
+- the theme guidance to clarify that buttons are shared while form-control styles remain local,
+- known technical debt to focus future extraction decisions on form controls rather than buttons,
+- the current product direction to continue consistency work before adding icons or image assets.
+
+This update documents the UI work introduced by the button hierarchy, heading hierarchy, form-control consistency, Practice control layout, Practice metrics, and Library card refinement commits.
 
 ## `260620.1.a`
 

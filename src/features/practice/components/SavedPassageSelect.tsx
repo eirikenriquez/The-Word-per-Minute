@@ -41,11 +41,11 @@ export function SavedPassageSelect({
   }
 
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-      <label className="flex flex-col gap-2 sm:flex-row sm:items-center">
-        <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Category</span>
+    <div className="grid gap-3 sm:grid-cols-[minmax(10rem,14rem)_minmax(16rem,1fr)]">
+      <label className="grid gap-1">
+        <span className="text-sm font-medium text-ink-muted">Category</span>
         <select
-          className="h-9 min-w-40 rounded-md border border-slate-300 bg-white px-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-blue-950"
+          className="w-full rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft"
           value={selectedCategory}
           onChange={(event) => handleCategoryChange(event.target.value)}
         >
@@ -57,10 +57,10 @@ export function SavedPassageSelect({
         </select>
       </label>
 
-      <label className="flex flex-col gap-2 sm:flex-row sm:items-center">
-        <span className="text-sm font-medium text-slate-600 dark:text-slate-300">Saved passage</span>
+      <label className="grid gap-1">
+        <span className="text-sm font-medium text-ink-muted">Saved passage</span>
         <select
-          className="h-9 min-w-52 rounded-md border border-slate-300 bg-white px-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-blue-950"
+          className="w-full rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft"
           value={selectedSavedPassageId}
           onChange={(event) => onSelectSavedPractice(event.target.value)}
         >

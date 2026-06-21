@@ -92,7 +92,7 @@ export function PracticePage({
           typedText={typedText}
         />
 
-        <div className="grid gap-6 border-t border-slate-200 pt-6 dark:border-slate-800">
+        <div className="grid gap-6">
           <TypingPracticePanel
             accuracy={accuracy}
             completionActionLabel={isPassageComplete && practiceSource === "featured" ? "Next Passage" : undefined}

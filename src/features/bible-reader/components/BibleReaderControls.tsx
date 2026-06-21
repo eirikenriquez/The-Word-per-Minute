@@ -1,5 +1,7 @@
+import { SparklesIcon } from "@heroicons/react/24/outline";
 import type { ReactNode } from "react";
 import type { BookSummary, Translation } from "../../../types/verse";
+import { Button } from "../../../ui/Button";
 
 type BibleReaderControlsProps = {
   books: BookSummary[];
@@ -30,12 +32,12 @@ export function BibleReaderControls({
   onSelectTranslation,
 }: BibleReaderControlsProps) {
   return (
-    <section className="border-b border-slate-200 pb-5 dark:border-slate-800">
+    <section>
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
         <div className="grid gap-3 sm:grid-cols-3">
           <PickerLabel label="Translation">
             <select
-              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-blue-950"
+              className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft"
               value={selectedTranslationId}
               onChange={(event) => onSelectTranslation(event.target.value)}
             >
@@ -49,7 +51,7 @@ export function BibleReaderControls({
 
           <PickerLabel label="Book">
             <select
-              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-blue-950"
+              className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft"
               value={selectedBookId}
               onChange={(event) => onSelectBook(event.target.value)}
             >
@@ -63,7 +65,7 @@ export function BibleReaderControls({
 
           <PickerLabel label="Chapter">
             <select
-              className="rounded-md border border-slate-300 bg-white px-3 py-2 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-blue-950"
+              className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft"
               value={selectedChapter}
               onChange={(event) => onSelectChapter(Number(event.target.value))}
             >
@@ -79,13 +81,10 @@ export function BibleReaderControls({
         </div>
 
         <div className="lg:flex lg:justify-end">
-          <button
-            className="rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-600 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800 dark:border-slate-700 dark:text-slate-300 dark:hover:border-blue-800 dark:hover:bg-blue-950 dark:hover:text-blue-200"
-            type="button"
-            onClick={onRandomFeaturedPassage}
-          >
+          <Button onClick={onRandomFeaturedPassage}>
+            <SparklesIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
             Random Featured Passage
-          </button>
+          </Button>
         </div>
       </div>
     </section>
@@ -103,7 +102,7 @@ type PickerLabelProps = {
 function PickerLabel({ children, label }: PickerLabelProps) {
   return (
     <label className="grid gap-1">
-      <span className="text-sm font-medium text-slate-600 dark:text-slate-300">{label}</span>
+      <span className="text-sm font-medium text-ink-muted">{label}</span>
       {children}
     </label>
   );

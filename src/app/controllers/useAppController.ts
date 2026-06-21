@@ -70,11 +70,8 @@ export function useAppController() {
       savedError: savedLibrary.error,
       savedIsLoading: savedLibrary.isLoading,
       savedPassageCount,
-      selectedBook: bibleLibrary.selectedBook,
-      selectedChapter: bibleLibrary.selectedChapter,
       selectedSavedPassage: savedLibrary.selectedSavedPassage,
       selectedTranslationId: bibleLibrary.selectedTranslationId,
-      selectedVerseNumbers: readerSelection.selectedVerseNumbers,
       translations: bibleLibrary.translations,
     });
   const saveInput = usePassageSaveInput({

@@ -28,11 +28,11 @@ type DisplayPart =
  */
 function getCharacterClass(targetCharacter: string, typedCharacter: string | undefined, isCurrent: boolean) {
   if (typedCharacter === undefined) {
-    return isCurrent ? "bg-blue-100 text-slate-950 dark:bg-blue-900 dark:text-blue-100" : "text-slate-500 dark:text-slate-400";
+    return isCurrent ? "bg-selected text-selected-ink" : "text-ink-subtle";
   }
 
   return areCharactersEquivalent(targetCharacter, typedCharacter)
-    ? "bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-100"
+    ? "bg-surface-muted text-ink"
     : "bg-rose-100 text-rose-950 dark:bg-rose-950 dark:text-rose-100";
 }
 
@@ -87,18 +87,18 @@ export function PracticeBatchDisplay({
   return (
     <section className="grid gap-4">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm font-semibold text-slate-700 dark:text-slate-300">
-          {batch.ref} <span className="text-slate-500 dark:text-slate-400">({translationName})</span>
+        <p className="text-sm font-semibold text-ink-muted">
+          {batch.ref} <span className="text-ink-subtle">({translationName})</span>
         </p>
-        <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+        <p className="text-sm font-medium text-ink-subtle">
           Batch {batchNumber} of {totalBatches}
         </p>
       </div>
 
-      <p className="max-w-5xl text-xl leading-10 text-slate-700 sm:text-2xl sm:leading-[3rem] dark:text-slate-300">
+      <p className="max-w-5xl text-xl leading-10 text-ink-muted sm:text-2xl sm:leading-[3rem]">
         {getDisplayParts(batch).map((part) =>
           part.kind === "verseNumber" ? (
-            <sup className="mr-1 text-sm font-bold text-slate-400 dark:text-slate-500" key={part.key}>
+            <sup className="mr-1 text-sm font-bold text-ink-subtle" key={part.key}>
               {part.verseNumber}
             </sup>
           ) : (
