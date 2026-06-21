@@ -3,7 +3,6 @@ import type { ReactNode } from "react";
 import { AppNavigation } from "./AppNavigation";
 import { BackToTopButton } from "./BackToTopButton";
 import type { AppMode, Theme } from "../../types/app";
-import { Button } from "../../ui/Button";
 
 type PageShellProps = {
   appMode?: AppMode;
@@ -31,26 +30,25 @@ export function PageShell({
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
           <h1 className="text-xl font-bold tracking-normal text-slate-950 dark:text-slate-100">The Word per Minute</h1>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-            {appMode && onSelectMode && (
-              <AppNavigation appMode={appMode} hasSavedPassages={hasSavedPassages} onSelectMode={onSelectMode} />
-            )}
-            <Button
-              className="w-fit gap-2"
-              onClick={onToggleTheme}
-            >
-              {theme === "light" ? (
-                <MoonIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
-              ) : (
-                <SunIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
-              )}
-              {theme === "light" ? "Dark" : "Light"}
-            </Button>
-          </div>
+          {appMode && onSelectMode && (
+            <AppNavigation appMode={appMode} hasSavedPassages={hasSavedPassages} onSelectMode={onSelectMode} />
+          )}
         </div>
       </header>
 
       <main className="mx-auto grid max-w-7xl gap-5 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">{children}</main>
+      <button
+        aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+        className="fixed bottom-5 left-5 z-40 grid h-11 w-11 place-items-center rounded-full border border-slate-300 bg-white/90 text-slate-600 shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-800 dark:border-slate-700 dark:bg-slate-900/90 dark:text-slate-300 dark:hover:border-blue-800 dark:hover:bg-blue-950 dark:hover:text-blue-200"
+        type="button"
+        onClick={onToggleTheme}
+      >
+        {theme === "light" ? (
+          <MoonIcon aria-hidden="true" className="h-5 w-5" />
+        ) : (
+          <SunIcon aria-hidden="true" className="h-5 w-5" />
+        )}
+      </button>
       <BackToTopButton isEnabled={appMode === "bible" || appMode === "library"} />
     </div>
   );
