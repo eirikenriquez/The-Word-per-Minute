@@ -1,6 +1,6 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260622.1.a`
+Current documentation version: `260622.2.a`
 Last updated: 22/06/26
 
 ## Update Rule
@@ -33,9 +33,27 @@ Example:
 
 Suggested next versions:
 
-- Small same-day documentation update: `260622.1.b`
-- Larger same-day documentation update: `260622.2.a`
+- Small same-day documentation update: `260622.2.b`
+- Larger same-day documentation update: `260622.3.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260622.2.a`
+
+This version documents the application footer and continuous Practice passage redesign.
+
+It updates:
+
+- the file tree and shell responsibilities to include `AppFooter.tsx`,
+- the footer purpose, Bible attribution, GitHub link, and local-data notice,
+- Practice behaviour from two-verse batches to one continuous typing target,
+- the fixed-height passage viewport with automatic-only scrolling,
+- automatic scrolling that follows the active typing position,
+- the fixed-height typing input,
+- Practice component, hook, utility, and type names after replacing the batch model,
+- the app controller responsibility for building the active practice passage,
+- confirmed product decisions and remaining Practice viewport tuning.
+
+This update documents the merged footer commit and the `Changed to scrollable passage view in practice page` commit. It does not add further runtime behaviour.
 
 ## `260622.1.a`
 

@@ -1,6 +1,6 @@
 # The Word per Minute Documentation
 
-Document version: `260622.1.a`
+Document version: `260622.2.a`
 Last updated: 22/06/26
 Update rule: only update this file when explicitly requested by the project owner.
 
@@ -98,7 +98,10 @@ Practice is the central typing flow.
 It:
 
 - practises a featured passage or saved passage,
-- presents the passage as short typing batches,
+- treats the selected verses as one continuous typing passage,
+- displays the passage in a fixed-height viewport that users cannot scroll manually,
+- automatically scrolls the passage to keep the active typing position visible,
+- keeps the typing input at a consistent fixed height,
 - calculates WPM continuously while an attempt is active,
 - counts typing mistakes in accuracy even when the user later corrects them,
 - treats deletion as neutral rather than as an additional mistake,
@@ -181,6 +184,7 @@ src/
   app/
     components/
       AppErrorState.tsx
+      AppFooter.tsx
       AppHeader.tsx
       AppLoadingState.tsx
       BackToTopButton.tsx
@@ -216,17 +220,17 @@ src/
         FeaturedSaveAction.tsx
         PersonalBests.tsx
         PracticeActionButtons.tsx
-        PracticeBatchDisplay.tsx
         PracticeControls.tsx
+        PracticePassageDisplay.tsx
         SavedPassageSelect.tsx
         SourcePicker.tsx
         TypingPracticePanel.tsx
       hooks/
-        usePracticeBatches.ts
+        usePracticePassage.ts
         usePracticeSession.ts
         usePracticeStats.ts
       utils/
-        practiceBatches.ts
+        practicePassage.ts
         typingMetrics.ts
     saved-passages/
       components/
@@ -302,7 +306,7 @@ Responsibilities:
 - derives `appMode` through `useAppNavigation`,
 - keeps `practiceSource` state,
 - loads feature hooks,
-- builds practice batches,
+- builds the active continuous practice passage,
 - builds display labels/loading/error state,
 - builds cross-page actions,
 - prepares header props,
@@ -335,6 +339,18 @@ Shows the current title, subtitle, reference, and contextual passage-save contro
 
 Shows the global Home / Practice / Bible / Library navigation in the app shell.
 
+### `src/app/components/AppFooter.tsx`
+
+Provides a quiet ending to every page.
+
+It includes:
+
+- the app symbol, name, and purpose,
+- a notice that saved passages, preferences, and statistics remain in the browser,
+- World English Bible public-domain attribution,
+- a link to the GitHub repository,
+- the current copyright year.
+
 ### `src/app/components/PageShell.tsx`
 
 Provides the app page frame:
@@ -344,6 +360,7 @@ Provides the app page frame:
 - floating light/dark theme button,
 - main content width,
 - app background,
+- application footer,
 - back-to-top button on long reader/list pages.
 
 ### `src/app/components/BackToTopButton.tsx`
@@ -412,14 +429,15 @@ Owns typing practice UI and logic:
 - featured passage save action,
 - saved passage picker,
 - practice action buttons,
-- typing batch display,
-- typing input,
+- fixed-height continuous passage display,
+- automatic active-character scrolling without manual passage scrolling,
+- fixed-height typing input,
 - responsive Practice setup layout,
 - compact horizontal typing metrics,
 - personal bests,
 - live WPM timing,
 - mistake-aware accuracy session state,
-- practice batch creation,
+- continuous practice-passage creation,
 - pure typing metric and character-equivalence logic.
 
 ### `features/bible-reader`
@@ -502,7 +520,7 @@ Heroicons supplies interface icons. Icons support labels and meaning rather than
 
 - `src/types/app.ts`: route-backed app modes, practice source, and theme.
 - `src/types/featuredPassage.ts`: featured passage references and resolved passage responses.
-- `src/types/practice.ts`: practice statistics, typing metrics, and batch shapes.
+- `src/types/practice.ts`: practice statistics, typing metrics, and continuous passage shape.
 - `src/types/savedPassage.ts`: saved passage and save input shapes.
 - `src/types/verse.ts`: Bible translation, book, chapter, and verse shapes.
 
@@ -553,6 +571,8 @@ flowchart TD
 
 - Accuracy counts mistakes made during an attempt, including mistakes that are later corrected. Deletion itself is neutral.
 - WPM updates while an attempt is active and freezes when the passage is completed.
+- Practice uses one continuous typing target rather than advancing through two-verse batches.
+- The passage and typing input use stable heights so the page does not jump with verse length.
 - In Bible mode, saving with no selected verses intentionally saves the whole current chapter.
 - Saved passages can be reopened from Library in their original Bible context.
 - Saved featured passages highlight their full verse range, exact custom selections retain their selected verses, and whole-chapter saves open without individual highlights.
@@ -567,8 +587,9 @@ flowchart TD
 1. Manually test `/`, `/practice`, `/bible`, and `/library`.
 2. Confirm refresh and browser back/forward work correctly on each route.
 3. Visually QA the branded header, semantic colors, icons, floating theme control, and back-to-top button in both themes.
-4. Add reduced-motion handling.
-5. Keep `useAppController` limited to cross-feature composition.
-6. Keep `verseService` API-shaped so local JSON can later move to hosted data.
-7. Keep saved passage storage behind `savedPassageRepository` so it can later move to a database.
-8. Add Vercel configuration and verify SPA route fallbacks when deployment work begins.
+4. Tune the Practice passage viewport height and automatic scrolling from real typing use.
+5. Add reduced-motion handling.
+6. Keep `useAppController` limited to cross-feature composition.
+7. Keep `verseService` API-shaped so local JSON can later move to hosted data.
+8. Keep saved passage storage behind `savedPassageRepository` so it can later move to a database.
+9. Add Vercel configuration and verify SPA route fallbacks when deployment work begins.

@@ -106,7 +106,7 @@ export function PracticePassageDisplay({
       </p>
 
       <div
-        className="h-56 overflow-y-auto border-y border-line py-5 pr-4 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="h-56 overflow-hidden border-y border-line py-5 pr-4 scroll-smooth"
         ref={viewportRef}
       >
         <p className="relative text-xl leading-10 text-ink-muted sm:text-2xl sm:leading-[3rem]">
