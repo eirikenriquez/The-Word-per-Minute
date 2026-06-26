@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import {
   CUSTOM_SAVED_CATEGORY,
   DEFAULT_SAVED_CATEGORY,
-} from "../../../domain/saved-passages/savedPassageCategories";
+} from "../../saved-passages/savedPassageCategories";
 import type { FeaturedPassage } from "../../../types/featuredPassage";
 
 /**
