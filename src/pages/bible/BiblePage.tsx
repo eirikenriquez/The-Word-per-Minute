@@ -1,5 +1,5 @@
-import { BibleChapterReader } from "../../features/bible-reader/components/BibleChapterReader";
-import { BibleReaderControls } from "../../features/bible-reader/components/BibleReaderControls";
+import { BibleChapterReader } from "./components/BibleChapterReader";
+import { BibleReaderControls } from "./components/BibleReaderControls";
 import type { BibleChapter, BookSummary, Translation } from "../../types/verse";
 
 export type BiblePageProps = {
