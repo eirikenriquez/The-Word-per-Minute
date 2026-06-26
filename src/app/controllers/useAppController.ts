@@ -5,9 +5,9 @@ import { useReaderSelection } from "../../features/bible-reader/hooks/useReaderS
 import { useVerseLibrary } from "../../features/bible-reader/hooks/useVerseLibrary";
 import { useFeaturedPassages } from "../../features/featured-passages/hooks/useFeaturedPassages";
 import { usePassageCategories } from "../../features/featured-passages/hooks/usePassageCategories";
-import { usePracticePassage } from "../../features/practice/hooks/usePracticePassage";
-import { usePracticeSession } from "../../features/practice/hooks/usePracticeSession";
-import { usePracticeStats } from "../../features/practice/hooks/usePracticeStats";
+import { usePracticePassage } from "../../domain/practice/hooks/usePracticePassage";
+import { usePracticeSession } from "../../domain/practice/hooks/usePracticeSession";
+import { usePracticeStats } from "../../domain/practice/hooks/usePracticeStats";
 import { usePassageSaveInput } from "../../features/saved-passages/hooks/usePassageSaveInput";
 import { useSavePassageForm } from "../../features/saved-passages/hooks/useSavePassageForm";
 import { useSavedPassages } from "../../features/saved-passages/hooks/useSavedPassages";
