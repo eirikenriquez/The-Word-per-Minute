@@ -1,7 +1,7 @@
 import type { useReaderSelection } from "../../domain/bible/hooks/useReaderSelection";
 import type { useVerseLibrary } from "../../domain/bible/hooks/useVerseLibrary";
 import type { usePracticeSession } from "../../domain/practice/hooks/usePracticeSession";
-import type { useSavedPassages } from "../../features/saved-passages/hooks/useSavedPassages";
+import type { useSavedPassages } from "../../domain/saved-passages/hooks/useSavedPassages";
 import type { BiblePageProps } from "../../pages/bible/BiblePage";
 import type { HomeCategory, HomePageProps } from "../../pages/home/HomePage";
 import type { LibraryPageProps } from "../../pages/library/LibraryPage";

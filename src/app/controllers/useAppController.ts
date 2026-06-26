@@ -8,9 +8,9 @@ import { usePassageCategories } from "../../features/featured-passages/hooks/use
 import { usePracticePassage } from "../../domain/practice/hooks/usePracticePassage";
 import { usePracticeSession } from "../../domain/practice/hooks/usePracticeSession";
 import { usePracticeStats } from "../../domain/practice/hooks/usePracticeStats";
-import { usePassageSaveInput } from "../../features/saved-passages/hooks/usePassageSaveInput";
-import { useSavePassageForm } from "../../features/saved-passages/hooks/useSavePassageForm";
-import { useSavedPassages } from "../../features/saved-passages/hooks/useSavedPassages";
+import { usePassageSaveInput } from "../../domain/saved-passages/hooks/usePassageSaveInput";
+import { useSavePassageForm } from "../../domain/saved-passages/hooks/useSavePassageForm";
+import { useSavedPassages } from "../../domain/saved-passages/hooks/useSavedPassages";
 import type { PracticeSource } from "../../types/app";
 import { useAppDisplayState } from "../hooks/useAppDisplayState";
 import { useAppModeEffects } from "../hooks/useAppModeEffects";

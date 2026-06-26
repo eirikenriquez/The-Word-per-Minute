@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import {
   getSavedPassageId,
   savedPassageRepository,
-} from "../services/savedPassageRepository";
-import { verseService } from "../../../domain/bible/verseService";
+} from "../savedPassageRepository";
+import { verseService } from "../../bible/verseService";
 import type { PassageResponse } from "../../../types/featuredPassage";
 import type { SavedPassage, SavePassageInput, SavedPassageUpdate } from "../../../types/savedPassage";
 import { getErrorMessage } from "../../../utils/errors";
