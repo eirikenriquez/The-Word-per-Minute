@@ -1,5 +1,5 @@
-import { SavedPassageLibrary } from "../features/saved-passages/components/SavedPassageLibrary";
-import type { SavedPassage, SavedPassageUpdate } from "../types/savedPassage";
+import { SavedPassageLibrary } from "../../features/saved-passages/components/SavedPassageLibrary";
+import type { SavedPassage, SavedPassageUpdate } from "../../types/savedPassage";
 
 export type LibraryPageProps = {
   savedPassages: SavedPassage[];

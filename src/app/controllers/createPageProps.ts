@@ -2,10 +2,10 @@ import type { useReaderSelection } from "../../features/bible-reader/hooks/useRe
 import type { useVerseLibrary } from "../../features/bible-reader/hooks/useVerseLibrary";
 import type { usePracticeSession } from "../../features/practice/hooks/usePracticeSession";
 import type { useSavedPassages } from "../../features/saved-passages/hooks/useSavedPassages";
-import type { BiblePageProps } from "../../pages/BiblePage";
-import type { HomeCategory, HomePageProps } from "../../pages/HomePage";
-import type { LibraryPageProps } from "../../pages/LibraryPage";
-import type { PracticePageProps } from "../../pages/PracticePage";
+import type { BiblePageProps } from "../../pages/bible/BiblePage";
+import type { HomeCategory, HomePageProps } from "../../pages/home/HomePage";
+import type { LibraryPageProps } from "../../pages/library/LibraryPage";
+import type { PracticePageProps } from "../../pages/practice/PracticePage";
 import type { PracticeSource } from "../../types/app";
 import type { PracticePassage, PracticeStats } from "../../types/practice";
 import type { createAppActions } from "./createAppActions";
