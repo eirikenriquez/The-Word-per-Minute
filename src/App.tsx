@@ -10,7 +10,17 @@ import { useAppController } from "./app/controllers/useAppController";
  * Renders global loading/error states, navigation, contextual headers, and URL routes.
  */
 function App() {
-  const { appMode, errorMessage, headerProps, isLoading, pageRoutesProps, theme, toggleTheme } =
+  const {
+    appMode,
+    errorMessage,
+    hasSavedPassages,
+    headerProps,
+    isLoading,
+    onSelectMode,
+    pageRoutesProps,
+    theme,
+    toggleTheme,
+  } =
     useAppController();
 
   // App-level guards keep incomplete data out of the page tree.
@@ -33,9 +43,9 @@ function App() {
   return (
     <PageShell
       appMode={appMode}
-      hasSavedPassages={headerProps.hasSavedPassages}
+      hasSavedPassages={hasSavedPassages}
       theme={theme}
-      onSelectMode={headerProps.onSelectMode}
+      onSelectMode={onSelectMode}
       onToggleTheme={toggleTheme}
     >
       <div key={appMode} className="page-transition grid gap-4">

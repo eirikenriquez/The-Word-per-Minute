@@ -1,6 +1,6 @@
-import type { AppMode, PracticeSource } from "../../types/app";
-import type { FeaturedPassage } from "../../types/featuredPassage";
-import type { SavedPassage } from "../../types/savedPassage";
+import type { AppMode, PracticeSource } from "../../shared/types/app";
+import type { FeaturedPassage } from "../../shared/types/featuredPassage";
+import type { SavedPassage } from "../../shared/types/savedPassage";
 
 type CreateAppActionsParams = {
   clearReaderSelection: () => void;

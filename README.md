@@ -46,6 +46,15 @@ npm run build
 - Current architecture and file structure: [`docs/documentation.md`](docs/documentation.md)
 - Documentation history: [`docs/update-notes.md`](docs/update-notes.md)
 
+## Architecture
+
+The source is organised around `app`, `pages`, `domain`, and `shared` layers:
+
+- `app` wires routing, shell UI, navigation, and cross-page coordination.
+- `pages` owns route-level screens and page-specific visual components.
+- `domain` owns Bible, Practice, featured-passage, and saved-passage logic.
+- `shared` owns generic UI primitives, utilities, and shared TypeScript types.
+
 ## Data
 
 The app currently uses local public-domain Bible data and `localStorage`. It does not require a backend, user account, or external Bible API.

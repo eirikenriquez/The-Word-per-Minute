@@ -1,17 +1,17 @@
 import { useState } from "react";
 import type { AppHeaderProps } from "../components/AppHeader";
 import type { AppRoutesProps } from "../components/AppRoutes";
-import { useReaderSelection } from "../../features/bible-reader/hooks/useReaderSelection";
-import { useVerseLibrary } from "../../features/bible-reader/hooks/useVerseLibrary";
-import { useFeaturedPassages } from "../../features/featured-passages/hooks/useFeaturedPassages";
-import { usePassageCategories } from "../../features/featured-passages/hooks/usePassageCategories";
-import { usePracticePassage } from "../../features/practice/hooks/usePracticePassage";
-import { usePracticeSession } from "../../features/practice/hooks/usePracticeSession";
-import { usePracticeStats } from "../../features/practice/hooks/usePracticeStats";
-import { usePassageSaveInput } from "../../features/saved-passages/hooks/usePassageSaveInput";
-import { useSavePassageForm } from "../../features/saved-passages/hooks/useSavePassageForm";
-import { useSavedPassages } from "../../features/saved-passages/hooks/useSavedPassages";
-import type { PracticeSource } from "../../types/app";
+import { useReaderSelection } from "../../domain/bible/hooks/useReaderSelection";
+import { useVerseLibrary } from "../../domain/bible/hooks/useVerseLibrary";
+import { useFeaturedPassages } from "../../domain/featured-passages/hooks/useFeaturedPassages";
+import { usePassageCategories } from "../../domain/featured-passages/hooks/usePassageCategories";
+import { usePracticePassage } from "../../domain/practice/hooks/usePracticePassage";
+import { usePracticeSession } from "../../domain/practice/hooks/usePracticeSession";
+import { usePracticeStats } from "../../domain/practice/hooks/usePracticeStats";
+import { usePassageSaveInput } from "../../domain/saved-passages/hooks/usePassageSaveInput";
+import { useSavePassageForm } from "../../domain/saved-passages/hooks/useSavePassageForm";
+import { useSavedPassages } from "../../domain/saved-passages/hooks/useSavedPassages";
+import type { PracticeSource } from "../../shared/types/app";
 import { useAppDisplayState } from "../hooks/useAppDisplayState";
 import { useAppModeEffects } from "../hooks/useAppModeEffects";
 import { useAppNavigation } from "../hooks/useAppNavigation";
@@ -58,7 +58,7 @@ export function useAppController() {
   });
   const { resetPractice } = practiceSession;
 
-  const { error, isLoading, practiceReference, practiceSubtitle, practiceTitle, translationName } =
+  const { error, headerReference, headerSubtitle, headerTitle, isLoading, translationName } =
     useAppDisplayState({
       appMode,
       bibleError: bibleLibrary.error,
@@ -142,19 +142,16 @@ export function useAppController() {
   const headerProps: AppHeaderProps = {
     appMode,
     canSaveCurrentPassage: Boolean(saveInput),
-    hasSavedPassages: savedPassageCount > 0,
+    headerReference,
+    headerSubtitle,
+    headerTitle,
     isCurrentPassageSaved,
-    practiceReference,
-    practiceSubtitle,
-    practiceTitle,
     saveCategory,
     savedPassageCategories,
     saveTitle,
-    showPracticeSave: false,
     onSaveCategoryChange: setSaveCategory,
     onSaveCurrentPassage: saveCurrentPassage,
     onSaveTitleChange: setSaveTitle,
-    onSelectMode: selectAppMode,
   };
 
   const pageRoutesProps: AppRoutesProps = {
@@ -179,7 +176,7 @@ export function useAppController() {
       passage: practicePassage,
       practiceSession,
       practiceSource,
-      practiceTitle,
+      practiceTitle: headerTitle,
       resetStats,
       savedLibrary,
       stats,
@@ -191,8 +188,10 @@ export function useAppController() {
   return {
     appMode,
     errorMessage,
+    hasSavedPassages: savedPassageCount > 0,
     headerProps,
     isLoading,
+    onSelectMode: selectAppMode,
     pageRoutesProps,
     theme,
     toggleTheme,

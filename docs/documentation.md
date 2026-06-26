@@ -1,7 +1,7 @@
 # The Word per Minute Documentation
 
-Document version: `260622.2.a`
-Last updated: 22/06/26
+Document version: `260626.1.a`
+Last updated: 26/06/26
 Update rule: only update this file when explicitly requested by the project owner.
 
 ## Purpose
@@ -33,21 +33,19 @@ No backend, database, authentication, or external Bible API is currently used.
 
 ## High-Level Architecture
 
-The app uses URL-based React routing with feature folders and a central app controller.
+The app uses URL-based React routing with page folders, domain modules, shared primitives, and a central app controller.
 
 ```txt
-URL route -> App shell -> app controller -> page-prop factories -> page component -> feature components/hooks
+URL route -> App shell -> app controller -> page-prop factories -> page component -> page UI
+                                           -> domain hooks/services
 ```
 
 The main architecture layers are:
 
 - `src/app`: app-level shell, routing, controllers, navigation, and coordination hooks.
-- `src/pages`: screen-level page components.
-- `src/features`: feature-specific UI, hooks, and services.
-- `src/services`: shared service layer for local Bible data.
-- `src/types`: shared TypeScript data shapes.
-- `src/ui`: small reusable UI primitives used across features.
-- `src/utils`: shared pure helper functions.
+- `src/pages`: screen-level pages and page-owned visual components.
+- `src/domain`: app concepts, data access, persistence, hooks, calculations, and business rules.
+- `src/shared`: generic UI primitives, utilities, and TypeScript data shapes.
 - `src/data`: local Bible and featured-passage JSON data.
 - `src/theme.css`: semantic light/dark color tokens exposed through Tailwind.
 - `public/brand`: theme-aware application symbol assets.
@@ -175,6 +173,8 @@ main.tsx
 
 `App.tsx` is mostly the app shell. App-wide coordination lives in `src/app/controllers/useAppController.ts`. Cross-page actions are created by `createAppActions.ts`, while page-specific prop wiring is grouped into the plain factory functions in `createPageProps.ts`.
 
+The controller composes domain hooks and services, then passes prepared data and callbacks into page components. Page folders should stay mostly visual; domain folders should own app rules, persistence, transformations, and reusable data behaviour.
+
 Home intentionally hides `AppHeader` so the Home hero is the first page content. Practice, Bible, and Library still show the contextual page title/reference area.
 
 ## Current File Structure
@@ -203,18 +203,45 @@ src/
       useTheme.ts
     routes/
       appRoutePaths.ts
-  features/
-    bible-reader/
-      components/
-        BibleChapterReader.tsx
-        BibleReaderControls.tsx
+  domain/
+    bible/
       hooks/
         useReaderSelection.ts
         useVerseLibrary.ts
+      verseService.ts
     featured-passages/
       hooks/
         useFeaturedPassages.ts
         usePassageCategories.ts
+    practice/
+      hooks/
+        usePracticePassage.ts
+        usePracticeSession.ts
+        usePracticeStats.ts
+      utils/
+        practicePassage.ts
+        typingMetrics.ts
+    saved-passages/
+      hooks/
+        usePassageSaveInput.ts
+        useSavePassageForm.ts
+        useSavedPassages.ts
+      savedPassageCategories.ts
+      savedPassageRepository.ts
+  pages/
+    bible/
+      components/
+        BibleChapterReader.tsx
+        BibleReaderControls.tsx
+      BiblePage.tsx
+    home/
+      HomePage.tsx
+    library/
+      components/
+        SavedPassageCard.tsx
+        SavedPassageFilters.tsx
+        SavedPassageLibrary.tsx
+      LibraryPage.tsx
     practice/
       components/
         FeaturedSaveAction.tsx
@@ -225,48 +252,23 @@ src/
         SavedPassageSelect.tsx
         SourcePicker.tsx
         TypingPracticePanel.tsx
-      hooks/
-        usePracticePassage.ts
-        usePracticeSession.ts
-        usePracticeStats.ts
-      utils/
-        practicePassage.ts
-        typingMetrics.ts
-    saved-passages/
-      components/
-        SavedPassageCard.tsx
-        SavedPassageFilters.tsx
-        SavedPassageLibrary.tsx
-      constants/
-        savedPassageCategories.ts
-      hooks/
-        usePassageSaveInput.ts
-        useSavePassageForm.ts
-        useSavedPassages.ts
-      services/
-        savedPassageRepository.ts
-  pages/
-    BiblePage.tsx
-    HomePage.tsx
-    LibraryPage.tsx
-    PracticePage.tsx
-  services/
-    verseService.ts
+      PracticePage.tsx
+  shared/
+    types/
+      app.ts
+      featuredPassage.ts
+      practice.ts
+      savedPassage.ts
+      verse.ts
+    ui/
+      Button.tsx
+    utils/
+      errors.ts
+      passageReference.ts
   data/
     bibles/
     featuredPassages.json
     translations.json
-  types/
-    app.ts
-    featuredPassage.ts
-    practice.ts
-    savedPassage.ts
-    verse.ts
-  ui/
-    Button.tsx
-  utils/
-    errors.ts
-    passageReference.ts
   App.tsx
   index.css
   main.tsx
@@ -374,7 +376,7 @@ Current behaviour:
 - smoothly scrolls the window back to the top,
 - supports light and dark mode.
 
-### `src/ui/Button.tsx`
+### `src/shared/ui/Button.tsx`
 
 Provides the shared visual hierarchy for ordinary app actions.
 
@@ -404,7 +406,7 @@ It maps light and dark CSS variables to utilities for:
 - ember accents,
 - selected states.
 
-### `src/services/verseService.ts`
+### `src/domain/bible/verseService.ts`
 
 API-shaped local data service.
 
@@ -419,57 +421,70 @@ Responsibilities:
 
 This should stay API-shaped so local JSON can later move to hosted data.
 
-## Feature Responsibilities
+## Page, Domain, And Shared Responsibilities
 
-### `features/practice`
+### `src/pages`
 
-Owns typing practice UI and logic:
+Owns route-level screens and visual composition:
 
-- source controls,
-- featured passage save action,
-- saved passage picker,
-- practice action buttons,
-- fixed-height continuous passage display,
-- automatic active-character scrolling without manual passage scrolling,
-- fixed-height typing input,
-- responsive Practice setup layout,
-- compact horizontal typing metrics,
-- personal bests,
+- `pages/home`: Home hero, entry points, counters, and category buttons.
+- `pages/practice`: Practice layout, setup controls, passage display, typing panel, and personal-best display.
+- `pages/bible`: Bible controls and chapter reader UI.
+- `pages/library`: saved-passage list, filters, cards, and card actions.
+
+Page components should receive prepared data and callbacks. They should not own persistence, WPM calculation, Bible loading, saved-passage identity rules, or cross-page coordination.
+
+### `src/domain/practice`
+
+Owns typing-practice rules:
+
+- active practice passage creation,
 - live WPM timing,
 - mistake-aware accuracy session state,
-- continuous practice-passage creation,
+- completion detection,
+- personal-best storage,
 - pure typing metric and character-equivalence logic.
 
-### `features/bible-reader`
+### `src/domain/bible`
 
-Owns Bible browsing and verse selection:
+Owns Bible data and reader selection logic:
 
-- translation/book/chapter controls,
-- full chapter reader,
-- click and drag verse selection,
-- selected-verse focus after asynchronous chapter loading,
-- light and dark selected-verse styling,
-- reader data-loading state.
+- translation/book/chapter loading,
+- local JSON Bible data access,
+- featured and saved passage resolution,
+- click and drag verse selection state,
+- selected-verse focus triggers.
 
-### `features/featured-passages`
+`verseService` stays API-shaped so local JSON can later move to hosted data without rewriting page UI.
+
+### `src/domain/featured-passages`
 
 Owns curated passage discovery:
 
 - featured passage loading,
 - random featured passage selection,
-- category derivation,
-- Home category picker UI.
+- featured category derivation,
+- saved-passage category derivation from featured themes.
 
-### `features/saved-passages`
+### `src/domain/saved-passages`
 
-Owns saved passage storage and management:
+Owns saved passage storage and save rules:
 
 - save input creation,
 - save form state,
-- saved passage search/filter/list/edit/remove UI,
-- saved passage cards with clear information and action hierarchy,
-- Library-to-Bible passage navigation,
+- saved-passage list/update/remove state,
+- saved-passage identity,
+- saved-passage category defaults,
 - `localStorage` repository.
+
+### `src/shared`
+
+Owns generic reusable code that does not represent a specific app domain:
+
+- `shared/ui/Button.tsx`: ordinary app action button hierarchy.
+- `shared/utils/errors.ts`: unknown-error message extraction.
+- `shared/utils/passageReference.ts`: generic passage-reference formatting.
+- `shared/types`: shared app, Bible, passage, saved-passage, and practice type shapes.
 
 ## Data Files
 
@@ -512,17 +527,17 @@ The current visual direction uses:
 - neutral action colors for ordinary controls,
 - rose feedback for destructive and typing-error states.
 
-Ordinary buttons share `src/ui/Button.tsx`, while specialized controls retain local styling backed by the same semantic palette. Form controls remain in their owning components and should only become a shared primitive if those styles begin to drift again.
+Ordinary buttons share `src/shared/ui/Button.tsx`, while specialized controls retain local styling backed by the same semantic palette. Form controls remain in their owning components and should only become a shared primitive if those styles begin to drift again.
 
 Heroicons supplies interface icons. Icons support labels and meaning rather than replacing important action text. The header uses separate light/dark transparent symbol assets, while `public/favicon.svg` adapts to the browser's color scheme.
 
 ## Important Types
 
-- `src/types/app.ts`: route-backed app modes, practice source, and theme.
-- `src/types/featuredPassage.ts`: featured passage references and resolved passage responses.
-- `src/types/practice.ts`: practice statistics, typing metrics, and continuous passage shape.
-- `src/types/savedPassage.ts`: saved passage and save input shapes.
-- `src/types/verse.ts`: Bible translation, book, chapter, and verse shapes.
+- `src/shared/types/app.ts`: route-backed app modes, practice source, and theme.
+- `src/shared/types/featuredPassage.ts`: featured passage references and resolved passage responses.
+- `src/shared/types/practice.ts`: practice statistics, typing status, and continuous passage shape.
+- `src/shared/types/savedPassage.ts`: saved passage and save input shapes.
+- `src/shared/types/verse.ts`: Bible translation, book, chapter, and verse shapes.
 
 ## Current Architecture Diagram
 
@@ -541,16 +556,18 @@ flowchart TD
   routes --> practice["PracticePage"]
   routes --> bible["BiblePage"]
   routes --> library["LibraryPage"]
-  home --> featured["features/featured-passages"]
-  practice --> practiceFeature["features/practice"]
-  bible --> bibleFeature["features/bible-reader"]
-  library --> savedFeature["features/saved-passages"]
-  savedFeature --> bibleFeature
-  featured --> verseService["verseService"]
-  practiceFeature --> verseService
-  bibleFeature --> verseService
-  savedFeature --> verseService
-  savedFeature --> localStorage["localStorage"]
+  home --> featured["domain/featured-passages"]
+  practice --> practiceDomain["domain/practice"]
+  bible --> bibleDomain["domain/bible"]
+  library --> savedDomain["domain/saved-passages"]
+  savedDomain --> bibleDomain
+  featured --> verseService["domain/bible/verseService"]
+  practiceDomain --> verseService
+  bibleDomain --> verseService
+  savedDomain --> verseService
+  savedDomain --> localStorage["localStorage"]
+  routes --> pageUi["pages/* visual components"]
+  pageUi --> shared["shared/ui + shared/types + shared/utils"]
 ```
 
 ## Known Technical Debt

@@ -1,7 +1,7 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260622.2.a`
-Last updated: 22/06/26
+Current documentation version: `260626.1.a`
+Last updated: 26/06/26
 
 ## Update Rule
 
@@ -33,9 +33,26 @@ Example:
 
 Suggested next versions:
 
-- Small same-day documentation update: `260622.2.b`
-- Larger same-day documentation update: `260622.3.a`
+- Small same-day documentation update: `260626.1.b`
+- Larger same-day documentation update: `260626.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260626.1.a`
+
+This version documents the structural refactor from feature folders to app, pages, domain, and shared layers.
+
+It updates:
+
+- the high-level architecture description to explain the page/domain/shared split,
+- the current file tree after moving page UI into `src/pages`,
+- the current file tree after moving app logic into `src/domain`,
+- the current file tree after moving generic UI, utilities, and types into `src/shared`,
+- key file paths for `Button`, `verseService`, and shared type files,
+- responsibilities for page folders, domain modules, and shared helpers,
+- the architecture diagram to replace old `features/*` nodes with `domain/*` and `pages/*` nodes,
+- the README architecture summary.
+
+This update documents the refactor only. It does not add product behaviour.
 
 ## `260622.2.a`
 

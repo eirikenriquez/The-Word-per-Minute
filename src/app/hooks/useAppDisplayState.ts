@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import type { AppMode, PracticeSource } from "../../types/app";
-import type { PassageResponse } from "../../types/featuredPassage";
-import type { SavedPassage } from "../../types/savedPassage";
-import type { Translation } from "../../types/verse";
+import type { AppMode, PracticeSource } from "../../shared/types/app";
+import type { PassageResponse } from "../../shared/types/featuredPassage";
+import type { SavedPassage } from "../../shared/types/savedPassage";
+import type { Translation } from "../../shared/types/verse";
 
 type UseAppDisplayStateParams = {
   appMode: AppMode;
@@ -59,19 +59,19 @@ export function useAppDisplayState({
         practiceSource,
         savedIsLoading,
       }),
-      practiceReference: getPracticeReference({
+      headerReference: getHeaderReference({
         appMode,
         featuredPassageResponse,
         practiceSource,
         savedPassageCount,
         selectedSavedPassage,
       }),
-      practiceSubtitle: getPracticeSubtitle({
+      headerSubtitle: getHeaderSubtitle({
         appMode,
         featuredPassageResponse,
         practiceSource,
       }),
-      practiceTitle: getPracticeTitle({
+      headerTitle: getHeaderTitle({
         appMode,
         featuredPassageResponse,
         practiceSource,
@@ -131,7 +131,7 @@ function getModeError({
   return null;
 }
 
-function getPracticeTitle({
+function getHeaderTitle({
   appMode,
   featuredPassageResponse,
   practiceSource,
@@ -149,7 +149,7 @@ function getPracticeTitle({
     : selectedSavedPassage?.title ?? "Saved Passage";
 }
 
-function getPracticeReference({
+function getHeaderReference({
   appMode,
   featuredPassageResponse,
   practiceSource,
@@ -168,7 +168,7 @@ function getPracticeReference({
     : selectedSavedPassage?.reference ?? "";
 }
 
-function getPracticeSubtitle({
+function getHeaderSubtitle({
   appMode,
   featuredPassageResponse,
   practiceSource,

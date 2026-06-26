@@ -1,22 +1,19 @@
-import type { AppMode } from "../../types/app";
+import type { AppMode } from "../../shared/types/app";
 import { PassageSaveControls } from "./PassageSaveControls";
 
 export type AppHeaderProps = {
   appMode: AppMode;
   canSaveCurrentPassage: boolean;
-  hasSavedPassages: boolean;
   isCurrentPassageSaved: boolean;
-  practiceReference: string;
-  practiceSubtitle: string;
-  practiceTitle: string;
+  headerReference: string;
+  headerSubtitle: string;
+  headerTitle: string;
   saveCategory: string;
   savedPassageCategories: string[];
   saveTitle: string;
-  showPracticeSave: boolean;
   onSaveCategoryChange: (category: string) => void;
   onSaveCurrentPassage: () => void;
   onSaveTitleChange: (title: string) => void;
-  onSelectMode: (mode: AppMode) => void;
 };
 
 /**
@@ -25,32 +22,31 @@ export type AppHeaderProps = {
 export function AppHeader({
   appMode,
   canSaveCurrentPassage,
+  headerReference,
+  headerSubtitle,
+  headerTitle,
   isCurrentPassageSaved,
-  practiceReference,
-  practiceSubtitle,
-  practiceTitle,
   saveCategory,
   savedPassageCategories,
   saveTitle,
-  showPracticeSave,
   onSaveCategoryChange,
   onSaveCurrentPassage,
   onSaveTitleChange,
 }: AppHeaderProps) {
-  const showSaveControls = showPracticeSave || appMode === "bible";
+  const showSaveControls = appMode === "bible";
 
   return (
     <section className="border-b border-line pb-5">
       <div className="min-w-0">
         <p className="text-sm font-semibold uppercase text-ink-subtle">
-          {practiceSubtitle}
+          {headerSubtitle}
         </p>
         <h2 className="mt-1 text-2xl font-bold text-ink">
-          {practiceTitle}
+          {headerTitle}
         </h2>
-        {practiceReference && (
+        {headerReference && (
           <p className="mt-2 w-fit rounded-md bg-accent-soft px-2.5 py-1 text-sm font-semibold text-accent-ink ring-1 ring-accent-line">
-            {practiceReference}
+            {headerReference}
           </p>
         )}
       </div>
