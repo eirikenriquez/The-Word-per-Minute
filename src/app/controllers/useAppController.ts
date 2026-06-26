@@ -58,7 +58,7 @@ export function useAppController() {
   });
   const { resetPractice } = practiceSession;
 
-  const { error, isLoading, practiceReference, practiceSubtitle, practiceTitle, translationName } =
+  const { error, headerReference, headerSubtitle, headerTitle, isLoading, translationName } =
     useAppDisplayState({
       appMode,
       bibleError: bibleLibrary.error,
@@ -142,19 +142,16 @@ export function useAppController() {
   const headerProps: AppHeaderProps = {
     appMode,
     canSaveCurrentPassage: Boolean(saveInput),
-    hasSavedPassages: savedPassageCount > 0,
+    headerReference,
+    headerSubtitle,
+    headerTitle,
     isCurrentPassageSaved,
-    practiceReference,
-    practiceSubtitle,
-    practiceTitle,
     saveCategory,
     savedPassageCategories,
     saveTitle,
-    showPracticeSave: false,
     onSaveCategoryChange: setSaveCategory,
     onSaveCurrentPassage: saveCurrentPassage,
     onSaveTitleChange: setSaveTitle,
-    onSelectMode: selectAppMode,
   };
 
   const pageRoutesProps: AppRoutesProps = {
@@ -179,7 +176,7 @@ export function useAppController() {
       passage: practicePassage,
       practiceSession,
       practiceSource,
-      practiceTitle,
+      practiceTitle: headerTitle,
       resetStats,
       savedLibrary,
       stats,
@@ -191,8 +188,10 @@ export function useAppController() {
   return {
     appMode,
     errorMessage,
+    hasSavedPassages: savedPassageCount > 0,
     headerProps,
     isLoading,
+    onSelectMode: selectAppMode,
     pageRoutesProps,
     theme,
     toggleTheme,

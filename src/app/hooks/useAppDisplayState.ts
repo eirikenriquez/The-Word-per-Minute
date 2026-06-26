@@ -59,19 +59,19 @@ export function useAppDisplayState({
         practiceSource,
         savedIsLoading,
       }),
-      practiceReference: getPracticeReference({
+      headerReference: getHeaderReference({
         appMode,
         featuredPassageResponse,
         practiceSource,
         savedPassageCount,
         selectedSavedPassage,
       }),
-      practiceSubtitle: getPracticeSubtitle({
+      headerSubtitle: getHeaderSubtitle({
         appMode,
         featuredPassageResponse,
         practiceSource,
       }),
-      practiceTitle: getPracticeTitle({
+      headerTitle: getHeaderTitle({
         appMode,
         featuredPassageResponse,
         practiceSource,
@@ -131,7 +131,7 @@ function getModeError({
   return null;
 }
 
-function getPracticeTitle({
+function getHeaderTitle({
   appMode,
   featuredPassageResponse,
   practiceSource,
@@ -149,7 +149,7 @@ function getPracticeTitle({
     : selectedSavedPassage?.title ?? "Saved Passage";
 }
 
-function getPracticeReference({
+function getHeaderReference({
   appMode,
   featuredPassageResponse,
   practiceSource,
@@ -168,7 +168,7 @@ function getPracticeReference({
     : selectedSavedPassage?.reference ?? "";
 }
 
-function getPracticeSubtitle({
+function getHeaderSubtitle({
   appMode,
   featuredPassageResponse,
   practiceSource,
