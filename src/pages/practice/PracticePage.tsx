@@ -1,7 +1,7 @@
-import { PersonalBests } from "../../features/practice/components/PersonalBests";
-import { PracticeControls } from "../../features/practice/components/PracticeControls";
-import { PracticePassageDisplay } from "../../features/practice/components/PracticePassageDisplay";
-import { TypingPracticePanel } from "../../features/practice/components/TypingPracticePanel";
+import { PersonalBests } from "./components/PersonalBests";
+import { PracticeControls } from "./components/PracticeControls";
+import { PracticePassageDisplay } from "./components/PracticePassageDisplay";
+import { TypingPracticePanel } from "./components/TypingPracticePanel";
 import type { PracticeSource } from "../../types/app";
 import type { PracticePassage, PracticeStats, PracticeStatus } from "../../types/practice";
 import type { SavedPassage } from "../../types/savedPassage";
