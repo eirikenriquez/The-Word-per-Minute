@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { DEFAULT_SAVED_CATEGORY } from "../savedPassageCategories";
-import type { AppMode } from "../../../types/app";
-import type { SavePassageInput } from "../../../types/savedPassage";
+import type { AppMode } from "../../../shared/types/app";
+import type { SavePassageInput } from "../../../shared/types/savedPassage";
 
 type UseSavePassageFormParams = {
   appMode: AppMode;

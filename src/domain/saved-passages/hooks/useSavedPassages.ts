@@ -4,8 +4,8 @@ import {
   savedPassageRepository,
 } from "../savedPassageRepository";
 import { verseService } from "../../bible/verseService";
-import type { PassageResponse } from "../../../types/featuredPassage";
-import type { SavedPassage, SavePassageInput, SavedPassageUpdate } from "../../../types/savedPassage";
+import type { PassageResponse } from "../../../shared/types/featuredPassage";
+import type { SavedPassage, SavePassageInput, SavedPassageUpdate } from "../../../shared/types/savedPassage";
 import { getErrorMessage } from "../../../shared/utils/errors";
 
 /**

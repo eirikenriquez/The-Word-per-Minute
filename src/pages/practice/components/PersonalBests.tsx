@@ -1,5 +1,5 @@
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
-import type { PracticeStats } from "../../../types/practice";
+import type { PracticeStats } from "../../../shared/types/practice";
 import { Button } from "../../../shared/ui/Button";
 
 type PersonalBestsProps = {

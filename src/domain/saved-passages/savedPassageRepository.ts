@@ -1,4 +1,4 @@
-import type { SavedPassage, SavePassageInput, SavedPassageUpdate } from "../../types/savedPassage";
+import type { SavedPassage, SavePassageInput, SavedPassageUpdate } from "../../shared/types/savedPassage";
 import { DEFAULT_SAVED_CATEGORY } from "./savedPassageCategories";
 
 const SAVED_PASSAGES_STORAGE_KEY = "the-word-per-minute-saved-passages";

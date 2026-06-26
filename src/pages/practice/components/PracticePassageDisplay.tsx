@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import type { PracticePassage } from "../../../types/practice";
+import type { PracticePassage } from "../../../shared/types/practice";
 import { areCharactersEquivalent } from "../../../domain/practice/utils/typingMetrics";
 
 type PracticePassageDisplayProps = {

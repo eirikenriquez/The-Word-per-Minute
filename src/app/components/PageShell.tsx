@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { AppFooter } from "./AppFooter";
 import { AppNavigation } from "./AppNavigation";
 import { BackToTopButton } from "./BackToTopButton";
-import type { AppMode, Theme } from "../../types/app";
+import type { AppMode, Theme } from "../../shared/types/app";
 
 type PageShellProps = {
   appMode?: AppMode;

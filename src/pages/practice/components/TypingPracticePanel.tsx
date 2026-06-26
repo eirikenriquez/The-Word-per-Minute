@@ -1,5 +1,5 @@
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
-import type { PracticeStatus } from "../../../types/practice";
+import type { PracticeStatus } from "../../../shared/types/practice";
 import { Button } from "../../../shared/ui/Button";
 
 type TypingPracticePanelProps = {

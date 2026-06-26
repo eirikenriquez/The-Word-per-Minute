@@ -1,6 +1,6 @@
 import { SparklesIcon } from "@heroicons/react/24/outline";
 import type { ReactNode } from "react";
-import type { BookSummary, Translation } from "../../../types/verse";
+import type { BookSummary, Translation } from "../../../shared/types/verse";
 import { Button } from "../../../shared/ui/Button";
 
 type BibleReaderControlsProps = {

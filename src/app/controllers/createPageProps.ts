@@ -6,8 +6,8 @@ import type { BiblePageProps } from "../../pages/bible/BiblePage";
 import type { HomeCategory, HomePageProps } from "../../pages/home/HomePage";
 import type { LibraryPageProps } from "../../pages/library/LibraryPage";
 import type { PracticePageProps } from "../../pages/practice/PracticePage";
-import type { PracticeSource } from "../../types/app";
-import type { PracticePassage, PracticeStats } from "../../types/practice";
+import type { PracticeSource } from "../../shared/types/app";
+import type { PracticePassage, PracticeStats } from "../../shared/types/practice";
 import type { createAppActions } from "./createAppActions";
 
 type AppActions = ReturnType<typeof createAppActions>;

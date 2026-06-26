@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import type { PracticeStats } from "../../../types/practice";
+import type { PracticeStats } from "../../../shared/types/practice";
 
 const STATS_STORAGE_KEY = "the-word-per-minute-stats";
 

@@ -2,9 +2,9 @@ import { PersonalBests } from "./components/PersonalBests";
 import { PracticeControls } from "./components/PracticeControls";
 import { PracticePassageDisplay } from "./components/PracticePassageDisplay";
 import { TypingPracticePanel } from "./components/TypingPracticePanel";
-import type { PracticeSource } from "../../types/app";
-import type { PracticePassage, PracticeStats, PracticeStatus } from "../../types/practice";
-import type { SavedPassage } from "../../types/savedPassage";
+import type { PracticeSource } from "../../shared/types/app";
+import type { PracticePassage, PracticeStats, PracticeStatus } from "../../shared/types/practice";
+import type { SavedPassage } from "../../shared/types/savedPassage";
 
 export type PracticePageProps = {
   accuracy: number;

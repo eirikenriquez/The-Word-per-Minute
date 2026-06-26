@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import type { SavedPassage, SavedPassageUpdate } from "../../../types/savedPassage";
+import type { SavedPassage, SavedPassageUpdate } from "../../../shared/types/savedPassage";
 import { SavedPassageCard } from "./SavedPassageCard";
 import {
   SavedPassageFilters,

@@ -1,5 +1,5 @@
-import type { PracticeSource } from "../../../types/app";
-import type { SavedPassage } from "../../../types/savedPassage";
+import type { PracticeSource } from "../../../shared/types/app";
+import type { SavedPassage } from "../../../shared/types/savedPassage";
 import { FeaturedSaveAction } from "./FeaturedSaveAction";
 import { PracticeActionButtons } from "./PracticeActionButtons";
 import { SavedPassageSelect } from "./SavedPassageSelect";

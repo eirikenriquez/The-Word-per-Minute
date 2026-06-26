@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import type { AppMode, PracticeSource } from "../../types/app";
-import type { PassageResponse } from "../../types/featuredPassage";
-import type { SavedPassage } from "../../types/savedPassage";
-import type { Translation } from "../../types/verse";
+import type { AppMode, PracticeSource } from "../../shared/types/app";
+import type { PassageResponse } from "../../shared/types/featuredPassage";
+import type { SavedPassage } from "../../shared/types/savedPassage";
+import type { Translation } from "../../shared/types/verse";
 
 type UseAppDisplayStateParams = {
   appMode: AppMode;

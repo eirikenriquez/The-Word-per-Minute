@@ -1,4 +1,4 @@
-import type { AppMode } from "../../types/app";
+import type { AppMode } from "../../shared/types/app";
 import { PassageSaveControls } from "./PassageSaveControls";
 
 export type AppHeaderProps = {

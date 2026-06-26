@@ -6,7 +6,7 @@ import type {
   FeaturedPassageListResponse,
   PassageReference,
   PassageResponse,
-} from "../../types/featuredPassage";
+} from "../../shared/types/featuredPassage";
 import type {
   BibleBook,
   BookListResponse,
@@ -14,7 +14,7 @@ import type {
   ChapterResponse,
   Translation,
   TranslationListResponse,
-} from "../../types/verse";
+} from "../../shared/types/verse";
 import { formatPassageReference, formatSelectedVerseReference } from "../../shared/utils/passageReference";
 
 type BibleManifest = {

@@ -3,7 +3,7 @@ import {
   CUSTOM_SAVED_CATEGORY,
   DEFAULT_SAVED_CATEGORY,
 } from "../../saved-passages/savedPassageCategories";
-import type { FeaturedPassage } from "../../../types/featuredPassage";
+import type { FeaturedPassage } from "../../../shared/types/featuredPassage";
 
 /**
  * Builds category lists from featured passage themes.
