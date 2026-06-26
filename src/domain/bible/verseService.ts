@@ -15,7 +15,7 @@ import type {
   Translation,
   TranslationListResponse,
 } from "../../types/verse";
-import { formatPassageReference, formatSelectedVerseReference } from "../../utils/passageReference";
+import { formatPassageReference, formatSelectedVerseReference } from "../../shared/utils/passageReference";
 
 type BibleManifest = {
   translationId: string;

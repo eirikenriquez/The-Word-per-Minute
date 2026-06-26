@@ -1,7 +1,7 @@
 import { SparklesIcon } from "@heroicons/react/24/outline";
 import type { ReactNode } from "react";
 import type { BookSummary, Translation } from "../../../types/verse";
-import { Button } from "../../../ui/Button";
+import { Button } from "../../../shared/ui/Button";
 
 type BibleReaderControlsProps = {
   books: BookSummary[];

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { verseService } from "../verseService";
 import type { BibleChapter, BookSummary, Translation } from "../../../types/verse";
-import { getErrorMessage } from "../../../utils/errors";
+import { getErrorMessage } from "../../../shared/utils/errors";
 
 /**
  * Handles the manual library flow: translation, book, and chapter selection.

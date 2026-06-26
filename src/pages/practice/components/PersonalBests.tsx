@@ -1,6 +1,6 @@
 import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import type { PracticeStats } from "../../../types/practice";
-import { Button } from "../../../ui/Button";
+import { Button } from "../../../shared/ui/Button";
 
 type PersonalBestsProps = {
   stats: PracticeStats;

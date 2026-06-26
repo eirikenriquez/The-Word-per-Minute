@@ -8,7 +8,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import type { SavedPassage, SavedPassageUpdate } from "../../../types/savedPassage";
-import { Button } from "../../../ui/Button";
+import { Button } from "../../../shared/ui/Button";
 
 type SavedPassageCardProps = {
   isSelected: boolean;

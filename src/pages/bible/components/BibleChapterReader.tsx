@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { BibleChapter, BookSummary } from "../../../types/verse";
-import { Button } from "../../../ui/Button";
+import { Button } from "../../../shared/ui/Button";
 
 type BibleChapterReaderProps = {
   chapter: BibleChapter | null;

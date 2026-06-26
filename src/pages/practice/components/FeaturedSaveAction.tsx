@@ -1,5 +1,5 @@
 import { BookmarkIcon } from "@heroicons/react/24/outline";
-import { Button } from "../../../ui/Button";
+import { Button } from "../../../shared/ui/Button";
 
 type FeaturedSaveActionProps = {
   canSaveCurrentPassage: boolean;

@@ -6,7 +6,7 @@ import {
 import { verseService } from "../../bible/verseService";
 import type { PassageResponse } from "../../../types/featuredPassage";
 import type { SavedPassage, SavePassageInput, SavedPassageUpdate } from "../../../types/savedPassage";
-import { getErrorMessage } from "../../../utils/errors";
+import { getErrorMessage } from "../../../shared/utils/errors";
 
 /**
  * Manages saved passages through a repository boundary.
