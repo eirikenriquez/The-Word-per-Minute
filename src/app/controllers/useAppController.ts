@@ -1,8 +1,8 @@
 import { useState } from "react";
 import type { AppHeaderProps } from "../components/AppHeader";
 import type { AppRoutesProps } from "../components/AppRoutes";
-import { useReaderSelection } from "../../features/bible-reader/hooks/useReaderSelection";
-import { useVerseLibrary } from "../../features/bible-reader/hooks/useVerseLibrary";
+import { useReaderSelection } from "../../domain/bible/hooks/useReaderSelection";
+import { useVerseLibrary } from "../../domain/bible/hooks/useVerseLibrary";
 import { useFeaturedPassages } from "../../features/featured-passages/hooks/useFeaturedPassages";
 import { usePassageCategories } from "../../features/featured-passages/hooks/usePassageCategories";
 import { usePracticePassage } from "../../domain/practice/hooks/usePracticePassage";

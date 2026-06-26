@@ -1,5 +1,5 @@
-import type { useReaderSelection } from "../../features/bible-reader/hooks/useReaderSelection";
-import type { useVerseLibrary } from "../../features/bible-reader/hooks/useVerseLibrary";
+import type { useReaderSelection } from "../../domain/bible/hooks/useReaderSelection";
+import type { useVerseLibrary } from "../../domain/bible/hooks/useVerseLibrary";
 import type { usePracticeSession } from "../../domain/practice/hooks/usePracticeSession";
 import type { useSavedPassages } from "../../features/saved-passages/hooks/useSavedPassages";
 import type { BiblePageProps } from "../../pages/bible/BiblePage";

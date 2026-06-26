@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { verseService } from "../../../services/verseService";
+import { verseService } from "../../../domain/bible/verseService";
 import type { FeaturedPassage, PassageResponse } from "../../../types/featuredPassage";
 import { getErrorMessage } from "../../../utils/errors";
 

@@ -1,12 +1,12 @@
-import featuredPassagesData from "../data/featuredPassages.json";
-import translationsData from "../data/translations.json";
-import webManifest from "../data/bibles/web/manifest.json";
+import featuredPassagesData from "../../data/featuredPassages.json";
+import translationsData from "../../data/translations.json";
+import webManifest from "../../data/bibles/web/manifest.json";
 import type {
   FeaturedPassage,
   FeaturedPassageListResponse,
   PassageReference,
   PassageResponse,
-} from "../types/featuredPassage";
+} from "../../types/featuredPassage";
 import type {
   BibleBook,
   BookListResponse,
@@ -14,8 +14,8 @@ import type {
   ChapterResponse,
   Translation,
   TranslationListResponse,
-} from "../types/verse";
-import { formatPassageReference, formatSelectedVerseReference } from "../utils/passageReference";
+} from "../../types/verse";
+import { formatPassageReference, formatSelectedVerseReference } from "../../utils/passageReference";
 
 type BibleManifest = {
   translationId: string;
@@ -29,7 +29,7 @@ const manifestsByTranslation: Record<string, BibleManifest> = {
 };
 
 // Vite keeps each book as a lazy module so the app does not load the full Bible immediately.
-const bookModules = import.meta.glob("../data/bibles/*/books/*.json");
+const bookModules = import.meta.glob("../../data/bibles/*/books/*.json");
 
 /**
  * Looks up translation metadata before loading books or chapters.
@@ -42,7 +42,7 @@ function findTranslation(translationId: string) {
  * Loads a single Bible book JSON file on demand.
  */
 async function loadBook(translationId: string, bookId: string) {
-  const modulePath = `../data/bibles/${translationId}/books/${bookId}.json`;
+  const modulePath = `../../data/bibles/${translationId}/books/${bookId}.json`;
   const loadModule = bookModules[modulePath];
 
   if (!loadModule) {
