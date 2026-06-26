@@ -186,7 +186,7 @@ export function SavedPassageCard({
 }
 
 function MetadataDivider() {
-  return <span aria-hidden="true">·</span>;
+  return <span aria-hidden="true">&middot;</span>;
 }
 
 function getSourceLabel(passage: SavedPassage) {

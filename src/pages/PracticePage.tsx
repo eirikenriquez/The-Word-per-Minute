@@ -3,7 +3,7 @@ import { PracticeControls } from "../features/practice/components/PracticeContro
 import { PracticePassageDisplay } from "../features/practice/components/PracticePassageDisplay";
 import { TypingPracticePanel } from "../features/practice/components/TypingPracticePanel";
 import type { PracticeSource } from "../types/app";
-import type { PracticePassage, PracticeStats, TypingMetrics } from "../types/practice";
+import type { PracticePassage, PracticeStats, PracticeStatus } from "../types/practice";
 import type { SavedPassage } from "../types/savedPassage";
 
 export type PracticePageProps = {
@@ -18,7 +18,7 @@ export type PracticePageProps = {
   savedPassages: SavedPassage[];
   selectedSavedPassageId: string;
   stats: PracticeStats;
-  status: TypingMetrics["status"];
+  status: PracticeStatus;
   translationName: string;
   typedText: string;
   wpm: number;

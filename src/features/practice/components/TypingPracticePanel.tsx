@@ -1,5 +1,5 @@
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
-import type { TypingMetrics } from "../../../types/practice";
+import type { PracticeStatus } from "../../../types/practice";
 import { Button } from "../../../ui/Button";
 
 type TypingPracticePanelProps = {
@@ -10,7 +10,7 @@ type TypingPracticePanelProps = {
   onCompletionAction?: () => void;
   onTypingChange: (typedText: string) => void;
   progress: number;
-  status: TypingMetrics["status"];
+  status: PracticeStatus;
   typedText: string;
   wpm: number;
 };

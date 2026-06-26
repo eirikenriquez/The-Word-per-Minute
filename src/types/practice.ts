@@ -6,14 +6,7 @@ export type PracticeStats = {
   completedAttempts: number;
 };
 
-export type TypingMetrics = {
-  correctCharacters: number;
-  progress: number;
-  accuracy: number;
-  wpm: number;
-  isComplete: boolean;
-  status: "Ready" | "Typing" | "Complete";
-};
+export type PracticeStatus = "Ready" | "Typing" | "Complete";
 
 export type PracticePassage = {
   startVerse: number;

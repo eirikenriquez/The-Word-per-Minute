@@ -117,16 +117,6 @@ export function useVerseLibrary() {
     setSelectedChapter(chapterNumber);
   }
 
-  function selectRandomChapter() {
-    const randomBook = books[Math.floor(Math.random() * books.length)];
-    if (!randomBook) return;
-
-    const chapterNumber = Math.floor(Math.random() * randomBook.chapterCount) + 1;
-
-    setSelectedBookId(randomBook.id);
-    setSelectedChapter(chapterNumber);
-  }
-
   return {
     books,
     chapter,
@@ -134,7 +124,6 @@ export function useVerseLibrary() {
     isLoading,
     selectBook,
     selectChapter,
-    selectRandomChapter,
     selectTranslation,
     selectedBook,
     selectedBookId,

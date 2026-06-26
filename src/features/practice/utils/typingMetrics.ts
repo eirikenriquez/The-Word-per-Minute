@@ -1,4 +1,4 @@
-import type { PracticePassage, TypingMetrics } from "../../../types/practice";
+import type { PracticePassage, PracticeStatus } from "../../../types/practice";
 
 type PracticeSessionMetricsInput = {
   passage: PracticePassage | undefined;
@@ -13,7 +13,7 @@ type PracticeSessionMetrics = {
   accuracy: number;
   isPassageComplete: boolean;
   progress: number;
-  status: TypingMetrics["status"];
+  status: PracticeStatus;
   targetText: string;
   wpm: number;
 };
