@@ -33,10 +33,12 @@ export function SavedPassageCard({
   onUpdatePassage,
 }: SavedPassageCardProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const [isConfirmingRemove, setIsConfirmingRemove] = useState(false);
   const [draftTitle, setDraftTitle] = useState(passage.title);
   const [draftCategory, setDraftCategory] = useState(passage.category);
 
   function startEditing() {
+    setIsConfirmingRemove(false);
     setDraftTitle(passage.title);
     setDraftCategory(passage.category);
     setIsEditing(true);
@@ -46,6 +48,10 @@ export function SavedPassageCard({
     setDraftTitle(passage.title);
     setDraftCategory(passage.category);
     setIsEditing(false);
+  }
+
+  function confirmRemove() {
+    onRemovePassage(passage.id);
   }
 
   function saveEdits() {
@@ -141,6 +147,24 @@ export function SavedPassageCard({
                 Cancel
               </Button>
             </div>
+          ) : isConfirmingRemove ? (
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
+              <p className="text-sm font-medium text-red-700 dark:text-red-300">
+                Remove this saved passage?
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <Button onClick={() => setIsConfirmingRemove(false)}>
+                  Cancel
+                </Button>
+                <Button
+                  variant="danger"
+                  onClick={confirmRemove}
+                >
+                  <TrashIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
+                  Remove
+                </Button>
+              </div>
+            </div>
           ) : (
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex flex-wrap gap-2">
@@ -171,7 +195,7 @@ export function SavedPassageCard({
                 </Button>
                 <Button
                   variant="danger"
-                  onClick={() => onRemovePassage(passage.id)}
+                  onClick={() => setIsConfirmingRemove(true)}
                 >
                   <TrashIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
                   Remove
