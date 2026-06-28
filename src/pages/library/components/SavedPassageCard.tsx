@@ -67,7 +67,7 @@ export function SavedPassageCard({
     <article
       className={`rounded-md border p-5 transition ${
         isSelected
-          ? "border-accent-line bg-accent-soft ring-1 ring-accent-line"
+          ? "border-accent-line bg-surface ring-1 ring-accent-line"
           : "border-line bg-surface hover:border-line-strong"
       }`}
     >
