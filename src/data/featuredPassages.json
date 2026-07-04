@@ -119,6 +119,106 @@
       "chapter": 91,
       "startVerse": 1,
       "endVerse": 4
+    },
+    {
+      "id": "ps-4-8",
+      "title": "Rest in Safety",
+      "theme": "Peace",
+      "translationId": "web",
+      "bookId": "Ps",
+      "chapter": 4,
+      "startVerse": 8,
+      "endVerse": 8
+    },
+    {
+      "id": "col-3-2",
+      "title": "Set Your Mind Above",
+      "theme": "Discipleship",
+      "translationId": "web",
+      "bookId": "Col",
+      "chapter": 3,
+      "startVerse": 2,
+      "endVerse": 2
+    },
+    {
+      "id": "rom-8-18",
+      "title": "Future Glory",
+      "theme": "Hope",
+      "translationId": "web",
+      "bookId": "Rom",
+      "chapter": 8,
+      "startVerse": 18,
+      "endVerse": 18
+    },
+    {
+      "id": "jer-29-11",
+      "title": "Plans for Peace",
+      "theme": "Hope",
+      "translationId": "web",
+      "bookId": "Jer",
+      "chapter": 29,
+      "startVerse": 11,
+      "endVerse": 11
+    },
+    {
+      "id": "matt-21-22",
+      "title": "Ask in Faith",
+      "theme": "Faith",
+      "translationId": "web",
+      "bookId": "Matt",
+      "chapter": 21,
+      "startVerse": 22,
+      "endVerse": 22
+    },
+    {
+      "id": "jas-1-3",
+      "title": "Faith Tested",
+      "theme": "Character",
+      "translationId": "web",
+      "bookId": "Jas",
+      "chapter": 1,
+      "startVerse": 3,
+      "endVerse": 3
+    },
+    {
+      "id": "ps-37-5",
+      "title": "Commit Your Way",
+      "theme": "Wisdom",
+      "translationId": "web",
+      "bookId": "Ps",
+      "chapter": 37,
+      "startVerse": 5,
+      "endVerse": 5
+    },
+    {
+      "id": "matt-6-33",
+      "title": "Seek First",
+      "theme": "Kingdom",
+      "translationId": "web",
+      "bookId": "Matt",
+      "chapter": 6,
+      "startVerse": 33,
+      "endVerse": 33
+    },
+    {
+      "id": "luke-18-1",
+      "title": "Always Pray",
+      "theme": "Prayer",
+      "translationId": "web",
+      "bookId": "Luke",
+      "chapter": 18,
+      "startVerse": 1,
+      "endVerse": 1
+    },
+    {
+      "id": "jas-1-12",
+      "title": "The Crown of Life",
+      "theme": "Perseverance",
+      "translationId": "web",
+      "bookId": "Jas",
+      "chapter": 1,
+      "startVerse": 12,
+      "endVerse": 12
     }
   ]
 }
