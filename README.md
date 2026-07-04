@@ -7,6 +7,7 @@ The app helps users discover scripture, practise typing curated passages, read B
 ## Current Features
 
 - Featured passage typing practice
+- Curated featured passages grouped into focused themes
 - Fixed-height, automatically scrolling passage view
 - WPM and accuracy tracking
 - Responsive Practice source controls and a compact live-metrics summary
