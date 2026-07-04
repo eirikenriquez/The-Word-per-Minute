@@ -3,7 +3,7 @@
     {
       "id": "john-3-16-17",
       "title": "God's Love",
-      "theme": "Gospel",
+      "theme": "Love & Grace",
       "translationId": "web",
       "bookId": "John",
       "chapter": 3,
@@ -13,7 +13,7 @@
     {
       "id": "ps-23-1-6",
       "title": "The Shepherd",
-      "theme": "Comfort",
+      "theme": "Peace & Comfort",
       "translationId": "web",
       "bookId": "Ps",
       "chapter": 23,
@@ -23,7 +23,7 @@
     {
       "id": "rom-8-38-39",
       "title": "Nothing Can Separate",
-      "theme": "Assurance",
+      "theme": "Faith & Trust",
       "translationId": "web",
       "bookId": "Rom",
       "chapter": 8,
@@ -33,7 +33,7 @@
     {
       "id": "phil-4-6-7",
       "title": "Peace Beyond Understanding",
-      "theme": "Peace",
+      "theme": "Peace & Comfort",
       "translationId": "web",
       "bookId": "Phil",
       "chapter": 4,
@@ -63,7 +63,7 @@
     {
       "id": "1cor-13-4-8",
       "title": "Love Is Patient",
-      "theme": "Love",
+      "theme": "Love & Grace",
       "translationId": "web",
       "bookId": "1Cor",
       "chapter": 13,
@@ -83,7 +83,7 @@
     {
       "id": "rom-12-1-2",
       "title": "Renew Your Mind",
-      "theme": "Discipleship",
+      "theme": "Character & Endurance",
       "translationId": "web",
       "bookId": "Rom",
       "chapter": 12,
@@ -93,7 +93,7 @@
     {
       "id": "gal-5-22-23",
       "title": "Fruit of the Spirit",
-      "theme": "Character",
+      "theme": "Character & Endurance",
       "translationId": "web",
       "bookId": "Gal",
       "chapter": 5,
@@ -103,7 +103,7 @@
     {
       "id": "eph-2-8-10",
       "title": "Saved by Grace",
-      "theme": "Grace",
+      "theme": "Love & Grace",
       "translationId": "web",
       "bookId": "Eph",
       "chapter": 2,
@@ -113,7 +113,7 @@
     {
       "id": "ps-91-1-4",
       "title": "Under His Wings",
-      "theme": "Protection",
+      "theme": "Peace & Comfort",
       "translationId": "web",
       "bookId": "Ps",
       "chapter": 91,
@@ -123,7 +123,7 @@
     {
       "id": "ps-4-8",
       "title": "Rest in Safety",
-      "theme": "Peace",
+      "theme": "Peace & Comfort",
       "translationId": "web",
       "bookId": "Ps",
       "chapter": 4,
@@ -133,7 +133,7 @@
     {
       "id": "col-3-2",
       "title": "Set Your Mind Above",
-      "theme": "Discipleship",
+      "theme": "Character & Endurance",
       "translationId": "web",
       "bookId": "Col",
       "chapter": 3,
@@ -163,7 +163,7 @@
     {
       "id": "matt-21-22",
       "title": "Ask in Faith",
-      "theme": "Faith",
+      "theme": "Faith & Trust",
       "translationId": "web",
       "bookId": "Matt",
       "chapter": 21,
@@ -173,7 +173,7 @@
     {
       "id": "jas-1-3",
       "title": "Faith Tested",
-      "theme": "Character",
+      "theme": "Character & Endurance",
       "translationId": "web",
       "bookId": "Jas",
       "chapter": 1,
@@ -213,7 +213,7 @@
     {
       "id": "jas-1-12",
       "title": "The Crown of Life",
-      "theme": "Perseverance",
+      "theme": "Character & Endurance",
       "translationId": "web",
       "bookId": "Jas",
       "chapter": 1,
