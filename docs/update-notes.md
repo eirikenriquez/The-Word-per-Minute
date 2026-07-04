@@ -1,6 +1,6 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260704.1.a`
+Current documentation version: `260704.1.b`
 Last updated: 04/07/26
 
 ## Update Rule
@@ -36,6 +36,20 @@ Suggested next versions:
 - Small same-day documentation update: `260626.1.b`
 - Larger same-day documentation update: `260626.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260704.1.b`
+
+This version documents Vercel deployment readiness.
+
+It updates:
+
+- the README deployment section with the Vercel build, output, install, and environment variable settings,
+- the architecture documentation to include `vercel.json`,
+- deployment notes explaining the SPA route rewrite for hosted browser routes,
+- known technical debt now that Vercel configuration exists,
+- the stale saved-passage removal note to clarify that confirmation exists but undo does not.
+
+This update documents the `Add Vercel SPA routing config` commit and prepares the app for hosted Vercel verification.
 
 ## `260704.1.a`
 

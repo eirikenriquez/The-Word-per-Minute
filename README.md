@@ -42,6 +42,19 @@ npm run lint
 npm run build
 ```
 
+## Deployment
+
+The app is configured for Vercel as a Vite single page app.
+
+Use these Vercel build settings:
+
+- Build Command: `npm run build`
+- Output Directory: `dist`
+- Install Command: `npm install`
+- Environment Variables: none required yet
+
+`vercel.json` rewrites all routes to `index.html` so direct links and refreshes work for `/practice`, `/bible`, and `/library`.
+
 ## Project Documentation
 
 - Current architecture and file structure: [`docs/documentation.md`](docs/documentation.md)

@@ -1,6 +1,6 @@
 # The Word per Minute Documentation
 
-Document version: `260704.1.a`
+Document version: `260704.1.b`
 Last updated: 04/07/26
 Update rule: only update this file when explicitly requested by the project owner.
 
@@ -49,6 +49,7 @@ The main architecture layers are:
 - `src/data`: local Bible and featured-passage JSON data.
 - `src/theme.css`: semantic light/dark color tokens exposed through Tailwind.
 - `public/brand`: theme-aware application symbol assets.
+- `vercel.json`: Vercel SPA route rewrite configuration.
 
 ## Routes
 
@@ -280,6 +281,8 @@ public/
     symbol-dark.svg
     symbol-light.svg
   favicon.svg
+
+vercel.json
 ```
 
 ## Key Files And Responsibilities
@@ -515,6 +518,19 @@ Featured passage data currently contains 22 curated passages. Themes are intenti
 - Prayer
 - Wisdom
 
+## Deployment
+
+The app is configured for Vercel as a Vite single page app.
+
+Build settings:
+
+- Build Command: `npm run build`
+- Output Directory: `dist`
+- Install Command: `npm install`
+- Environment Variables: none required yet
+
+`vercel.json` rewrites all requests to `/index.html` so browser routes such as `/practice`, `/bible`, and `/library` keep working when opened directly or refreshed.
+
 ## Theme And Motion
 
 `src/index.css` contains the global CSS entry point and motion helpers:
@@ -592,9 +608,9 @@ flowchart TD
 - The app uses local JSON Bible data only; no hosted API yet.
 - Form-control styling is repeated across components and may later benefit from a small shared primitive if it begins to drift.
 - Motion does not yet account for the user's reduced-motion preference.
-- Saved-passage removal has no confirmation or undo.
+- Saved-passage removal has confirmation but no undo.
 - Automated tests are not set up yet.
-- Vercel is the intended future deployment target, but deployment and SPA rewrite configuration are not yet included.
+- Vercel deployment configuration is present, but the hosted deployment still needs manual verification.
 
 ## Confirmed Product Decisions
 
@@ -605,7 +621,7 @@ flowchart TD
 - In Bible mode, saving with no selected verses intentionally saves the whole current chapter.
 - Saved passages can be reopened from Library in their original Bible context.
 - Saved featured passages highlight their full verse range, exact custom selections retain their selected verses, and whole-chapter saves open without individual highlights.
-- Vercel is the planned future deployment platform.
+- Vercel is the planned frontend deployment platform.
 - The app uses a warm stone foundation with a restrained ember accent rather than bright blue primary actions.
 - Interface icons are contextual aids and should remain paired with text for important actions.
 - The header brand uses the standalone symbol beside live HTML text rather than embedding the full wordmark.
@@ -614,12 +630,12 @@ flowchart TD
 
 ## Likely Next Architecture Steps
 
-1. Manually test `/`, `/practice`, `/bible`, and `/library`.
-2. Confirm refresh and browser back/forward work correctly on each route.
-3. Visually QA the branded header, semantic colors, icons, floating theme control, and back-to-top button in both themes.
-4. Tune the Practice passage viewport height and automatic scrolling from real typing use.
-5. Add reduced-motion handling.
-6. Keep `useAppController` limited to cross-feature composition.
-7. Keep `verseService` API-shaped so local JSON can later move to hosted data.
-8. Keep saved passage storage behind `savedPassageRepository` so it can later move to a database.
-9. Add Vercel configuration and verify SPA route fallbacks when deployment work begins.
+1. Deploy the app to Vercel.
+2. Manually test `/`, `/practice`, `/bible`, and `/library` on the hosted deployment.
+3. Confirm refresh and browser back/forward work correctly on each hosted route.
+4. Visually QA the branded header, semantic colors, icons, floating theme control, and back-to-top button in both themes.
+5. Tune the Practice passage viewport height and automatic scrolling from real typing use.
+6. Add reduced-motion handling.
+7. Keep `useAppController` limited to cross-feature composition.
+8. Keep `verseService` API-shaped so local JSON can later move to hosted data.
+9. Keep saved passage storage behind `savedPassageRepository` so it can later move to a database.
