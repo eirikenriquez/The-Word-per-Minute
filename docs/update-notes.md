@@ -1,7 +1,7 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260626.1.a`
-Last updated: 26/06/26
+Current documentation version: `260704.1.a`
+Last updated: 04/07/26
 
 ## Update Rule
 
@@ -36,6 +36,22 @@ Suggested next versions:
 - Small same-day documentation update: `260626.1.b`
 - Larger same-day documentation update: `260626.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260704.1.a`
+
+This version documents the featured passage content and category cleanup branch.
+
+It updates:
+
+- the README feature list to mention focused featured themes,
+- Home behaviour to note the balanced desktop category grid,
+- featured-passage domain wording to describe focused category derivation,
+- data documentation to record 22 curated featured passages,
+- the current broad featured theme set,
+- confirmed product decisions to keep featured themes broad and navigational,
+- known technical debt to clarify that categories are generated from featured themes.
+
+This update documents the friend-suggested passage additions, theme consolidation, and Home category grid balancing.
 
 ## `260626.1.a`
 

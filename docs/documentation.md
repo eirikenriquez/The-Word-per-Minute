@@ -1,7 +1,7 @@
 # The Word per Minute Documentation
 
-Document version: `260626.1.a`
-Last updated: 26/06/26
+Document version: `260704.1.a`
+Last updated: 04/07/26
 Update rule: only update this file when explicitly requested by the project owner.
 
 ## Purpose
@@ -86,6 +86,7 @@ It:
 - shows animated counters for curated and saved passage counts,
 - starts a random featured passage,
 - starts a random featured passage from a chosen category,
+- presents featured categories as a balanced desktop grid,
 - opens the Bible reader,
 - opens Library when saved passages exist.
 
@@ -463,7 +464,7 @@ Owns curated passage discovery:
 
 - featured passage loading,
 - random featured passage selection,
-- featured category derivation,
+- focused featured category derivation,
 - saved-passage category derivation from featured themes.
 
 ### `src/domain/saved-passages`
@@ -502,6 +503,17 @@ src/data/bibles/web/
     Exod.json
     ...
 ```
+
+Featured passage data currently contains 22 curated passages. Themes are intentionally broad so the Home category picker stays useful rather than diluted:
+
+- Character & Endurance
+- Faith & Trust
+- Hope
+- Kingdom
+- Love & Grace
+- Peace & Comfort
+- Prayer
+- Wisdom
 
 ## Theme And Motion
 
@@ -574,7 +586,7 @@ flowchart TD
 
 - `useAppController` is the main app composition root and should not become a dumping ground for feature logic.
 - The UI overhaul still needs a final desktop visual QA pass in light and dark mode.
-- Category management is still hardcoded/generated from featured themes.
+- Category management is still generated from featured themes.
 - Library filtering is UI-only and still backed by local saved passage data.
 - User data is local-only through `localStorage`.
 - The app uses local JSON Bible data only; no hosted API yet.
@@ -597,6 +609,7 @@ flowchart TD
 - The app uses a warm stone foundation with a restrained ember accent rather than bright blue primary actions.
 - Interface icons are contextual aids and should remain paired with text for important actions.
 - The header brand uses the standalone symbol beside live HTML text rather than embedding the full wordmark.
+- Featured passage themes should stay broad and navigational; narrower topical distinctions can become tags later if the passage library grows.
 - Desktop keyboard practice is the current priority; mobile-specific optimization is not a near-term focus.
 
 ## Likely Next Architecture Steps

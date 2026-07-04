@@ -118,7 +118,7 @@ export function HomePage({
             {featuredHomeCategories.length} themes
           </span>
         </div>
-        <div className="grid gap-x-4 gap-y-2 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-x-4 gap-y-2 sm:grid-cols-2 lg:grid-cols-4">
           {featuredHomeCategories.map((category) => (
             <HomeCategoryButton
               key={category.label}
