@@ -1,7 +1,7 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260704.1.b`
-Last updated: 04/07/26
+Current documentation version: `260705.1.a`
+Last updated: 05/07/26
 
 ## Update Rule
 
@@ -36,6 +36,25 @@ Suggested next versions:
 - Small same-day documentation update: `260626.1.b`
 - Larger same-day documentation update: `260626.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260705.1.a`
+
+This version documents the planned Supabase backend foundation.
+
+It updates:
+
+- the tech stack notes to record Supabase/Postgres as the planned backend direction,
+- the architecture documentation with a planned backend flow from Vercel-hosted frontend to Supabase Auth and Postgres,
+- the initial backend scope for auth, cloud saved passages, practice attempts, guest localStorage, and local import,
+- the out-of-scope backend items for the first phase, including hosted Bible text and custom Node/Express APIs,
+- planned Vite/Supabase environment variables,
+- the initial database table design for `profiles`, `saved_passages`, and `practice_attempts`,
+- the initial Row Level Security policy shape,
+- the migration strategy for keeping existing repository and service boundaries,
+- the architecture diagram with planned Supabase dependencies,
+- known technical debt, confirmed product decisions, and likely next backend steps.
+
+This update is documentation-only. It prepares the branch for incremental Supabase setup work without changing runtime behaviour.
 
 ## `260704.1.b`
 

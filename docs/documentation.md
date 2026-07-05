@@ -1,7 +1,7 @@
 # The Word per Minute Documentation
 
-Document version: `260704.1.b`
-Last updated: 04/07/26
+Document version: `260705.1.a`
+Last updated: 05/07/26
 Update rule: only update this file when explicitly requested by the project owner.
 
 ## Purpose
@@ -29,7 +29,7 @@ Version history and documentation update notes live in `docs/update-notes.md`.
 - Local JSON Bible data
 - `localStorage` for saved passages, personal best stats, and theme preference
 
-No backend, database, authentication, or external Bible API is currently used.
+No backend, database, authentication, or external Bible API is currently used in production. Supabase/Postgres is the planned backend direction.
 
 ## High-Level Architecture
 
@@ -531,6 +531,134 @@ Build settings:
 
 `vercel.json` rewrites all requests to `/index.html` so browser routes such as `/practice`, `/bible`, and `/library` keep working when opened directly or refreshed.
 
+## Planned Backend Architecture
+
+The planned backend direction is Supabase with Postgres, Supabase Auth, and Row Level Security.
+
+Vercel remains responsible for hosting the Vite frontend. Supabase will be responsible for cloud user data:
+
+```txt
+Browser
+  -> Vercel-hosted React/Vite app
+    -> Supabase Auth
+    -> Supabase Postgres
+      -> Row Level Security policies
+```
+
+The first backend phase should not move Bible text into the database. Bible data stays local while the app validates user accounts, synced saved passages, and practice history.
+
+Initial backend scope:
+
+- Supabase Auth for user accounts and sessions.
+- Postgres tables for user-owned saved passages.
+- Postgres tables for practice attempts and personal progress history.
+- Local guest mode retained through `localStorage`.
+- Optional signed-in import flow from existing `localStorage` saved passages.
+
+Out of initial backend scope:
+
+- Hosted Bible text.
+- Multiple licensed Bible translations.
+- Admin UI for featured passages.
+- Public sharing or community passage collections.
+- Custom Node/Express API.
+
+### Planned Supabase Environment Variables
+
+Vite requires browser-exposed environment variables to use the `VITE_` prefix:
+
+```txt
+VITE_SUPABASE_URL
+VITE_SUPABASE_ANON_KEY
+```
+
+The Supabase anon key is intended for browser use when tables are protected by Row Level Security. The service-role key must never be exposed to the Vite frontend.
+
+### Planned Database Tables
+
+Initial tables:
+
+```txt
+profiles
+  id uuid primary key references auth.users(id)
+  display_name text
+  created_at timestamptz
+
+saved_passages
+  id uuid primary key
+  user_id uuid references auth.users(id)
+  title text
+  category text
+  theme text
+  reference text
+  translation_id text
+  translation_abbreviation text
+  book_id text
+  book_name text
+  chapter integer
+  start_verse integer
+  end_verse integer
+  selected_verses integer[]
+  source text
+  created_at timestamptz
+  updated_at timestamptz
+
+practice_attempts
+  id uuid primary key
+  user_id uuid references auth.users(id)
+  saved_passage_id uuid null references saved_passages(id)
+  featured_passage_id text null
+  passage_reference text
+  translation_id text
+  book_id text
+  chapter integer
+  start_verse integer
+  end_verse integer
+  selected_verses integer[]
+  wpm integer
+  accuracy integer
+  completed_at timestamptz
+```
+
+Possible later tables:
+
+```txt
+featured_passages
+passage_categories
+translations
+books
+chapters
+verses
+```
+
+Featured passages can remain local JSON until the app needs admin editing or remote content management.
+
+### Planned Row Level Security Rules
+
+Every user-owned table should enable Row Level Security.
+
+Planned policy shape:
+
+- signed-in users can read their own profile,
+- signed-in users can insert/update their own profile,
+- signed-in users can read their own saved passages,
+- signed-in users can insert/update/delete their own saved passages,
+- signed-in users can read their own practice attempts,
+- signed-in users can insert their own practice attempts.
+
+Public Bible or featured-passage tables, if added later, can use read-only public policies after translation licensing is confirmed.
+
+### Planned Migration Strategy
+
+The current repository boundaries should make the backend migration incremental:
+
+- keep `verseService` local/API-shaped for Bible and featured passage reads,
+- keep `savedPassageRepository` as the storage boundary,
+- add a Supabase client in `src/shared` or `src/domain/auth`,
+- add auth/session state as its own domain module,
+- keep guest `localStorage` behaviour until signed-in cloud saves are stable,
+- offer a one-time import from local saved passages after sign-in.
+
 ## Theme And Motion
 
 `src/index.css` contains the global CSS entry point and motion helpers:
@@ -594,6 +722,8 @@ flowchart TD
   bibleDomain --> verseService
   savedDomain --> verseService
   savedDomain --> localStorage["localStorage"]
+  savedDomain -. planned .-> supabase["Supabase Auth + Postgres"]
+  practiceDomain -. planned .-> supabase
   routes --> pageUi["pages/* visual components"]
   pageUi --> shared["shared/ui + shared/types + shared/utils"]
 ```
@@ -611,6 +741,8 @@ flowchart TD
 - Saved-passage removal has confirmation but no undo.
 - Automated tests are not set up yet.
 - Vercel deployment configuration is present, but the hosted deployment still needs manual verification.
+- Supabase/Postgres backend work is planned but not implemented.
+- Bible translation licensing must be resolved before hosting additional Bible text.
 
 ## Confirmed Product Decisions
 
@@ -627,15 +759,17 @@ flowchart TD
 - The header brand uses the standalone symbol beside live HTML text rather than embedding the full wordmark.
 - Featured passage themes should stay broad and navigational; narrower topical distinctions can become tags later if the passage library grows.
 - Desktop keyboard practice is the current priority; mobile-specific optimization is not a near-term focus.
+- Supabase/Postgres is the preferred backend direction over a custom Node/Express API for the first cloud-sync phase.
+- Bible text should stay local during the first backend phase; user-owned saved passages and practice history should move first.
 
 ## Likely Next Architecture Steps
 
-1. Deploy the app to Vercel.
-2. Manually test `/`, `/practice`, `/bible`, and `/library` on the hosted deployment.
-3. Confirm refresh and browser back/forward work correctly on each hosted route.
-4. Visually QA the branded header, semantic colors, icons, floating theme control, and back-to-top button in both themes.
-5. Tune the Practice passage viewport height and automatic scrolling from real typing use.
-6. Add reduced-motion handling.
-7. Keep `useAppController` limited to cross-feature composition.
-8. Keep `verseService` API-shaped so local JSON can later move to hosted data.
-9. Keep saved passage storage behind `savedPassageRepository` so it can later move to a database.
+1. Add Supabase project setup notes and environment variable examples.
+2. Add Supabase client configuration without changing runtime behaviour.
+3. Add auth/session domain state.
+4. Create the initial Supabase SQL schema and Row Level Security policies.
+5. Keep guest saved passages in `localStorage` while adding signed-in cloud saves.
+6. Add a one-time local saved-passage import flow after sign-in.
+7. Move practice attempts and personal best history to Supabase.
+8. Keep `useAppController` limited to cross-feature composition.
+9. Keep `verseService` API-shaped so local JSON can later move to hosted data if licensing allows it.
