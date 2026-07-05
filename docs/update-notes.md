@@ -1,6 +1,6 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260706.1.a`
+Current documentation version: `260706.1.b`
 Last updated: 06/07/26
 
 ## Update Rule
@@ -36,6 +36,20 @@ Suggested next versions:
 - Small same-day documentation update: `260626.1.b`
 - Larger same-day documentation update: `260626.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260706.1.b`
+
+This version documents the Supabase auth session hook.
+
+It updates:
+
+- the current file tree to include `src/domain/auth/useAuthSession.ts`,
+- key file responsibilities for observing Supabase Auth session state,
+- auth domain responsibilities now that session state exists,
+- known technical debt to distinguish session state from sign-in UI and cloud persistence,
+- likely next backend steps toward sign-in and sign-out UI.
+
+This update adds session observation only. It does not render auth UI, sign users in, or move saved passages out of `localStorage`.
 
 ## `260706.1.a`
 

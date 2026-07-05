@@ -1,6 +1,6 @@
 # The Word per Minute Documentation
 
-Document version: `260706.1.a`
+Document version: `260706.1.b`
 Last updated: 06/07/26
 Update rule: only update this file when explicitly requested by the project owner.
 
@@ -209,6 +209,7 @@ src/
   domain/
     auth/
       checkSupabaseConnection.ts
+      useAuthSession.ts
     bible/
       hooks/
         useReaderSelection.ts
@@ -458,6 +459,18 @@ Current behaviour:
 - does not create or query app database tables,
 - is not wired into runtime UI yet.
 
+### `src/domain/auth/useAuthSession.ts`
+
+Tracks the current Supabase Auth session.
+
+Current behaviour:
+
+- loads the current session from Supabase Auth,
+- subscribes to future auth state changes,
+- exposes loading, error, session, user, and signed-in state,
+- does not render sign-in or sign-out UI,
+- does not replace guest `localStorage` saved passages or practice stats.
+
 ### `supabase/schema.sql`
 
 Defines the planned first Supabase database schema.
@@ -505,7 +518,8 @@ Owns authentication-facing app logic.
 Current status:
 
 - contains a manual Supabase connection/session check helper,
-- does not yet own sign-in, sign-out, session persistence UI, or profile state.
+- contains a Supabase session observer hook,
+- does not yet own sign-in, sign-out UI, profile editing, or cloud persistence.
 
 ### `src/domain/bible`
 
@@ -859,8 +873,8 @@ flowchart TD
 - Saved-passage removal has confirmation but no undo.
 - Automated tests are not set up yet.
 - Vercel deployment configuration is present, but the hosted deployment still needs manual verification.
-- Supabase/Postgres schema and Row Level Security setup SQL has been run in Supabase, but app-side auth and cloud persistence still need to be built.
-- Supabase client configuration and a manual Auth session check helper exist, but sign-in UI and cloud persistence are not implemented.
+- Supabase/Postgres schema and Row Level Security setup SQL has been run in Supabase, but cloud persistence still needs to be built.
+- Supabase client configuration, a manual Auth session check helper, and an auth session hook exist, but sign-in UI and cloud persistence are not implemented.
 - Bible translation licensing must be resolved before hosting additional Bible text.
 
 ## Confirmed Product Decisions
@@ -885,7 +899,7 @@ flowchart TD
 
 1. Create the Supabase project and add `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` locally and in Vercel.
 2. Verify the Supabase tables and policies in the dashboard after running `supabase/schema.sql`.
-3. Add auth/session domain state and UI.
+3. Add sign-in and sign-out UI backed by the auth session hook.
 4. Keep guest saved passages in `localStorage` while adding signed-in cloud saves.
 5. Add a one-time local saved-passage import flow after sign-in.
 6. Move practice attempts and personal best history to Supabase.
