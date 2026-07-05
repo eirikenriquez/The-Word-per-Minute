@@ -1,6 +1,6 @@
 # The Word per Minute Documentation
 
-Document version: `260706.1.c`
+Document version: `260706.1.d`
 Last updated: 06/07/26
 Update rule: only update this file when explicitly requested by the project owner.
 
@@ -374,7 +374,7 @@ Provides the app page frame:
 
 - linked brand symbol and app title,
 - sticky icon-supported global navigation,
-- Supabase magic-link sign-in and sign-out controls,
+- Supabase email/password sign-in, account creation, and sign-out controls,
 - floating light/dark theme button,
 - main content width,
 - app background,
@@ -394,17 +394,19 @@ Current behaviour:
 
 ### `src/app/components/AuthControls.tsx`
 
-Shows the first Supabase authentication UI in the app shell.
+Shows the first Supabase email/password authentication UI in the app shell.
 
 Current behaviour:
 
 - accepts an email address,
-- sends a Supabase magic sign-in link,
+- accepts a password,
+- signs in existing Supabase users,
+- creates new Supabase users,
 - shows a signed-in user's email after the session is established,
 - lets signed-in users sign out,
 - does not save passages or practice attempts to Supabase yet.
 
-Supabase Auth redirect URLs must include the local development URL and deployed Vercel URL before magic links are reliable in both environments.
+Supabase Auth redirect URLs must include the local development URL and deployed Vercel URL before email confirmation redirects are reliable in both environments.
 
 ### `src/shared/ui/Button.tsx`
 
@@ -484,7 +486,7 @@ Current behaviour:
 - loads the current session from Supabase Auth,
 - subscribes to future auth state changes,
 - exposes loading, error, session, user, and signed-in state,
-- exposes email magic-link sign-in and sign-out actions,
+- exposes email/password sign-in, account creation, and sign-out actions,
 - does not replace guest `localStorage` saved passages or practice stats.
 
 ### `supabase/schema.sql`
@@ -535,7 +537,7 @@ Current status:
 
 - contains a manual Supabase connection/session check helper,
 - contains a Supabase session observer hook,
-- supports email magic-link sign-in and sign-out through the app shell,
+- supports email/password sign-in, account creation, and sign-out through the app shell,
 - does not yet own profile editing or cloud persistence.
 
 ### `src/domain/bible`
@@ -810,7 +812,7 @@ The current repository boundaries should make the backend migration incremental:
 
 ### Supabase Auth Redirect URLs
 
-Magic-link sign-in needs Supabase Auth redirect URLs for each environment.
+Email/password account creation may still need Supabase Auth redirect URLs when email confirmation is enabled.
 
 Local development:
 
@@ -824,7 +826,7 @@ Production:
 https://thewordperminute.vercel.app
 ```
 
-Add these in the Supabase dashboard before relying on magic-link sign-in across environments.
+Add these in the Supabase dashboard before relying on email confirmation across environments.
 
 ## Theme And Motion
 
@@ -909,7 +911,7 @@ flowchart TD
 - Automated tests are not set up yet.
 - Vercel deployment configuration is present, but the hosted deployment still needs manual verification.
 - Supabase/Postgres schema and Row Level Security setup SQL has been run in Supabase, but cloud persistence still needs to be built.
-- Supabase client configuration, Auth session state, and app-shell magic-link sign-in UI exist, but cloud persistence is not implemented.
+- Supabase client configuration, Auth session state, and app-shell email/password auth UI exist, but cloud persistence is not implemented.
 - Bible translation licensing must be resolved before hosting additional Bible text.
 
 ## Confirmed Product Decisions

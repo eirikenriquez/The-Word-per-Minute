@@ -1,6 +1,6 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260706.1.c`
+Current documentation version: `260706.1.d`
 Last updated: 06/07/26
 
 ## Update Rule
@@ -36,6 +36,20 @@ Suggested next versions:
 - Small same-day documentation update: `260626.1.b`
 - Larger same-day documentation update: `260626.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260706.1.d`
+
+This version documents the auth flow change from magic-link sign-in to email/password authentication.
+
+It updates:
+
+- auth control responsibilities for email/password sign-in,
+- account creation responsibilities in the app shell,
+- auth hook responsibilities for `signInWithPassword()` and `signUpWithPassword()`,
+- Supabase redirect URL wording to focus on email confirmation rather than passwordless login,
+- known technical debt now that cloud persistence remains the next backend step.
+
+This update changes the auth UI and auth hook behaviour only. It does not move saved passages, practice attempts, or personal-best data to Supabase.
 
 ## `260706.1.c`
 

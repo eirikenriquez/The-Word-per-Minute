@@ -8,16 +8,19 @@ export type AuthSessionState = {
   isLoading: boolean;
   isSignedIn: boolean;
   session: Session | null;
-  signInWithEmail: (email: string) => Promise<void>;
+  signInWithPassword: (email: string, password: string) => Promise<boolean>;
   signOut: () => Promise<void>;
+  signUpWithPassword: (email: string, password: string) => Promise<SignUpResult>;
   user: User | null;
 };
+
+export type SignUpResult = "confirmationRequired" | "error" | "signedIn";
 
 /**
  * Tracks the current Supabase Auth session.
  *
- * This hook only observes auth state. It does not render UI, sign users in, or
- * replace guest localStorage behaviour.
+ * This hook owns Supabase Auth calls. It does not render UI or replace guest
+ * localStorage behaviour.
  */
 export function useAuthSession(): AuthSessionState {
   const [session, setSession] = useState<Session | null>(null);
@@ -59,22 +62,49 @@ export function useAuthSession(): AuthSessionState {
     };
   }, []);
 
-  const signInWithEmail = useCallback(async (email: string) => {
+  const signInWithPassword = useCallback(async (email: string, password: string) => {
     setIsLoading(true);
 
     try {
-      const { error: signInError } = await supabase.auth.signInWithOtp({
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
+        password,
+      });
+
+      if (signInError) throw signInError;
+
+      setSession(data.session);
+      setError(null);
+      return true;
+    } catch (caughtError) {
+      setError(getErrorMessage(caughtError));
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const signUpWithPassword = useCallback(async (email: string, password: string): Promise<SignUpResult> => {
+    setIsLoading(true);
+
+    try {
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
         options: {
           emailRedirectTo: window.location.origin,
         },
       });
 
-      if (signInError) throw signInError;
+      if (signUpError) throw signUpError;
 
+      setSession(data.session);
       setError(null);
+
+      return data.session ? "signedIn" : "confirmationRequired";
     } catch (caughtError) {
       setError(getErrorMessage(caughtError));
+      return "error";
     } finally {
       setIsLoading(false);
     }
@@ -101,8 +131,9 @@ export function useAuthSession(): AuthSessionState {
     isLoading,
     isSignedIn: Boolean(session),
     session,
-    signInWithEmail,
+    signInWithPassword,
     signOut,
+    signUpWithPassword,
     user: session?.user ?? null,
   };
 }
