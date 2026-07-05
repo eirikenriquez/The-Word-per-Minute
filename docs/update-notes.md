@@ -1,6 +1,6 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260705.1.b`
+Current documentation version: `260705.1.c`
 Last updated: 05/07/26
 
 ## Update Rule
@@ -36,6 +36,19 @@ Suggested next versions:
 - Small same-day documentation update: `260626.1.b`
 - Larger same-day documentation update: `260626.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260705.1.c`
+
+This version updates Supabase key terminology for the current API key model.
+
+It updates:
+
+- `.env.example` from `VITE_SUPABASE_ANON_KEY` to `VITE_SUPABASE_PUBLISHABLE_KEY`,
+- the Supabase browser client to read the publishable key environment variable,
+- backend documentation to describe publishable keys for browser use,
+- backend documentation to describe secret keys as frontend-forbidden server-side credentials.
+
+This update aligns the project with Supabase's current publishable/secret key naming while keeping runtime behaviour unchanged.
 
 ## `260705.1.b`
 

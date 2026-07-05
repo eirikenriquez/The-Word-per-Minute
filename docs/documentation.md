@@ -1,6 +1,6 @@
 # The Word per Minute Documentation
 
-Document version: `260705.1.b`
+Document version: `260705.1.c`
 Last updated: 05/07/26
 Update rule: only update this file when explicitly requested by the project owner.
 
@@ -421,7 +421,7 @@ Creates the browser-safe Supabase client from Vite environment variables.
 Current status:
 
 - reads `VITE_SUPABASE_URL`,
-- reads `VITE_SUPABASE_ANON_KEY`,
+- reads `VITE_SUPABASE_PUBLISHABLE_KEY`,
 - is not yet wired into app runtime behaviour,
 - must rely on future Supabase Row Level Security policies before user-owned tables are queried from the browser.
 
@@ -584,10 +584,10 @@ Vite requires browser-exposed environment variables to use the `VITE_` prefix:
 
 ```txt
 VITE_SUPABASE_URL
-VITE_SUPABASE_ANON_KEY
+VITE_SUPABASE_PUBLISHABLE_KEY
 ```
 
-The Supabase anon key is intended for browser use when tables are protected by Row Level Security. The service-role key must never be exposed to the Vite frontend.
+The Supabase publishable key is intended for browser use when tables are protected by Row Level Security. Supabase secret keys must never be exposed to the Vite frontend.
 
 `.env.example` documents the required local variable names. `.env.local` should be used for real local secrets and remains ignored by Git through the existing `*.local` rule.
 
@@ -782,7 +782,7 @@ flowchart TD
 
 ## Likely Next Architecture Steps
 
-1. Create the Supabase project and add `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` locally and in Vercel.
+1. Create the Supabase project and add `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` locally and in Vercel.
 2. Add auth/session domain state.
 3. Create the initial Supabase SQL schema and Row Level Security policies.
 4. Keep guest saved passages in `localStorage` while adding signed-in cloud saves.

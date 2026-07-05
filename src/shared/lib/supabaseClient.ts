@@ -1,12 +1,12 @@
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabasePublishableKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
 /**
  * Browser-safe Supabase client.
  *
- * The anon key is intentionally used on the client. User-owned table access
- * must be protected by Supabase Row Level Security policies.
+ * The publishable key is intentionally used on the client. User-owned table
+ * access must be protected by Supabase Row Level Security policies.
  */
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabasePublishableKey);
