@@ -1,6 +1,6 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260706.1.b`
+Current documentation version: `260706.1.c`
 Last updated: 06/07/26
 
 ## Update Rule
@@ -36,6 +36,21 @@ Suggested next versions:
 - Small same-day documentation update: `260626.1.b`
 - Larger same-day documentation update: `260626.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260706.1.c`
+
+This version documents the first Supabase auth UI wiring.
+
+It updates:
+
+- the current file tree to include `src/app/components/AuthControls.tsx`,
+- page shell responsibilities to include app-shell auth controls,
+- auth control responsibilities for magic-link sign-in and sign-out,
+- auth hook responsibilities now that it exposes sign-in and sign-out actions,
+- Supabase Auth redirect URL requirements for local development and Vercel,
+- known technical debt and likely next backend steps now that sign-in UI exists.
+
+This update adds authentication UI only. It does not move saved passages, practice attempts, or personal-best data to Supabase.
 
 ## `260706.1.b`
 

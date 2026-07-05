@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { AppHeaderProps } from "../components/AppHeader";
 import type { AppRoutesProps } from "../components/AppRoutes";
+import { useAuthSession } from "../../domain/auth/useAuthSession";
 import { useReaderSelection } from "../../domain/bible/hooks/useReaderSelection";
 import { useVerseLibrary } from "../../domain/bible/hooks/useVerseLibrary";
 import { useFeaturedPassages } from "../../domain/featured-passages/hooks/useFeaturedPassages";
@@ -32,6 +33,7 @@ export function useAppController() {
   const { appMode, selectAppMode } = useAppNavigation();
   const [practiceSource, setPracticeSource] = useState<PracticeSource>("featured");
   const { theme, toggleTheme } = useTheme();
+  const authSession = useAuthSession();
 
   const readerSelection = useReaderSelection();
   const { stats, recordCompletedAttempt, resetStats } = usePracticeStats();
@@ -187,6 +189,7 @@ export function useAppController() {
 
   return {
     appMode,
+    authSession,
     errorMessage,
     hasSavedPassages: savedPassageCount > 0,
     headerProps,

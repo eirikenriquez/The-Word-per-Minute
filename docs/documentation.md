@@ -1,6 +1,6 @@
 # The Word per Minute Documentation
 
-Document version: `260706.1.b`
+Document version: `260706.1.c`
 Last updated: 06/07/26
 Update rule: only update this file when explicitly requested by the project owner.
 
@@ -191,6 +191,7 @@ src/
       AppHeader.tsx
       AppLoadingState.tsx
       BackToTopButton.tsx
+      AuthControls.tsx
       AppRoutes.tsx
       AppNavigation.tsx
       PageShell.tsx
@@ -373,6 +374,7 @@ Provides the app page frame:
 
 - linked brand symbol and app title,
 - sticky icon-supported global navigation,
+- Supabase magic-link sign-in and sign-out controls,
 - floating light/dark theme button,
 - main content width,
 - app background,
@@ -389,6 +391,20 @@ Current behaviour:
 - fades into view after the user scrolls down,
 - smoothly scrolls the window back to the top,
 - supports light and dark mode.
+
+### `src/app/components/AuthControls.tsx`
+
+Shows the first Supabase authentication UI in the app shell.
+
+Current behaviour:
+
+- accepts an email address,
+- sends a Supabase magic sign-in link,
+- shows a signed-in user's email after the session is established,
+- lets signed-in users sign out,
+- does not save passages or practice attempts to Supabase yet.
+
+Supabase Auth redirect URLs must include the local development URL and deployed Vercel URL before magic links are reliable in both environments.
 
 ### `src/shared/ui/Button.tsx`
 
@@ -468,7 +484,7 @@ Current behaviour:
 - loads the current session from Supabase Auth,
 - subscribes to future auth state changes,
 - exposes loading, error, session, user, and signed-in state,
-- does not render sign-in or sign-out UI,
+- exposes email magic-link sign-in and sign-out actions,
 - does not replace guest `localStorage` saved passages or practice stats.
 
 ### `supabase/schema.sql`
@@ -519,7 +535,8 @@ Current status:
 
 - contains a manual Supabase connection/session check helper,
 - contains a Supabase session observer hook,
-- does not yet own sign-in, sign-out UI, profile editing, or cloud persistence.
+- supports email magic-link sign-in and sign-out through the app shell,
+- does not yet own profile editing or cloud persistence.
 
 ### `src/domain/bible`
 
@@ -791,6 +808,24 @@ The current repository boundaries should make the backend migration incremental:
 - keep guest `localStorage` behaviour until signed-in cloud saves are stable,
 - offer a one-time import from local saved passages after sign-in.
 
+### Supabase Auth Redirect URLs
+
+Magic-link sign-in needs Supabase Auth redirect URLs for each environment.
+
+Local development:
+
+```txt
+http://localhost:5173
+```
+
+Production:
+
+```txt
+https://thewordperminute.vercel.app
+```
+
+Add these in the Supabase dashboard before relying on magic-link sign-in across environments.
+
 ## Theme And Motion
 
 `src/index.css` contains the global CSS entry point and motion helpers:
@@ -874,7 +909,7 @@ flowchart TD
 - Automated tests are not set up yet.
 - Vercel deployment configuration is present, but the hosted deployment still needs manual verification.
 - Supabase/Postgres schema and Row Level Security setup SQL has been run in Supabase, but cloud persistence still needs to be built.
-- Supabase client configuration, a manual Auth session check helper, and an auth session hook exist, but sign-in UI and cloud persistence are not implemented.
+- Supabase client configuration, Auth session state, and app-shell magic-link sign-in UI exist, but cloud persistence is not implemented.
 - Bible translation licensing must be resolved before hosting additional Bible text.
 
 ## Confirmed Product Decisions
@@ -899,7 +934,7 @@ flowchart TD
 
 1. Create the Supabase project and add `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` locally and in Vercel.
 2. Verify the Supabase tables and policies in the dashboard after running `supabase/schema.sql`.
-3. Add sign-in and sign-out UI backed by the auth session hook.
+3. Configure Supabase Auth redirect URLs for local development and Vercel.
 4. Keep guest saved passages in `localStorage` while adding signed-in cloud saves.
 5. Add a one-time local saved-passage import flow after sign-in.
 6. Move practice attempts and personal best history to Supabase.

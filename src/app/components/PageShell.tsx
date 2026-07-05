@@ -2,12 +2,15 @@ import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { AppFooter } from "./AppFooter";
+import { AuthControls } from "./AuthControls";
 import { AppNavigation } from "./AppNavigation";
 import { BackToTopButton } from "./BackToTopButton";
+import type { AuthSessionState } from "../../domain/auth/useAuthSession";
 import type { AppMode, Theme } from "../../shared/types/app";
 
 type PageShellProps = {
   appMode?: AppMode;
+  authSession?: AuthSessionState;
   children: ReactNode;
   hasSavedPassages?: boolean;
   theme: Theme;
@@ -20,6 +23,7 @@ type PageShellProps = {
  */
 export function PageShell({
   appMode,
+  authSession,
   children,
   hasSavedPassages = false,
   theme,
@@ -48,9 +52,12 @@ export function PageShell({
             </Link>
           </h1>
 
-          {appMode && onSelectMode && (
-            <AppNavigation appMode={appMode} hasSavedPassages={hasSavedPassages} onSelectMode={onSelectMode} />
-          )}
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+            {appMode && onSelectMode && (
+              <AppNavigation appMode={appMode} hasSavedPassages={hasSavedPassages} onSelectMode={onSelectMode} />
+            )}
+            {authSession && <AuthControls authSession={authSession} />}
+          </div>
         </div>
       </header>
 

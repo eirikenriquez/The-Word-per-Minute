@@ -1,5 +1,5 @@
 import type { Session, User } from "@supabase/supabase-js";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "../../shared/lib/supabaseClient";
 import { getErrorMessage } from "../../shared/utils/errors";
 
@@ -8,6 +8,8 @@ export type AuthSessionState = {
   isLoading: boolean;
   isSignedIn: boolean;
   session: Session | null;
+  signInWithEmail: (email: string) => Promise<void>;
+  signOut: () => Promise<void>;
   user: User | null;
 };
 
@@ -57,11 +59,50 @@ export function useAuthSession(): AuthSessionState {
     };
   }, []);
 
+  const signInWithEmail = useCallback(async (email: string) => {
+    setIsLoading(true);
+
+    try {
+      const { error: signInError } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: window.location.origin,
+        },
+      });
+
+      if (signInError) throw signInError;
+
+      setError(null);
+    } catch (caughtError) {
+      setError(getErrorMessage(caughtError));
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const signOut = useCallback(async () => {
+    setIsLoading(true);
+
+    try {
+      const { error: signOutError } = await supabase.auth.signOut();
+      if (signOutError) throw signOutError;
+
+      setSession(null);
+      setError(null);
+    } catch (caughtError) {
+      setError(getErrorMessage(caughtError));
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   return {
     error,
     isLoading,
     isSignedIn: Boolean(session),
     session,
+    signInWithEmail,
+    signOut,
     user: session?.user ?? null,
   };
 }
