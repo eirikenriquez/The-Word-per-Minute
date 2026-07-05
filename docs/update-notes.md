@@ -1,7 +1,7 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260705.1.e`
-Last updated: 05/07/26
+Current documentation version: `260706.1.a`
+Last updated: 06/07/26
 
 ## Update Rule
 
@@ -36,6 +36,19 @@ Suggested next versions:
 - Small same-day documentation update: `260626.1.b`
 - Larger same-day documentation update: `260626.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260706.1.a`
+
+This version documents the Supabase database relationship diagram after the initial schema was run.
+
+It updates:
+
+- the backend database section with a Mermaid ER diagram,
+- the schema status to record that the SQL has been run in Supabase,
+- the known technical debt to focus next on app-side auth and cloud persistence,
+- likely next backend steps to verify tables/policies before wiring UI.
+
+This update is documentation-only. It does not change frontend runtime behaviour.
 
 ## `260705.1.e`
 

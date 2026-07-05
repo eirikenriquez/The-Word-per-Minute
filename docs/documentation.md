@@ -1,7 +1,7 @@
 # The Word per Minute Documentation
 
-Document version: `260705.1.e`
-Last updated: 05/07/26
+Document version: `260706.1.a`
+Last updated: 06/07/26
 Update rule: only update this file when explicitly requested by the project owner.
 
 ## Purpose
@@ -638,6 +638,62 @@ The Supabase publishable key is intended for browser use when tables are protect
 
 Initial tables are defined in `supabase/schema.sql`:
 
+```mermaid
+erDiagram
+  AUTH_USERS ||--|| PROFILES : owns
+  AUTH_USERS ||--o{ SAVED_PASSAGES : saves
+  AUTH_USERS ||--o{ PRACTICE_ATTEMPTS : completes
+  SAVED_PASSAGES ||--o{ PRACTICE_ATTEMPTS : can_reference
+
+  AUTH_USERS {
+    uuid id PK
+  }
+
+  PROFILES {
+    uuid id PK, FK
+    text display_name
+    timestamptz created_at
+    timestamptz updated_at
+  }
+
+  SAVED_PASSAGES {
+    uuid id PK
+    uuid user_id FK
+    text title
+    text category
+    text theme
+    text reference
+    text translation_id
+    text translation_abbreviation
+    text book_id
+    text book_name
+    integer chapter
+    integer start_verse
+    integer end_verse
+    integer_array selected_verses
+    text source
+    timestamptz created_at
+    timestamptz updated_at
+  }
+
+  PRACTICE_ATTEMPTS {
+    uuid id PK
+    uuid user_id FK
+    uuid saved_passage_id FK
+    text featured_passage_id
+    text passage_reference
+    text translation_id
+    text book_id
+    integer chapter
+    integer start_verse
+    integer end_verse
+    integer_array selected_verses
+    integer wpm
+    integer accuracy
+    timestamptz completed_at
+  }
+```
+
 ```txt
 profiles
   id uuid primary key references auth.users(id)
@@ -803,7 +859,7 @@ flowchart TD
 - Saved-passage removal has confirmation but no undo.
 - Automated tests are not set up yet.
 - Vercel deployment configuration is present, but the hosted deployment still needs manual verification.
-- Supabase/Postgres schema and Row Level Security setup SQL exists, but it still needs to be run and verified in Supabase.
+- Supabase/Postgres schema and Row Level Security setup SQL has been run in Supabase, but app-side auth and cloud persistence still need to be built.
 - Supabase client configuration and a manual Auth session check helper exist, but sign-in UI and cloud persistence are not implemented.
 - Bible translation licensing must be resolved before hosting additional Bible text.
 
@@ -828,7 +884,7 @@ flowchart TD
 ## Likely Next Architecture Steps
 
 1. Create the Supabase project and add `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` locally and in Vercel.
-2. Run `supabase/schema.sql` in the Supabase SQL Editor and verify the tables/policies.
+2. Verify the Supabase tables and policies in the dashboard after running `supabase/schema.sql`.
 3. Add auth/session domain state and UI.
 4. Keep guest saved passages in `localStorage` while adding signed-in cloud saves.
 5. Add a one-time local saved-passage import flow after sign-in.
