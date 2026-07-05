@@ -1,6 +1,6 @@
 # The Word per Minute Documentation
 
-Document version: `260705.1.d`
+Document version: `260705.1.e`
 Last updated: 05/07/26
 Update rule: only update this file when explicitly requested by the project owner.
 
@@ -287,6 +287,9 @@ public/
     symbol-light.svg
   favicon.svg
 
+supabase/
+  schema.sql
+
 .env.example
 vercel.json
 ```
@@ -455,6 +458,22 @@ Current behaviour:
 - does not create or query app database tables,
 - is not wired into runtime UI yet.
 
+### `supabase/schema.sql`
+
+Defines the planned first Supabase database schema.
+
+It creates:
+
+- `profiles`,
+- `saved_passages`,
+- `practice_attempts`,
+- timestamp update trigger helpers,
+- a profile creation trigger for new Supabase Auth users,
+- indexes for common user-owned queries,
+- Row Level Security policies for user-owned access.
+
+This file is version-controlled documentation/executable setup SQL. It does not affect the live Supabase project until it is manually run in the Supabase SQL Editor.
+
 ## Page, Domain, And Shared Responsibilities
 
 ### `src/pages`
@@ -617,7 +636,7 @@ The Supabase publishable key is intended for browser use when tables are protect
 
 ### Planned Database Tables
 
-Initial tables:
+Initial tables are defined in `supabase/schema.sql`:
 
 ```txt
 profiles
@@ -676,7 +695,7 @@ Featured passages can remain local JSON until the app needs admin editing or rem
 
 ### Planned Row Level Security Rules
 
-Every user-owned table should enable Row Level Security.
+Every user-owned table enables Row Level Security in `supabase/schema.sql`.
 
 Planned policy shape:
 
@@ -686,6 +705,8 @@ Planned policy shape:
 - signed-in users can insert/update/delete their own saved passages,
 - signed-in users can read their own practice attempts,
 - signed-in users can insert their own practice attempts.
+
+Practice attempts are intentionally append-only from the browser client. The initial schema does not provide update or delete policies for attempts.
 
 Public Bible or featured-passage tables, if added later, can use read-only public policies after translation licensing is confirmed.
 
@@ -782,8 +803,8 @@ flowchart TD
 - Saved-passage removal has confirmation but no undo.
 - Automated tests are not set up yet.
 - Vercel deployment configuration is present, but the hosted deployment still needs manual verification.
-- Supabase/Postgres backend work is planned but not implemented.
-- Supabase client configuration and a manual Auth session check helper exist, but sign-in UI, Row Level Security policies, and cloud persistence are not implemented.
+- Supabase/Postgres schema and Row Level Security setup SQL exists, but it still needs to be run and verified in Supabase.
+- Supabase client configuration and a manual Auth session check helper exist, but sign-in UI and cloud persistence are not implemented.
 - Bible translation licensing must be resolved before hosting additional Bible text.
 
 ## Confirmed Product Decisions
@@ -807,7 +828,7 @@ flowchart TD
 ## Likely Next Architecture Steps
 
 1. Create the Supabase project and add `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` locally and in Vercel.
-2. Create the initial Supabase SQL schema and Row Level Security policies.
+2. Run `supabase/schema.sql` in the Supabase SQL Editor and verify the tables/policies.
 3. Add auth/session domain state and UI.
 4. Keep guest saved passages in `localStorage` while adding signed-in cloud saves.
 5. Add a one-time local saved-passage import flow after sign-in.

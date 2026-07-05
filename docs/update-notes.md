@@ -1,6 +1,6 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260705.1.d`
+Current documentation version: `260705.1.e`
 Last updated: 05/07/26
 
 ## Update Rule
@@ -36,6 +36,21 @@ Suggested next versions:
 - Small same-day documentation update: `260626.1.b`
 - Larger same-day documentation update: `260626.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260705.1.e`
+
+This version documents the initial Supabase schema and Row Level Security setup.
+
+It updates:
+
+- the file tree to include `supabase/schema.sql`,
+- key file responsibilities for the executable setup SQL,
+- database documentation to point to the version-controlled schema,
+- Row Level Security documentation now that concrete policies are defined,
+- known technical debt to note that the schema still needs to be run and verified in Supabase,
+- likely next backend steps after schema creation.
+
+This update adds setup SQL only. It does not run the schema against Supabase and does not change frontend runtime behaviour.
 
 ## `260705.1.d`
 
