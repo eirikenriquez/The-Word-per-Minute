@@ -1,6 +1,6 @@
 # The Word per Minute Documentation
 
-Document version: `260705.1.c`
+Document version: `260705.1.d`
 Last updated: 05/07/26
 Update rule: only update this file when explicitly requested by the project owner.
 
@@ -207,6 +207,8 @@ src/
     routes/
       appRoutePaths.ts
   domain/
+    auth/
+      checkSupabaseConnection.ts
     bible/
       hooks/
         useReaderSelection.ts
@@ -440,6 +442,19 @@ Responsibilities:
 
 This should stay API-shaped so local JSON can later move to hosted data.
 
+### `src/domain/auth/checkSupabaseConnection.ts`
+
+Provides the first auth-domain Supabase helper.
+
+Current behaviour:
+
+- calls Supabase Auth through the shared browser client,
+- checks whether the client can read the current session,
+- treats a missing session as a valid guest state,
+- does not sign users in,
+- does not create or query app database tables,
+- is not wired into runtime UI yet.
+
 ## Page, Domain, And Shared Responsibilities
 
 ### `src/pages`
@@ -463,6 +478,15 @@ Owns typing-practice rules:
 - completion detection,
 - personal-best storage,
 - pure typing metric and character-equivalence logic.
+
+### `src/domain/auth`
+
+Owns authentication-facing app logic.
+
+Current status:
+
+- contains a manual Supabase connection/session check helper,
+- does not yet own sign-in, sign-out, session persistence UI, or profile state.
 
 ### `src/domain/bible`
 
@@ -671,8 +695,8 @@ The current repository boundaries should make the backend migration incremental:
 
 - keep `verseService` local/API-shaped for Bible and featured passage reads,
 - keep `savedPassageRepository` as the storage boundary,
-- add a Supabase client in `src/shared` or `src/domain/auth`,
-- add auth/session state as its own domain module,
+- keep the raw Supabase client in `src/shared/lib`,
+- keep auth-facing behaviour in `src/domain/auth`,
 - keep guest `localStorage` behaviour until signed-in cloud saves are stable,
 - offer a one-time import from local saved passages after sign-in.
 
@@ -759,7 +783,7 @@ flowchart TD
 - Automated tests are not set up yet.
 - Vercel deployment configuration is present, but the hosted deployment still needs manual verification.
 - Supabase/Postgres backend work is planned but not implemented.
-- Supabase client configuration exists, but auth, Row Level Security policies, and cloud persistence are not implemented.
+- Supabase client configuration and a manual Auth session check helper exist, but sign-in UI, Row Level Security policies, and cloud persistence are not implemented.
 - Bible translation licensing must be resolved before hosting additional Bible text.
 
 ## Confirmed Product Decisions
@@ -783,8 +807,8 @@ flowchart TD
 ## Likely Next Architecture Steps
 
 1. Create the Supabase project and add `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` locally and in Vercel.
-2. Add auth/session domain state.
-3. Create the initial Supabase SQL schema and Row Level Security policies.
+2. Create the initial Supabase SQL schema and Row Level Security policies.
+3. Add auth/session domain state and UI.
 4. Keep guest saved passages in `localStorage` while adding signed-in cloud saves.
 5. Add a one-time local saved-passage import flow after sign-in.
 6. Move practice attempts and personal best history to Supabase.

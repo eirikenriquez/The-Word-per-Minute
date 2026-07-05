@@ -1,6 +1,6 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260705.1.c`
+Current documentation version: `260705.1.d`
 Last updated: 05/07/26
 
 ## Update Rule
@@ -36,6 +36,20 @@ Suggested next versions:
 - Small same-day documentation update: `260626.1.b`
 - Larger same-day documentation update: `260626.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260705.1.d`
+
+This version documents the first auth-domain Supabase helper.
+
+It updates:
+
+- the current file tree to include `src/domain/auth/checkSupabaseConnection.ts`,
+- key file responsibilities for the manual Supabase Auth session check,
+- domain responsibilities to distinguish the raw shared Supabase client from auth-facing app logic,
+- the planned migration strategy to keep Supabase connection code in `shared/lib` and auth behaviour in `domain/auth`,
+- known technical debt and likely next steps now that a manual connection helper exists.
+
+This update adds a helper only. It does not wire Supabase into the UI, sign users in, create tables, or change saved-passage persistence.
 
 ## `260705.1.c`
 
