@@ -1,6 +1,6 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260705.1.a`
+Current documentation version: `260705.1.b`
 Last updated: 05/07/26
 
 ## Update Rule
@@ -36,6 +36,21 @@ Suggested next versions:
 - Small same-day documentation update: `260626.1.b`
 - Larger same-day documentation update: `260626.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260705.1.b`
+
+This version documents the Supabase client configuration commit.
+
+It updates:
+
+- the tech stack notes to include the installed Supabase JavaScript client,
+- the current file tree to include `.env.example` and `src/shared/lib/supabaseClient.ts`,
+- key file responsibilities for the browser-safe Supabase client,
+- planned environment variable guidance for local `.env.local` and Vercel,
+- known technical debt to clarify that auth, RLS policies, and cloud persistence are not implemented yet,
+- likely next backend steps now that the client configuration exists.
+
+This update documents the client configuration only. Runtime saved passages, practice stats, and Bible data still use the existing local behaviour.
 
 ## `260705.1.a`
 

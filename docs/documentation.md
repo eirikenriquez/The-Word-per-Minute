@@ -1,6 +1,6 @@
 # The Word per Minute Documentation
 
-Document version: `260705.1.a`
+Document version: `260705.1.b`
 Last updated: 05/07/26
 Update rule: only update this file when explicitly requested by the project owner.
 
@@ -27,9 +27,10 @@ Version history and documentation update notes live in `docs/update-notes.md`.
 - React Router
 - Tailwind CSS
 - Local JSON Bible data
+- Supabase JavaScript client, not yet wired into runtime data flows
 - `localStorage` for saved passages, personal best stats, and theme preference
 
-No backend, database, authentication, or external Bible API is currently used in production. Supabase/Postgres is the planned backend direction.
+No backend database, authentication flow, or external Bible API is currently used in production. Supabase/Postgres is the planned backend direction, and the browser client configuration now exists behind environment variables.
 
 ## High-Level Architecture
 
@@ -256,6 +257,8 @@ src/
         TypingPracticePanel.tsx
       PracticePage.tsx
   shared/
+    lib/
+      supabaseClient.ts
     types/
       app.ts
       featuredPassage.ts
@@ -282,6 +285,7 @@ public/
     symbol-light.svg
   favicon.svg
 
+.env.example
 vercel.json
 ```
 
@@ -410,6 +414,17 @@ It maps light and dark CSS variables to utilities for:
 - ember accents,
 - selected states.
 
+### `src/shared/lib/supabaseClient.ts`
+
+Creates the browser-safe Supabase client from Vite environment variables.
+
+Current status:
+
+- reads `VITE_SUPABASE_URL`,
+- reads `VITE_SUPABASE_ANON_KEY`,
+- is not yet wired into app runtime behaviour,
+- must rely on future Supabase Row Level Security policies before user-owned tables are queried from the browser.
+
 ### `src/domain/bible/verseService.ts`
 
 API-shaped local data service.
@@ -533,7 +548,7 @@ Build settings:
 
 ## Planned Backend Architecture
 
-The planned backend direction is Supabase with Postgres, Supabase Auth, and Row Level Security.
+The planned backend direction is Supabase with Postgres, Supabase Auth, and Row Level Security. The Supabase JavaScript client dependency and browser client module are present, but auth and data persistence still use the existing local app behaviour.
 
 Vercel remains responsible for hosting the Vite frontend. Supabase will be responsible for cloud user data:
 
@@ -573,6 +588,8 @@ VITE_SUPABASE_ANON_KEY
 ```
 
 The Supabase anon key is intended for browser use when tables are protected by Row Level Security. The service-role key must never be exposed to the Vite frontend.
+
+`.env.example` documents the required local variable names. `.env.local` should be used for real local secrets and remains ignored by Git through the existing `*.local` rule.
 
 ### Planned Database Tables
 
@@ -742,6 +759,7 @@ flowchart TD
 - Automated tests are not set up yet.
 - Vercel deployment configuration is present, but the hosted deployment still needs manual verification.
 - Supabase/Postgres backend work is planned but not implemented.
+- Supabase client configuration exists, but auth, Row Level Security policies, and cloud persistence are not implemented.
 - Bible translation licensing must be resolved before hosting additional Bible text.
 
 ## Confirmed Product Decisions
@@ -764,12 +782,11 @@ flowchart TD
 
 ## Likely Next Architecture Steps
 
-1. Add Supabase project setup notes and environment variable examples.
-2. Add Supabase client configuration without changing runtime behaviour.
-3. Add auth/session domain state.
-4. Create the initial Supabase SQL schema and Row Level Security policies.
-5. Keep guest saved passages in `localStorage` while adding signed-in cloud saves.
-6. Add a one-time local saved-passage import flow after sign-in.
-7. Move practice attempts and personal best history to Supabase.
-8. Keep `useAppController` limited to cross-feature composition.
-9. Keep `verseService` API-shaped so local JSON can later move to hosted data if licensing allows it.
+1. Create the Supabase project and add `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` locally and in Vercel.
+2. Add auth/session domain state.
+3. Create the initial Supabase SQL schema and Row Level Security policies.
+4. Keep guest saved passages in `localStorage` while adding signed-in cloud saves.
+5. Add a one-time local saved-passage import flow after sign-in.
+6. Move practice attempts and personal best history to Supabase.
+7. Keep `useAppController` limited to cross-feature composition.
+8. Keep `verseService` API-shaped so local JSON can later move to hosted data if licensing allows it.
