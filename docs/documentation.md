@@ -1,6 +1,6 @@
 # The Word per Minute Documentation
 
-Document version: `260706.1.d`
+Document version: `260706.1.e`
 Last updated: 06/07/26
 Update rule: only update this file when explicitly requested by the project owner.
 
@@ -27,10 +27,10 @@ Version history and documentation update notes live in `docs/update-notes.md`.
 - React Router
 - Tailwind CSS
 - Local JSON Bible data
-- Supabase JavaScript client, not yet wired into runtime data flows
-- `localStorage` for saved passages, personal best stats, and theme preference
+- Supabase JavaScript client for authentication and signed-in saved passages
+- `localStorage` for guest saved passages, personal best stats, and theme preference
 
-No backend database, authentication flow, or external Bible API is currently used in production. Supabase/Postgres is the planned backend direction, and the browser client configuration now exists behind environment variables.
+Supabase/Postgres is now used for authentication and signed-in saved passages. Guest saved passages still use browser storage, and practice stats still use local storage.
 
 ## High-Level Architecture
 
@@ -138,7 +138,9 @@ Library is the saved-passage management flow.
 
 It:
 
-- reads saved passages from `localStorage`,
+- reads saved passages from the active saved-passage store,
+- shows `localStorage` saves for signed-out guests,
+- shows Supabase cloud saves for signed-in users,
 - displays saved passages as cards,
 - supports search by title, reference, category, book, or translation,
 - supports category filtering,
@@ -233,8 +235,12 @@ src/
         usePassageSaveInput.ts
         useSavePassageForm.ts
         useSavedPassages.ts
+      stores/
+        localSavedPassageStore.ts
+        savedPassageStore.ts
+        supabaseSavedPassageStore.ts
+      savedPassageIdentity.ts
       savedPassageCategories.ts
-      savedPassageRepository.ts
   pages/
     bible/
       components/
@@ -404,7 +410,8 @@ Current behaviour:
 - creates new Supabase users,
 - shows a signed-in user's email after the session is established,
 - lets signed-in users sign out,
-- does not save passages or practice attempts to Supabase yet.
+- enables signed-in saved-passage storage by establishing the active Supabase user,
+- does not save practice attempts to Supabase yet.
 
 Supabase Auth redirect URLs must include the local development URL and deployed Vercel URL before email confirmation redirects are reliable in both environments.
 
@@ -446,8 +453,9 @@ Current status:
 
 - reads `VITE_SUPABASE_URL`,
 - reads `VITE_SUPABASE_PUBLISHABLE_KEY`,
-- is not yet wired into app runtime behaviour,
-- must rely on future Supabase Row Level Security policies before user-owned tables are queried from the browser.
+- is used by Supabase Auth,
+- is used by signed-in saved-passage storage,
+- relies on Supabase Row Level Security and table grants before user-owned tables are queried from the browser.
 
 ### `src/domain/bible/verseService.ts`
 
@@ -487,11 +495,12 @@ Current behaviour:
 - subscribes to future auth state changes,
 - exposes loading, error, session, user, and signed-in state,
 - exposes email/password sign-in, account creation, and sign-out actions,
+- provides the signed-in user id used by cloud saved-passage storage,
 - does not replace guest `localStorage` saved passages or practice stats.
 
 ### `supabase/schema.sql`
 
-Defines the planned first Supabase database schema.
+Defines the first Supabase database schema.
 
 It creates:
 
@@ -501,7 +510,8 @@ It creates:
 - timestamp update trigger helpers,
 - a profile creation trigger for new Supabase Auth users,
 - indexes for common user-owned queries,
-- Row Level Security policies for user-owned access.
+- Row Level Security policies for user-owned access,
+- grants that allow the `authenticated` role to use protected tables through the Data API.
 
 This file is version-controlled documentation/executable setup SQL. It does not affect the live Supabase project until it is manually run in the Supabase SQL Editor.
 
@@ -538,7 +548,8 @@ Current status:
 - contains a manual Supabase connection/session check helper,
 - contains a Supabase session observer hook,
 - supports email/password sign-in, account creation, and sign-out through the app shell,
-- does not yet own profile editing or cloud persistence.
+- supplies the active user id used by signed-in saved-passage persistence,
+- does not yet own profile editing.
 
 ### `src/domain/bible`
 
@@ -570,7 +581,17 @@ Owns saved passage storage and save rules:
 - saved-passage list/update/remove state,
 - saved-passage identity,
 - saved-passage category defaults,
-- `localStorage` repository.
+- `SavedPassageStore` abstraction,
+- `localStorage` store for signed-out guests,
+- Supabase store for signed-in users,
+- local/cloud library separation.
+
+Storage files:
+
+- `savedPassageIdentity.ts`: stable passage identity independent of database row ids.
+- `stores/savedPassageStore.ts`: shared `list` / `save` / `update` / `remove` contract.
+- `stores/localSavedPassageStore.ts`: browser storage implementation for guest saves.
+- `stores/supabaseSavedPassageStore.ts`: Supabase implementation for signed-in saves.
 
 ### `src/shared`
 
@@ -618,15 +639,15 @@ Build settings:
 - Build Command: `npm run build`
 - Output Directory: `dist`
 - Install Command: `npm install`
-- Environment Variables: none required yet
+- Environment Variables: `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`
 
 `vercel.json` rewrites all requests to `/index.html` so browser routes such as `/practice`, `/bible`, and `/library` keep working when opened directly or refreshed.
 
-## Planned Backend Architecture
+## Backend Architecture
 
-The planned backend direction is Supabase with Postgres, Supabase Auth, and Row Level Security. The Supabase JavaScript client dependency and browser client module are present, but auth and data persistence still use the existing local app behaviour.
+The backend direction is Supabase with Postgres, Supabase Auth, and Row Level Security. Supabase currently handles authentication and signed-in saved passages.
 
-Vercel remains responsible for hosting the Vite frontend. Supabase will be responsible for cloud user data:
+Vercel remains responsible for hosting the Vite frontend. Supabase is responsible for cloud user data:
 
 ```txt
 Browser
@@ -636,14 +657,19 @@ Browser
       -> Row Level Security policies
 ```
 
-The first backend phase should not move Bible text into the database. Bible data stays local while the app validates user accounts, synced saved passages, and practice history.
+The first backend phase does not move Bible text into the database. Bible data stays local while the app validates user accounts and synced saved passages.
 
-Initial backend scope:
+Current backend scope:
 
 - Supabase Auth for user accounts and sessions.
-- Postgres tables for user-owned saved passages.
-- Postgres tables for practice attempts and personal progress history.
+- Postgres table for user-owned saved passages.
 - Local guest mode retained through `localStorage`.
+- Signed-in saved passages loaded from Supabase.
+- Guest and cloud saved-passage libraries intentionally separated.
+
+Planned backend scope:
+
+- Practice attempts and personal progress history in Postgres.
 - Optional signed-in import flow from existing `localStorage` saved passages.
 
 Out of initial backend scope:
@@ -654,7 +680,7 @@ Out of initial backend scope:
 - Public sharing or community passage collections.
 - Custom Node/Express API.
 
-### Planned Supabase Environment Variables
+### Supabase Environment Variables
 
 Vite requires browser-exposed environment variables to use the `VITE_` prefix:
 
@@ -667,7 +693,7 @@ The Supabase publishable key is intended for browser use when tables are protect
 
 `.env.example` documents the required local variable names. `.env.local` should be used for real local secrets and remains ignored by Git through the existing `*.local` rule.
 
-### Planned Database Tables
+### Database Tables
 
 Initial tables are defined in `supabase/schema.sql`:
 
@@ -782,11 +808,11 @@ verses
 
 Featured passages can remain local JSON until the app needs admin editing or remote content management.
 
-### Planned Row Level Security Rules
+### Row Level Security And Grants
 
 Every user-owned table enables Row Level Security in `supabase/schema.sql`.
 
-Planned policy shape:
+Policy shape:
 
 - signed-in users can read their own profile,
 - signed-in users can insert/update their own profile,
@@ -797,17 +823,39 @@ Planned policy shape:
 
 Practice attempts are intentionally append-only from the browser client. The initial schema does not provide update or delete policies for attempts.
 
+The schema also grants table access to the Supabase `authenticated` role. This is required in addition to RLS policies: grants allow the role to use the table, while RLS decides which rows that user may access.
+
 Public Bible or featured-passage tables, if added later, can use read-only public policies after translation licensing is confirmed.
 
-### Planned Migration Strategy
+### Saved Passage Storage Strategy
 
-The current repository boundaries should make the backend migration incremental:
+Saved passages use a domain store abstraction so the UI does not know whether data is stored locally or in Supabase:
+
+```mermaid
+flowchart TD
+  ui["UI components"] --> hook["useSavedPassages"]
+  hook --> contract["SavedPassageStore"]
+  contract --> local["localSavedPassageStore"]
+  contract --> cloud["supabaseSavedPassageStore"]
+  local --> browser["localStorage"]
+  cloud --> supabase["Supabase saved_passages"]
+```
+
+Current behaviour:
+
+- signed-out users see and manage `localStorage` saved passages,
+- signed-in users see and manage Supabase saved passages,
+- switching auth state clears the previous store's list before loading the new store,
+- local saves are not editable/deletable while signed in because they are not shown in signed-in mode,
+- importing local saves into a signed-in account remains a future flow.
+
+The current boundaries should keep future migration incremental:
 
 - keep `verseService` local/API-shaped for Bible and featured passage reads,
-- keep `savedPassageRepository` as the storage boundary,
 - keep the raw Supabase client in `src/shared/lib`,
 - keep auth-facing behaviour in `src/domain/auth`,
-- keep guest `localStorage` behaviour until signed-in cloud saves are stable,
+- keep saved-passage persistence behind `SavedPassageStore`,
+- keep guest `localStorage` behaviour separate from signed-in cloud saves,
 - offer a one-time import from local saved passages after sign-in.
 
 ### Supabase Auth Redirect URLs
@@ -890,8 +938,9 @@ flowchart TD
   practiceDomain --> verseService
   bibleDomain --> verseService
   savedDomain --> verseService
-  savedDomain --> localStorage["localStorage"]
-  savedDomain -. planned .-> supabase["Supabase Auth + Postgres"]
+  savedDomain --> savedStore["SavedPassageStore"]
+  savedStore --> localStorage["localStorage guest saves"]
+  savedStore --> supabase["Supabase signed-in saves"]
   practiceDomain -. planned .-> supabase
   routes --> pageUi["pages/* visual components"]
   pageUi --> shared["shared/ui + shared/types + shared/utils"]
@@ -902,16 +951,18 @@ flowchart TD
 - `useAppController` is the main app composition root and should not become a dumping ground for feature logic.
 - The UI overhaul still needs a final desktop visual QA pass in light and dark mode.
 - Category management is still generated from featured themes.
-- Library filtering is UI-only and still backed by local saved passage data.
-- User data is local-only through `localStorage`.
+- Library filtering is UI-only and runs against whichever saved-passage store is active.
+- Guest saved passages and signed-in cloud saved passages are intentionally separate, but there is no import flow yet.
+- Practice stats are still local-only through `localStorage`.
 - The app uses local JSON Bible data only; no hosted API yet.
 - Form-control styling is repeated across components and may later benefit from a small shared primitive if it begins to drift.
 - Motion does not yet account for the user's reduced-motion preference.
 - Saved-passage removal has confirmation but no undo.
 - Automated tests are not set up yet.
 - Vercel deployment configuration is present, but the hosted deployment still needs manual verification.
-- Supabase/Postgres schema and Row Level Security setup SQL has been run in Supabase, but cloud persistence still needs to be built.
-- Supabase client configuration, Auth session state, and app-shell email/password auth UI exist, but cloud persistence is not implemented.
+- Supabase Auth and signed-in saved-passage persistence are implemented.
+- Supabase practice-attempt persistence is not implemented.
+- Auth UI is functional but still needs visual cleanup before the branch is ready to merge.
 - Bible translation licensing must be resolved before hosting additional Bible text.
 
 ## Confirmed Product Decisions
@@ -934,11 +985,8 @@ flowchart TD
 
 ## Likely Next Architecture Steps
 
-1. Create the Supabase project and add `VITE_SUPABASE_URL` / `VITE_SUPABASE_PUBLISHABLE_KEY` locally and in Vercel.
-2. Verify the Supabase tables and policies in the dashboard after running `supabase/schema.sql`.
-3. Configure Supabase Auth redirect URLs for local development and Vercel.
-4. Keep guest saved passages in `localStorage` while adding signed-in cloud saves.
-5. Add a one-time local saved-passage import flow after sign-in.
-6. Move practice attempts and personal best history to Supabase.
-7. Keep `useAppController` limited to cross-feature composition.
-8. Keep `verseService` API-shaped so local JSON can later move to hosted data if licensing allows it.
+1. Refine the auth UI so the working email/password flow is not cramped in the header.
+2. Add a one-time local saved-passage import flow after sign-in.
+3. Move practice attempts and personal best history to Supabase.
+4. Keep `useAppController` limited to cross-feature composition.
+5. Keep `verseService` API-shaped so local JSON can later move to hosted data if licensing allows it.

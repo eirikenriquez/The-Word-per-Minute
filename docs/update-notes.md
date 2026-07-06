@@ -1,6 +1,6 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260706.1.d`
+Current documentation version: `260706.1.e`
 Last updated: 06/07/26
 
 ## Update Rule
@@ -36,6 +36,24 @@ Suggested next versions:
 - Small same-day documentation update: `260626.1.b`
 - Larger same-day documentation update: `260626.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260706.1.e`
+
+This version documents signed-in saved-passage persistence through Supabase.
+
+It updates:
+
+- the current tech stack to show Supabase Auth and signed-in saved passages as runtime behaviour,
+- the current file tree to replace the old saved-passage repository with store implementations,
+- Library responsibilities to distinguish guest local saves from signed-in cloud saves,
+- Supabase client responsibilities now that it is used by auth and cloud saved passages,
+- saved-passage domain responsibilities around `SavedPassageStore`,
+- backend architecture from planned-only to partially implemented,
+- Row Level Security documentation to include required table grants,
+- the architecture diagram to show local and Supabase saved-passage stores,
+- known technical debt and likely next steps after cloud saved passages.
+
+This update documents the completed saved-passage cloud foundation. It does not add practice-attempt persistence, guest-to-cloud import, or auth UI polish.
 
 ## `260706.1.d`
 
