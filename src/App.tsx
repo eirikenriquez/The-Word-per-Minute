@@ -12,6 +12,7 @@ import { useAppController } from "./app/controllers/useAppController";
 function App() {
   const {
     appMode,
+    authSession,
     errorMessage,
     hasSavedPassages,
     headerProps,
@@ -26,7 +27,7 @@ function App() {
   // App-level guards keep incomplete data out of the page tree.
   if (isLoading) {
     return (
-      <PageShell theme={theme} onToggleTheme={toggleTheme}>
+      <PageShell authSession={authSession} theme={theme} onToggleTheme={toggleTheme}>
         <AppLoadingState />
       </PageShell>
     );
@@ -34,7 +35,7 @@ function App() {
 
   if (errorMessage) {
     return (
-      <PageShell theme={theme} onToggleTheme={toggleTheme}>
+      <PageShell authSession={authSession} theme={theme} onToggleTheme={toggleTheme}>
         <AppErrorState message={errorMessage} />
       </PageShell>
     );
@@ -44,6 +45,7 @@ function App() {
     <PageShell
       appMode={appMode}
       hasSavedPassages={hasSavedPassages}
+      authSession={authSession}
       theme={theme}
       onSelectMode={onSelectMode}
       onToggleTheme={toggleTheme}

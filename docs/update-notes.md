@@ -1,7 +1,7 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260704.1.b`
-Last updated: 04/07/26
+Current documentation version: `260706.1.f`
+Last updated: 06/07/26
 
 ## Update Rule
 
@@ -36,6 +36,170 @@ Suggested next versions:
 - Small same-day documentation update: `260626.1.b`
 - Larger same-day documentation update: `260626.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260706.1.f`
+
+This version documents the auth dropdown polish pass.
+
+It updates:
+
+- `AuthControls` responsibilities to describe the icon-triggered dropdown,
+- dropdown close behaviour for outside click, Escape, successful sign-in, and sign-out,
+- global motion documentation to include the dropdown entrance animation,
+- known technical debt now that the auth UI has received its first visual cleanup pass,
+- likely next architecture steps to include custom SMTP/auth email delivery as a possible next branch.
+
+This update documents UI polish only. It does not change the Supabase schema, saved-passage persistence, or practice-attempt persistence.
+
+## `260706.1.e`
+
+This version documents signed-in saved-passage persistence through Supabase.
+
+It updates:
+
+- the current tech stack to show Supabase Auth and signed-in saved passages as runtime behaviour,
+- the current file tree to replace the old saved-passage repository with store implementations,
+- Library responsibilities to distinguish guest local saves from signed-in cloud saves,
+- Supabase client responsibilities now that it is used by auth and cloud saved passages,
+- saved-passage domain responsibilities around `SavedPassageStore`,
+- backend architecture from planned-only to partially implemented,
+- Row Level Security documentation to include required table grants,
+- the architecture diagram to show local and Supabase saved-passage stores,
+- known technical debt and likely next steps after cloud saved passages.
+
+This update documents the completed saved-passage cloud foundation. It does not add practice-attempt persistence, guest-to-cloud import, or auth UI polish.
+
+## `260706.1.d`
+
+This version documents the auth flow change from magic-link sign-in to email/password authentication.
+
+It updates:
+
+- auth control responsibilities for email/password sign-in,
+- account creation responsibilities in the app shell,
+- auth hook responsibilities for `signInWithPassword()` and `signUpWithPassword()`,
+- Supabase redirect URL wording to focus on email confirmation rather than passwordless login,
+- known technical debt now that cloud persistence remains the next backend step.
+
+This update changes the auth UI and auth hook behaviour only. It does not move saved passages, practice attempts, or personal-best data to Supabase.
+
+## `260706.1.c`
+
+This version documents the first Supabase auth UI wiring.
+
+It updates:
+
+- the current file tree to include `src/app/components/AuthControls.tsx`,
+- page shell responsibilities to include app-shell auth controls,
+- auth control responsibilities for magic-link sign-in and sign-out,
+- auth hook responsibilities now that it exposes sign-in and sign-out actions,
+- Supabase Auth redirect URL requirements for local development and Vercel,
+- known technical debt and likely next backend steps now that sign-in UI exists.
+
+This update adds authentication UI only. It does not move saved passages, practice attempts, or personal-best data to Supabase.
+
+## `260706.1.b`
+
+This version documents the Supabase auth session hook.
+
+It updates:
+
+- the current file tree to include `src/domain/auth/useAuthSession.ts`,
+- key file responsibilities for observing Supabase Auth session state,
+- auth domain responsibilities now that session state exists,
+- known technical debt to distinguish session state from sign-in UI and cloud persistence,
+- likely next backend steps toward sign-in and sign-out UI.
+
+This update adds session observation only. It does not render auth UI, sign users in, or move saved passages out of `localStorage`.
+
+## `260706.1.a`
+
+This version documents the Supabase database relationship diagram after the initial schema was run.
+
+It updates:
+
+- the backend database section with a Mermaid ER diagram,
+- the schema status to record that the SQL has been run in Supabase,
+- the known technical debt to focus next on app-side auth and cloud persistence,
+- likely next backend steps to verify tables/policies before wiring UI.
+
+This update is documentation-only. It does not change frontend runtime behaviour.
+
+## `260705.1.e`
+
+This version documents the initial Supabase schema and Row Level Security setup.
+
+It updates:
+
+- the file tree to include `supabase/schema.sql`,
+- key file responsibilities for the executable setup SQL,
+- database documentation to point to the version-controlled schema,
+- Row Level Security documentation now that concrete policies are defined,
+- known technical debt to note that the schema still needs to be run and verified in Supabase,
+- likely next backend steps after schema creation.
+
+This update adds setup SQL only. It does not run the schema against Supabase and does not change frontend runtime behaviour.
+
+## `260705.1.d`
+
+This version documents the first auth-domain Supabase helper.
+
+It updates:
+
+- the current file tree to include `src/domain/auth/checkSupabaseConnection.ts`,
+- key file responsibilities for the manual Supabase Auth session check,
+- domain responsibilities to distinguish the raw shared Supabase client from auth-facing app logic,
+- the planned migration strategy to keep Supabase connection code in `shared/lib` and auth behaviour in `domain/auth`,
+- known technical debt and likely next steps now that a manual connection helper exists.
+
+This update adds a helper only. It does not wire Supabase into the UI, sign users in, create tables, or change saved-passage persistence.
+
+## `260705.1.c`
+
+This version updates Supabase key terminology for the current API key model.
+
+It updates:
+
+- `.env.example` from `VITE_SUPABASE_ANON_KEY` to `VITE_SUPABASE_PUBLISHABLE_KEY`,
+- the Supabase browser client to read the publishable key environment variable,
+- backend documentation to describe publishable keys for browser use,
+- backend documentation to describe secret keys as frontend-forbidden server-side credentials.
+
+This update aligns the project with Supabase's current publishable/secret key naming while keeping runtime behaviour unchanged.
+
+## `260705.1.b`
+
+This version documents the Supabase client configuration commit.
+
+It updates:
+
+- the tech stack notes to include the installed Supabase JavaScript client,
+- the current file tree to include `.env.example` and `src/shared/lib/supabaseClient.ts`,
+- key file responsibilities for the browser-safe Supabase client,
+- planned environment variable guidance for local `.env.local` and Vercel,
+- known technical debt to clarify that auth, RLS policies, and cloud persistence are not implemented yet,
+- likely next backend steps now that the client configuration exists.
+
+This update documents the client configuration only. Runtime saved passages, practice stats, and Bible data still use the existing local behaviour.
+
+## `260705.1.a`
+
+This version documents the planned Supabase backend foundation.
+
+It updates:
+
+- the tech stack notes to record Supabase/Postgres as the planned backend direction,
+- the architecture documentation with a planned backend flow from Vercel-hosted frontend to Supabase Auth and Postgres,
+- the initial backend scope for auth, cloud saved passages, practice attempts, guest localStorage, and local import,
+- the out-of-scope backend items for the first phase, including hosted Bible text and custom Node/Express APIs,
+- planned Vite/Supabase environment variables,
+- the initial database table design for `profiles`, `saved_passages`, and `practice_attempts`,
+- the initial Row Level Security policy shape,
+- the migration strategy for keeping existing repository and service boundaries,
+- the architecture diagram with planned Supabase dependencies,
+- known technical debt, confirmed product decisions, and likely next backend steps.
+
+This update is documentation-only. It prepares the branch for incremental Supabase setup work without changing runtime behaviour.
 
 ## `260704.1.b`
 

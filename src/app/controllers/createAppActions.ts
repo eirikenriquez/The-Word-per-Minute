@@ -5,7 +5,7 @@ import type { SavedPassage } from "../../shared/types/savedPassage";
 type CreateAppActionsParams = {
   clearReaderSelection: () => void;
   focusSelectedVerses: () => void;
-  removeSavedPassage: (passageId: string) => void;
+  removeSavedPassage: (passageId: string) => void | Promise<void>;
   resetPractice: () => void;
   savedPassages: SavedPassage[];
   selectBibleBook: (bookId: string) => void;
