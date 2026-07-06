@@ -39,7 +39,7 @@ export function useAppController() {
   const { stats, recordCompletedAttempt, resetStats } = usePracticeStats();
   const featuredLibrary = useFeaturedPassages();
   const bibleLibrary = useVerseLibrary();
-  const savedLibrary = useSavedPassages();
+  const savedLibrary = useSavedPassages(authSession.user?.id);
   const savedPassageCount = savedLibrary.savedPassages.length;
   const { featuredHomeCategories, savedPassageCategories } = usePassageCategories(featuredLibrary.passages);
 
@@ -148,6 +148,8 @@ export function useAppController() {
     headerSubtitle,
     headerTitle,
     isCurrentPassageSaved,
+    isSavingCurrentPassage: savedLibrary.isSaving,
+    saveError: appMode === "bible" ? savedLibrary.error : null,
     saveCategory,
     savedPassageCategories,
     saveTitle,

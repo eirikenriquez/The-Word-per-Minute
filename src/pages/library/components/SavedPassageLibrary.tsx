@@ -10,9 +10,9 @@ type SavedPassageLibraryProps = {
   savedPassages: SavedPassage[];
   selectedSavedPassageId: string;
   onReadPassage: (passageId: string) => void;
-  onRemovePassage: (passageId: string) => void;
+  onRemovePassage: (passageId: string) => void | Promise<void>;
   onSelectSavedPassage: (passageId: string) => void;
-  onUpdatePassage: (passageId: string, update: SavedPassageUpdate) => SavedPassage | null;
+  onUpdatePassage: (passageId: string, update: SavedPassageUpdate) => SavedPassage | null | Promise<SavedPassage | null>;
 };
 
 /**

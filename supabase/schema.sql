@@ -186,3 +186,11 @@ create policy "Users can insert their own practice attempts"
 on public.practice_attempts
 for insert
 with check (auth.uid() = user_id);
+
+-- Data API grants: RLS decides which rows authenticated users may access,
+-- but Postgres still needs table-level privileges for the authenticated role.
+grant usage on schema public to authenticated;
+
+grant select, insert, update on public.profiles to authenticated;
+grant select, insert, update, delete on public.saved_passages to authenticated;
+grant select, insert on public.practice_attempts to authenticated;

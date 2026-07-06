@@ -5,9 +5,9 @@ export type LibraryPageProps = {
   savedPassages: SavedPassage[];
   selectedSavedPassageId: string;
   onReadSavedPassage: (passageId: string) => void;
-  onRemoveSavedPassage: (passageId: string) => void;
+  onRemoveSavedPassage: (passageId: string) => void | Promise<void>;
   onSelectSavedPassage: (passageId: string) => void;
-  onUpdateSavedPassage: (passageId: string, update: SavedPassageUpdate) => SavedPassage | null;
+  onUpdateSavedPassage: (passageId: string, update: SavedPassageUpdate) => SavedPassage | null | Promise<SavedPassage | null>;
 };
 
 /**

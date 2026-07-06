@@ -5,9 +5,11 @@ export type AppHeaderProps = {
   appMode: AppMode;
   canSaveCurrentPassage: boolean;
   isCurrentPassageSaved: boolean;
+  isSavingCurrentPassage: boolean;
   headerReference: string;
   headerSubtitle: string;
   headerTitle: string;
+  saveError: string | null;
   saveCategory: string;
   savedPassageCategories: string[];
   saveTitle: string;
@@ -26,6 +28,8 @@ export function AppHeader({
   headerSubtitle,
   headerTitle,
   isCurrentPassageSaved,
+  isSavingCurrentPassage,
+  saveError,
   saveCategory,
   savedPassageCategories,
   saveTitle,
@@ -55,6 +59,8 @@ export function AppHeader({
         <PassageSaveControls
           canSaveCurrentPassage={canSaveCurrentPassage}
           isCurrentPassageSaved={isCurrentPassageSaved}
+          isSavingCurrentPassage={isSavingCurrentPassage}
+          saveError={saveError}
           saveCategory={saveCategory}
           savedPassageCategories={savedPassageCategories}
           saveTitle={saveTitle}

@@ -15,9 +15,9 @@ type SavedPassageCardProps = {
   passage: SavedPassage;
   savedCategories: string[];
   onReadPassage: (passageId: string) => void;
-  onRemovePassage: (passageId: string) => void;
+  onRemovePassage: (passageId: string) => void | Promise<void>;
   onSelectSavedPassage: (passageId: string) => void;
-  onUpdatePassage: (passageId: string, update: SavedPassageUpdate) => SavedPassage | null;
+  onUpdatePassage: (passageId: string, update: SavedPassageUpdate) => SavedPassage | null | Promise<SavedPassage | null>;
 };
 
 /**
@@ -51,11 +51,11 @@ export function SavedPassageCard({
   }
 
   function confirmRemove() {
-    onRemovePassage(passage.id);
+    void onRemovePassage(passage.id);
   }
 
-  function saveEdits() {
-    const updatedPassage = onUpdatePassage(passage.id, {
+  async function saveEdits() {
+    const updatedPassage = await onUpdatePassage(passage.id, {
       title: draftTitle.trim() || passage.title,
       category: draftCategory || passage.category,
     });

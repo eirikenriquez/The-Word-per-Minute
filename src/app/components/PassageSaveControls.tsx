@@ -4,6 +4,8 @@ import { Button } from "../../shared/ui/Button";
 type PassageSaveControlsProps = {
   canSaveCurrentPassage: boolean;
   isCurrentPassageSaved: boolean;
+  isSavingCurrentPassage: boolean;
+  saveError: string | null;
   saveCategory: string;
   savedPassageCategories: string[];
   saveTitle: string;
@@ -19,6 +21,8 @@ type PassageSaveControlsProps = {
 export function PassageSaveControls({
   canSaveCurrentPassage,
   isCurrentPassageSaved,
+  isSavingCurrentPassage,
+  saveError,
   saveCategory,
   savedPassageCategories,
   saveTitle,
@@ -31,10 +35,16 @@ export function PassageSaveControls({
     return (
       <div className="mt-4 flex justify-end border-t border-line pt-4">
         <SaveButton
-          disabled={!canSaveCurrentPassage || isCurrentPassageSaved}
+          disabled={!canSaveCurrentPassage || isCurrentPassageSaved || isSavingCurrentPassage}
           isSaved={isCurrentPassageSaved}
+          isSaving={isSavingCurrentPassage}
           onSave={onSaveCurrentPassage}
         />
+        {saveError && (
+          <p className="mt-2 text-sm text-red-600 dark:text-red-300">
+            {saveError}
+          </p>
+        )}
       </div>
     );
   }
@@ -65,10 +75,16 @@ export function PassageSaveControls({
         </select>
       </label>
       <SaveButton
-        disabled={!canSaveCurrentPassage || isCurrentPassageSaved}
+        disabled={!canSaveCurrentPassage || isCurrentPassageSaved || isSavingCurrentPassage}
         isSaved={isCurrentPassageSaved}
+        isSaving={isSavingCurrentPassage}
         onSave={onSaveCurrentPassage}
       />
+      {saveError && (
+        <p className="text-sm text-red-600 dark:text-red-300 sm:col-span-3">
+          {saveError}
+        </p>
+      )}
     </div>
   );
 }
@@ -76,18 +92,21 @@ export function PassageSaveControls({
 type SaveButtonProps = {
   disabled: boolean;
   isSaved: boolean;
-  onSave: () => void;
+  isSaving: boolean;
+  onSave: () => void | Promise<void>;
 };
 
-function SaveButton({ disabled, isSaved, onSave }: SaveButtonProps) {
+function SaveButton({ disabled, isSaved, isSaving, onSave }: SaveButtonProps) {
   return (
     <Button
       disabled={disabled}
       variant="primary"
-      onClick={onSave}
+      onClick={() => {
+        void onSave();
+      }}
     >
       <BookmarkIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
-      {isSaved ? "Saved" : "Save Passage"}
+      {isSaving ? "Saving..." : isSaved ? "Saved" : "Save Passage"}
     </Button>
   );
 }

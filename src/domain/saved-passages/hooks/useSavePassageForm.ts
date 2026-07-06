@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { DEFAULT_SAVED_CATEGORY } from "../savedPassageCategories";
 import type { AppMode } from "../../../shared/types/app";
-import type { SavePassageInput } from "../../../shared/types/savedPassage";
+import type { SavedPassage, SavePassageInput } from "../../../shared/types/savedPassage";
 
 type UseSavePassageFormParams = {
   appMode: AppMode;
   isPassageSaved: (input: SavePassageInput | null) => boolean;
   saveInput: SavePassageInput | null;
-  savePassage: (input: SavePassageInput) => unknown;
+  savePassage: (input: SavePassageInput) => SavedPassage | null | Promise<SavedPassage | null>;
 };
 
 /**
@@ -31,7 +31,7 @@ export function useSavePassageForm({
     setSaveCategory(saveInput.category);
   }, [saveInput]);
 
-  function saveCurrentPassage() {
+  async function saveCurrentPassage() {
     if (!saveInput) return;
 
     const passageToSave =
@@ -43,7 +43,7 @@ export function useSavePassageForm({
           }
         : saveInput;
 
-    savePassage(passageToSave);
+    await savePassage(passageToSave);
   }
 
   return {
