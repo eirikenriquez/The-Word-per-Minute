@@ -1,6 +1,6 @@
 # The Word per Minute Documentation
 
-Document version: `260706.1.e`
+Document version: `260706.1.f`
 Last updated: 06/07/26
 Update rule: only update this file when explicitly requested by the project owner.
 
@@ -404,12 +404,14 @@ Shows the first Supabase email/password authentication UI in the app shell.
 
 Current behaviour:
 
+- presents auth through a compact icon-triggered dropdown,
 - accepts an email address,
 - accepts a password,
 - signs in existing Supabase users,
 - creates new Supabase users,
 - shows a signed-in user's email after the session is established,
 - lets signed-in users sign out,
+- closes the dropdown on outside click, Escape, successful sign-in, and sign-out,
 - enables signed-in saved-passage storage by establishing the active Supabase user,
 - does not save practice attempts to Supabase yet.
 
@@ -886,6 +888,7 @@ Add these in the Supabase dashboard before relying on email confirmation across 
 - browser body margin reset,
 - page enter animation,
 - Home section rise-in animation,
+- auth/account dropdown entrance animation,
 - subtle hover motion helpers.
 
 Theme state is managed by `src/app/hooks/useTheme.ts` and stored in `localStorage`.
@@ -962,7 +965,6 @@ flowchart TD
 - Vercel deployment configuration is present, but the hosted deployment still needs manual verification.
 - Supabase Auth and signed-in saved-passage persistence are implemented.
 - Supabase practice-attempt persistence is not implemented.
-- Auth UI is functional but still needs visual cleanup before the branch is ready to merge.
 - Bible translation licensing must be resolved before hosting additional Bible text.
 
 ## Confirmed Product Decisions
@@ -985,8 +987,8 @@ flowchart TD
 
 ## Likely Next Architecture Steps
 
-1. Refine the auth UI so the working email/password flow is not cramped in the header.
-2. Add a one-time local saved-passage import flow after sign-in.
-3. Move practice attempts and personal best history to Supabase.
+1. Add a one-time local saved-passage import flow after sign-in.
+2. Move practice attempts and personal best history to Supabase.
+3. Consider custom SMTP/auth email delivery through Supabase and a provider such as Resend.
 4. Keep `useAppController` limited to cross-feature composition.
 5. Keep `verseService` API-shaped so local JSON can later move to hosted data if licensing allows it.

@@ -1,6 +1,6 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260706.1.e`
+Current documentation version: `260706.1.f`
 Last updated: 06/07/26
 
 ## Update Rule
@@ -36,6 +36,20 @@ Suggested next versions:
 - Small same-day documentation update: `260626.1.b`
 - Larger same-day documentation update: `260626.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260706.1.f`
+
+This version documents the auth dropdown polish pass.
+
+It updates:
+
+- `AuthControls` responsibilities to describe the icon-triggered dropdown,
+- dropdown close behaviour for outside click, Escape, successful sign-in, and sign-out,
+- global motion documentation to include the dropdown entrance animation,
+- known technical debt now that the auth UI has received its first visual cleanup pass,
+- likely next architecture steps to include custom SMTP/auth email delivery as a possible next branch.
+
+This update documents UI polish only. It does not change the Supabase schema, saved-passage persistence, or practice-attempt persistence.
 
 ## `260706.1.e`
 
