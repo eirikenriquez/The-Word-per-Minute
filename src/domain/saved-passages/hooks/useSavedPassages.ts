@@ -18,9 +18,11 @@ export function useSavedPassages(userId?: string | null) {
   const [savedPassages, setSavedPassages] = useState<SavedPassage[]>([]);
   const [selectedSavedPassageId, setSelectedSavedPassageId] = useState("");
   const [passageResponse, setPassageResponse] = useState<PassageResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingSavedPassages, setIsLoadingSavedPassages] = useState(false);
+  const [isLoadingSelectedPassage, setIsLoadingSelectedPassage] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isLoading = isLoadingSavedPassages || isLoadingSelectedPassage;
 
   const selectedSavedPassage = useMemo(
     () => savedPassages.find((passage) => passage.id === selectedSavedPassageId),
@@ -31,7 +33,10 @@ export function useSavedPassages(userId?: string | null) {
     let isCurrent = true;
 
     async function loadSavedPassages() {
-      setIsLoading(true);
+      setSavedPassages([]);
+      setSelectedSavedPassageId("");
+      setPassageResponse(null);
+      setIsLoadingSavedPassages(true);
 
       try {
         const nextSavedPassages = await savedPassageStore.list();
@@ -46,7 +51,7 @@ export function useSavedPassages(userId?: string | null) {
       } catch (caughtError) {
         if (isCurrent) setError(getErrorMessage(caughtError));
       } finally {
-        if (isCurrent) setIsLoading(false);
+        if (isCurrent) setIsLoadingSavedPassages(false);
       }
     }
 
@@ -65,13 +70,13 @@ export function useSavedPassages(userId?: string | null) {
   useEffect(() => {
     if (!selectedSavedPassage) {
       setPassageResponse(null);
-      setIsLoading(false);
+      setIsLoadingSelectedPassage(false);
       return;
     }
 
     let isCurrent = true;
     const passageToLoad = selectedSavedPassage;
-    setIsLoading(true);
+    setIsLoadingSelectedPassage(true);
 
     async function loadSavedPassage() {
       try {
@@ -86,7 +91,7 @@ export function useSavedPassages(userId?: string | null) {
         setPassageResponse(null);
         setError(getErrorMessage(caughtError));
       } finally {
-        if (isCurrent) setIsLoading(false);
+        if (isCurrent) setIsLoadingSelectedPassage(false);
       }
     }
 
