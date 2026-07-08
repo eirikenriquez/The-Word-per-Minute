@@ -1,25 +1,12 @@
 import { DEFAULT_SAVED_CATEGORY } from "../savedPassageCategories";
 import { supabase } from "../../../shared/lib/supabaseClient";
+import type { Database } from "../../../shared/types/database";
 import type { SavedPassage, SavePassageInput, SavedPassageUpdate } from "../../../shared/types/savedPassage";
 import type { SavedPassageStore } from "./savedPassageStore";
 
-type SavedPassageRow = {
-  id: string;
-  title: string;
-  category: string;
-  theme: string;
-  reference: string;
-  translation_id: string;
-  translation_abbreviation: string;
-  book_id: string;
-  book_name: string;
-  chapter: number;
-  start_verse: number;
-  end_verse: number;
-  selected_verses: number[];
-  source: SavedPassage["source"];
-  created_at: string;
-};
+type SavedPassageRow = Database["public"]["Tables"]["saved_passages"]["Row"];
+type SavedPassageInsert = Database["public"]["Tables"]["saved_passages"]["Insert"];
+type SavedPassageRowUpdate = Database["public"]["Tables"]["saved_passages"]["Update"];
 
 /**
  * Supabase-backed saved passage storage for signed-in users.
@@ -35,7 +22,7 @@ export function createSupabaseSavedPassageStore(userId: string): SavedPassageSto
 
       if (error) throw error;
 
-      return ((data ?? []) as unknown as SavedPassageRow[]).map(mapSavedPassageRow);
+      return (data ?? []).map(mapSavedPassageRow);
     },
 
     async save(input: SavePassageInput) {
@@ -47,16 +34,18 @@ export function createSupabaseSavedPassageStore(userId: string): SavedPassageSto
 
       if (error) throw error;
 
-      return mapSavedPassageRow(data as unknown as SavedPassageRow);
+      return mapSavedPassageRow(data);
     },
 
     async update(passageId: string, update: SavedPassageUpdate) {
+      const rowUpdate: SavedPassageRowUpdate = {
+        category: update.category || DEFAULT_SAVED_CATEGORY,
+        title: update.title,
+      };
+
       const { data, error } = await supabase
         .from("saved_passages")
-        .update({
-          category: update.category || DEFAULT_SAVED_CATEGORY,
-          title: update.title,
-        })
+        .update(rowUpdate)
         .eq("id", passageId)
         .select(SAVED_PASSAGE_COLUMNS)
         .maybeSingle();
@@ -64,7 +53,7 @@ export function createSupabaseSavedPassageStore(userId: string): SavedPassageSto
       if (error) throw error;
       if (!data) return null;
 
-      return mapSavedPassageRow(data as unknown as SavedPassageRow);
+      return mapSavedPassageRow(data);
     },
 
     async remove(passageId: string) {
@@ -78,25 +67,10 @@ export function createSupabaseSavedPassageStore(userId: string): SavedPassageSto
   };
 }
 
-const SAVED_PASSAGE_COLUMNS = [
-  "id",
-  "title",
-  "category",
-  "theme",
-  "reference",
-  "translation_id",
-  "translation_abbreviation",
-  "book_id",
-  "book_name",
-  "chapter",
-  "start_verse",
-  "end_verse",
-  "selected_verses",
-  "source",
-  "created_at",
-].join(",");
+const SAVED_PASSAGE_COLUMNS =
+  "id,user_id,title,category,theme,reference,translation_id,translation_abbreviation,book_id,book_name,chapter,start_verse,end_verse,selected_verses,source,created_at,updated_at";
 
-function mapSavePassageInput(userId: string, input: SavePassageInput) {
+function mapSavePassageInput(userId: string, input: SavePassageInput): SavedPassageInsert {
   return {
     user_id: userId,
     title: input.title,
