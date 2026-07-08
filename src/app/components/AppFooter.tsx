@@ -26,7 +26,7 @@ export function AppFooter() {
           </p>
 
           <p className="text-xs text-ink-subtle">
-            Your saved passages, preferences, and practice statistics stay in this browser.
+            Guests save passages locally. Signed-in users can sync saved passages to their account.
           </p>
         </div>
 

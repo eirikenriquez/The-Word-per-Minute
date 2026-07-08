@@ -1,6 +1,6 @@
 # The Word per Minute
 
-A Bible passage typing practice app built with React, TypeScript, Vite, and Tailwind CSS.
+A Bible passage typing practice app built with React, TypeScript, Vite, Tailwind CSS, and Supabase.
 
 The app helps users discover scripture, practise typing curated passages, read Bible chapters, and save passages for later practice.
 
@@ -14,6 +14,8 @@ The app helps users discover scripture, practise typing curated passages, read B
 - Local personal-best statistics
 - Bible chapter reader with verse selection
 - Saved passage library with search, filters, editing, and Bible/Practice actions
+- Supabase email/password accounts for syncing saved passages
+- Guest saved passages for signed-out users through local browser storage
 - Warm light and dark themes with semantic color tokens
 - Branded navigation, contextual action icons, and an adaptive favicon
 - Branded footer with Bible attribution and local-data notice
@@ -51,7 +53,9 @@ Use these Vercel build settings:
 - Build Command: `npm run build`
 - Output Directory: `dist`
 - Install Command: `npm install`
-- Environment Variables: none required yet
+- Environment Variables:
+  - `VITE_SUPABASE_URL`
+  - `VITE_SUPABASE_PUBLISHABLE_KEY`
 
 `vercel.json` rewrites all routes to `index.html` so direct links and refreshes work for `/practice`, `/bible`, and `/library`.
 
@@ -69,7 +73,9 @@ The source is organised around `app`, `pages`, `domain`, and `shared` layers:
 - `domain` owns Bible, Practice, featured-passage, and saved-passage logic.
 - `shared` owns generic UI primitives, utilities, and shared TypeScript types.
 
-## Data
+## Data and Accounts
 
-The app currently uses local public-domain Bible data and `localStorage`. It does not require a backend, user account, or external Bible API.
+The app currently reads local public-domain Bible data from the repository.
+
+Signed-out guests can save passages in browser storage. Signed-in users save passages to Supabase so their library can sync across sessions. Practice statistics are still local-only.
  
