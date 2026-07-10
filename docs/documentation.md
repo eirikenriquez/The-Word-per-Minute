@@ -1,7 +1,7 @@
 # The Word per Minute Documentation
 
-Document version: `260710.1.a`
-Last updated: 10/07/26
+Document version: `260711.1.a`
+Last updated: 11/07/26
 Update rule: only update this file when explicitly requested by the project owner.
 
 ## Purpose
@@ -103,20 +103,23 @@ It:
 
 - practises a featured passage or saved passage,
 - treats the selected verses as one continuous typing passage,
+- displays the passage itself as the typing surface,
+- captures typing through an invisible input layer rather than a visible textarea,
 - displays the passage in a fixed-height viewport that users cannot scroll manually,
 - automatically scrolls the passage to keep the active typing position visible,
-- keeps the typing input at a consistent fixed height,
 - calculates WPM continuously while an attempt is active,
 - counts typing mistakes in accuracy even when the user later corrects them,
 - treats deletion as neutral rather than as an additional mistake,
 - freezes the final WPM and accuracy when the passage is completed,
+- shows completion as an overlay on the passage with final WPM, final accuracy, and next actions,
 - records personal bests locally,
 - allows featured passages to be saved from the Practice controls,
 - lets users switch between Featured and Saved practice sources,
 - presents source and saved-passage controls in a responsive, label-first layout,
-- shows WPM, accuracy, progress, and status as one quiet horizontal summary instead of separate dashboard cards,
+- shows live WPM, accuracy, progress, and status as one quiet horizontal summary while typing,
 - saves completed attempts for signed-in users,
-- lets signed-in users add a post-practice reflection after completing a passage.
+- lets signed-in users add a post-practice reflection from a focused modal after completing a passage,
+- closes the reflection modal after a successful save and leaves it open if saving fails.
 
 ### Bible
 
@@ -1048,7 +1051,9 @@ flowchart TD
 - Accuracy counts mistakes made during an attempt, including mistakes that are later corrected. Deletion itself is neutral.
 - WPM updates while an attempt is active and freezes when the passage is completed.
 - Practice uses one continuous typing target rather than advancing through two-verse batches.
-- The passage and typing input use stable heights so the page does not jump with verse length.
+- Practice uses a Monkeytype-style interaction where the passage is the typing surface and the visible textarea is removed.
+- The Practice passage viewport uses a stable height so the page does not jump with verse length.
+- Post-practice reflections open in a focused modal rather than expanding the completed practice panel.
 - In Bible mode, saving with no selected verses intentionally saves the whole current chapter.
 - Saved passages can be reopened from Library in their original Bible context.
 - Saved featured passages highlight their full verse range, exact custom selections retain their selected verses, and whole-chapter saves open without individual highlights.
