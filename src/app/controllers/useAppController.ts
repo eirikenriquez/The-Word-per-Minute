@@ -132,6 +132,7 @@ export function useAppController() {
       practiceSource,
       savedError: savedLibrary.error,
       savedIsLoading: savedLibrary.isLoading,
+      savedPassageResponse: savedLibrary.passageResponse,
       savedPassageCount,
       selectedSavedPassage: savedLibrary.selectedSavedPassage,
       selectedTranslationId: bibleLibrary.selectedTranslationId,

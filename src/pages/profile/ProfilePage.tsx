@@ -123,8 +123,9 @@ function PracticeAttemptCard({ attempt }: { attempt: PracticeAttempt }) {
   const [isReflectionExpanded, setIsReflectionExpanded] = useState(false);
   const shouldCollapseReflection = Boolean(attempt.reflection && attempt.reflection.length > 240);
   const reflectionContainerClassName = [
-    "relative mt-4 overflow-hidden border-l-2 border-accent-line pl-3",
+    "relative mt-4 overflow-hidden border-l-2 border-accent-line pl-3 transition-[max-height] duration-200 ease-out",
     shouldCollapseReflection && !isReflectionExpanded ? "max-h-28" : "",
+    isReflectionExpanded ? "max-h-96" : "",
   ]
     .filter(Boolean)
     .join(" ");
