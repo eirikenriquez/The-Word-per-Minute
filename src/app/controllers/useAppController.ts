@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import type { AppHeaderProps } from "../components/AppHeader";
 import type { AppRoutesProps } from "../components/AppRoutes";
 import { useAuthSession } from "../../domain/auth/useAuthSession";
@@ -7,12 +7,14 @@ import { useVerseLibrary } from "../../domain/bible/hooks/useVerseLibrary";
 import { useFeaturedPassages } from "../../domain/featured-passages/hooks/useFeaturedPassages";
 import { usePassageCategories } from "../../domain/featured-passages/hooks/usePassageCategories";
 import { usePracticePassage } from "../../domain/practice/hooks/usePracticePassage";
+import { usePracticeAttempts } from "../../domain/practice/hooks/usePracticeAttempts";
 import { usePracticeSession } from "../../domain/practice/hooks/usePracticeSession";
 import { usePracticeStats } from "../../domain/practice/hooks/usePracticeStats";
 import { usePassageSaveInput } from "../../domain/saved-passages/hooks/usePassageSaveInput";
 import { useSavePassageForm } from "../../domain/saved-passages/hooks/useSavePassageForm";
 import { useSavedPassages } from "../../domain/saved-passages/hooks/useSavedPassages";
 import type { PracticeSource } from "../../shared/types/app";
+import type { PracticeCompletionResult } from "../../shared/types/practice";
 import { useAppDisplayState } from "../hooks/useAppDisplayState";
 import { useAppModeEffects } from "../hooks/useAppModeEffects";
 import { useAppNavigation } from "../hooks/useAppNavigation";
@@ -40,6 +42,7 @@ export function useAppController() {
   const featuredLibrary = useFeaturedPassages();
   const bibleLibrary = useVerseLibrary();
   const savedLibrary = useSavedPassages(authSession.user?.id);
+  const { saveAttempt: savePracticeAttempt } = usePracticeAttempts(authSession.user?.id);
   const savedPassageCount = savedLibrary.savedPassages.length;
   const { featuredHomeCategories, savedPassageCategories } = usePassageCategories(featuredLibrary.passages);
 
@@ -54,9 +57,45 @@ export function useAppController() {
     selectedVerseNumbers: readerSelection.selectedVerseNumbers,
   });
 
+  const handleCompletedPracticeAttempt = useCallback((result: PracticeCompletionResult) => {
+    recordCompletedAttempt(result.wpm, result.accuracy);
+
+    const activePassageResponse =
+      practiceSource === "featured"
+        ? featuredLibrary.passageResponse
+        : savedLibrary.passageResponse;
+
+    if (!activePassageResponse) return;
+
+    void savePracticeAttempt({
+      accuracy: result.accuracy,
+      bookId: activePassageResponse.passage.bookId,
+      chapter: activePassageResponse.passage.chapter,
+      durationSeconds: result.durationSeconds,
+      endVerse: activePassageResponse.passage.endVerse,
+      featuredPassageId: practiceSource === "featured" ? featuredLibrary.selectedPassageId : undefined,
+      mistakeCount: result.mistakeCount,
+      passageReference: activePassageResponse.reference,
+      savedPassageId: practiceSource === "saved" ? savedLibrary.selectedSavedPassageId : undefined,
+      selectedVerses: activePassageResponse.passage.selectedVerses,
+      startVerse: activePassageResponse.passage.startVerse,
+      translationId: activePassageResponse.translation.id,
+      typedCharacterCount: result.typedCharacterCount,
+      wpm: result.wpm,
+    });
+  }, [
+    featuredLibrary.passageResponse,
+    featuredLibrary.selectedPassageId,
+    practiceSource,
+    recordCompletedAttempt,
+    savePracticeAttempt,
+    savedLibrary.passageResponse,
+    savedLibrary.selectedSavedPassageId,
+  ]);
+
   const practiceSession = usePracticeSession({
     passage: practicePassage,
-    onCompletedAttempt: recordCompletedAttempt,
+    onCompletedAttempt: handleCompletedPracticeAttempt,
   });
   const { resetPractice } = practiceSession;
 

@@ -8,6 +8,14 @@ export type PracticeStats = {
 
 export type PracticeStatus = "Ready" | "Typing" | "Complete";
 
+export type PracticeCompletionResult = {
+  accuracy: number;
+  durationSeconds: number;
+  mistakeCount: number;
+  typedCharacterCount: number;
+  wpm: number;
+};
+
 export type PracticePassage = {
   startVerse: number;
   endVerse: number;
