@@ -3,24 +3,35 @@ import {
   UserPlusIcon,
 } from "@heroicons/react/24/outline";
 import type { FormEvent } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { AuthSessionState } from "../../../domain/auth/useAuthSession";
 import { Button } from "../../../shared/ui/Button";
 
-type AuthMode = "signIn" | "signUp";
+export type AuthMode = "signIn" | "signUp";
 
 type SignedOutAuthMenuProps = {
   authSession: AuthSessionState;
+  modeRequest?: {
+    id: number;
+    mode: AuthMode;
+  } | null;
   onSignedIn: () => void;
 };
 
-export function SignedOutAuthMenu({ authSession, onSignedIn }: SignedOutAuthMenuProps) {
+export function SignedOutAuthMenu({ authSession, modeRequest, onSignedIn }: SignedOutAuthMenuProps) {
   const [authMode, setAuthMode] = useState<AuthMode>("signIn");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [formMessage, setFormMessage] = useState<string | null>(null);
   const isSignUpMode = authMode === "signUp";
   const canSubmit = Boolean(email.trim()) && password.length >= 6 && !authSession.isLoading;
+
+  useEffect(() => {
+    if (!modeRequest) return;
+
+    setAuthMode(modeRequest.mode);
+    setFormMessage(null);
+  }, [modeRequest]);
 
   async function submitAuthForm(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();

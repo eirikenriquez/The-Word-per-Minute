@@ -2,7 +2,7 @@ import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { AppFooter } from "./AppFooter";
-import { AuthControls } from "./AuthControls";
+import { AuthControls, type AuthMenuRequest } from "./AuthControls";
 import { AppNavigation } from "./AppNavigation";
 import { BackToTopButton } from "./BackToTopButton";
 import type { AuthSessionState } from "../../domain/auth/useAuthSession";
@@ -10,11 +10,13 @@ import type { AppMode, Theme } from "../../shared/types/app";
 
 type PageShellProps = {
   appMode?: AppMode;
+  authMenuRequest?: AuthMenuRequest | null;
   authSession?: AuthSessionState;
   children: ReactNode;
   hasSavedPassages?: boolean;
   theme: Theme;
   onToggleTheme: () => void;
+  onAuthMenuRequestHandled?: () => void;
   onSelectMode?: (mode: AppMode) => void;
 };
 
@@ -23,11 +25,13 @@ type PageShellProps = {
  */
 export function PageShell({
   appMode,
+  authMenuRequest,
   authSession,
   children,
   hasSavedPassages = false,
   theme,
   onToggleTheme,
+  onAuthMenuRequestHandled,
   onSelectMode,
 }: PageShellProps) {
   return (
@@ -56,7 +60,13 @@ export function PageShell({
             {appMode && onSelectMode && (
               <AppNavigation appMode={appMode} hasSavedPassages={hasSavedPassages} onSelectMode={onSelectMode} />
             )}
-            {authSession && <AuthControls authSession={authSession} />}
+            {authSession && (
+              <AuthControls
+                authSession={authSession}
+                menuRequest={authMenuRequest}
+                onMenuRequestHandled={onAuthMenuRequestHandled}
+              />
+            )}
           </div>
         </div>
       </header>

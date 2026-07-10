@@ -81,8 +81,12 @@ export type Database = {
           start_verse: number;
           end_verse: number;
           selected_verses: number[];
+          duration_seconds: number;
+          mistake_count: number;
+          typed_character_count: number;
           wpm: number;
           accuracy: number;
+          reflection: string | null;
           completed_at: string;
         };
         Insert: {
@@ -97,11 +101,17 @@ export type Database = {
           start_verse: number;
           end_verse: number;
           selected_verses?: number[];
+          duration_seconds: number;
+          mistake_count: number;
+          typed_character_count: number;
           wpm: number;
           accuracy: number;
+          reflection?: string | null;
           completed_at?: string;
         };
-        Update: never;
+        Update: {
+          reflection?: string | null;
+        };
         Relationships: [];
       };
     };

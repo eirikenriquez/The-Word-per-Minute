@@ -12,6 +12,7 @@ The app helps users discover scripture, practise typing curated passages, read B
 - WPM and accuracy tracking
 - Responsive Practice source controls and a compact live-metrics summary
 - Local personal-best statistics
+- Signed-in practice history and passage reflections
 - Bible chapter reader with verse selection
 - Saved passage library with search, filters, editing, and Bible/Practice actions
 - Supabase email/password accounts for syncing saved passages
@@ -57,7 +58,7 @@ Use these Vercel build settings:
   - `VITE_SUPABASE_URL`
   - `VITE_SUPABASE_PUBLISHABLE_KEY`
 
-`vercel.json` rewrites all routes to `index.html` so direct links and refreshes work for `/practice`, `/bible`, and `/library`.
+`vercel.json` rewrites all routes to `index.html` so direct links and refreshes work for `/practice`, `/bible`, `/library`, and `/profile`.
 
 ## Project Documentation
 
@@ -77,5 +78,5 @@ The source is organised around `app`, `pages`, `domain`, and `shared` layers:
 
 The app currently reads local public-domain Bible data from the repository.
 
-Signed-out guests can save passages in browser storage. Signed-in users save passages to Supabase so their library can sync across sessions. Practice statistics are still local-only.
+Signed-out guests can save passages in browser storage. Signed-in users save passages, completed practice attempts, and passage reflections to Supabase so their library and progress can sync across sessions. Personal-best statistics still live in browser storage.
  

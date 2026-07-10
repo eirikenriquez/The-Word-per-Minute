@@ -5,6 +5,8 @@ import {
 } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
+import { Link } from "react-router-dom";
+import { APP_ROUTE_PATHS } from "../../app/routes/appRoutePaths";
 
 export type HomeCategory = {
   count: number;
@@ -13,7 +15,9 @@ export type HomeCategory = {
 
 export type HomePageProps = {
   featuredHomeCategories: HomeCategory[];
+  isSignedIn: boolean;
   savedPassageCount: number;
+  onCreateAccount: () => void;
   onOpenBible: () => void;
   onOpenLibrary: () => void;
   onSelectFeaturedCategory: (category: string) => void;
@@ -25,7 +29,9 @@ export type HomePageProps = {
  */
 export function HomePage({
   featuredHomeCategories,
+  isSignedIn,
   savedPassageCount,
+  onCreateAccount,
   onOpenBible,
   onOpenLibrary,
   onSelectFeaturedCategory,
@@ -69,7 +75,37 @@ export function HomePage({
         </dl>
       </section>
 
-      <section className="rise-in rise-in-delay-2 grid gap-4">
+      <section className="rise-in rise-in-delay-2 mx-auto grid max-w-2xl justify-items-center gap-4 py-2 text-center">
+        <div className="grid gap-2">
+          <h3 className="font-semibold text-ink">
+            {isSignedIn ? "Your progress can grow with you." : "Keep your passages and progress with you."}
+          </h3>
+          <p className="text-sm leading-6 text-ink-muted">
+            {isSignedIn
+              ? "Visit your profile to review recent practice sessions and reflections as they build over time."
+              : "Create a free account to sync saved passages and start keeping a cloud practice history."}
+          </p>
+        </div>
+
+        {isSignedIn ? (
+          <Link
+            className="inline-flex min-h-10 items-center justify-center rounded-md bg-action px-5 py-2 text-sm font-semibold text-action-ink transition-colors hover:bg-action-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+            to={APP_ROUTE_PATHS.profile}
+          >
+            View profile
+          </Link>
+        ) : (
+          <button
+            className="inline-flex min-h-10 items-center justify-center rounded-md bg-action px-5 py-2 text-sm font-semibold text-action-ink transition-colors hover:bg-action-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+            type="button"
+            onClick={onCreateAccount}
+          >
+            Create account
+          </button>
+        )}
+      </section>
+
+      <section className="rise-in rise-in-delay-3 grid gap-4">
         <div>
           <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
             Practice paths

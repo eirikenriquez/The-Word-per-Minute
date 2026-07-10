@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { PracticePassage } from "../../../shared/types/practice";
+import type { PracticeCompletionResult, PracticePassage } from "../../../shared/types/practice";
 import {
   calculatePracticeSessionMetrics,
   countCorrectCharacters,
@@ -8,7 +8,7 @@ import {
 
 type UsePracticeSessionParams = {
   passage: PracticePassage | undefined;
-  onCompletedAttempt: (wpm: number, accuracy: number) => void;
+  onCompletedAttempt: (result: PracticeCompletionResult) => void;
 };
 
 /**
@@ -49,11 +49,26 @@ export function usePracticeSession({ passage, onCompletedAttempt }: UsePracticeS
   }, [finishedAt, startedAt]);
 
   useEffect(() => {
-    if (!isPassageComplete || !finishedAt || savedFinishAt.current === finishedAt) return;
+    if (!isPassageComplete || !finishedAt || !startedAt || savedFinishAt.current === finishedAt) return;
 
     savedFinishAt.current = finishedAt;
-    onCompletedAttempt(wpm, accuracy);
-  }, [accuracy, finishedAt, isPassageComplete, onCompletedAttempt, wpm]);
+    onCompletedAttempt({
+      accuracy,
+      durationSeconds: Math.max(0, Math.round((finishedAt - startedAt) / 1000)),
+      mistakeCount,
+      typedCharacterCount: typedText.length,
+      wpm,
+    });
+  }, [
+    accuracy,
+    finishedAt,
+    isPassageComplete,
+    mistakeCount,
+    onCompletedAttempt,
+    startedAt,
+    typedText.length,
+    wpm,
+  ]);
 
   const resetPractice = useCallback(() => {
     setTypedText("");

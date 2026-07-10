@@ -12,11 +12,13 @@ import { useAppController } from "./app/controllers/useAppController";
 function App() {
   const {
     appMode,
+    authMenuRequest,
     authSession,
     errorMessage,
     hasSavedPassages,
     headerProps,
     isLoading,
+    onAuthMenuRequestHandled,
     onSelectMode,
     pageRoutesProps,
     theme,
@@ -44,14 +46,16 @@ function App() {
   return (
     <PageShell
       appMode={appMode}
+      authMenuRequest={authMenuRequest}
       hasSavedPassages={hasSavedPassages}
       authSession={authSession}
       theme={theme}
+      onAuthMenuRequestHandled={onAuthMenuRequestHandled}
       onSelectMode={onSelectMode}
       onToggleTheme={toggleTheme}
     >
       <div key={appMode} className="page-transition grid gap-4">
-        {appMode !== "home" && <AppHeader {...headerProps} />}
+        {appMode !== "home" && appMode !== "profile" && <AppHeader {...headerProps} />}
 
         <AppRoutes {...pageRoutesProps} />
       </div>

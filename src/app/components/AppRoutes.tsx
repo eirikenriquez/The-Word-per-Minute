@@ -7,6 +7,8 @@ import type { LibraryPageProps } from "../../pages/library/LibraryPage";
 import { LibraryPage } from "../../pages/library/LibraryPage";
 import type { PracticePageProps } from "../../pages/practice/PracticePage";
 import { PracticePage } from "../../pages/practice/PracticePage";
+import type { ProfilePageProps } from "../../pages/profile/ProfilePage";
+import { ProfilePage } from "../../pages/profile/ProfilePage";
 import { APP_ROUTE_PATHS } from "../routes/appRoutePaths";
 
 export type AppRoutesProps = {
@@ -14,6 +16,7 @@ export type AppRoutesProps = {
   homePageProps: HomePageProps;
   libraryPageProps: LibraryPageProps;
   practicePageProps: PracticePageProps | null;
+  profilePageProps: ProfilePageProps;
 };
 
 /**
@@ -24,6 +27,7 @@ export function AppRoutes({
   homePageProps,
   libraryPageProps,
   practicePageProps,
+  profilePageProps,
 }: AppRoutesProps) {
   return (
     <Routes>
@@ -34,6 +38,7 @@ export function AppRoutes({
       />
       <Route element={<BiblePage {...biblePageProps} />} path={APP_ROUTE_PATHS.bible} />
       <Route element={<LibraryPage {...libraryPageProps} />} path={APP_ROUTE_PATHS.library} />
+      <Route element={<ProfilePage {...profilePageProps} />} path={APP_ROUTE_PATHS.profile} />
       <Route element={<Navigate replace to={APP_ROUTE_PATHS.home} />} path="*" />
     </Routes>
   );

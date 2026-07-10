@@ -8,13 +8,17 @@ import type { SavedPassage } from "../../shared/types/savedPassage";
 
 export type PracticePageProps = {
   accuracy: number;
+  canSaveReflection: boolean;
   canSaveCurrentPassage: boolean;
   isCurrentPassageSaved: boolean;
   isPassageComplete: boolean;
+  isSavingReflection: boolean;
+  isSignedIn: boolean;
   passage: PracticePassage;
   practiceSource: PracticeSource;
   practiceTitle: string;
   progress: number;
+  reflectionError: string | null;
   savedPassages: SavedPassage[];
   selectedSavedPassageId: string;
   stats: PracticeStats;
@@ -27,6 +31,7 @@ export type PracticePageProps = {
   onResetPractice: () => void;
   onResetStats: () => void;
   onSaveCurrentPassage: () => void;
+  onSaveReflection: (reflection: string) => Promise<boolean>;
   onSelectFeaturedPractice: () => void;
   onSelectSavedPassage: (passageId: string) => void;
   onTypingChange: (typedText: string) => void;
@@ -37,13 +42,17 @@ export type PracticePageProps = {
  */
 export function PracticePage({
   accuracy,
+  canSaveReflection,
   canSaveCurrentPassage,
   isCurrentPassageSaved,
   isPassageComplete,
+  isSavingReflection,
+  isSignedIn,
   passage,
   practiceSource,
   practiceTitle,
   progress,
+  reflectionError,
   savedPassages,
   selectedSavedPassageId,
   stats,
@@ -56,6 +65,7 @@ export function PracticePage({
   onResetPractice,
   onResetStats,
   onSaveCurrentPassage,
+  onSaveReflection,
   onSelectFeaturedPractice,
   onSelectSavedPassage,
   onTypingChange,
@@ -91,9 +101,14 @@ export function PracticePage({
             completionMessage={
               `Complete. You finished ${practiceTitle} at ${wpm} WPM with ${accuracy}% accuracy.`
             }
+            canSaveReflection={canSaveReflection}
             isComplete={isPassageComplete}
+            isSavingReflection={isSavingReflection}
+            isSignedIn={isSignedIn}
             onCompletionAction={isPassageComplete && practiceSource === "featured" ? onNextFeaturedPassage : undefined}
+            onSaveReflection={onSaveReflection}
             progress={Math.min(progress, 100)}
+            reflectionError={reflectionError}
             status={status}
             typedText={typedText}
             wpm={wpm}
