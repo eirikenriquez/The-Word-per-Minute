@@ -14,6 +14,7 @@ export function usePracticeAttempts(userId?: string | null) {
   const [recentAttempts, setRecentAttempts] = useState<PracticeAttempt[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isSavingReflection, setIsSavingReflection] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -69,6 +70,8 @@ export function usePracticeAttempts(userId?: string | null) {
   const updateReflection = useCallback(async (attemptId: string, reflection: string) => {
     if (!practiceAttemptStore) return null;
 
+    setIsSavingReflection(true);
+
     try {
       const updatedAttempt = await practiceAttemptStore.updateReflection(attemptId, reflection);
       if (!updatedAttempt) return null;
@@ -81,6 +84,8 @@ export function usePracticeAttempts(userId?: string | null) {
     } catch (caughtError) {
       setError(getErrorMessage(caughtError));
       return null;
+    } finally {
+      setIsSavingReflection(false);
     }
   }, [practiceAttemptStore]);
 
@@ -88,6 +93,7 @@ export function usePracticeAttempts(userId?: string | null) {
     error,
     isLoading,
     isSaving,
+    isSavingReflection,
     recentAttempts,
     saveAttempt,
     updateReflection,

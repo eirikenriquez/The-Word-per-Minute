@@ -87,42 +87,56 @@ export function createLibraryPageProps({
 
 export function createPracticePageProps({
   appActions,
+  canSaveReflection,
   canSaveCurrentPassage,
   isCurrentPassageSaved,
+  isSavingReflection,
+  isSignedIn,
   passage,
   practiceSession,
   practiceSource,
   practiceTitle,
+  reflectionError,
   resetStats,
   savedLibrary,
   stats,
   translationName,
   onSaveCurrentPassage,
+  onSaveReflection,
 }: {
   appActions: AppActions;
+  canSaveReflection: boolean;
   canSaveCurrentPassage: boolean;
   isCurrentPassageSaved: boolean;
+  isSavingReflection: boolean;
+  isSignedIn: boolean;
   passage: PracticePassage | undefined;
   practiceSession: ReturnType<typeof usePracticeSession>;
   practiceSource: PracticeSource;
   practiceTitle: string;
+  reflectionError: string | null;
   resetStats: () => void;
   savedLibrary: ReturnType<typeof useSavedPassages>;
   stats: PracticeStats;
   translationName: string;
   onSaveCurrentPassage: () => void;
+  onSaveReflection: (reflection: string) => Promise<boolean>;
 }): PracticePageProps | null {
   if (!passage) return null;
 
   return {
     accuracy: practiceSession.accuracy,
+    canSaveReflection,
     canSaveCurrentPassage,
     isCurrentPassageSaved,
     isPassageComplete: practiceSession.isPassageComplete,
+    isSavingReflection,
+    isSignedIn,
     passage,
     practiceSource,
     practiceTitle,
     progress: practiceSession.progress,
+    reflectionError,
     savedPassages: savedLibrary.savedPassages,
     selectedSavedPassageId: savedLibrary.selectedSavedPassageId,
     stats,
@@ -135,6 +149,7 @@ export function createPracticePageProps({
     onResetPractice: practiceSession.resetPractice,
     onResetStats: resetStats,
     onSaveCurrentPassage,
+    onSaveReflection,
     onSelectFeaturedPractice: appActions.selectFeaturedPractice,
     onSelectSavedPassage: appActions.selectSavedPractice,
     onTypingChange: practiceSession.handleTyping,

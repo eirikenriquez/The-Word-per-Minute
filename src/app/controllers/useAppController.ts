@@ -35,6 +35,7 @@ import {
 export function useAppController() {
   const { appMode, selectAppMode } = useAppNavigation();
   const [authMenuRequest, setAuthMenuRequest] = useState<{ id: number; mode: "signUp" } | null>(null);
+  const [completedPracticeAttemptId, setCompletedPracticeAttemptId] = useState<string | null>(null);
   const [practiceSource, setPracticeSource] = useState<PracticeSource>("featured");
   const { theme, toggleTheme } = useTheme();
   const authSession = useAuthSession();
@@ -45,7 +46,10 @@ export function useAppController() {
   const bibleLibrary = useVerseLibrary();
   const savedLibrary = useSavedPassages(authSession.user?.id);
   const practiceAttempts = usePracticeAttempts(authSession.user?.id);
-  const { saveAttempt: savePracticeAttempt } = practiceAttempts;
+  const {
+    saveAttempt: savePracticeAttempt,
+    updateReflection: updatePracticeReflection,
+  } = practiceAttempts;
   const savedPassageCount = savedLibrary.savedPassages.length;
   const { featuredHomeCategories, savedPassageCategories } = usePassageCategories(featuredLibrary.passages);
 
@@ -62,6 +66,7 @@ export function useAppController() {
 
   const handleCompletedPracticeAttempt = useCallback((result: PracticeCompletionResult) => {
     recordCompletedAttempt(result.wpm, result.accuracy);
+    setCompletedPracticeAttemptId(null);
 
     const activePassageResponse =
       practiceSource === "featured"
@@ -85,6 +90,8 @@ export function useAppController() {
       translationId: activePassageResponse.translation.id,
       typedCharacterCount: result.typedCharacterCount,
       wpm: result.wpm,
+    }).then((savedAttempt) => {
+      if (savedAttempt) setCompletedPracticeAttemptId(savedAttempt.id);
     });
   }, [
     featuredLibrary.passageResponse,
@@ -101,6 +108,18 @@ export function useAppController() {
     onCompletedAttempt: handleCompletedPracticeAttempt,
   });
   const { resetPractice } = practiceSession;
+
+  const resetPracticeSession = useCallback(() => {
+    resetPractice();
+    setCompletedPracticeAttemptId(null);
+  }, [resetPractice]);
+
+  const savePracticeReflection = useCallback(async (reflection: string) => {
+    if (!completedPracticeAttemptId) return false;
+
+    const updatedAttempt = await updatePracticeReflection(completedPracticeAttemptId, reflection);
+    return Boolean(updatedAttempt);
+  }, [completedPracticeAttemptId, updatePracticeReflection]);
 
   const { error, headerReference, headerSubtitle, headerTitle, isLoading, translationName } =
     useAppDisplayState({
@@ -150,7 +169,7 @@ export function useAppController() {
     bibleSelectedChapter: bibleLibrary.selectedChapter,
     featuredSelectedPassageId: featuredLibrary.selectedPassageId,
     practiceSource,
-    resetPractice,
+    resetPractice: resetPracticeSession,
     savedPassageCount,
     savedSelectedPassageId: savedLibrary.selectedSavedPassageId,
     selectedVerseNumbers: readerSelection.selectedVerseNumbers,
@@ -162,7 +181,7 @@ export function useAppController() {
     featuredPassages: featuredLibrary.passages,
     focusSelectedVerses: readerSelection.focusSelectedVerses,
     removeSavedPassage: savedLibrary.removePassage,
-    resetPractice,
+    resetPractice: resetPracticeSession,
     savedPassages: savedLibrary.savedPassages,
     selectBibleBook: bibleLibrary.selectBook,
     selectBibleChapter: bibleLibrary.selectChapter,
@@ -225,15 +244,20 @@ export function useAppController() {
       appActions,
       canSaveCurrentPassage: Boolean(saveInput),
       isCurrentPassageSaved,
+      isSavingReflection: practiceAttempts.isSavingReflection,
       passage: practicePassage,
       practiceSession,
       practiceSource,
       practiceTitle: headerTitle,
+      reflectionError: practiceAttempts.error,
       resetStats,
       savedLibrary,
+      canSaveReflection: authSession.isSignedIn && Boolean(completedPracticeAttemptId),
+      isSignedIn: authSession.isSignedIn,
       stats,
       translationName,
       onSaveCurrentPassage: saveCurrentPassage,
+      onSaveReflection: savePracticeReflection,
     }),
     profilePageProps: createProfilePageProps({
       authSession,
