@@ -17,6 +17,7 @@ export type HomePageProps = {
   featuredHomeCategories: HomeCategory[];
   isSignedIn: boolean;
   savedPassageCount: number;
+  onCreateAccount: () => void;
   onOpenBible: () => void;
   onOpenLibrary: () => void;
   onSelectFeaturedCategory: (category: string) => void;
@@ -30,6 +31,7 @@ export function HomePage({
   featuredHomeCategories,
   isSignedIn,
   savedPassageCount,
+  onCreateAccount,
   onOpenBible,
   onOpenLibrary,
   onSelectFeaturedCategory,
@@ -85,12 +87,22 @@ export function HomePage({
           </p>
         </div>
 
-        <Link
-          className="inline-flex min-h-10 w-fit items-center justify-center rounded-md bg-action px-4 py-2 text-sm font-semibold text-action-ink transition-colors hover:bg-action-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
-          to={APP_ROUTE_PATHS.profile}
-        >
-          {isSignedIn ? "View profile" : "Create account"}
-        </Link>
+        {isSignedIn ? (
+          <Link
+            className="inline-flex min-h-10 w-fit items-center justify-center rounded-md bg-action px-4 py-2 text-sm font-semibold text-action-ink transition-colors hover:bg-action-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+            to={APP_ROUTE_PATHS.profile}
+          >
+            View profile
+          </Link>
+        ) : (
+          <button
+            className="inline-flex min-h-10 w-fit items-center justify-center rounded-md bg-action px-4 py-2 text-sm font-semibold text-action-ink transition-colors hover:bg-action-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+            type="button"
+            onClick={onCreateAccount}
+          >
+            Create account
+          </button>
+        )}
       </section>
 
       <section className="rise-in rise-in-delay-3 grid gap-4">

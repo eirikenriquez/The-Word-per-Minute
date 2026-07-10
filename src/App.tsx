@@ -12,6 +12,7 @@ import { useAppController } from "./app/controllers/useAppController";
 function App() {
   const {
     appMode,
+    authMenuRequest,
     authSession,
     errorMessage,
     hasSavedPassages,
@@ -44,6 +45,7 @@ function App() {
   return (
     <PageShell
       appMode={appMode}
+      authMenuRequest={authMenuRequest}
       hasSavedPassages={hasSavedPassages}
       authSession={authSession}
       theme={theme}

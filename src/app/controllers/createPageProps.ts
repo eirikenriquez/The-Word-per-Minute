@@ -47,16 +47,19 @@ export function createHomePageProps({
   appActions,
   featuredHomeCategories,
   isSignedIn,
+  onCreateAccount,
   savedPassageCount,
 }: {
   appActions: AppActions;
   featuredHomeCategories: HomeCategory[];
   isSignedIn: boolean;
+  onCreateAccount: () => void;
   savedPassageCount: number;
 }): HomePageProps {
   return {
     featuredHomeCategories,
     isSignedIn,
+    onCreateAccount,
     savedPassageCount,
     onOpenBible: appActions.openBible,
     onOpenLibrary: appActions.openLibrary,

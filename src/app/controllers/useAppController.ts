@@ -34,6 +34,7 @@ import {
  */
 export function useAppController() {
   const { appMode, selectAppMode } = useAppNavigation();
+  const [authMenuRequest, setAuthMenuRequest] = useState<{ id: number; mode: "signUp" } | null>(null);
   const [practiceSource, setPracticeSource] = useState<PracticeSource>("featured");
   const { theme, toggleTheme } = useTheme();
   const authSession = useAuthSession();
@@ -209,6 +210,11 @@ export function useAppController() {
       appActions,
       featuredHomeCategories,
       isSignedIn: authSession.isSignedIn,
+      onCreateAccount: () =>
+        setAuthMenuRequest((currentRequest) => ({
+          id: (currentRequest?.id ?? 0) + 1,
+          mode: "signUp",
+        })),
       savedPassageCount,
     }),
     libraryPageProps: createLibraryPageProps({
@@ -237,6 +243,7 @@ export function useAppController() {
 
   return {
     appMode,
+    authMenuRequest,
     authSession,
     errorMessage,
     hasSavedPassages: savedPassageCount > 0,
