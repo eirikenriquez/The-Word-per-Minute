@@ -51,17 +51,36 @@ export function ProfilePage({
           Create an account to keep your practice history and reflections across sessions.
         </ProfileMessage>
       ) : (
-        <>
-          <section className="grid gap-4 border-y border-line py-5 sm:grid-cols-4">
-            <ProfileStat label="Sessions" value={completedAttempts} />
-            <ProfileStat label="Reflections" value={reflectionCount} />
-            <ProfileStat label="Average accuracy" value={`${averageAccuracy}%`} />
-            <ProfileStat label="Best WPM" value={bestWpm} />
-          </section>
+        <div className="grid gap-8 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start">
+          <aside className="grid gap-6 border-y border-line py-5 lg:sticky lg:top-28 lg:border-y-0 lg:border-r lg:py-0 lg:pr-6">
+            <section className="grid gap-2">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
+                Account
+              </h3>
+              <p className="break-words text-sm font-medium text-ink-muted">
+                {userEmail ?? "Account active"}
+              </p>
+              <p className="text-sm leading-6 text-ink-subtle">
+                Saved passages and practice history can sync with this account.
+              </p>
+            </section>
 
-          <section className="grid gap-4">
+            <section className="grid gap-4">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
+                Overview
+              </h3>
+              <div className="grid grid-cols-2 gap-4 lg:grid-cols-1">
+                <ProfileStat label="Sessions" value={completedAttempts} />
+                <ProfileStat label="Reflections" value={reflectionCount} />
+                <ProfileStat label="Average accuracy" value={`${averageAccuracy}%`} />
+                <ProfileStat label="Best WPM" value={bestWpm} />
+              </div>
+            </section>
+          </aside>
+
+          <section className="grid gap-5">
             <div>
-              <h3 className="text-lg font-semibold text-ink">Recent practice</h3>
+              <h3 className="text-xl font-semibold text-ink">Recent practice</h3>
               <p className="mt-1 text-sm text-ink-subtle">
                 Revisit the passages you have typed and what stood out along the way.
               </p>
@@ -72,7 +91,7 @@ export function ProfilePage({
             ) : isLoadingPracticeAttempts ? (
               <ProfileMessage>Loading practice history...</ProfileMessage>
             ) : practiceAttempts.length ? (
-              <div className="grid gap-3">
+              <div className="grid gap-4">
                 {practiceAttempts.map((attempt) => (
                   <PracticeAttemptCard attempt={attempt} key={attempt.id} />
                 ))}
@@ -83,7 +102,7 @@ export function ProfilePage({
               </ProfileMessage>
             )}
           </section>
-        </>
+        </div>
       )}
     </section>
   );
@@ -93,14 +112,14 @@ function ProfileStat({ label, value }: { label: string; value: number | string }
   return (
     <div>
       <p className="text-sm text-ink-subtle">{label}</p>
-      <p className="mt-1 text-xl font-bold text-ink">{value}</p>
+      <p className="mt-1 text-2xl font-bold text-ink lg:text-xl">{value}</p>
     </div>
   );
 }
 
 function PracticeAttemptCard({ attempt }: { attempt: PracticeAttempt }) {
   return (
-    <article className="border-b border-line pb-4 last:border-b-0">
+    <article className="rounded-lg border border-line bg-surface p-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h4 className="font-semibold text-ink">{attempt.passageReference}</h4>
@@ -122,11 +141,11 @@ function PracticeAttemptCard({ attempt }: { attempt: PracticeAttempt }) {
       </div>
 
       {attempt.reflection ? (
-        <p className="mt-3 border-l-2 border-accent-line pl-3 text-sm leading-6 text-ink-muted">
+        <p className="mt-4 border-l-2 border-accent-line pl-3 text-sm leading-6 text-ink-muted">
           {attempt.reflection}
         </p>
       ) : (
-        <p className="mt-3 text-sm text-ink-subtle">
+        <p className="mt-4 text-sm text-ink-subtle">
           No reflection yet.
         </p>
       )}
