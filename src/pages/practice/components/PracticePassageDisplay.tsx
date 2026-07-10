@@ -3,6 +3,8 @@ import type { PracticePassage } from "../../../shared/types/practice";
 import { areCharactersEquivalent } from "../../../domain/practice/utils/typingMetrics";
 
 type PracticePassageDisplayProps = {
+  isComplete: boolean;
+  onTypingChange: (typedText: string) => void;
   passage: PracticePassage;
   translationName: string;
   typedText: string;
@@ -77,10 +79,13 @@ function getDisplayParts(passage: PracticePassage) {
  * Shows a continuous passage in a fixed-height viewport that follows the active character.
  */
 export function PracticePassageDisplay({
+  isComplete,
+  onTypingChange,
   passage,
   translationName,
   typedText,
 }: PracticePassageDisplayProps) {
+  const typingInputRef = useRef<HTMLTextAreaElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const activeCharacterRef = useRef<HTMLSpanElement>(null);
 
@@ -101,35 +106,55 @@ export function PracticePassageDisplay({
 
   return (
     <section className="grid gap-4">
-      <p className="text-sm font-semibold text-ink-muted">
-        {passage.ref} <span className="text-ink-subtle">({translationName})</span>
-      </p>
-
-      <div
-        className="h-56 overflow-hidden border-y border-line py-5 pr-4 scroll-smooth"
-        ref={viewportRef}
-      >
-        <p className="relative text-xl leading-10 text-ink-muted sm:text-2xl sm:leading-[3rem]">
-          {getDisplayParts(passage).map((part) =>
-            part.kind === "verseNumber" ? (
-              <sup className="mr-1 text-sm font-bold text-ink-subtle" key={part.key}>
-                {part.verseNumber}
-              </sup>
-            ) : (
-              <span
-                className={getCharacterClass(
-                  part.character,
-                  typedText[part.textIndex],
-                  part.textIndex === typedText.length,
-                )}
-                key={part.key}
-                ref={part.textIndex === typedText.length ? activeCharacterRef : undefined}
-              >
-                {part.character}
-              </span>
-            ),
-          )}
+      <div className="flex flex-col gap-1">
+        <p className="text-sm font-semibold text-ink-muted">
+          {passage.ref} <span className="text-ink-subtle">({translationName})</span>
         </p>
+        <p className="text-sm text-ink-subtle">
+          Click the passage and type what you see.
+        </p>
+      </div>
+
+      <div className="relative focus-within:ring-2 focus-within:ring-accent-soft">
+        <textarea
+          aria-label="Type the passage"
+          className="absolute inset-0 z-10 h-full w-full resize-none overflow-hidden bg-transparent text-transparent caret-transparent outline-none"
+          disabled={isComplete}
+          ref={typingInputRef}
+          spellCheck={false}
+          value={typedText}
+          autoCapitalize="off"
+          autoComplete="off"
+          autoCorrect="off"
+          onChange={(event) => onTypingChange(event.target.value)}
+        />
+        <div
+          className="h-56 overflow-hidden border-y border-line py-5 pr-4 scroll-smooth"
+          ref={viewportRef}
+          onClick={() => typingInputRef.current?.focus()}
+        >
+          <p className="relative text-xl leading-10 text-ink-muted sm:text-2xl sm:leading-[3rem]">
+            {getDisplayParts(passage).map((part) =>
+              part.kind === "verseNumber" ? (
+                <sup className="mr-1 text-sm font-bold text-ink-subtle" key={part.key}>
+                  {part.verseNumber}
+                </sup>
+              ) : (
+                <span
+                  className={getCharacterClass(
+                    part.character,
+                    typedText[part.textIndex],
+                    part.textIndex === typedText.length,
+                  )}
+                  key={part.key}
+                  ref={part.textIndex === typedText.length ? activeCharacterRef : undefined}
+                >
+                  {part.character}
+                </span>
+              ),
+            )}
+          </p>
+        </div>
       </div>
     </section>
   );

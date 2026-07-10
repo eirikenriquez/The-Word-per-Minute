@@ -89,6 +89,8 @@ export function PracticePage({
 
       <section className="mx-auto grid w-full max-w-5xl gap-8">
         <PracticePassageDisplay
+          isComplete={isPassageComplete}
+          onTypingChange={onTypingChange}
           passage={passage}
           translationName={translationName}
           typedText={typedText}
@@ -110,9 +112,7 @@ export function PracticePage({
             progress={Math.min(progress, 100)}
             reflectionError={reflectionError}
             status={status}
-            typedText={typedText}
             wpm={wpm}
-            onTypingChange={onTypingChange}
           />
         </div>
       </section>

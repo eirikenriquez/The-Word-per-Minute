@@ -13,11 +13,9 @@ type TypingPracticePanelProps = {
   isSignedIn: boolean;
   onCompletionAction?: () => void;
   onSaveReflection: (reflection: string) => Promise<boolean>;
-  onTypingChange: (typedText: string) => void;
   progress: number;
   reflectionError: string | null;
   status: PracticeStatus;
-  typedText: string;
   wpm: number;
 };
 
@@ -35,11 +33,9 @@ export function TypingPracticePanel({
   isSignedIn,
   onCompletionAction,
   onSaveReflection,
-  onTypingChange,
   progress,
   reflectionError,
   status,
-  typedText,
   wpm,
 }: TypingPracticePanelProps) {
   const [reflectionText, setReflectionText] = useState("");
@@ -61,16 +57,6 @@ export function TypingPracticePanel({
 
   return (
     <section className="grid gap-4">
-      <label className="grid gap-2">
-        <span className="text-base font-semibold text-ink">Type the passage</span>
-        <textarea
-          className="h-40 resize-none rounded-md border border-line-strong bg-surface p-4 text-ink leading-7 outline-none transition placeholder:text-ink-subtle focus:border-accent focus:ring-2 focus:ring-accent-soft"
-          placeholder="Start typing here..."
-          value={typedText}
-          onChange={(event) => onTypingChange(event.target.value)}
-        />
-      </label>
-
       <div className="flex flex-wrap items-center gap-x-8 gap-y-2 text-base text-ink-muted">
         <p>
           <strong className="font-semibold text-ink">{wpm}</strong> WPM
