@@ -16,6 +16,7 @@ type PageShellProps = {
   hasSavedPassages?: boolean;
   theme: Theme;
   onToggleTheme: () => void;
+  onAuthMenuRequestHandled?: () => void;
   onSelectMode?: (mode: AppMode) => void;
 };
 
@@ -30,6 +31,7 @@ export function PageShell({
   hasSavedPassages = false,
   theme,
   onToggleTheme,
+  onAuthMenuRequestHandled,
   onSelectMode,
 }: PageShellProps) {
   return (
@@ -58,7 +60,13 @@ export function PageShell({
             {appMode && onSelectMode && (
               <AppNavigation appMode={appMode} hasSavedPassages={hasSavedPassages} onSelectMode={onSelectMode} />
             )}
-            {authSession && <AuthControls authSession={authSession} menuRequest={authMenuRequest} />}
+            {authSession && (
+              <AuthControls
+                authSession={authSession}
+                menuRequest={authMenuRequest}
+                onMenuRequestHandled={onAuthMenuRequestHandled}
+              />
+            )}
           </div>
         </div>
       </header>

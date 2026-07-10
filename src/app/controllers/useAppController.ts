@@ -273,6 +273,7 @@ export function useAppController() {
     hasSavedPassages: savedPassageCount > 0,
     headerProps,
     isLoading,
+    onAuthMenuRequestHandled: () => setAuthMenuRequest(null),
     onSelectMode: selectAppMode,
     pageRoutesProps,
     theme,

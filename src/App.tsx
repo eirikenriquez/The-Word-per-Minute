@@ -18,6 +18,7 @@ function App() {
     hasSavedPassages,
     headerProps,
     isLoading,
+    onAuthMenuRequestHandled,
     onSelectMode,
     pageRoutesProps,
     theme,
@@ -49,6 +50,7 @@ function App() {
       hasSavedPassages={hasSavedPassages}
       authSession={authSession}
       theme={theme}
+      onAuthMenuRequestHandled={onAuthMenuRequestHandled}
       onSelectMode={onSelectMode}
       onToggleTheme={toggleTheme}
     >

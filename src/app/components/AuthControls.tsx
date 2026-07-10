@@ -12,19 +12,28 @@ export type AuthMenuRequest = {
 type AuthControlsProps = {
   authSession: AuthSessionState;
   menuRequest?: AuthMenuRequest | null;
+  onMenuRequestHandled?: () => void;
 };
 
 /**
  * Small app-shell auth control for Supabase email/password authentication.
  */
-export function AuthControls({ authSession, menuRequest }: AuthControlsProps) {
+export function AuthControls({
+  authSession,
+  menuRequest,
+  onMenuRequestHandled,
+}: AuthControlsProps) {
+  const [activeMenuRequest, setActiveMenuRequest] = useState<AuthMenuRequest | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!menuRequest) return;
+    if (!menuRequest || authSession.isSignedIn) return;
+
+    setActiveMenuRequest(menuRequest);
     setIsOpen(true);
-  }, [menuRequest]);
+    onMenuRequestHandled?.();
+  }, [authSession.isSignedIn, menuRequest, onMenuRequestHandled]);
 
   useEffect(() => {
     function closeOnOutsideClick(event: MouseEvent) {
@@ -75,7 +84,7 @@ export function AuthControls({ authSession, menuRequest }: AuthControlsProps) {
       {isOpen && (
         <SignedOutAuthMenu
           authSession={authSession}
-          modeRequest={menuRequest}
+          modeRequest={activeMenuRequest}
           onSignedIn={() => setIsOpen(false)}
         />
       )}
