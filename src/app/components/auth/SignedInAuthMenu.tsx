@@ -1,16 +1,21 @@
-import { ArrowRightStartOnRectangleIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowRightStartOnRectangleIcon,
+  ChartBarIcon,
+} from "@heroicons/react/24/outline";
+import { Link } from "react-router-dom";
 import type { AuthSessionState } from "../../../domain/auth/useAuthSession";
 import { Button } from "../../../shared/ui/Button";
+import { PROFILE_ROUTE_PATH } from "../../routes/appRoutePaths";
 
 type SignedInAuthMenuProps = {
   authSession: AuthSessionState;
-  onSignedOut: () => void;
+  onClose: () => void;
 };
 
-export function SignedInAuthMenu({ authSession, onSignedOut }: SignedInAuthMenuProps) {
+export function SignedInAuthMenu({ authSession, onClose }: SignedInAuthMenuProps) {
   return (
     <div className="animate-dropdown-in absolute right-0 top-full z-30 mt-2 w-72 rounded-lg border border-line bg-surface p-4 shadow-lg shadow-black/10 dark:shadow-black/30">
-      <div className="grid gap-3">
+      <div className="grid gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-ink-subtle">
             Signed in as
@@ -23,12 +28,21 @@ export function SignedInAuthMenu({ authSession, onSignedOut }: SignedInAuthMenuP
           </p>
         </div>
 
+        <Link
+          className="inline-flex min-h-9 items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-ink-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+          to={PROFILE_ROUTE_PATH}
+          onClick={onClose}
+        >
+          <ChartBarIcon aria-hidden="true" className="h-4 w-4" />
+          Profile and progress
+        </Link>
+
         <Button
           disabled={authSession.isLoading}
           variant="ghost"
           onClick={async () => {
             await authSession.signOut();
-            onSignedOut();
+            onClose();
           }}
         >
           <ArrowRightStartOnRectangleIcon aria-hidden="true" className="h-4 w-4" />

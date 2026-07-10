@@ -47,7 +47,7 @@ export function AuthControls({ authSession }: AuthControlsProps) {
         />
 
         {isOpen && (
-          <SignedInAuthMenu authSession={authSession} onSignedOut={() => setIsOpen(false)} />
+          <SignedInAuthMenu authSession={authSession} onClose={() => setIsOpen(false)} />
         )}
       </div>
     );
