@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import type { PracticeAttempt } from "../../shared/types/practice";
 
 export type ProfilePageProps = {
@@ -118,6 +120,15 @@ function ProfileStat({ label, value }: { label: string; value: number | string }
 }
 
 function PracticeAttemptCard({ attempt }: { attempt: PracticeAttempt }) {
+  const [isReflectionExpanded, setIsReflectionExpanded] = useState(false);
+  const shouldCollapseReflection = Boolean(attempt.reflection && attempt.reflection.length > 240);
+  const reflectionContainerClassName = [
+    "relative mt-4 overflow-hidden border-l-2 border-accent-line pl-3",
+    shouldCollapseReflection && !isReflectionExpanded ? "max-h-28" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
     <article className="rounded-lg border border-line bg-surface p-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
@@ -141,9 +152,30 @@ function PracticeAttemptCard({ attempt }: { attempt: PracticeAttempt }) {
       </div>
 
       {attempt.reflection ? (
-        <p className="mt-4 border-l-2 border-accent-line pl-3 text-sm leading-6 text-ink-muted">
-          {attempt.reflection}
-        </p>
+        <>
+          <div className={reflectionContainerClassName}>
+            <p className="text-sm leading-6 text-ink-muted">
+              {attempt.reflection}
+            </p>
+            {shouldCollapseReflection && !isReflectionExpanded ? (
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-surface to-transparent"
+              />
+            ) : null}
+          </div>
+
+          {shouldCollapseReflection ? (
+            <button
+              aria-expanded={isReflectionExpanded}
+              className="mt-3 text-sm font-medium text-ink-muted transition-colors hover:text-ink"
+              onClick={() => setIsReflectionExpanded((isExpanded) => !isExpanded)}
+              type="button"
+            >
+              {isReflectionExpanded ? "Show less" : "View full reflection"}
+            </button>
+          ) : null}
+        </>
       ) : (
         <p className="mt-4 text-sm text-ink-subtle">
           No reflection yet.
