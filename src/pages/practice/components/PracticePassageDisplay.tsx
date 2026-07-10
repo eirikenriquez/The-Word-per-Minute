@@ -153,7 +153,11 @@ export function PracticePassageDisplay({
 
   async function saveReflection() {
     const didSave = await onSaveReflection(reflectionText);
-    if (didSave) setHasSavedReflection(true);
+    if (!didSave) return;
+
+    setHasSavedReflection(true);
+    setReflectionText("");
+    setIsReflectionOpen(false);
   }
 
   return (
