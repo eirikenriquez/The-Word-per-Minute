@@ -14,6 +14,7 @@ type UseAppDisplayStateParams = {
   practiceSource: PracticeSource;
   savedError: string | null;
   savedIsLoading: boolean;
+  savedPassageResponse: PassageResponse | null;
   savedPassageCount: number;
   selectedSavedPassage?: SavedPassage;
   selectedTranslationId: string;
@@ -34,6 +35,7 @@ export function useAppDisplayState({
   practiceSource,
   savedError,
   savedIsLoading,
+  savedPassageResponse,
   savedPassageCount,
   selectedSavedPassage,
   selectedTranslationId,
@@ -56,8 +58,10 @@ export function useAppDisplayState({
         appMode,
         bibleIsLoading,
         featuredIsLoading,
+        featuredPassageResponse,
         practiceSource,
         savedIsLoading,
+        savedPassageResponse,
       }),
       headerReference: getHeaderReference({
         appMode,
@@ -95,6 +99,7 @@ export function useAppDisplayState({
     practiceSource,
     savedError,
     savedIsLoading,
+    savedPassageResponse,
     savedPassageCount,
     selectedSavedPassage,
     selectedTranslationId,
@@ -106,15 +111,30 @@ function getModeLoadingState({
   appMode,
   bibleIsLoading,
   featuredIsLoading,
+  featuredPassageResponse,
   practiceSource,
   savedIsLoading,
+  savedPassageResponse,
 }: Pick<
   UseAppDisplayStateParams,
-  "appMode" | "bibleIsLoading" | "featuredIsLoading" | "practiceSource" | "savedIsLoading"
+  | "appMode"
+  | "bibleIsLoading"
+  | "featuredIsLoading"
+  | "featuredPassageResponse"
+  | "practiceSource"
+  | "savedIsLoading"
+  | "savedPassageResponse"
 >) {
   if (appMode === "home") return featuredIsLoading;
   if (appMode === "bible") return bibleIsLoading;
-  if (appMode === "practice") return practiceSource === "featured" ? featuredIsLoading : savedIsLoading;
+  if (appMode === "practice") {
+    if (practiceSource === "featured") {
+      return featuredIsLoading && !featuredPassageResponse;
+    }
+
+    return savedIsLoading && !savedPassageResponse;
+  }
+
   return false;
 }
 
