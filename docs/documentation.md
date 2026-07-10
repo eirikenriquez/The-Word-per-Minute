@@ -1,7 +1,7 @@
 # The Word per Minute Documentation
 
-Document version: `260706.1.f`
-Last updated: 06/07/26
+Document version: `260710.1.a`
+Last updated: 10/07/26
 Update rule: only update this file when explicitly requested by the project owner.
 
 ## Purpose
@@ -16,6 +16,7 @@ The current product direction is:
 - Bible lets users read chapters and select verses to save.
 - Library lets users manage saved passages.
 - Saved passages can be practised from Practice.
+- Profile shows signed-in practice history, progress, and reflections.
 
 Version history and documentation update notes live in `docs/update-notes.md`.
 
@@ -27,10 +28,10 @@ Version history and documentation update notes live in `docs/update-notes.md`.
 - React Router
 - Tailwind CSS
 - Local JSON Bible data
-- Supabase JavaScript client for authentication and signed-in saved passages
-- `localStorage` for guest saved passages, personal best stats, and theme preference
+- Supabase JavaScript client for authentication, signed-in saved passages, and signed-in practice history
+- `localStorage` for guest saved passages, personal-best stats, and theme preference
 
-Supabase/Postgres is now used for authentication and signed-in saved passages. Guest saved passages still use browser storage, and practice stats still use local storage.
+Supabase/Postgres is now used for authentication, signed-in saved passages, signed-in practice attempts, and reflections. Guest saved passages and personal-best stats still use browser storage.
 
 ## High-Level Architecture
 
@@ -61,6 +62,7 @@ The app is a single page app with proper URL routes:
 /practice  Practice
 /bible     Bible
 /library   Library
+/profile   Profile / Progress
 ```
 
 `BrowserRouter` is installed in `src/main.tsx`.
@@ -72,6 +74,7 @@ The app is a single page app with proper URL routes:
 /practice  -> PracticePage
 /bible     -> BiblePage
 /library   -> LibraryPage
+/profile   -> ProfilePage
 ```
 
 `useAppNavigation` derives the current `appMode` from the URL path. The URL is the source of truth for which screen is active.
@@ -111,7 +114,9 @@ It:
 - allows featured passages to be saved from the Practice controls,
 - lets users switch between Featured and Saved practice sources,
 - presents source and saved-passage controls in a responsive, label-first layout,
-- shows WPM, accuracy, progress, and status as one quiet horizontal summary instead of separate dashboard cards.
+- shows WPM, accuracy, progress, and status as one quiet horizontal summary instead of separate dashboard cards,
+- saves completed attempts for signed-in users,
+- lets signed-in users add a post-practice reflection after completing a passage.
 
 ### Bible
 
@@ -158,6 +163,21 @@ It:
 
 Library does not show typing input directly.
 
+### Profile / Progress
+
+Profile is the signed-in progress view.
+
+It:
+
+- shows the active account,
+- summarizes completed sessions, saved reflections, average accuracy, and best WPM,
+- lists recent signed-in practice attempts from Supabase,
+- shows WPM, accuracy, and duration for each attempt,
+- previews saved reflections with an expandable "View full reflection" control,
+- keeps long reflections from making history cards overly tall.
+
+Signed-out users see a prompt to create an account before progress can sync.
+
 ## App Runtime Flow
 
 ```txt
@@ -171,16 +191,16 @@ main.tsx
       -> builds cross-page actions
       -> prepares page props through plain factory functions
     -> renders PageShell with sticky branded navigation and floating utility controls
-    -> renders AppHeader on non-Home pages
+    -> renders AppHeader on non-Home and non-Profile pages
     -> renders AppRoutes
-      -> renders HomePage, PracticePage, BiblePage, or LibraryPage
+      -> renders HomePage, PracticePage, BiblePage, LibraryPage, or ProfilePage
 ```
 
 `App.tsx` is mostly the app shell. App-wide coordination lives in `src/app/controllers/useAppController.ts`. Cross-page actions are created by `createAppActions.ts`, while page-specific prop wiring is grouped into the plain factory functions in `createPageProps.ts`.
 
 The controller composes domain hooks and services, then passes prepared data and callbacks into page components. Page folders should stay mostly visual; domain folders should own app rules, persistence, transformations, and reusable data behaviour.
 
-Home intentionally hides `AppHeader` so the Home hero is the first page content. Practice, Bible, and Library still show the contextual page title/reference area.
+Home intentionally hides `AppHeader` so the Home hero is the first page content. Profile also hides `AppHeader` because it has its own progress heading. Practice, Bible, and Library still show the contextual page title/reference area.
 
 ## Current File Structure
 
@@ -198,6 +218,10 @@ src/
       AppNavigation.tsx
       PageShell.tsx
       PassageSaveControls.tsx
+      auth/
+        AuthMenuButton.tsx
+        SignedInAuthMenu.tsx
+        SignedOutAuthMenu.tsx
     controllers/
       createAppActions.ts
       createPageProps.ts
@@ -224,9 +248,13 @@ src/
         usePassageCategories.ts
     practice/
       hooks/
+        usePracticeAttempts.ts
         usePracticePassage.ts
         usePracticeSession.ts
         usePracticeStats.ts
+      stores/
+        practiceAttemptStore.ts
+        supabasePracticeAttemptStore.ts
       utils/
         practicePassage.ts
         typingMetrics.ts
@@ -266,6 +294,8 @@ src/
         SourcePicker.tsx
         TypingPracticePanel.tsx
       PracticePage.tsx
+    profile/
+      ProfilePage.tsx
   shared/
     lib/
       supabaseClient.ts
@@ -317,7 +347,7 @@ Responsibilities:
 - calls `useAppController`,
 - renders loading and error states,
 - renders `PageShell` with global navigation/theme state,
-- renders `AppHeader` on non-Home pages,
+- renders `AppHeader` on non-Home and non-Profile pages,
 - renders `AppRoutes`.
 
 ### `src/app/controllers/useAppController.ts`
@@ -332,6 +362,7 @@ Responsibilities:
 - builds the active continuous practice passage,
 - builds display labels/loading/error state,
 - builds cross-page actions,
+- handles one-shot account-menu requests from Home,
 - prepares header props,
 - prepares routed page props through plain factory functions.
 
@@ -349,6 +380,7 @@ Contains the plain page-prop factory functions:
 - `createPracticePageProps`
 - `createBiblePageProps`
 - `createLibraryPageProps`
+- `createProfilePageProps`
 
 ### `src/app/components/AppRoutes.tsx`
 
@@ -356,7 +388,7 @@ Defines the app's URL routes and maps prepared page props directly to page eleme
 
 ### `src/app/components/AppHeader.tsx`
 
-Shows the current title, subtitle, reference, and contextual passage-save controls on non-Home pages.
+Shows the current title, subtitle, reference, and contextual passage-save controls on non-Home and non-Profile pages.
 
 ### `src/app/components/AppNavigation.tsx`
 
@@ -369,7 +401,7 @@ Provides a quiet ending to every page.
 It includes:
 
 - the app symbol, name, and purpose,
-- a notice that saved passages, preferences, and statistics remain in the browser,
+- a notice that guest data remains local while signed-in data can sync,
 - World English Bible public-domain attribution,
 - a link to the GitHub repository,
 - the current copyright year.
@@ -412,8 +444,9 @@ Current behaviour:
 - shows a signed-in user's email after the session is established,
 - lets signed-in users sign out,
 - closes the dropdown on outside click, Escape, successful sign-in, and sign-out,
-- enables signed-in saved-passage storage by establishing the active Supabase user,
-- does not save practice attempts to Supabase yet.
+- links signed-in users to the Profile/Progress page,
+- supports one-shot requests from Home to open the account menu in sign-up mode,
+- enables signed-in saved-passage and practice-history storage by establishing the active Supabase user.
 
 Supabase Auth redirect URLs must include the local development URL and deployed Vercel URL before email confirmation redirects are reliable in both environments.
 
@@ -457,6 +490,7 @@ Current status:
 - reads `VITE_SUPABASE_PUBLISHABLE_KEY`,
 - is used by Supabase Auth,
 - is used by signed-in saved-passage storage,
+- is used by signed-in practice-attempt storage,
 - relies on Supabase Row Level Security and table grants before user-owned tables are queried from the browser.
 
 ### `src/domain/bible/verseService.ts`
@@ -498,7 +532,8 @@ Current behaviour:
 - exposes loading, error, session, user, and signed-in state,
 - exposes email/password sign-in, account creation, and sign-out actions,
 - provides the signed-in user id used by cloud saved-passage storage,
-- does not replace guest `localStorage` saved passages or practice stats.
+- provides the signed-in user id used by cloud practice-attempt storage,
+- does not replace guest `localStorage` saved passages or personal-best stats.
 
 ### `supabase/schema.sql`
 
@@ -527,6 +562,7 @@ Owns route-level screens and visual composition:
 - `pages/practice`: Practice layout, setup controls, passage display, typing panel, and personal-best display.
 - `pages/bible`: Bible controls and chapter reader UI.
 - `pages/library`: saved-passage list, filters, cards, and card actions.
+- `pages/profile`: signed-in progress summary, recent practice history, and reflection previews.
 
 Page components should receive prepared data and callbacks. They should not own persistence, WPM calculation, Bible loading, saved-passage identity rules, or cross-page coordination.
 
@@ -539,6 +575,10 @@ Owns typing-practice rules:
 - mistake-aware accuracy session state,
 - completion detection,
 - personal-best storage,
+- signed-in practice-attempt loading and saving,
+- reflection updates for completed signed-in attempts,
+- `PracticeAttemptStore` abstraction,
+- Supabase practice-attempt store for signed-in history,
 - pure typing metric and character-equivalence logic.
 
 ### `src/domain/auth`
@@ -643,11 +683,11 @@ Build settings:
 - Install Command: `npm install`
 - Environment Variables: `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`
 
-`vercel.json` rewrites all requests to `/index.html` so browser routes such as `/practice`, `/bible`, and `/library` keep working when opened directly or refreshed.
+`vercel.json` rewrites all requests to `/index.html` so browser routes such as `/practice`, `/bible`, `/library`, and `/profile` keep working when opened directly or refreshed.
 
 ## Backend Architecture
 
-The backend direction is Supabase with Postgres, Supabase Auth, and Row Level Security. Supabase currently handles authentication and signed-in saved passages.
+The backend direction is Supabase with Postgres, Supabase Auth, and Row Level Security. Supabase currently handles authentication, signed-in saved passages, and signed-in practice history.
 
 Vercel remains responsible for hosting the Vite frontend. Supabase is responsible for cloud user data:
 
@@ -659,19 +699,21 @@ Browser
       -> Row Level Security policies
 ```
 
-The first backend phase does not move Bible text into the database. Bible data stays local while the app validates user accounts and synced saved passages.
+The first backend phase does not move Bible text into the database. Bible data stays local while the app validates user accounts, synced saved passages, practice history, and reflections.
 
 Current backend scope:
 
 - Supabase Auth for user accounts and sessions.
 - Postgres table for user-owned saved passages.
+- Postgres table for signed-in practice attempts and reflections.
 - Local guest mode retained through `localStorage`.
 - Signed-in saved passages loaded from Supabase.
+- Signed-in practice history loaded from Supabase.
 - Guest and cloud saved-passage libraries intentionally separated.
 
 Planned backend scope:
 
-- Practice attempts and personal progress history in Postgres.
+- Personal-best history in Postgres.
 - Optional signed-in import flow from existing `localStorage` saved passages.
 
 Out of initial backend scope:
@@ -749,8 +791,12 @@ erDiagram
     integer start_verse
     integer end_verse
     integer_array selected_verses
+    integer duration_seconds
+    integer mistake_count
+    integer typed_character_count
     integer wpm
     integer accuracy
+    text reflection
     timestamptz completed_at
   }
 ```
@@ -792,8 +838,12 @@ practice_attempts
   start_verse integer
   end_verse integer
   selected_verses integer[]
+  duration_seconds integer
+  mistake_count integer
+  typed_character_count integer
   wpm integer
   accuracy integer
+  reflection text
   completed_at timestamptz
 ```
 
@@ -821,9 +871,10 @@ Policy shape:
 - signed-in users can read their own saved passages,
 - signed-in users can insert/update/delete their own saved passages,
 - signed-in users can read their own practice attempts,
-- signed-in users can insert their own practice attempts.
+- signed-in users can insert their own practice attempts,
+- signed-in users can update reflection text on their own practice attempts.
 
-Practice attempts are intentionally append-only from the browser client. The initial schema does not provide update or delete policies for attempts.
+Practice attempts are mostly append-only from the browser client. The schema lets authenticated users insert attempts and later update the `reflection` column on their own attempts, but it does not provide delete policies for attempts.
 
 The schema also grants table access to the Supabase `authenticated` role. This is required in addition to RLS policies: grants allow the role to use the table, while RLS decides which rows that user may access.
 
@@ -859,6 +910,28 @@ The current boundaries should keep future migration incremental:
 - keep saved-passage persistence behind `SavedPassageStore`,
 - keep guest `localStorage` behaviour separate from signed-in cloud saves,
 - offer a one-time import from local saved passages after sign-in.
+
+### Practice Attempt Storage Strategy
+
+Practice attempts use a separate domain store abstraction from saved passages:
+
+```mermaid
+flowchart TD
+  practiceUi["Practice/Profile UI"] --> hook["usePracticeAttempts"]
+  hook --> contract["PracticeAttemptStore"]
+  contract --> cloud["supabasePracticeAttemptStore"]
+  cloud --> supabase["Supabase practice_attempts"]
+```
+
+Current behaviour:
+
+- signed-in completed attempts are saved to Supabase,
+- signed-in users can view recent attempts on Profile/Progress,
+- signed-in users can add or update reflection text on a completed attempt,
+- guest completed attempts are not saved as a history list,
+- personal-best stats still use local browser storage.
+
+The split keeps typing UI focused on practice state while persistence details stay in `src/domain/practice/stores`.
 
 ### Supabase Auth Redirect URLs
 
@@ -911,7 +984,7 @@ Heroicons supplies interface icons. Icons support labels and meaning rather than
 
 - `src/shared/types/app.ts`: route-backed app modes, practice source, and theme.
 - `src/shared/types/featuredPassage.ts`: featured passage references and resolved passage responses.
-- `src/shared/types/practice.ts`: practice statistics, typing status, and continuous passage shape.
+- `src/shared/types/practice.ts`: practice statistics, typing status, continuous passage shape, completion results, and practice-attempt records.
 - `src/shared/types/savedPassage.ts`: saved passage and save input shapes.
 - `src/shared/types/verse.ts`: Bible translation, book, chapter, and verse shapes.
 
@@ -925,15 +998,17 @@ flowchart TD
   controller --> actions["createAppActions"]
   controller --> pageProps["createPageProps factories"]
   controller --> headerProps["Header props"]
-  app --> header["AppHeader on non-Home pages"]
+  app --> header["AppHeader on non-Home/Profile pages"]
   app --> routes["AppRoutes"]
   pageProps --> routes
   routes --> home["HomePage"]
   routes --> practice["PracticePage"]
   routes --> bible["BiblePage"]
   routes --> library["LibraryPage"]
+  routes --> profile["ProfilePage"]
   home --> featured["domain/featured-passages"]
   practice --> practiceDomain["domain/practice"]
+  profile --> practiceDomain
   bible --> bibleDomain["domain/bible"]
   library --> savedDomain["domain/saved-passages"]
   savedDomain --> bibleDomain
@@ -944,7 +1019,8 @@ flowchart TD
   savedDomain --> savedStore["SavedPassageStore"]
   savedStore --> localStorage["localStorage guest saves"]
   savedStore --> supabase["Supabase signed-in saves"]
-  practiceDomain -. planned .-> supabase
+  practiceDomain --> attemptStore["PracticeAttemptStore"]
+  attemptStore --> supabaseAttempts["Supabase practice_attempts"]
   routes --> pageUi["pages/* visual components"]
   pageUi --> shared["shared/ui + shared/types + shared/utils"]
 ```
@@ -956,15 +1032,15 @@ flowchart TD
 - Category management is still generated from featured themes.
 - Library filtering is UI-only and runs against whichever saved-passage store is active.
 - Guest saved passages and signed-in cloud saved passages are intentionally separate, but there is no import flow yet.
-- Practice stats are still local-only through `localStorage`.
+- Personal-best stats are still local-only through `localStorage`.
+- Guest users do not yet have a durable practice-history list.
 - The app uses local JSON Bible data only; no hosted API yet.
 - Form-control styling is repeated across components and may later benefit from a small shared primitive if it begins to drift.
 - Motion does not yet account for the user's reduced-motion preference.
 - Saved-passage removal has confirmation but no undo.
 - Automated tests are not set up yet.
 - Vercel deployment configuration is present, but the hosted deployment still needs manual verification.
-- Supabase Auth and signed-in saved-passage persistence are implemented.
-- Supabase practice-attempt persistence is not implemented.
+- Supabase Auth, signed-in saved-passage persistence, and signed-in practice-attempt persistence are implemented.
 - Bible translation licensing must be resolved before hosting additional Bible text.
 
 ## Confirmed Product Decisions
@@ -988,7 +1064,7 @@ flowchart TD
 ## Likely Next Architecture Steps
 
 1. Add a one-time local saved-passage import flow after sign-in.
-2. Move practice attempts and personal best history to Supabase.
+2. Decide whether personal-best history should remain local or become account-scoped in Supabase.
 3. Consider custom SMTP/auth email delivery through Supabase and a provider such as Resend.
 4. Keep `useAppController` limited to cross-feature composition.
 5. Keep `verseService` API-shaped so local JSON can later move to hosted data if licensing allows it.

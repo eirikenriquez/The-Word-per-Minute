@@ -1,7 +1,7 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260706.1.f`
-Last updated: 06/07/26
+Current documentation version: `260710.1.a`
+Last updated: 10/07/26
 
 ## Update Rule
 
@@ -36,6 +36,25 @@ Suggested next versions:
 - Small same-day documentation update: `260626.1.b`
 - Larger same-day documentation update: `260626.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260710.1.a`
+
+This version documents signed-in practice history, reflections, and the new Profile/Progress page.
+
+It updates:
+
+- the README feature list and data/account summary,
+- the current routes to include `/profile`,
+- Practice responsibilities for saving signed-in attempts and reflections,
+- Profile page responsibilities,
+- the file tree for practice attempt stores/hooks and `ProfilePage`,
+- app/auth/page-prop responsibilities for opening the account menu and profile page,
+- Supabase schema documentation for the expanded `practice_attempts` shape,
+- Row Level Security notes for reading/inserting practice attempts and updating reflection text,
+- the architecture diagram to show practice-attempt persistence as implemented,
+- known technical debt and likely next architecture steps after practice history.
+
+This update documents the practice-history branch. Signed-in practice attempts and reflections are now implemented through Supabase; local personal-best stats and guest practice history are still not cloud-synced.
 
 ## `260706.1.f`
 
