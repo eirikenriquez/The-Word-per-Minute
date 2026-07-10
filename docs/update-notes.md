@@ -1,7 +1,7 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260710.1.a`
-Last updated: 10/07/26
+Current documentation version: `260711.1.a`
+Last updated: 11/07/26
 
 ## Update Rule
 
@@ -36,6 +36,21 @@ Suggested next versions:
 - Small same-day documentation update: `260626.1.b`
 - Larger same-day documentation update: `260626.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260711.1.a`
+
+This version documents the inline Practice typing surface and reflection modal branch.
+
+It updates:
+
+- the README feature list to describe the inline passage typing surface,
+- Practice responsibilities to explain that the passage itself is now the typing surface,
+- Practice responsibilities to record the invisible input layer replacing the visible textarea,
+- Practice responsibilities to describe the completion overlay with final WPM, accuracy, and next actions,
+- Practice responsibilities to describe the focused post-practice reflection modal,
+- confirmed product decisions for the Monkeytype-style typing direction and modal-based reflection flow.
+
+This update documents Practice UX changes only. It does not change the Supabase schema, saved-passage storage, practice-history storage, or app routing.
 
 ## `260710.1.a`
 

@@ -89,30 +89,32 @@ export function PracticePage({
 
       <section className="mx-auto grid w-full max-w-5xl gap-8">
         <PracticePassageDisplay
+          accuracy={accuracy}
+          canSaveReflection={canSaveReflection}
+          completionActionLabel={isPassageComplete && practiceSource === "featured" ? "Next Passage" : undefined}
+          completionMessage={
+            `You finished ${practiceTitle}.`
+          }
+          isComplete={isPassageComplete}
+          isSavingReflection={isSavingReflection}
+          isSignedIn={isSignedIn}
+          onCompletionAction={isPassageComplete && practiceSource === "featured" ? onNextFeaturedPassage : undefined}
+          onSaveReflection={onSaveReflection}
+          onTypingChange={onTypingChange}
           passage={passage}
+          reflectionError={reflectionError}
           translationName={translationName}
           typedText={typedText}
+          wpm={wpm}
         />
 
         <div className="grid gap-6">
           <TypingPracticePanel
             accuracy={accuracy}
-            completionActionLabel={isPassageComplete && practiceSource === "featured" ? "Next Passage" : undefined}
-            completionMessage={
-              `Complete. You finished ${practiceTitle} at ${wpm} WPM with ${accuracy}% accuracy.`
-            }
-            canSaveReflection={canSaveReflection}
             isComplete={isPassageComplete}
-            isSavingReflection={isSavingReflection}
-            isSignedIn={isSignedIn}
-            onCompletionAction={isPassageComplete && practiceSource === "featured" ? onNextFeaturedPassage : undefined}
-            onSaveReflection={onSaveReflection}
             progress={Math.min(progress, 100)}
-            reflectionError={reflectionError}
             status={status}
-            typedText={typedText}
             wpm={wpm}
-            onTypingChange={onTypingChange}
           />
         </div>
       </section>

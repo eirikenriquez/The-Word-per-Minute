@@ -8,9 +8,10 @@ The app helps users discover scripture, practise typing curated passages, read B
 
 - Featured passage typing practice
 - Curated featured passages grouped into focused themes
-- Fixed-height, automatically scrolling passage view
+- Inline passage typing surface with fixed-height automatic scrolling
 - WPM and accuracy tracking
 - Responsive Practice source controls and a compact live-metrics summary
+- Completion overlay with final metrics, next-passage action, and reflection modal
 - Local personal-best statistics
 - Signed-in practice history and passage reflections
 - Bible chapter reader with verse selection
