@@ -51,7 +51,7 @@ function App() {
       onToggleTheme={toggleTheme}
     >
       <div key={appMode} className="page-transition grid gap-4">
-        {appMode !== "home" && <AppHeader {...headerProps} />}
+        {appMode !== "home" && appMode !== "profile" && <AppHeader {...headerProps} />}
 
         <AppRoutes {...pageRoutesProps} />
       </div>

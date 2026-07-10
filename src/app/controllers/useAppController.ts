@@ -208,6 +208,7 @@ export function useAppController() {
     homePageProps: createHomePageProps({
       appActions,
       featuredHomeCategories,
+      isSignedIn: authSession.isSignedIn,
       savedPassageCount,
     }),
     libraryPageProps: createLibraryPageProps({

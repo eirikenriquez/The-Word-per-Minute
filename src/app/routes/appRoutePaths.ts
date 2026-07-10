@@ -9,14 +9,14 @@ export const APP_ROUTE_PATHS: Record<AppMode, string> = {
   home: "/",
   library: "/library",
   practice: "/practice",
+  profile: "/profile",
 };
-
-export const PROFILE_ROUTE_PATH = "/profile";
 
 /**
  * Converts the current browser path into the matching app mode.
  */
 export function getAppModeFromPathname(pathname: string): AppMode {
+  if (pathname.startsWith(APP_ROUTE_PATHS.profile)) return "profile";
   if (pathname.startsWith(APP_ROUTE_PATHS.practice)) return "practice";
   if (pathname.startsWith(APP_ROUTE_PATHS.bible)) return "bible";
   if (pathname.startsWith(APP_ROUTE_PATHS.library)) return "library";

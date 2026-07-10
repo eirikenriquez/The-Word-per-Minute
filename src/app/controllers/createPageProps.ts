@@ -46,14 +46,17 @@ export function createBiblePageProps({
 export function createHomePageProps({
   appActions,
   featuredHomeCategories,
+  isSignedIn,
   savedPassageCount,
 }: {
   appActions: AppActions;
   featuredHomeCategories: HomeCategory[];
+  isSignedIn: boolean;
   savedPassageCount: number;
 }): HomePageProps {
   return {
     featuredHomeCategories,
+    isSignedIn,
     savedPassageCount,
     onOpenBible: appActions.openBible,
     onOpenLibrary: appActions.openLibrary,

@@ -143,6 +143,7 @@ function getHeaderTitle({
   if (appMode === "home") return "Welcome";
   if (appMode === "bible") return "Bible Reader";
   if (appMode === "library") return "Saved Library";
+  if (appMode === "profile") return "Profile";
 
   return practiceSource === "featured"
     ? featuredPassageResponse?.passage.title ?? "Featured Passage"
@@ -162,6 +163,7 @@ function getHeaderReference({
   if (appMode === "home") return "";
   if (appMode === "bible") return "";
   if (appMode === "library") return `${savedPassageCount} saved`;
+  if (appMode === "profile") return "";
 
   return practiceSource === "featured"
     ? featuredPassageResponse?.reference ?? ""
@@ -176,6 +178,7 @@ function getHeaderSubtitle({
   if (appMode === "home") return "The Word per Minute";
   if (appMode === "bible") return "Read and save scripture";
   if (appMode === "library") return "Manage your saved passages";
+  if (appMode === "profile") return "Account and practice history";
 
   return practiceSource === "featured"
     ? `Practice - ${featuredPassageResponse?.passage.theme ?? "Discovery"}`
@@ -197,6 +200,7 @@ function getTranslationName({
   if (appMode === "home") return "WEB";
   if (appMode === "bible") return selectedTranslation;
   if (appMode === "library") return "WEB";
+  if (appMode === "profile") return "WEB";
 
   return practiceSource === "featured"
     ? featuredPassageResponse?.translation.abbreviation ?? "WEB"

@@ -5,6 +5,8 @@ import {
 } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
+import { Link } from "react-router-dom";
+import { APP_ROUTE_PATHS } from "../../app/routes/appRoutePaths";
 
 export type HomeCategory = {
   count: number;
@@ -13,6 +15,7 @@ export type HomeCategory = {
 
 export type HomePageProps = {
   featuredHomeCategories: HomeCategory[];
+  isSignedIn: boolean;
   savedPassageCount: number;
   onOpenBible: () => void;
   onOpenLibrary: () => void;
@@ -25,6 +28,7 @@ export type HomePageProps = {
  */
 export function HomePage({
   featuredHomeCategories,
+  isSignedIn,
   savedPassageCount,
   onOpenBible,
   onOpenLibrary,
@@ -69,7 +73,27 @@ export function HomePage({
         </dl>
       </section>
 
-      <section className="rise-in rise-in-delay-2 grid gap-4">
+      <section className="rise-in rise-in-delay-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h3 className="font-semibold text-ink">
+            {isSignedIn ? "Your progress can grow with you." : "Keep your passages and progress with you."}
+          </h3>
+          <p className="mt-1 max-w-2xl text-sm leading-6 text-ink-muted">
+            {isSignedIn
+              ? "Visit your profile to review recent practice sessions and reflections as they build over time."
+              : "Create a free account to sync saved passages and start keeping a cloud practice history."}
+          </p>
+        </div>
+
+        <Link
+          className="inline-flex min-h-10 w-fit items-center justify-center rounded-md bg-action px-4 py-2 text-sm font-semibold text-action-ink transition-colors hover:bg-action-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+          to={APP_ROUTE_PATHS.profile}
+        >
+          {isSignedIn ? "View profile" : "Create account"}
+        </Link>
+      </section>
+
+      <section className="rise-in rise-in-delay-3 grid gap-4">
         <div>
           <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
             Practice paths
