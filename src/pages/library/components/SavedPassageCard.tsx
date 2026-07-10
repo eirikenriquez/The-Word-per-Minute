@@ -72,7 +72,7 @@ export function SavedPassageCard({
       }`}
     >
       <div className="grid gap-5">
-        <div className="grid flex-1 gap-3">
+        <div className="grid min-h-20 flex-1 gap-3">
           {isEditing ? (
             <div className="animate-dropdown-in grid gap-3 sm:grid-cols-[1fr_12rem]">
               <label className="grid gap-1">
@@ -131,7 +131,7 @@ export function SavedPassageCard({
           )}
         </div>
 
-        <div className="border-t border-line pt-4">
+        <div className="min-h-14 border-t border-line pt-4">
           {isEditing ? (
             <div className="animate-dropdown-in flex flex-wrap gap-2 sm:justify-end">
               <Button
