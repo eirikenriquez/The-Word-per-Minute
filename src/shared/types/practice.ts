@@ -15,3 +15,26 @@ export type PracticePassage = {
   text: string;
   verses: BibleVerse[];
 };
+
+export type PracticeAttempt = {
+  id: string;
+  passageReference: string;
+  translationId: string;
+  bookId: string;
+  chapter: number;
+  startVerse: number;
+  endVerse: number;
+  selectedVerses?: number[];
+  durationSeconds: number;
+  mistakeCount: number;
+  typedCharacterCount: number;
+  wpm: number;
+  accuracy: number;
+  reflection?: string;
+  completedAt: string;
+};
+
+export type SavePracticeAttemptInput = Omit<PracticeAttempt, "completedAt" | "id"> & {
+  featuredPassageId?: string | null;
+  savedPassageId?: string | null;
+};

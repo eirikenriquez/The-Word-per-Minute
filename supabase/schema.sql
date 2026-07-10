@@ -107,8 +107,12 @@ create table if not exists public.practice_attempts (
   start_verse integer not null check (start_verse > 0),
   end_verse integer not null check (end_verse >= start_verse),
   selected_verses integer[] not null default '{}',
+  duration_seconds integer not null check (duration_seconds >= 0),
+  mistake_count integer not null check (mistake_count >= 0),
+  typed_character_count integer not null check (typed_character_count >= 0),
   wpm integer not null check (wpm >= 0),
   accuracy integer not null check (accuracy >= 0 and accuracy <= 100),
+  reflection text,
   completed_at timestamptz not null default now(),
   check (
     saved_passage_id is not null
@@ -121,6 +125,20 @@ on public.practice_attempts (user_id, completed_at desc);
 
 create index if not exists practice_attempts_saved_passage_idx
 on public.practice_attempts (saved_passage_id);
+
+-- Existing projects created before practice history should run these safe schema
+-- changes before the app starts writing practice attempts.
+alter table public.practice_attempts
+add column if not exists duration_seconds integer not null default 0 check (duration_seconds >= 0);
+
+alter table public.practice_attempts
+add column if not exists mistake_count integer not null default 0 check (mistake_count >= 0);
+
+alter table public.practice_attempts
+add column if not exists typed_character_count integer not null default 0 check (typed_character_count >= 0);
+
+alter table public.practice_attempts
+add column if not exists reflection text;
 
 -- Row Level Security keeps browser-accessible tables scoped to the signed-in user.
 alter table public.profiles enable row level security;
