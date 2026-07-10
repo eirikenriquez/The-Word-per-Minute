@@ -109,7 +109,9 @@ export type Database = {
           reflection?: string | null;
           completed_at?: string;
         };
-        Update: never;
+        Update: {
+          reflection?: string | null;
+        };
         Relationships: [];
       };
     };

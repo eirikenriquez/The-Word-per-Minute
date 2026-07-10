@@ -192,7 +192,7 @@ for delete
 using (auth.uid() = user_id);
 
 -- Practice attempts: users can read and create only their own attempts.
--- Attempts are intentionally not updateable from the client.
+-- Users can later update only the reflection column for their own attempts.
 drop policy if exists "Users can read their own practice attempts" on public.practice_attempts;
 create policy "Users can read their own practice attempts"
 on public.practice_attempts
@@ -205,6 +205,13 @@ on public.practice_attempts
 for insert
 with check (auth.uid() = user_id);
 
+drop policy if exists "Users can update their own practice reflections" on public.practice_attempts;
+create policy "Users can update their own practice reflections"
+on public.practice_attempts
+for update
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);
+
 -- Data API grants: RLS decides which rows authenticated users may access,
 -- but Postgres still needs table-level privileges for the authenticated role.
 grant usage on schema public to authenticated;
@@ -212,3 +219,4 @@ grant usage on schema public to authenticated;
 grant select, insert, update on public.profiles to authenticated;
 grant select, insert, update, delete on public.saved_passages to authenticated;
 grant select, insert on public.practice_attempts to authenticated;
+grant update (reflection) on public.practice_attempts to authenticated;

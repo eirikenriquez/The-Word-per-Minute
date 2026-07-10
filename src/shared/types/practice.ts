@@ -18,6 +18,8 @@ export type PracticePassage = {
 
 export type PracticeAttempt = {
   id: string;
+  featuredPassageId?: string;
+  savedPassageId?: string;
   passageReference: string;
   translationId: string;
   bookId: string;
