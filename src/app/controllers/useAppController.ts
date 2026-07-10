@@ -25,6 +25,7 @@ import {
   createHomePageProps,
   createLibraryPageProps,
   createPracticePageProps,
+  createProfilePageProps,
 } from "./createPageProps";
 
 /**
@@ -42,7 +43,8 @@ export function useAppController() {
   const featuredLibrary = useFeaturedPassages();
   const bibleLibrary = useVerseLibrary();
   const savedLibrary = useSavedPassages(authSession.user?.id);
-  const { saveAttempt: savePracticeAttempt } = usePracticeAttempts(authSession.user?.id);
+  const practiceAttempts = usePracticeAttempts(authSession.user?.id);
+  const { saveAttempt: savePracticeAttempt } = practiceAttempts;
   const savedPassageCount = savedLibrary.savedPassages.length;
   const { featuredHomeCategories, savedPassageCategories } = usePassageCategories(featuredLibrary.passages);
 
@@ -225,6 +227,10 @@ export function useAppController() {
       stats,
       translationName,
       onSaveCurrentPassage: saveCurrentPassage,
+    }),
+    profilePageProps: createProfilePageProps({
+      authSession,
+      practiceAttempts,
     }),
   };
 

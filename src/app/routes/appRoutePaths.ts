@@ -11,6 +11,8 @@ export const APP_ROUTE_PATHS: Record<AppMode, string> = {
   practice: "/practice",
 };
 
+export const PROFILE_ROUTE_PATH = "/profile";
+
 /**
  * Converts the current browser path into the matching app mode.
  */

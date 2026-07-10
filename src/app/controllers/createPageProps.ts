@@ -6,9 +6,11 @@ import type { BiblePageProps } from "../../pages/bible/BiblePage";
 import type { HomeCategory, HomePageProps } from "../../pages/home/HomePage";
 import type { LibraryPageProps } from "../../pages/library/LibraryPage";
 import type { PracticePageProps } from "../../pages/practice/PracticePage";
+import type { ProfilePageProps } from "../../pages/profile/ProfilePage";
 import type { PracticeSource } from "../../shared/types/app";
 import type { PracticePassage, PracticeStats } from "../../shared/types/practice";
 import type { createAppActions } from "./createAppActions";
+import type { usePracticeAttempts } from "../../domain/practice/hooks/usePracticeAttempts";
 
 type AppActions = ReturnType<typeof createAppActions>;
 
@@ -130,5 +132,26 @@ export function createPracticePageProps({
     onSelectFeaturedPractice: appActions.selectFeaturedPractice,
     onSelectSavedPassage: appActions.selectSavedPractice,
     onTypingChange: practiceSession.handleTyping,
+  };
+}
+
+export function createProfilePageProps({
+  authSession,
+  practiceAttempts,
+}: {
+  authSession: {
+    isSignedIn: boolean;
+    user?: {
+      email?: string;
+    } | null;
+  };
+  practiceAttempts: ReturnType<typeof usePracticeAttempts>;
+}): ProfilePageProps {
+  return {
+    isLoadingPracticeAttempts: practiceAttempts.isLoading,
+    isSignedIn: authSession.isSignedIn,
+    practiceAttemptError: practiceAttempts.error,
+    practiceAttempts: practiceAttempts.recentAttempts,
+    userEmail: authSession.user?.email,
   };
 }
