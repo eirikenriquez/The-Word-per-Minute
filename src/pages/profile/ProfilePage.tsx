@@ -16,6 +16,7 @@ export function ProfilePage({
   userEmail,
 }: ProfilePageProps) {
   const completedAttempts = practiceAttempts.length;
+  const reflectionCount = practiceAttempts.filter((attempt) => attempt.reflection).length;
   const bestWpm = practiceAttempts.reduce((best, attempt) => Math.max(best, attempt.wpm), 0);
   const averageAccuracy = completedAttempts
     ? Math.round(
@@ -25,41 +26,44 @@ export function ProfilePage({
 
   return (
     <section className="grid gap-8">
-      <div className="grid gap-3">
-        <p className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
-          Account and progress
-        </p>
-        <h2 className="text-3xl font-bold text-ink sm:text-4xl">
-          Profile
-        </h2>
-        <p className="max-w-2xl text-base leading-7 text-ink-muted">
-          Review your saved account progress and the passages you have completed.
-        </p>
+      <div className="grid gap-4">
+        <div className="grid gap-3">
+          <p className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
+            Account and progress
+          </p>
+          <h2 className="text-3xl font-bold text-ink sm:text-4xl">
+            Progress
+          </h2>
+          <p className="max-w-2xl text-base leading-7 text-ink-muted">
+            A quiet record of passages you have practiced and reflections you have kept.
+          </p>
+        </div>
+
+        {isSignedIn && (
+          <p className="text-sm text-ink-subtle">
+            Signed in as <span className="font-medium text-ink-muted">{userEmail ?? "your account"}</span>
+          </p>
+        )}
       </div>
 
       {!isSignedIn ? (
         <ProfileMessage>
-          Sign in or create an account to keep a cloud practice history.
+          Create an account to keep your practice history and reflections across sessions.
         </ProfileMessage>
       ) : (
         <>
-          <section className="grid gap-3 rounded-lg border border-line bg-surface p-5">
-            <div>
-              <p className="text-sm font-semibold text-ink">Signed in</p>
-              <p className="mt-1 text-sm text-ink-subtle">{userEmail ?? "Account active"}</p>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-3">
-              <ProfileStat label="Recent sessions" value={completedAttempts} />
-              <ProfileStat label="Best WPM" value={bestWpm} />
-              <ProfileStat label="Average accuracy" value={`${averageAccuracy}%`} />
-            </div>
+          <section className="grid gap-4 border-y border-line py-5 sm:grid-cols-4">
+            <ProfileStat label="Sessions" value={completedAttempts} />
+            <ProfileStat label="Reflections" value={reflectionCount} />
+            <ProfileStat label="Average accuracy" value={`${averageAccuracy}%`} />
+            <ProfileStat label="Best WPM" value={bestWpm} />
           </section>
 
           <section className="grid gap-4">
             <div>
               <h3 className="text-lg font-semibold text-ink">Recent practice</h3>
               <p className="mt-1 text-sm text-ink-subtle">
-                Completed signed-in sessions will appear here.
+                Revisit the passages you have typed and what stood out along the way.
               </p>
             </div>
 
@@ -75,7 +79,7 @@ export function ProfilePage({
               </div>
             ) : (
               <ProfileMessage>
-                Complete a practice passage while signed in to start your history.
+                Complete a passage while signed in to begin your practice history.
               </ProfileMessage>
             )}
           </section>
@@ -87,16 +91,16 @@ export function ProfilePage({
 
 function ProfileStat({ label, value }: { label: string; value: number | string }) {
   return (
-    <div className="rounded-md border border-line bg-surface-muted p-4">
+    <div>
       <p className="text-sm text-ink-subtle">{label}</p>
-      <p className="mt-1 text-2xl font-bold text-ink">{value}</p>
+      <p className="mt-1 text-xl font-bold text-ink">{value}</p>
     </div>
   );
 }
 
 function PracticeAttemptCard({ attempt }: { attempt: PracticeAttempt }) {
   return (
-    <article className="rounded-md border border-line bg-surface p-4">
+    <article className="border-b border-line pb-4 last:border-b-0">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h4 className="font-semibold text-ink">{attempt.passageReference}</h4>
@@ -117,9 +121,13 @@ function PracticeAttemptCard({ attempt }: { attempt: PracticeAttempt }) {
         </div>
       </div>
 
-      {attempt.reflection && (
+      {attempt.reflection ? (
         <p className="mt-3 border-l-2 border-accent-line pl-3 text-sm leading-6 text-ink-muted">
           {attempt.reflection}
+        </p>
+      ) : (
+        <p className="mt-3 text-sm text-ink-subtle">
+          No reflection yet.
         </p>
       )}
     </article>
