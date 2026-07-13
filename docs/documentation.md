@@ -1,7 +1,7 @@
 # The Word per Minute Documentation
 
-Document version: `260711.1.a`
-Last updated: 11/07/26
+Document version: `260713.1.a`
+Last updated: 13/07/26
 Update rule: only update this file when explicitly requested by the project owner.
 
 ## Purpose
@@ -112,10 +112,10 @@ It:
 - treats deletion as neutral rather than as an additional mistake,
 - freezes the final WPM and accuracy when the passage is completed,
 - shows completion as an overlay on the passage with final WPM, final accuracy, and next actions,
-- records personal bests locally,
 - allows featured passages to be saved from the Practice controls,
 - lets users switch between Featured and Saved practice sources,
 - presents source and saved-passage controls in a responsive, label-first layout,
+- keeps the Practice setup heading visible while letting users collapse or expand the setup controls,
 - shows live WPM, accuracy, progress, and status as one quiet horizontal summary while typing,
 - saves completed attempts for signed-in users,
 - lets signed-in users add a post-practice reflection from a focused modal after completing a passage,
@@ -289,7 +289,6 @@ src/
     practice/
       components/
         FeaturedSaveAction.tsx
-        PersonalBests.tsx
         PracticeActionButtons.tsx
         PracticeControls.tsx
         PracticePassageDisplay.tsx
@@ -562,7 +561,7 @@ This file is version-controlled documentation/executable setup SQL. It does not 
 Owns route-level screens and visual composition:
 
 - `pages/home`: Home hero, entry points, counters, and category buttons.
-- `pages/practice`: Practice layout, setup controls, passage display, typing panel, and personal-best display.
+- `pages/practice`: Practice layout, collapsible setup controls, passage display, typing panel, and completion/reflection UI.
 - `pages/bible`: Bible controls and chapter reader UI.
 - `pages/library`: saved-passage list, filters, cards, and card actions.
 - `pages/profile`: signed-in progress summary, recent practice history, and reflection previews.
@@ -577,7 +576,7 @@ Owns typing-practice rules:
 - live WPM timing,
 - mistake-aware accuracy session state,
 - completion detection,
-- personal-best storage,
+- legacy local personal-best recording,
 - signed-in practice-attempt loading and saving,
 - reflection updates for completed signed-in attempts,
 - `PracticeAttemptStore` abstraction,
@@ -1035,7 +1034,7 @@ flowchart TD
 - Category management is still generated from featured themes.
 - Library filtering is UI-only and runs against whichever saved-passage store is active.
 - Guest saved passages and signed-in cloud saved passages are intentionally separate, but there is no import flow yet.
-- Personal-best stats are still local-only through `localStorage`.
+- Legacy local personal-best recording still exists in the Practice domain, but the Practice page no longer displays a Personal Bests panel.
 - Guest users do not yet have a durable practice-history list.
 - The app uses local JSON Bible data only; no hosted API yet.
 - Form-control styling is repeated across components and may later benefit from a small shared primitive if it begins to drift.
@@ -1053,6 +1052,7 @@ flowchart TD
 - Practice uses one continuous typing target rather than advancing through two-verse batches.
 - Practice uses a Monkeytype-style interaction where the passage is the typing surface and the visible textarea is removed.
 - The Practice passage viewport uses a stable height so the page does not jump with verse length.
+- Practice setup controls should be collapsible so the page can become quieter during focused typing.
 - Post-practice reflections open in a focused modal rather than expanding the completed practice panel.
 - In Bible mode, saving with no selected verses intentionally saves the whole current chapter.
 - Saved passages can be reopened from Library in their original Bible context.
@@ -1069,7 +1069,8 @@ flowchart TD
 ## Likely Next Architecture Steps
 
 1. Add a one-time local saved-passage import flow after sign-in.
-2. Decide whether personal-best history should remain local or become account-scoped in Supabase.
-3. Consider custom SMTP/auth email delivery through Supabase and a provider such as Resend.
-4. Keep `useAppController` limited to cross-feature composition.
-5. Keep `verseService` API-shaped so local JSON can later move to hosted data if licensing allows it.
+2. Decide whether legacy local personal-best recording should be removed, moved to Profile, or replaced by Supabase-backed progress summaries.
+3. Audit and standardize motion/animation behaviour across interactive UI.
+4. Consider custom SMTP/auth email delivery through Supabase and a provider such as Resend.
+5. Keep `useAppController` limited to cross-feature composition.
+6. Keep `verseService` API-shaped so local JSON can later move to hosted data if licensing allows it.

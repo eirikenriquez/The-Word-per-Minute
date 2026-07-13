@@ -10,9 +10,8 @@ The app helps users discover scripture, practise typing curated passages, read B
 - Curated featured passages grouped into focused themes
 - Inline passage typing surface with fixed-height automatic scrolling
 - WPM and accuracy tracking
-- Responsive Practice source controls and a compact live-metrics summary
+- Collapsible Practice setup controls and a compact live-metrics summary
 - Completion overlay with final metrics, next-passage action, and reflection modal
-- Local personal-best statistics
 - Signed-in practice history and passage reflections
 - Bible chapter reader with verse selection
 - Saved passage library with search, filters, editing, and Bible/Practice actions
@@ -79,5 +78,5 @@ The source is organised around `app`, `pages`, `domain`, and `shared` layers:
 
 The app currently reads local public-domain Bible data from the repository.
 
-Signed-out guests can save passages in browser storage. Signed-in users save passages, completed practice attempts, and passage reflections to Supabase so their library and progress can sync across sessions. Personal-best statistics still live in browser storage.
+Signed-out guests can save passages in browser storage. Signed-in users save passages, completed practice attempts, and passage reflections to Supabase so their library and progress can sync across sessions.
  

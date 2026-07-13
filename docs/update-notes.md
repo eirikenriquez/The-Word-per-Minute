@@ -1,7 +1,7 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260711.1.a`
-Last updated: 11/07/26
+Current documentation version: `260713.1.a`
+Last updated: 13/07/26
 
 ## Update Rule
 
@@ -36,6 +36,22 @@ Suggested next versions:
 - Small same-day documentation update: `260626.1.b`
 - Larger same-day documentation update: `260626.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260713.1.a`
+
+This version documents the Practice page simplification branch.
+
+It updates:
+
+- the README feature list to describe collapsible Practice setup controls,
+- the README feature list to remove the Personal Bests panel as a visible feature,
+- Practice responsibilities to note that setup controls can collapse while the heading remains visible,
+- the current file tree to remove `PersonalBests.tsx`,
+- page responsibilities to describe Practice as focused on setup, typing, completion, and reflection UI,
+- known technical debt to record that legacy local personal-best recording still exists but is no longer displayed on Practice,
+- likely next architecture steps to include a motion/animation audit as a separate branch.
+
+This update documents Practice simplification only. It does not change Supabase schema, practice-history storage, routing, or the planned future motion polish branch.
 
 ## `260711.1.a`
 
