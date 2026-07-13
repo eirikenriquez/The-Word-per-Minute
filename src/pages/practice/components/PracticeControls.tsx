@@ -64,45 +64,53 @@ export function PracticeControls({
               </DisclosureButton>
             </div>
 
-            <div className="overflow-hidden">
+            <div
+              aria-hidden={!open}
+              className={`grid overflow-hidden transition-[grid-template-rows,opacity] duration-200 ease-out ${
+                open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+              }`}
+              inert={open ? undefined : true}
+            >
               <DisclosurePanel
-                transition
-                className="grid origin-top gap-4 transition duration-200 ease-out data-closed:-translate-y-2 data-closed:opacity-0 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end"
+                static
+                className="min-h-0"
               >
-                <div className="grid gap-3 xl:min-h-16 xl:grid-cols-[auto_minmax(0,1fr)] xl:items-end">
-                  <SourcePicker
-                    hasSavedPassages={hasSavedPassages}
-                    practiceSource={practiceSource}
-                    savedPassages={savedPassages}
-                    selectedSavedPassageId={selectedSavedPassageId}
-                    onSelectFeaturedPractice={onSelectFeaturedPractice}
-                    onSelectSavedPractice={onSelectSavedPractice}
-                  />
-
-                  {practiceSource === "saved" && (
-                    <SavedPassageSelect
+                <div className="grid gap-4 pt-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+                  <div className="grid gap-3 xl:min-h-16 xl:grid-cols-[auto_minmax(0,1fr)] xl:items-end">
+                    <SourcePicker
+                      hasSavedPassages={hasSavedPassages}
+                      practiceSource={practiceSource}
                       savedPassages={savedPassages}
                       selectedSavedPassageId={selectedSavedPassageId}
+                      onSelectFeaturedPractice={onSelectFeaturedPractice}
                       onSelectSavedPractice={onSelectSavedPractice}
                     />
-                  )}
-                </div>
 
-                <div className="flex flex-wrap gap-2 lg:justify-end">
-                  {practiceSource === "featured" && (
-                    <FeaturedSaveAction
-                      canSaveCurrentPassage={canSaveCurrentPassage}
-                      isCurrentPassageSaved={isCurrentPassageSaved}
-                      onSaveCurrentPassage={onSaveCurrentPassage}
+                    {practiceSource === "saved" && (
+                      <SavedPassageSelect
+                        savedPassages={savedPassages}
+                        selectedSavedPassageId={selectedSavedPassageId}
+                        onSelectSavedPractice={onSelectSavedPractice}
+                      />
+                    )}
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 lg:justify-end">
+                    {practiceSource === "featured" && (
+                      <FeaturedSaveAction
+                        canSaveCurrentPassage={canSaveCurrentPassage}
+                        isCurrentPassageSaved={isCurrentPassageSaved}
+                        onSaveCurrentPassage={onSaveCurrentPassage}
+                      />
+                    )}
+
+                    <PracticeActionButtons
+                      practiceSource={practiceSource}
+                      onNextFeaturedPassage={onNextFeaturedPassage}
+                      onOpenLibrary={onOpenLibrary}
+                      onReset={onReset}
                     />
-                  )}
-
-                  <PracticeActionButtons
-                    practiceSource={practiceSource}
-                    onNextFeaturedPassage={onNextFeaturedPassage}
-                    onOpenLibrary={onOpenLibrary}
-                    onReset={onReset}
-                  />
+                  </div>
                 </div>
               </DisclosurePanel>
             </div>
