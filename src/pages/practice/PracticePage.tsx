@@ -1,9 +1,9 @@
-import { PersonalBests } from "./components/PersonalBests";
+import { useState } from "react";
 import { PracticeControls } from "./components/PracticeControls";
 import { PracticePassageDisplay } from "./components/PracticePassageDisplay";
 import { TypingPracticePanel } from "./components/TypingPracticePanel";
 import type { PracticeSource } from "../../shared/types/app";
-import type { PracticePassage, PracticeStats, PracticeStatus } from "../../shared/types/practice";
+import type { PracticePassage, PracticeStatus } from "../../shared/types/practice";
 import type { SavedPassage } from "../../shared/types/savedPassage";
 
 export type PracticePageProps = {
@@ -21,7 +21,6 @@ export type PracticePageProps = {
   reflectionError: string | null;
   savedPassages: SavedPassage[];
   selectedSavedPassageId: string;
-  stats: PracticeStats;
   status: PracticeStatus;
   translationName: string;
   typedText: string;
@@ -29,7 +28,6 @@ export type PracticePageProps = {
   onNextFeaturedPassage: () => void;
   onOpenLibrary: () => void;
   onResetPractice: () => void;
-  onResetStats: () => void;
   onSaveCurrentPassage: () => void;
   onSaveReflection: (reflection: string) => Promise<boolean>;
   onSelectFeaturedPractice: () => void;
@@ -55,7 +53,6 @@ export function PracticePage({
   reflectionError,
   savedPassages,
   selectedSavedPassageId,
-  stats,
   status,
   translationName,
   typedText,
@@ -63,19 +60,21 @@ export function PracticePage({
   onNextFeaturedPassage,
   onOpenLibrary,
   onResetPractice,
-  onResetStats,
   onSaveCurrentPassage,
   onSaveReflection,
   onSelectFeaturedPractice,
   onSelectSavedPassage,
   onTypingChange,
 }: PracticePageProps) {
+  const [isSetupOpen, setIsSetupOpen] = useState(true);
+
   return (
     <div className="grid gap-8">
       <PracticeControls
         canSaveCurrentPassage={canSaveCurrentPassage}
         hasSavedPassages={savedPassages.length > 0}
         isCurrentPassageSaved={isCurrentPassageSaved}
+        isSetupOpen={isSetupOpen}
         practiceSource={practiceSource}
         savedPassages={savedPassages}
         selectedSavedPassageId={selectedSavedPassageId}
@@ -85,6 +84,7 @@ export function PracticePage({
         onSaveCurrentPassage={onSaveCurrentPassage}
         onSelectFeaturedPractice={onSelectFeaturedPractice}
         onSelectSavedPractice={onSelectSavedPassage}
+        onToggleSetup={() => setIsSetupOpen((currentValue) => !currentValue)}
       />
 
       <section className="mx-auto grid w-full max-w-5xl gap-8">
@@ -118,8 +118,6 @@ export function PracticePage({
           />
         </div>
       </section>
-
-      <PersonalBests stats={stats} onResetStats={onResetStats} />
     </div>
   );
 }

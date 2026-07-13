@@ -8,7 +8,7 @@ import type { LibraryPageProps } from "../../pages/library/LibraryPage";
 import type { PracticePageProps } from "../../pages/practice/PracticePage";
 import type { ProfilePageProps } from "../../pages/profile/ProfilePage";
 import type { PracticeSource } from "../../shared/types/app";
-import type { PracticePassage, PracticeStats } from "../../shared/types/practice";
+import type { PracticePassage } from "../../shared/types/practice";
 import type { createAppActions } from "./createAppActions";
 import type { usePracticeAttempts } from "../../domain/practice/hooks/usePracticeAttempts";
 
@@ -97,9 +97,7 @@ export function createPracticePageProps({
   practiceSource,
   practiceTitle,
   reflectionError,
-  resetStats,
   savedLibrary,
-  stats,
   translationName,
   onSaveCurrentPassage,
   onSaveReflection,
@@ -115,9 +113,7 @@ export function createPracticePageProps({
   practiceSource: PracticeSource;
   practiceTitle: string;
   reflectionError: string | null;
-  resetStats: () => void;
   savedLibrary: ReturnType<typeof useSavedPassages>;
-  stats: PracticeStats;
   translationName: string;
   onSaveCurrentPassage: () => void;
   onSaveReflection: (reflection: string) => Promise<boolean>;
@@ -139,7 +135,6 @@ export function createPracticePageProps({
     reflectionError,
     savedPassages: savedLibrary.savedPassages,
     selectedSavedPassageId: savedLibrary.selectedSavedPassageId,
-    stats,
     status: practiceSession.status,
     translationName,
     typedText: practiceSession.typedText,
@@ -147,7 +142,6 @@ export function createPracticePageProps({
     onNextFeaturedPassage: appActions.nextFeaturedPassage,
     onOpenLibrary: appActions.openLibrary,
     onResetPractice: practiceSession.resetPractice,
-    onResetStats: resetStats,
     onSaveCurrentPassage,
     onSaveReflection,
     onSelectFeaturedPractice: appActions.selectFeaturedPractice,
