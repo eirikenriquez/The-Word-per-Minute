@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { PracticeControls } from "./components/PracticeControls";
 import { PracticePassageDisplay } from "./components/PracticePassageDisplay";
 import { TypingPracticePanel } from "./components/TypingPracticePanel";
@@ -66,15 +65,12 @@ export function PracticePage({
   onSelectSavedPassage,
   onTypingChange,
 }: PracticePageProps) {
-  const [isSetupOpen, setIsSetupOpen] = useState(true);
-
   return (
     <div className="grid gap-8">
       <PracticeControls
         canSaveCurrentPassage={canSaveCurrentPassage}
         hasSavedPassages={savedPassages.length > 0}
         isCurrentPassageSaved={isCurrentPassageSaved}
-        isSetupOpen={isSetupOpen}
         practiceSource={practiceSource}
         savedPassages={savedPassages}
         selectedSavedPassageId={selectedSavedPassageId}
@@ -84,7 +80,6 @@ export function PracticePage({
         onSaveCurrentPassage={onSaveCurrentPassage}
         onSelectFeaturedPractice={onSelectFeaturedPractice}
         onSelectSavedPractice={onSelectSavedPassage}
-        onToggleSetup={() => setIsSetupOpen((currentValue) => !currentValue)}
       />
 
       <section className="mx-auto grid w-full max-w-5xl gap-8">
