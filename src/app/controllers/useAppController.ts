@@ -41,7 +41,7 @@ export function useAppController() {
   const authSession = useAuthSession();
 
   const readerSelection = useReaderSelection();
-  const { stats, recordCompletedAttempt, resetStats } = usePracticeStats();
+  const { recordCompletedAttempt } = usePracticeStats();
   const featuredLibrary = useFeaturedPassages();
   const bibleLibrary = useVerseLibrary();
   const savedLibrary = useSavedPassages(authSession.user?.id);
@@ -251,11 +251,9 @@ export function useAppController() {
       practiceSource,
       practiceTitle: headerTitle,
       reflectionError: practiceAttempts.error,
-      resetStats,
       savedLibrary,
       canSaveReflection: authSession.isSignedIn && Boolean(completedPracticeAttemptId),
       isSignedIn: authSession.isSignedIn,
-      stats,
       translationName,
       onSaveCurrentPassage: saveCurrentPassage,
       onSaveReflection: savePracticeReflection,
