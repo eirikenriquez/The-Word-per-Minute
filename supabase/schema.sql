@@ -212,6 +212,32 @@ for update
 using (auth.uid() = user_id)
 with check (auth.uid() = user_id);
 
+-- Returns one all-time practice summary for the current authenticated user.
+-- SECURITY INVOKER keeps the query subject to the caller's RLS policies.
+create or replace function public.get_practice_attempt_summary()
+returns table (
+  completed_attempts integer,
+  reflection_count integer,
+  best_wpm integer,
+  average_accuracy integer
+)
+language sql
+stable
+security invoker
+set search_path = ''
+as $$
+  select
+    count(*)::integer as completed_attempts,
+    count(reflection)::integer as reflection_count,
+    coalesce(max(wpm), 0)::integer as best_wpm,
+    coalesce(round(avg(accuracy)), 0)::integer as average_accuracy
+  from public.practice_attempts
+  where user_id = auth.uid();
+$$;
+
+revoke execute on function public.get_practice_attempt_summary() from public;
+grant execute on function public.get_practice_attempt_summary() to authenticated;
+
 -- Data API grants: RLS decides which rows authenticated users may access,
 -- but Postgres still needs table-level privileges for the authenticated role.
 grant usage on schema public to authenticated;

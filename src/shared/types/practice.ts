@@ -38,6 +38,13 @@ export type PracticeAttempt = {
   completedAt: string;
 };
 
+export type PracticeAttemptSummary = {
+  averageAccuracy: number;
+  bestWpm: number;
+  completedAttempts: number;
+  reflectionCount: number;
+};
+
 export type SavePracticeAttemptInput = Omit<PracticeAttempt, "completedAt" | "id"> & {
   featuredPassageId?: string | null;
   savedPassageId?: string | null;

@@ -116,7 +116,17 @@ export type Database = {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      get_practice_attempt_summary: {
+        Args: Record<PropertyKey, never>;
+        Returns: {
+          average_accuracy: number;
+          best_wpm: number;
+          completed_attempts: number;
+          reflection_count: number;
+        }[];
+      };
+    };
     Enums: Record<string, never>;
     CompositeTypes: Record<string, never>;
   };
