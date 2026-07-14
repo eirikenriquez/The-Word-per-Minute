@@ -292,6 +292,7 @@ src/
         PracticeActionButtons.tsx
         PracticeControls.tsx
         PracticePassageDisplay.tsx
+        PracticeReflectionDialog.tsx
         SavedPassageSelect.tsx
         SourcePicker.tsx
         TypingPracticePanel.tsx

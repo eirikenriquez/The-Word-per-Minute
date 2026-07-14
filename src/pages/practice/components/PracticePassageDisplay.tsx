@@ -1,13 +1,9 @@
-import {
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-} from "@headlessui/react";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import type { PracticePassage } from "../../../shared/types/practice";
 import { areCharactersEquivalent } from "../../../domain/practice/utils/typingMetrics";
 import { Button } from "../../../shared/ui/Button";
+import { PracticeReflectionDialog } from "./PracticeReflectionDialog";
 
 type PracticePassageDisplayProps = {
   accuracy: number;
@@ -112,11 +108,7 @@ export function PracticePassageDisplay({
   typedText,
   wpm,
 }: PracticePassageDisplayProps) {
-  const [reflectionText, setReflectionText] = useState("");
-  const [hasSavedReflection, setHasSavedReflection] = useState(false);
-  const [isReflectionOpen, setIsReflectionOpen] = useState(false);
   const typingInputRef = useRef<HTMLTextAreaElement>(null);
-  const reflectionInputRef = useRef<HTMLTextAreaElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const activeCharacterRef = useRef<HTMLSpanElement>(null);
 
@@ -134,23 +126,6 @@ export function PracticePassageDisplay({
       top: Math.max(0, nextScrollTop),
     });
   }, [passage.ref, typedText.length]);
-
-  useEffect(() => {
-    if (isComplete) return;
-
-    setReflectionText("");
-    setHasSavedReflection(false);
-    setIsReflectionOpen(false);
-  }, [isComplete, passage.ref]);
-
-  async function saveReflection() {
-    const didSave = await onSaveReflection(reflectionText);
-    if (!didSave) return;
-
-    setHasSavedReflection(true);
-    setReflectionText("");
-    setIsReflectionOpen(false);
-  }
 
   return (
     <section className="grid gap-4">
@@ -228,12 +203,14 @@ export function PracticePassageDisplay({
               </div>
 
               <div className="flex flex-wrap justify-center gap-2">
-                <Button
-                  variant="ghost"
-                  onClick={() => setIsReflectionOpen(true)}
-                >
-                  Add reflection
-                </Button>
+                <PracticeReflectionDialog
+                  key={passage.ref}
+                  canSaveReflection={canSaveReflection}
+                  isSavingReflection={isSavingReflection}
+                  isSignedIn={isSignedIn}
+                  reflectionError={reflectionError}
+                  onSaveReflection={onSaveReflection}
+                />
                 {completionActionLabel && onCompletionAction && (
                   <Button variant="primary" onClick={onCompletionAction}>
                     <ArrowRightIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
@@ -243,96 +220,6 @@ export function PracticePassageDisplay({
               </div>
             </div>
           </div>
-        )}
-
-        {isComplete && (
-          <Dialog
-            className="fixed inset-0 z-50 grid place-items-center px-4 py-6"
-            initialFocus={reflectionInputRef}
-            open={isReflectionOpen}
-            onClose={setIsReflectionOpen}
-          >
-            <DialogPanel
-              transition
-              className="grid w-full max-w-xl gap-4 rounded-xl border border-line bg-surface p-5 text-left shadow-2xl transition duration-150 ease-out data-closed:translate-y-1 data-closed:scale-[0.98] data-closed:opacity-0 data-enter:duration-150 data-leave:duration-100 data-leave:ease-in motion-reduce:transform-none motion-reduce:transition-none"
-            >
-              <div className="grid gap-1">
-                <DialogTitle
-                  className="text-lg font-semibold text-ink"
-                >
-                  What stood out to you?
-                </DialogTitle>
-                <p className="text-sm text-ink-muted">
-                  Save a short reflection from this passage to your practice history.
-                </p>
-              </div>
-
-              <label className="grid gap-2">
-                <span className="sr-only">Reflection</span>
-                <textarea
-                  className="h-32 resize-none rounded-md border border-line-strong bg-canvas p-3 text-sm text-ink outline-none transition placeholder:text-ink-subtle focus:border-accent focus:ring-2 focus:ring-accent-soft disabled:bg-surface-muted disabled:text-ink-subtle"
-                  disabled={!isSignedIn || hasSavedReflection}
-                  placeholder={
-                    isSignedIn
-                      ? "Write a short reflection from this passage..."
-                      : "Create an account to keep reflections with your practice history."
-                  }
-                  ref={reflectionInputRef}
-                  value={reflectionText}
-                  onChange={(event) => {
-                    setReflectionText(event.target.value);
-                    setHasSavedReflection(false);
-                  }}
-                />
-              </label>
-
-              {isSignedIn ? (
-                <div className="grid gap-3">
-                  <div className="flex flex-wrap items-center justify-end gap-2">
-                    <Button
-                      variant="ghost"
-                      onClick={() => setIsReflectionOpen(false)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      disabled={
-                        !canSaveReflection ||
-                        !reflectionText.trim() ||
-                        hasSavedReflection ||
-                        isSavingReflection
-                      }
-                      variant="secondary"
-                      onClick={saveReflection}
-                    >
-                      {isSavingReflection ? "Saving..." : hasSavedReflection ? "Saved" : "Save reflection"}
-                    </Button>
-                  </div>
-                  {!canSaveReflection && (
-                    <p className="text-sm text-ink-subtle">Saving your practice history...</p>
-                  )}
-                  {hasSavedReflection && (
-                    <p className="text-sm font-medium text-accent-ink">Reflection saved.</p>
-                  )}
-                  {reflectionError && (
-                    <p className="text-sm text-red-700 dark:text-red-300">{reflectionError}</p>
-                  )}
-                </div>
-              ) : (
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <p className="text-sm text-ink-muted">
-                    Sign in or create an account to save reflections after practice.
-                  </p>
-                  <Button
-                    variant="ghost"
-                    onClick={() => setIsReflectionOpen(false)}
-                  >
-                    Close
-                  </Button>
-                </div>
-              )}
-            </DialogPanel>
-          </Dialog>
         )}
       </div>
     </section>
