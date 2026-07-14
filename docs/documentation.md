@@ -299,6 +299,8 @@ src/
         SourcePicker.tsx
       PracticePage.tsx
     profile/
+      components/
+        PracticeAttemptCard.tsx
       ProfilePage.tsx
   shared/
     lib/
