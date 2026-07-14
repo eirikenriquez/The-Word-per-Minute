@@ -63,6 +63,7 @@ export function createHomePageProps({
     savedPassageCount,
     onOpenBible: appActions.openBible,
     onOpenLibrary: appActions.openLibrary,
+    onOpenProfile: appActions.openProfile,
     onSelectFeaturedCategory: appActions.startFeaturedCategory,
     onStartFeaturedPractice: appActions.startFeaturedPractice,
   };
@@ -163,13 +164,17 @@ export function createProfilePageProps({
   practiceAttempts: ReturnType<typeof usePracticeAttempts>;
 }): ProfilePageProps {
   return {
+    hasMoreRecentAttempts: practiceAttempts.hasMoreAttempts,
+    isLoadingMoreRecentAttempts: practiceAttempts.isLoadingMore,
     isLoadingPracticeSummary: practiceAttempts.isLoadingSummary,
     isLoadingRecentAttempts: practiceAttempts.isLoading,
     isSignedIn: authSession.isSignedIn,
     practiceSummary: practiceAttempts.summary,
     practiceSummaryError: practiceAttempts.summaryError,
     recentAttemptsError: practiceAttempts.error,
+    recentAttemptsLoadMoreError: practiceAttempts.loadMoreError,
     recentPracticeAttempts: practiceAttempts.recentAttempts,
     userEmail: authSession.user?.email,
+    onLoadMoreRecentAttempts: practiceAttempts.loadMoreAttempts,
   };
 }

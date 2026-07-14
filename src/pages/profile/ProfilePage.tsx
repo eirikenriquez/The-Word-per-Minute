@@ -2,28 +2,37 @@ import type {
   PracticeAttempt,
   PracticeAttemptSummary,
 } from "../../shared/types/practice";
+import { Button } from "../../shared/ui/Button";
 import { PracticeAttemptCard } from "./components/PracticeAttemptCard";
 
 export type ProfilePageProps = {
+  hasMoreRecentAttempts: boolean;
   isSignedIn: boolean;
+  isLoadingMoreRecentAttempts: boolean;
   isLoadingPracticeSummary: boolean;
   isLoadingRecentAttempts: boolean;
   practiceSummary: PracticeAttemptSummary;
   practiceSummaryError: string | null;
   recentAttemptsError: string | null;
+  recentAttemptsLoadMoreError: string | null;
   recentPracticeAttempts: PracticeAttempt[];
   userEmail?: string;
+  onLoadMoreRecentAttempts: () => void | Promise<void>;
 };
 
 export function ProfilePage({
+  hasMoreRecentAttempts,
   isSignedIn,
+  isLoadingMoreRecentAttempts,
   isLoadingPracticeSummary,
   isLoadingRecentAttempts,
   practiceSummary,
   practiceSummaryError,
   recentAttemptsError,
+  recentAttemptsLoadMoreError,
   recentPracticeAttempts,
   userEmail,
+  onLoadMoreRecentAttempts,
 }: ProfilePageProps) {
   const isPracticeSummaryAvailable = !isLoadingPracticeSummary && !practiceSummaryError;
 
@@ -117,6 +126,25 @@ export function ProfilePage({
                 {recentPracticeAttempts.map((attempt) => (
                   <PracticeAttemptCard attempt={attempt} key={attempt.id} />
                 ))}
+
+                {(hasMoreRecentAttempts || recentAttemptsLoadMoreError) && (
+                  <div className="grid justify-items-center gap-2 pt-2">
+                    {recentAttemptsLoadMoreError && (
+                      <p className="text-sm text-red-700 dark:text-red-300">
+                        {recentAttemptsLoadMoreError}
+                      </p>
+                    )}
+                    {hasMoreRecentAttempts && (
+                      <Button
+                        disabled={isLoadingMoreRecentAttempts}
+                        variant="secondary"
+                        onClick={() => void onLoadMoreRecentAttempts()}
+                      >
+                        {isLoadingMoreRecentAttempts ? "Loading..." : "Load more history"}
+                      </Button>
+                    )}
+                  </div>
+                )}
               </div>
             ) : (
               <ProfileMessage>
