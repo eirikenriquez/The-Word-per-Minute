@@ -1,4 +1,8 @@
-import { useState } from "react";
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from "@headlessui/react";
 
 import type { PracticeAttempt } from "../../shared/types/practice";
 
@@ -120,15 +124,7 @@ function ProfileStat({ label, value }: { label: string; value: number | string }
 }
 
 function PracticeAttemptCard({ attempt }: { attempt: PracticeAttempt }) {
-  const [isReflectionExpanded, setIsReflectionExpanded] = useState(false);
   const shouldCollapseReflection = Boolean(attempt.reflection && attempt.reflection.length > 240);
-  const reflectionContainerClassName = [
-    "relative mt-4 overflow-hidden border-l-2 border-accent-line pl-3 transition-[max-height] duration-200 ease-out",
-    shouldCollapseReflection && !isReflectionExpanded ? "max-h-28" : "",
-    isReflectionExpanded ? "max-h-96" : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
 
   return (
     <article className="rounded-lg border border-line bg-surface p-5">
@@ -153,30 +149,34 @@ function PracticeAttemptCard({ attempt }: { attempt: PracticeAttempt }) {
       </div>
 
       {attempt.reflection ? (
-        <>
-          <div className={reflectionContainerClassName}>
-            <p className="text-sm leading-6 text-ink-muted">
-              {attempt.reflection}
-            </p>
-            {shouldCollapseReflection && !isReflectionExpanded ? (
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-surface to-transparent"
-              />
-            ) : null}
-          </div>
+        <Disclosure>
+          {({ open }) => (
+            <>
+              <DisclosurePanel
+                static
+                className={`relative mt-4 overflow-hidden border-l-2 border-accent-line pl-3 transition-[max-height] duration-200 ease-out ${
+                  shouldCollapseReflection && !open ? "max-h-28" : "max-h-[32rem] overflow-y-auto pr-2"
+                }`}
+              >
+                <p className="text-sm leading-6 text-ink-muted">
+                  {attempt.reflection}
+                </p>
+                {shouldCollapseReflection && !open ? (
+                  <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-surface to-transparent"
+                  />
+                ) : null}
+              </DisclosurePanel>
 
-          {shouldCollapseReflection ? (
-            <button
-              aria-expanded={isReflectionExpanded}
-              className="mt-3 text-sm font-medium text-ink-muted transition-colors hover:text-ink"
-              onClick={() => setIsReflectionExpanded((isExpanded) => !isExpanded)}
-              type="button"
-            >
-              {isReflectionExpanded ? "Show less" : "View full reflection"}
-            </button>
-          ) : null}
-        </>
+              {shouldCollapseReflection ? (
+                <DisclosureButton className="mt-3 text-sm font-medium text-ink-muted transition-colors hover:text-ink">
+                  {open ? "Show less" : "View full reflection"}
+                </DisclosureButton>
+              ) : null}
+            </>
+          )}
+        </Disclosure>
       ) : (
         <p className="mt-4 text-sm text-ink-subtle">
           No reflection yet.

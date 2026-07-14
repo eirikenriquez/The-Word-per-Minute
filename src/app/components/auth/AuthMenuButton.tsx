@@ -2,22 +2,25 @@ import {
   ChevronDownIcon,
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
+import {
+  forwardRef,
+  type ComponentPropsWithoutRef,
+} from "react";
 
-type AuthMenuButtonProps = {
+type AuthMenuButtonProps = ComponentPropsWithoutRef<"button"> & {
   isOpen: boolean;
   label: string;
-  onClick: () => void;
 };
 
-export function AuthMenuButton({ isOpen, label, onClick }: AuthMenuButtonProps) {
+export const AuthMenuButton = forwardRef<HTMLButtonElement, AuthMenuButtonProps>(
+  function AuthMenuButton({ isOpen, label, ...buttonProps }, ref) {
   return (
     <button
       aria-label={label}
-      aria-expanded={isOpen}
-      aria-haspopup="dialog"
       className="relative inline-flex h-11 w-11 items-center justify-center rounded-full text-ink-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+      ref={ref}
       type="button"
-      onClick={onClick}
+      {...buttonProps}
     >
       <UserCircleIcon aria-hidden="true" className="h-6 w-6 shrink-0" />
       <ChevronDownIcon
@@ -26,4 +29,5 @@ export function AuthMenuButton({ isOpen, label, onClick }: AuthMenuButtonProps) 
       />
     </button>
   );
-}
+  },
+);

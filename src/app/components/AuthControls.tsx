@@ -1,3 +1,8 @@
+import {
+  Popover,
+  PopoverButton,
+  PopoverPanel,
+} from "@headlessui/react";
 import { useEffect, useRef, useState } from "react";
 import type { AuthSessionState } from "../../domain/auth/useAuthSession";
 import { AuthMenuButton } from "./auth/AuthMenuButton";
@@ -23,71 +28,72 @@ export function AuthControls({
   menuRequest,
   onMenuRequestHandled,
 }: AuthControlsProps) {
+  return (
+    <Popover className="relative">
+      {({ close, open }) => (
+        <AuthPopoverContent
+          authSession={authSession}
+          closePopover={close}
+          isOpen={open}
+          menuRequest={menuRequest}
+          onMenuRequestHandled={onMenuRequestHandled}
+        />
+      )}
+    </Popover>
+  );
+}
+
+type AuthPopoverContentProps = AuthControlsProps & {
+  closePopover: () => void;
+  isOpen: boolean;
+};
+
+function AuthPopoverContent({
+  authSession,
+  closePopover,
+  isOpen,
+  menuRequest,
+  onMenuRequestHandled,
+}: AuthPopoverContentProps) {
   const [activeMenuRequest, setActiveMenuRequest] = useState<AuthMenuRequest | null>(null);
-  const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!menuRequest || authSession.isSignedIn) return;
 
     setActiveMenuRequest(menuRequest);
-    setIsOpen(true);
+    if (!isOpen) {
+      buttonRef.current?.click();
+    }
+
     onMenuRequestHandled?.();
-  }, [authSession.isSignedIn, menuRequest, onMenuRequestHandled]);
+  }, [authSession.isSignedIn, isOpen, menuRequest, onMenuRequestHandled]);
 
-  useEffect(() => {
-    function closeOnOutsideClick(event: MouseEvent) {
-      if (!containerRef.current?.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    }
-
-    function closeOnEscape(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setIsOpen(false);
-      }
-    }
-
-    document.addEventListener("mousedown", closeOnOutsideClick);
-    document.addEventListener("keydown", closeOnEscape);
-
-    return () => {
-      document.removeEventListener("mousedown", closeOnOutsideClick);
-      document.removeEventListener("keydown", closeOnEscape);
-    };
-  }, []);
-
-  if (authSession.isSignedIn) {
-    return (
-      <div ref={containerRef} className="relative">
-        <AuthMenuButton
-          isOpen={isOpen}
-          label="Account"
-          onClick={() => setIsOpen((currentValue) => !currentValue)}
-        />
-
-        {isOpen && (
-          <SignedInAuthMenu authSession={authSession} onClose={() => setIsOpen(false)} />
-        )}
-      </div>
-    );
-  }
+  const panelWidthClassName = authSession.isSignedIn ? "w-72" : "w-80";
 
   return (
-    <div ref={containerRef} className="relative">
-      <AuthMenuButton
+    <>
+      <PopoverButton
+        as={AuthMenuButton}
         isOpen={isOpen}
-        label="Sign in"
-        onClick={() => setIsOpen((currentValue) => !currentValue)}
+        label={authSession.isSignedIn ? "Account" : "Sign in"}
+        ref={buttonRef}
       />
 
-      {isOpen && (
-        <SignedOutAuthMenu
-          authSession={authSession}
-          modeRequest={activeMenuRequest}
-          onSignedIn={() => setIsOpen(false)}
-        />
-      )}
-    </div>
+      <PopoverPanel
+        transition
+        className={`absolute right-0 top-full z-30 mt-2 rounded-lg border border-line bg-surface p-4 shadow-lg shadow-black/10 transition duration-150 ease-out data-closed:translate-y-1 data-closed:scale-[0.98] data-closed:opacity-0 data-enter:duration-150 data-leave:duration-100 data-leave:ease-in dark:shadow-black/30 motion-reduce:transform-none motion-reduce:transition-none ${panelWidthClassName}`}
+      >
+        {authSession.isSignedIn ? (
+          <SignedInAuthMenu authSession={authSession} onClose={closePopover} />
+        ) : (
+          <SignedOutAuthMenu
+            authSession={authSession}
+            modeRequest={activeMenuRequest}
+            onSignedIn={closePopover}
+          />
+        )}
+      </PopoverPanel>
+    </>
   );
 }

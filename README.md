@@ -1,6 +1,6 @@
 # The Word per Minute
 
-A Bible passage typing practice app built with React, TypeScript, Vite, Tailwind CSS, and Supabase.
+A Bible passage typing practice app built with React, TypeScript, Vite, Tailwind CSS, Headless UI, and Supabase.
 
 The app helps users discover scripture, practise typing curated passages, read Bible chapters, and save passages for later practice.
 
@@ -14,7 +14,7 @@ The app helps users discover scripture, practise typing curated passages, read B
 - Completion overlay with final metrics, next-passage action, and reflection modal
 - Signed-in practice history and passage reflections
 - Bible chapter reader with verse selection
-- Saved passage library with search, filters, editing, and Bible/Practice actions
+- Saved passage library with search, filters, animated editing/removal states, and Bible/Practice actions
 - Supabase email/password accounts for syncing saved passages
 - Guest saved passages for signed-out users through local browser storage
 - Warm light and dark themes with semantic color tokens
