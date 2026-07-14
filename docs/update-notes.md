@@ -1,7 +1,7 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260713.1.a`
-Last updated: 13/07/26
+Current documentation version: `260714.1.a`
+Last updated: 14/07/26
 
 ## Update Rule
 
@@ -36,6 +36,23 @@ Suggested next versions:
 - Small same-day documentation update: `260626.1.b`
 - Larger same-day documentation update: `260626.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260714.1.a`
+
+This version documents the motion and Headless UI cleanup branch.
+
+It updates:
+
+- the README stack summary to include Headless UI,
+- the README feature list to mention animated saved-passage edit/removal states,
+- the tech stack notes to record Headless UI as an accessibility and motion primitive library,
+- Library responsibilities for animated saved-passage card state changes,
+- Profile responsibilities for disclosure-backed reflection previews,
+- AuthControls responsibilities for Headless UI popover behaviour,
+- Theme and motion notes for the stable scrollbar gutter, Headless UI primitives, and reduced-motion support,
+- known technical debt and likely next architecture steps now that the motion audit branch has been completed.
+
+This update documents UI behaviour and motion architecture only. It does not change Supabase schema, saved-passage persistence, practice-history persistence, or routing.
 
 ## `260713.1.a`
 

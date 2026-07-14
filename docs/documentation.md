@@ -1,7 +1,7 @@
 # The Word per Minute Documentation
 
-Document version: `260713.1.a`
-Last updated: 13/07/26
+Document version: `260714.1.a`
+Last updated: 14/07/26
 Update rule: only update this file when explicitly requested by the project owner.
 
 ## Purpose
@@ -27,6 +27,7 @@ Version history and documentation update notes live in `docs/update-notes.md`.
 - TypeScript
 - React Router
 - Tailwind CSS
+- Headless UI for accessible disclosure, dialog, popover, and transition primitives
 - Local JSON Bible data
 - Supabase JavaScript client for authentication, signed-in saved passages, and signed-in practice history
 - `localStorage` for guest saved passages, personal-best stats, and theme preference
@@ -160,6 +161,7 @@ It:
 - opens whole-chapter saves without individual verse highlighting,
 - lets the user edit saved passage title/category,
 - lets the user remove saved passages,
+- animates card state changes for edit and remove confirmation,
 - shows clearer card metadata, source labels, saved dates, and active practice state,
 - separates passage actions from edit/remove actions,
 - gives removal a restrained destructive treatment.
@@ -176,7 +178,7 @@ It:
 - summarizes completed sessions, saved reflections, average accuracy, and best WPM,
 - lists recent signed-in practice attempts from Supabase,
 - shows WPM, accuracy, and duration for each attempt,
-- previews saved reflections with an expandable "View full reflection" control,
+- previews saved reflections with a Headless UI disclosure-backed "View full reflection" control,
 - keeps long reflections from making history cards overly tall.
 
 Signed-out users see a prompt to create an account before progress can sync.
@@ -439,6 +441,7 @@ Shows the first Supabase email/password authentication UI in the app shell.
 Current behaviour:
 
 - presents auth through a compact icon-triggered dropdown,
+- uses Headless UI popover behaviour for the account/auth dropdown,
 - accepts an email address,
 - accepts a password,
 - signs in existing Supabase users,
@@ -960,11 +963,20 @@ Add these in the Supabase dashboard before relying on email confirmation across 
 - Tailwind import,
 - semantic theme import,
 - Tailwind v4 class-based dark mode variant,
+- stable scrollbar gutter for modal/popover scroll-lock behaviour,
 - browser body margin reset,
 - page enter animation,
 - Home section rise-in animation,
-- auth/account dropdown entrance animation,
+- shared popover/panel/dialog entrance helpers,
 - subtle hover motion helpers.
+
+Headless UI is used for interactive motion primitives where behaviour and accessibility matter:
+
+- Practice setup uses `Disclosure` with a Tailwind grid-row height transition.
+- Practice reflections use `Dialog` with Headless UI enter/leave transition states.
+- Auth/account controls use `Popover` with Headless UI enter/leave transition states.
+- Saved passage card edit/remove states use `Transition`.
+- Profile reflection previews use `Disclosure` with Tailwind max-height clipping and expanded scrolling for very long reflections.
 
 Theme state is managed by `src/app/hooks/useTheme.ts` and stored in `localStorage`.
 
@@ -1038,7 +1050,7 @@ flowchart TD
 - Guest users do not yet have a durable practice-history list.
 - The app uses local JSON Bible data only; no hosted API yet.
 - Form-control styling is repeated across components and may later benefit from a small shared primitive if it begins to drift.
-- Motion does not yet account for the user's reduced-motion preference.
+- Motion now has shared reduced-motion handling, but still needs final visual QA across light and dark mode.
 - Saved-passage removal has confirmation but no undo.
 - Automated tests are not set up yet.
 - Vercel deployment configuration is present, but the hosted deployment still needs manual verification.
@@ -1070,7 +1082,7 @@ flowchart TD
 
 1. Add a one-time local saved-passage import flow after sign-in.
 2. Decide whether legacy local personal-best recording should be removed, moved to Profile, or replaced by Supabase-backed progress summaries.
-3. Audit and standardize motion/animation behaviour across interactive UI.
+3. Run a final desktop visual QA pass for motion, focus states, and light/dark contrast.
 4. Consider custom SMTP/auth email delivery through Supabase and a provider such as Resend.
 5. Keep `useAppController` limited to cross-feature composition.
 6. Keep `verseService` API-shaped so local JSON can later move to hosted data if licensing allows it.
