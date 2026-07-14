@@ -59,6 +59,10 @@ export function createAppActions({
     resetPractice();
   }
 
+  function openProfile() {
+    setAppMode("profile");
+  }
+
   function startFeaturedPractice() {
     selectRandomFeaturedPassage();
     setPracticeSource("featured");
@@ -173,6 +177,7 @@ export function createAppActions({
     nextFeaturedPassage,
     openBible,
     openLibrary,
+    openProfile,
     randomFeaturedReaderPassage,
     readSavedPassage,
     removeSavedPractice,

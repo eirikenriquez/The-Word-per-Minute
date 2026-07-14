@@ -5,8 +5,6 @@ import {
 } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import { Link } from "react-router-dom";
-import { APP_ROUTE_PATHS } from "../../app/routes/appRoutePaths";
 
 export type HomeCategory = {
   count: number;
@@ -20,6 +18,7 @@ export type HomePageProps = {
   onCreateAccount: () => void;
   onOpenBible: () => void;
   onOpenLibrary: () => void;
+  onOpenProfile: () => void;
   onSelectFeaturedCategory: (category: string) => void;
   onStartFeaturedPractice: () => void;
 };
@@ -34,6 +33,7 @@ export function HomePage({
   onCreateAccount,
   onOpenBible,
   onOpenLibrary,
+  onOpenProfile,
   onSelectFeaturedCategory,
   onStartFeaturedPractice,
 }: HomePageProps) {
@@ -88,12 +88,13 @@ export function HomePage({
         </div>
 
         {isSignedIn ? (
-          <Link
+          <button
             className="inline-flex min-h-10 items-center justify-center rounded-md bg-action px-5 py-2 text-sm font-semibold text-action-ink transition-colors hover:bg-action-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
-            to={APP_ROUTE_PATHS.profile}
+            type="button"
+            onClick={onOpenProfile}
           >
             View profile
-          </Link>
+          </button>
         ) : (
           <button
             className="inline-flex min-h-10 items-center justify-center rounded-md bg-action px-5 py-2 text-sm font-semibold text-action-ink transition-colors hover:bg-action-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
