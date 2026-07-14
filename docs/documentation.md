@@ -921,6 +921,7 @@ Current behaviour:
 
 - signed-in completed attempts are saved to Supabase,
 - signed-in users can view recent attempts on Profile/Progress,
+- all-time account summaries load independently through a scoped Supabase RPC,
 - signed-in users can add or update reflection text on a completed attempt,
 - guest completed attempts are not persisted.
 

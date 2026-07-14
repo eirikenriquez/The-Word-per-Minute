@@ -1,7 +1,18 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getErrorMessage } from "../../../shared/utils/errors";
-import type { PracticeAttempt, SavePracticeAttemptInput } from "../../../shared/types/practice";
+import type {
+  PracticeAttempt,
+  PracticeAttemptSummary,
+  SavePracticeAttemptInput,
+} from "../../../shared/types/practice";
 import { createSupabasePracticeAttemptStore } from "../stores/supabasePracticeAttemptStore";
+
+const EMPTY_PRACTICE_SUMMARY: PracticeAttemptSummary = {
+  averageAccuracy: 0,
+  bestWpm: 0,
+  completedAttempts: 0,
+  reflectionCount: 0,
+};
 
 /**
  * Manages cloud practice history for signed-in users.
@@ -12,10 +23,14 @@ export function usePracticeAttempts(userId?: string | null) {
     return userId ? createSupabasePracticeAttemptStore(userId) : null;
   }, [userId]);
   const [recentAttempts, setRecentAttempts] = useState<PracticeAttempt[]>([]);
+  const [summary, setSummary] = useState<PracticeAttemptSummary>(EMPTY_PRACTICE_SUMMARY);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingSummary, setIsLoadingSummary] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isSavingReflection, setIsSavingReflection] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [summaryError, setSummaryError] = useState<string | null>(null);
+  const summaryRequestIdRef = useRef(0);
 
   useEffect(() => {
     if (!practiceAttemptStore) {
@@ -49,6 +64,43 @@ export function usePracticeAttempts(userId?: string | null) {
     };
   }, [practiceAttemptStore]);
 
+  const refreshSummary = useCallback(async () => {
+    const requestId = ++summaryRequestIdRef.current;
+
+    if (!practiceAttemptStore) {
+      setSummary(EMPTY_PRACTICE_SUMMARY);
+      setSummaryError(null);
+      setIsLoadingSummary(false);
+      return;
+    }
+
+    setIsLoadingSummary(true);
+
+    try {
+      const nextSummary = await practiceAttemptStore.getSummary();
+      if (requestId !== summaryRequestIdRef.current) return;
+
+      setSummary(nextSummary);
+      setSummaryError(null);
+    } catch (caughtError) {
+      if (requestId === summaryRequestIdRef.current) {
+        setSummaryError(getErrorMessage(caughtError));
+      }
+    } finally {
+      if (requestId === summaryRequestIdRef.current) {
+        setIsLoadingSummary(false);
+      }
+    }
+  }, [practiceAttemptStore]);
+
+  useEffect(() => {
+    void refreshSummary();
+
+    return () => {
+      summaryRequestIdRef.current += 1;
+    };
+  }, [refreshSummary]);
+
   const saveAttempt = useCallback(async (input: SavePracticeAttemptInput) => {
     if (!practiceAttemptStore) return null;
 
@@ -58,6 +110,7 @@ export function usePracticeAttempts(userId?: string | null) {
       const attempt = await practiceAttemptStore.save(input);
       setRecentAttempts((currentAttempts) => [attempt, ...currentAttempts].slice(0, 20));
       setError(null);
+      void refreshSummary();
       return attempt;
     } catch (caughtError) {
       setError(getErrorMessage(caughtError));
@@ -65,7 +118,7 @@ export function usePracticeAttempts(userId?: string | null) {
     } finally {
       setIsSaving(false);
     }
-  }, [practiceAttemptStore]);
+  }, [practiceAttemptStore, refreshSummary]);
 
   const updateReflection = useCallback(async (attemptId: string, reflection: string) => {
     if (!practiceAttemptStore) return null;
@@ -80,6 +133,7 @@ export function usePracticeAttempts(userId?: string | null) {
         currentAttempts.map((attempt) => (attempt.id === attemptId ? updatedAttempt : attempt)),
       );
       setError(null);
+      void refreshSummary();
       return updatedAttempt;
     } catch (caughtError) {
       setError(getErrorMessage(caughtError));
@@ -87,15 +141,18 @@ export function usePracticeAttempts(userId?: string | null) {
     } finally {
       setIsSavingReflection(false);
     }
-  }, [practiceAttemptStore]);
+  }, [practiceAttemptStore, refreshSummary]);
 
   return {
     error,
     isLoading,
+    isLoadingSummary,
     isSaving,
     isSavingReflection,
     recentAttempts,
     saveAttempt,
+    summary,
+    summaryError,
     updateReflection,
   };
 }
