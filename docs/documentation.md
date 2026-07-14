@@ -291,12 +291,12 @@ src/
         FeaturedSaveAction.tsx
         PracticeActionButtons.tsx
         PracticeControls.tsx
+        PracticeLiveMetrics.tsx
         PracticePassageDisplay.tsx
         PracticeReflectionDialog.tsx
         PracticeTypingSurface.tsx
         SavedPassageSelect.tsx
         SourcePicker.tsx
-        TypingPracticePanel.tsx
       PracticePage.tsx
     profile/
       ProfilePage.tsx

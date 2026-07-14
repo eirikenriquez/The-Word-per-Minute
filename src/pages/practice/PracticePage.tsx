@@ -1,6 +1,6 @@
 import { PracticeControls } from "./components/PracticeControls";
+import { PracticeLiveMetrics } from "./components/PracticeLiveMetrics";
 import { PracticePassageDisplay } from "./components/PracticePassageDisplay";
-import { TypingPracticePanel } from "./components/TypingPracticePanel";
 import type { PracticeSource } from "../../shared/types/app";
 import type { PracticePassage, PracticeStatus } from "../../shared/types/practice";
 import type { SavedPassage } from "../../shared/types/savedPassage";
@@ -103,15 +103,13 @@ export function PracticePage({
           wpm={wpm}
         />
 
-        <div className="grid gap-6">
-          <TypingPracticePanel
-            accuracy={accuracy}
-            isComplete={isPassageComplete}
-            progress={Math.min(progress, 100)}
-            status={status}
-            wpm={wpm}
-          />
-        </div>
+        <PracticeLiveMetrics
+          accuracy={accuracy}
+          isComplete={isPassageComplete}
+          progress={Math.min(progress, 100)}
+          status={status}
+          wpm={wpm}
+        />
       </section>
     </div>
   );
