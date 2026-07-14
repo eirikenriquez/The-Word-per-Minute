@@ -63,8 +63,15 @@ export function useSavedPassages(userId?: string | null) {
   }, [savedPassageStore]);
 
   useEffect(() => {
-    if (selectedSavedPassageId || !savedPassages.length) return;
-    setSelectedSavedPassageId(savedPassages[0].id);
+    const selectedPassageExists = savedPassages.some(
+      (passage) => passage.id === selectedSavedPassageId,
+    );
+    if (selectedPassageExists) return;
+
+    const fallbackPassageId = savedPassages[0]?.id ?? "";
+    if (selectedSavedPassageId !== fallbackPassageId) {
+      setSelectedSavedPassageId(fallbackPassageId);
+    }
   }, [savedPassages, selectedSavedPassageId]);
 
   useEffect(() => {
@@ -107,12 +114,11 @@ export function useSavedPassages(userId?: string | null) {
 
     try {
       const savedPassage = await savedPassageStore.save(input);
-      const nextSavedPassages = [
-        savedPassage,
-        ...savedPassages.filter((passage) => passage.id !== savedPassage.id),
-      ];
 
-      setSavedPassages(nextSavedPassages);
+      setSavedPassages((currentPassages) => [
+        savedPassage,
+        ...currentPassages.filter((passage) => passage.id !== savedPassage.id),
+      ]);
       setSelectedSavedPassageId(savedPassage.id);
       setError(null);
       return savedPassage;
@@ -128,12 +134,12 @@ export function useSavedPassages(userId?: string | null) {
     try {
       await savedPassageStore.remove(passageId);
 
-      const nextSavedPassages = savedPassages.filter((passage) => passage.id !== passageId);
-
-      setSavedPassages(nextSavedPassages);
+      setSavedPassages((currentPassages) => {
+        return currentPassages.filter((passage) => passage.id !== passageId);
+      });
       setSelectedSavedPassageId((currentPassageId) => {
         if (currentPassageId !== passageId) return currentPassageId;
-        return nextSavedPassages[0]?.id ?? "";
+        return "";
       });
       setError(null);
     } catch (caughtError) {
@@ -147,11 +153,12 @@ export function useSavedPassages(userId?: string | null) {
 
       if (!updatedPassage) return null;
 
-      const nextSavedPassages = savedPassages.map((passage) => {
-        return passage.id === passageId ? updatedPassage : passage;
+      setSavedPassages((currentPassages) => {
+        return currentPassages.map((passage) => {
+          return passage.id === passageId ? updatedPassage : passage;
+        });
       });
 
-      setSavedPassages(nextSavedPassages);
       setError(null);
       return updatedPassage;
     } catch (caughtError) {
