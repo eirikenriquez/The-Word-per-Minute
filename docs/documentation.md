@@ -240,7 +240,6 @@ src/
       appRoutePaths.ts
   domain/
     auth/
-      checkSupabaseConnection.ts
       useAuthSession.ts
     bible/
       hooks/
@@ -512,19 +511,6 @@ Responsibilities:
 
 This should stay API-shaped so local JSON can later move to hosted data.
 
-### `src/domain/auth/checkSupabaseConnection.ts`
-
-Provides the first auth-domain Supabase helper.
-
-Current behaviour:
-
-- calls Supabase Auth through the shared browser client,
-- checks whether the client can read the current session,
-- treats a missing session as a valid guest state,
-- does not sign users in,
-- does not create or query app database tables,
-- is not wired into runtime UI yet.
-
 ### `src/domain/auth/useAuthSession.ts`
 
 Tracks the current Supabase Auth session.
@@ -590,7 +576,6 @@ Owns authentication-facing app logic.
 
 Current status:
 
-- contains a manual Supabase connection/session check helper,
 - contains a Supabase session observer hook,
 - supports email/password sign-in, account creation, and sign-out through the app shell,
 - supplies the active user id used by signed-in saved-passage persistence,
