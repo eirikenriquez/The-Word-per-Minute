@@ -24,6 +24,8 @@ type SavedPassageCardProps = {
   onUpdatePassage: (passageId: string, update: SavedPassageUpdate) => SavedPassage | null | Promise<SavedPassage | null>;
 };
 
+type SavedPassageCardMode = "view" | "edit" | "remove";
+
 /**
  * Displays one saved passage and owns its local edit form state.
  */
@@ -36,22 +38,22 @@ export function SavedPassageCard({
   onSelectSavedPassage,
   onUpdatePassage,
 }: SavedPassageCardProps) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [isConfirmingRemove, setIsConfirmingRemove] = useState(false);
+  const [mode, setMode] = useState<SavedPassageCardMode>("view");
   const [draftTitle, setDraftTitle] = useState(passage.title);
   const [draftCategory, setDraftCategory] = useState(passage.category);
+  const isEditing = mode === "edit";
+  const isConfirmingRemove = mode === "remove";
 
   function startEditing() {
-    setIsConfirmingRemove(false);
     setDraftTitle(passage.title);
     setDraftCategory(passage.category);
-    setIsEditing(true);
+    setMode("edit");
   }
 
   function cancelEditing() {
     setDraftTitle(passage.title);
     setDraftCategory(passage.category);
-    setIsEditing(false);
+    setMode("view");
   }
 
   function confirmRemove() {
@@ -64,7 +66,7 @@ export function SavedPassageCard({
       category: draftCategory || passage.category,
     });
 
-    if (updatedPassage) setIsEditing(false);
+    if (updatedPassage) setMode("view");
   }
 
   return (
@@ -166,7 +168,7 @@ export function SavedPassageCard({
               Remove this saved passage?
             </p>
             <div className="flex flex-wrap gap-2">
-              <Button onClick={() => setIsConfirmingRemove(false)}>
+              <Button onClick={() => setMode("view")}>
                 Cancel
               </Button>
               <Button
@@ -211,7 +213,7 @@ export function SavedPassageCard({
               </Button>
               <Button
                 variant="danger"
-                onClick={() => setIsConfirmingRemove(true)}
+                onClick={() => setMode("remove")}
               >
                 <TrashIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
                 Remove
