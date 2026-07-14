@@ -45,6 +45,11 @@ export type PracticeAttemptSummary = {
   reflectionCount: number;
 };
 
+export type PracticeAttemptPage = {
+  attempts: PracticeAttempt[];
+  hasMore: boolean;
+};
+
 export type SavePracticeAttemptInput = Omit<PracticeAttempt, "completedAt" | "id"> & {
   featuredPassageId?: string | null;
   savedPassageId?: string | null;

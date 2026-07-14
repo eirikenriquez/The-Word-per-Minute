@@ -2,6 +2,7 @@ import { supabase } from "../../../shared/lib/supabaseClient";
 import type { Database } from "../../../shared/types/database";
 import type {
   PracticeAttempt,
+  PracticeAttemptPage,
   PracticeAttemptSummary,
   SavePracticeAttemptInput,
 } from "../../../shared/types/practice";
@@ -25,17 +26,22 @@ export function createSupabasePracticeAttemptStore(userId: string): PracticeAtte
       return mapPracticeAttemptSummaryRow(data?.[0]);
     },
 
-    async listRecent(limit = 20) {
+    async listPage(offset = 0, limit = 20): Promise<PracticeAttemptPage> {
       const { data, error } = await supabase
         .from("practice_attempts")
         .select(PRACTICE_ATTEMPT_COLUMNS)
         .eq("user_id", userId)
         .order("completed_at", { ascending: false })
-        .limit(limit);
+        .range(offset, offset + limit);
 
       if (error) throw error;
 
-      return (data ?? []).map(mapPracticeAttemptRow);
+      const attempts = (data ?? []).map(mapPracticeAttemptRow);
+
+      return {
+        attempts: attempts.slice(0, limit),
+        hasMore: attempts.length > limit,
+      };
     },
 
     async save(input: SavePracticeAttemptInput) {

@@ -45,10 +45,10 @@ export function usePracticeAttempts(userId?: string | null) {
 
     async function loadRecentAttempts() {
       try {
-        const attempts = await activePracticeAttemptStore.listRecent();
+        const page = await activePracticeAttemptStore.listPage();
         if (!isCurrent) return;
 
-        setRecentAttempts(attempts);
+        setRecentAttempts(page.attempts);
         setError(null);
       } catch (caughtError) {
         if (isCurrent) setError(getErrorMessage(caughtError));
