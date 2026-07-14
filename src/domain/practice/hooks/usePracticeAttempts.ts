@@ -5,7 +5,7 @@ import { createSupabasePracticeAttemptStore } from "../stores/supabasePracticeAt
 
 /**
  * Manages cloud practice history for signed-in users.
- * Guests keep only local personal-best stats for now.
+ * Guest attempts are not persisted yet.
  */
 export function usePracticeAttempts(userId?: string | null) {
   const practiceAttemptStore = useMemo(() => {

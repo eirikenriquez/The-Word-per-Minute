@@ -1,11 +1,5 @@
 import type { BibleVerse } from "./verse";
 
-export type PracticeStats = {
-  bestWpm: number;
-  bestAccuracy: number;
-  completedAttempts: number;
-};
-
 export type PracticeStatus = "Ready" | "Typing" | "Complete";
 
 export type PracticeCompletionResult = {

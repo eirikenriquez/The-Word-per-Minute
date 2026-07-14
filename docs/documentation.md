@@ -30,9 +30,9 @@ Version history and documentation update notes live in `docs/update-notes.md`.
 - Headless UI for accessible disclosure, dialog, popover, and transition primitives
 - Local JSON Bible data
 - Supabase JavaScript client for authentication, signed-in saved passages, and signed-in practice history
-- `localStorage` for guest saved passages, personal-best stats, and theme preference
+- `localStorage` for guest saved passages and theme preference
 
-Supabase/Postgres is now used for authentication, signed-in saved passages, signed-in practice attempts, and reflections. Guest saved passages and personal-best stats still use browser storage.
+Supabase/Postgres is now used for authentication, signed-in saved passages, signed-in practice attempts, and reflections. Guest saved passages still use browser storage; guest practice attempts are not persisted.
 
 ## High-Level Architecture
 
@@ -256,7 +256,6 @@ src/
         usePracticeAttempts.ts
         usePracticePassage.ts
         usePracticeSession.ts
-        usePracticeStats.ts
       stores/
         practiceAttemptStore.ts
         supabasePracticeAttemptStore.ts
@@ -538,7 +537,7 @@ Current behaviour:
 - exposes email/password sign-in, account creation, and sign-out actions,
 - provides the signed-in user id used by cloud saved-passage storage,
 - provides the signed-in user id used by cloud practice-attempt storage,
-- does not replace guest `localStorage` saved passages or personal-best stats.
+- does not replace guest `localStorage` saved passages.
 
 ### `supabase/schema.sql`
 
@@ -579,7 +578,6 @@ Owns typing-practice rules:
 - live WPM timing,
 - mistake-aware accuracy session state,
 - completion detection,
-- legacy local personal-best recording,
 - signed-in practice-attempt loading and saving,
 - reflection updates for completed signed-in attempts,
 - `PracticeAttemptStore` abstraction,
@@ -711,14 +709,14 @@ Current backend scope:
 - Supabase Auth for user accounts and sessions.
 - Postgres table for user-owned saved passages.
 - Postgres table for signed-in practice attempts and reflections.
-- Local guest mode retained through `localStorage`.
+- Guest saved passages retained through `localStorage`.
 - Signed-in saved passages loaded from Supabase.
 - Signed-in practice history loaded from Supabase.
 - Guest and cloud saved-passage libraries intentionally separated.
 
 Planned backend scope:
 
-- Personal-best history in Postgres.
+- Richer progress summaries derived from Postgres practice history.
 - Optional signed-in import flow from existing `localStorage` saved passages.
 
 Out of initial backend scope:
@@ -933,8 +931,7 @@ Current behaviour:
 - signed-in completed attempts are saved to Supabase,
 - signed-in users can view recent attempts on Profile/Progress,
 - signed-in users can add or update reflection text on a completed attempt,
-- guest completed attempts are not saved as a history list,
-- personal-best stats still use local browser storage.
+- guest completed attempts are not persisted.
 
 The split keeps typing UI focused on practice state while persistence details stay in `src/domain/practice/stores`.
 
@@ -1046,7 +1043,6 @@ flowchart TD
 - Category management is still generated from featured themes.
 - Library filtering is UI-only and runs against whichever saved-passage store is active.
 - Guest saved passages and signed-in cloud saved passages are intentionally separate, but there is no import flow yet.
-- Legacy local personal-best recording still exists in the Practice domain, but the Practice page no longer displays a Personal Bests panel.
 - Guest users do not yet have a durable practice-history list.
 - The app uses local JSON Bible data only; no hosted API yet.
 - Form-control styling is repeated across components and may later benefit from a small shared primitive if it begins to drift.
@@ -1081,7 +1077,7 @@ flowchart TD
 ## Likely Next Architecture Steps
 
 1. Add a one-time local saved-passage import flow after sign-in.
-2. Decide whether legacy local personal-best recording should be removed, moved to Profile, or replaced by Supabase-backed progress summaries.
+2. Add richer Supabase-backed progress summaries as the practice-history dataset grows.
 3. Run a final desktop visual QA pass for motion, focus states, and light/dark contrast.
 4. Consider custom SMTP/auth email delivery through Supabase and a provider such as Resend.
 5. Keep `useAppController` limited to cross-feature composition.

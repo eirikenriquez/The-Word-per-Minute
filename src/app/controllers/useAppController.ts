@@ -9,7 +9,6 @@ import { usePassageCategories } from "../../domain/featured-passages/hooks/usePa
 import { usePracticePassage } from "../../domain/practice/hooks/usePracticePassage";
 import { usePracticeAttempts } from "../../domain/practice/hooks/usePracticeAttempts";
 import { usePracticeSession } from "../../domain/practice/hooks/usePracticeSession";
-import { usePracticeStats } from "../../domain/practice/hooks/usePracticeStats";
 import { usePassageSaveInput } from "../../domain/saved-passages/hooks/usePassageSaveInput";
 import { useSavePassageForm } from "../../domain/saved-passages/hooks/useSavePassageForm";
 import { useSavedPassages } from "../../domain/saved-passages/hooks/useSavedPassages";
@@ -41,7 +40,6 @@ export function useAppController() {
   const authSession = useAuthSession();
 
   const readerSelection = useReaderSelection();
-  const { recordCompletedAttempt } = usePracticeStats();
   const featuredLibrary = useFeaturedPassages();
   const bibleLibrary = useVerseLibrary();
   const savedLibrary = useSavedPassages(authSession.user?.id);
@@ -65,7 +63,6 @@ export function useAppController() {
   });
 
   const handleCompletedPracticeAttempt = useCallback((result: PracticeCompletionResult) => {
-    recordCompletedAttempt(result.wpm, result.accuracy);
     setCompletedPracticeAttemptId(null);
 
     const activePassageResponse =
@@ -97,7 +94,6 @@ export function useAppController() {
     featuredLibrary.passageResponse,
     featuredLibrary.selectedPassageId,
     practiceSource,
-    recordCompletedAttempt,
     savePracticeAttempt,
     savedLibrary.passageResponse,
     savedLibrary.selectedSavedPassageId,
