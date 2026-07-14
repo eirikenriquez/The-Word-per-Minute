@@ -1,29 +1,31 @@
-import type { PracticeAttempt } from "../../shared/types/practice";
+import type {
+  PracticeAttempt,
+  PracticeAttemptSummary,
+} from "../../shared/types/practice";
 import { PracticeAttemptCard } from "./components/PracticeAttemptCard";
 
 export type ProfilePageProps = {
   isSignedIn: boolean;
-  isLoadingPracticeAttempts: boolean;
-  practiceAttempts: PracticeAttempt[];
-  practiceAttemptError: string | null;
+  isLoadingPracticeSummary: boolean;
+  isLoadingRecentAttempts: boolean;
+  practiceSummary: PracticeAttemptSummary;
+  practiceSummaryError: string | null;
+  recentAttemptsError: string | null;
+  recentPracticeAttempts: PracticeAttempt[];
   userEmail?: string;
 };
 
 export function ProfilePage({
   isSignedIn,
-  isLoadingPracticeAttempts,
-  practiceAttempts,
-  practiceAttemptError,
+  isLoadingPracticeSummary,
+  isLoadingRecentAttempts,
+  practiceSummary,
+  practiceSummaryError,
+  recentAttemptsError,
+  recentPracticeAttempts,
   userEmail,
 }: ProfilePageProps) {
-  const completedAttempts = practiceAttempts.length;
-  const reflectionCount = practiceAttempts.filter((attempt) => attempt.reflection).length;
-  const bestWpm = practiceAttempts.reduce((best, attempt) => Math.max(best, attempt.wpm), 0);
-  const averageAccuracy = completedAttempts
-    ? Math.round(
-        practiceAttempts.reduce((total, attempt) => total + attempt.accuracy, 0) / completedAttempts,
-      )
-    : 0;
+  const isPracticeSummaryAvailable = !isLoadingPracticeSummary && !practiceSummaryError;
 
   return (
     <section className="grid gap-8">
@@ -66,15 +68,34 @@ export function ProfilePage({
               </p>
             </section>
 
-            <section className="grid gap-4">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
-                Overview
-              </h3>
+            <section aria-busy={isLoadingPracticeSummary} className="grid gap-4">
+              <div className="grid gap-2">
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
+                  Overview
+                </h3>
+                {practiceSummaryError && (
+                  <p className="text-sm text-red-700 dark:text-red-300">
+                    {practiceSummaryError}
+                  </p>
+                )}
+              </div>
               <div className="grid grid-cols-2 gap-4 lg:grid-cols-1">
-                <ProfileStat label="Sessions" value={completedAttempts} />
-                <ProfileStat label="Reflections" value={reflectionCount} />
-                <ProfileStat label="Average accuracy" value={`${averageAccuracy}%`} />
-                <ProfileStat label="Best WPM" value={bestWpm} />
+                <ProfileStat
+                  label="Sessions"
+                  value={isPracticeSummaryAvailable ? practiceSummary.completedAttempts : "—"}
+                />
+                <ProfileStat
+                  label="Reflections"
+                  value={isPracticeSummaryAvailable ? practiceSummary.reflectionCount : "—"}
+                />
+                <ProfileStat
+                  label="Average accuracy"
+                  value={isPracticeSummaryAvailable ? `${practiceSummary.averageAccuracy}%` : "—"}
+                />
+                <ProfileStat
+                  label="Best WPM"
+                  value={isPracticeSummaryAvailable ? practiceSummary.bestWpm : "—"}
+                />
               </div>
             </section>
           </aside>
@@ -87,13 +108,13 @@ export function ProfilePage({
               </p>
             </div>
 
-            {practiceAttemptError ? (
-              <ProfileMessage>{practiceAttemptError}</ProfileMessage>
-            ) : isLoadingPracticeAttempts ? (
+            {recentAttemptsError ? (
+              <ProfileMessage>{recentAttemptsError}</ProfileMessage>
+            ) : isLoadingRecentAttempts ? (
               <ProfileMessage>Loading practice history...</ProfileMessage>
-            ) : practiceAttempts.length ? (
+            ) : recentPracticeAttempts.length ? (
               <div className="grid gap-4">
-                {practiceAttempts.map((attempt) => (
+                {recentPracticeAttempts.map((attempt) => (
                   <PracticeAttemptCard attempt={attempt} key={attempt.id} />
                 ))}
               </div>

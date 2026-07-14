@@ -163,10 +163,13 @@ export function createProfilePageProps({
   practiceAttempts: ReturnType<typeof usePracticeAttempts>;
 }): ProfilePageProps {
   return {
-    isLoadingPracticeAttempts: practiceAttempts.isLoading,
+    isLoadingPracticeSummary: practiceAttempts.isLoadingSummary,
+    isLoadingRecentAttempts: practiceAttempts.isLoading,
     isSignedIn: authSession.isSignedIn,
-    practiceAttemptError: practiceAttempts.error,
-    practiceAttempts: practiceAttempts.recentAttempts,
+    practiceSummary: practiceAttempts.summary,
+    practiceSummaryError: practiceAttempts.summaryError,
+    recentAttemptsError: practiceAttempts.error,
+    recentPracticeAttempts: practiceAttempts.recentAttempts,
     userEmail: authSession.user?.email,
   };
 }
