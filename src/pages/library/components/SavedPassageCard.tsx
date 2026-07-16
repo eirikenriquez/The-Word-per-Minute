@@ -2,7 +2,6 @@ import { Transition } from "@headlessui/react";
 import {
   BookOpenIcon,
   BookmarkIcon,
-  CheckIcon,
   PencilSquareIcon,
   PlayIcon,
   TrashIcon,
@@ -15,12 +14,11 @@ import type { SavedPassage, SavedPassageUpdate } from "../../../shared/types/sav
 import { Button } from "../../../shared/ui/Button";
 
 type SavedPassageCardProps = {
-  isSelected: boolean;
   passage: SavedPassage;
   savedCategories: string[];
+  onPracticePassage: (passageId: string) => void;
   onReadPassage: (passageId: string) => void;
   onRemovePassage: (passageId: string) => void | Promise<void>;
-  onSelectSavedPassage: (passageId: string) => void;
   onUpdatePassage: (passageId: string, update: SavedPassageUpdate) => SavedPassage | null | Promise<SavedPassage | null>;
 };
 
@@ -30,12 +28,11 @@ type SavedPassageCardMode = "view" | "edit" | "remove";
  * Displays one saved passage and owns its local edit form state.
  */
 export function SavedPassageCard({
-  isSelected,
   passage,
   savedCategories,
+  onPracticePassage,
   onReadPassage,
   onRemovePassage,
-  onSelectSavedPassage,
   onUpdatePassage,
 }: SavedPassageCardProps) {
   const [mode, setMode] = useState<SavedPassageCardMode>("view");
@@ -89,11 +86,7 @@ export function SavedPassageCard({
 
   return (
     <article
-      className={`rounded-md border p-5 transition ${
-        isSelected
-          ? "border-accent-line bg-surface ring-1 ring-accent-line"
-          : "border-line bg-surface hover:border-line-strong"
-      }`}
+      className="rounded-md border border-line bg-surface p-5 transition hover:border-line-strong"
     >
       <div className="grid gap-5">
         <div className="grid min-h-20 flex-1 gap-3">
@@ -137,11 +130,6 @@ export function SavedPassageCard({
                   <h3 className="text-lg font-semibold text-ink">
                     {passage.title}
                   </h3>
-                  {isSelected && (
-                    <span className="rounded bg-selected px-2 py-1 text-xs font-semibold text-selected-ink">
-                      Practicing
-                    </span>
-                  )}
                 </div>
                 <p className="mt-1 text-sm font-semibold text-ink-muted">
                   {passage.reference}
@@ -214,16 +202,11 @@ export function SavedPassageCard({
                 Read in Bible
               </Button>
               <Button
-                disabled={isSelected}
                 variant="primary"
-                onClick={() => onSelectSavedPassage(passage.id)}
+                onClick={() => onPracticePassage(passage.id)}
               >
-                {isSelected ? (
-                  <CheckIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
-                ) : (
-                  <PlayIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
-                )}
-                {isSelected ? "Practicing" : "Practice"}
+                <PlayIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
+                Practice
               </Button>
             </div>
             <div className="flex flex-wrap gap-1">

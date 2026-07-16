@@ -79,10 +79,9 @@ export function createLibraryPageProps({
   return {
     errorMessage: savedLibrary.listError ?? savedLibrary.mutationError,
     savedPassages: savedLibrary.savedPassages,
-    selectedSavedPassageId: savedLibrary.selectedSavedPassageId,
+    onPracticeSavedPassage: appActions.selectSavedPractice,
     onReadSavedPassage: appActions.readSavedPassage,
     onRemoveSavedPassage: appActions.removeSavedPractice,
-    onSelectSavedPassage: appActions.selectSavedPractice,
     onUpdateSavedPassage: savedLibrary.updatePassage,
   };
 }

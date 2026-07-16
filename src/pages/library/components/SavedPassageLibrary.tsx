@@ -8,10 +8,9 @@ import {
 
 type SavedPassageLibraryProps = {
   savedPassages: SavedPassage[];
-  selectedSavedPassageId: string;
+  onPracticePassage: (passageId: string) => void;
   onReadPassage: (passageId: string) => void;
   onRemovePassage: (passageId: string) => void | Promise<void>;
-  onSelectSavedPassage: (passageId: string) => void;
   onUpdatePassage: (passageId: string, update: SavedPassageUpdate) => SavedPassage | null | Promise<SavedPassage | null>;
 };
 
@@ -20,10 +19,9 @@ type SavedPassageLibraryProps = {
  */
 export function SavedPassageLibrary({
   savedPassages,
-  selectedSavedPassageId,
+  onPracticePassage,
   onReadPassage,
   onRemovePassage,
-  onSelectSavedPassage,
   onUpdatePassage,
 }: SavedPassageLibraryProps) {
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -76,13 +74,12 @@ export function SavedPassageLibrary({
         <div className="grid gap-3">
           {visiblePassages.map((passage) => (
             <SavedPassageCard
-              isSelected={passage.id === selectedSavedPassageId}
               key={passage.id}
               passage={passage}
               savedCategories={editableCategories}
+              onPracticePassage={onPracticePassage}
               onReadPassage={onReadPassage}
               onRemovePassage={onRemovePassage}
-              onSelectSavedPassage={onSelectSavedPassage}
               onUpdatePassage={onUpdatePassage}
             />
           ))}

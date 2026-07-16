@@ -4,10 +4,9 @@ import type { SavedPassage, SavedPassageUpdate } from "../../shared/types/savedP
 export type LibraryPageProps = {
   errorMessage: string | null;
   savedPassages: SavedPassage[];
-  selectedSavedPassageId: string;
+  onPracticeSavedPassage: (passageId: string) => void;
   onReadSavedPassage: (passageId: string) => void;
   onRemoveSavedPassage: (passageId: string) => void | Promise<void>;
-  onSelectSavedPassage: (passageId: string) => void;
   onUpdateSavedPassage: (passageId: string, update: SavedPassageUpdate) => SavedPassage | null | Promise<SavedPassage | null>;
 };
 
@@ -17,10 +16,9 @@ export type LibraryPageProps = {
 export function LibraryPage({
   errorMessage,
   savedPassages,
-  selectedSavedPassageId,
+  onPracticeSavedPassage,
   onReadSavedPassage,
   onRemoveSavedPassage,
-  onSelectSavedPassage,
   onUpdateSavedPassage,
 }: LibraryPageProps) {
   return (
@@ -33,10 +31,9 @@ export function LibraryPage({
 
       <SavedPassageLibrary
         savedPassages={savedPassages}
-        selectedSavedPassageId={selectedSavedPassageId}
+        onPracticePassage={onPracticeSavedPassage}
         onReadPassage={onReadSavedPassage}
         onRemovePassage={onRemoveSavedPassage}
-        onSelectSavedPassage={onSelectSavedPassage}
         onUpdatePassage={onUpdateSavedPassage}
       />
     </div>
