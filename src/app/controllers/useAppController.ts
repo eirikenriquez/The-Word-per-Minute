@@ -9,7 +9,6 @@ import { usePassageCategories } from "../../domain/featured-passages/hooks/usePa
 import { usePracticePassage } from "../../domain/practice/hooks/usePracticePassage";
 import { usePracticeAttempts } from "../../domain/practice/hooks/usePracticeAttempts";
 import { usePracticeSession } from "../../domain/practice/hooks/usePracticeSession";
-import { usePracticeStats } from "../../domain/practice/hooks/usePracticeStats";
 import { usePassageSaveInput } from "../../domain/saved-passages/hooks/usePassageSaveInput";
 import { useSavePassageForm } from "../../domain/saved-passages/hooks/useSavePassageForm";
 import { useSavedPassages } from "../../domain/saved-passages/hooks/useSavedPassages";
@@ -41,7 +40,6 @@ export function useAppController() {
   const authSession = useAuthSession();
 
   const readerSelection = useReaderSelection();
-  const { recordCompletedAttempt } = usePracticeStats();
   const featuredLibrary = useFeaturedPassages();
   const bibleLibrary = useVerseLibrary();
   const savedLibrary = useSavedPassages(authSession.user?.id);
@@ -65,7 +63,6 @@ export function useAppController() {
   });
 
   const handleCompletedPracticeAttempt = useCallback((result: PracticeCompletionResult) => {
-    recordCompletedAttempt(result.wpm, result.accuracy);
     setCompletedPracticeAttemptId(null);
 
     const activePassageResponse =
@@ -97,7 +94,6 @@ export function useAppController() {
     featuredLibrary.passageResponse,
     featuredLibrary.selectedPassageId,
     practiceSource,
-    recordCompletedAttempt,
     savePracticeAttempt,
     savedLibrary.passageResponse,
     savedLibrary.selectedSavedPassageId,
@@ -130,7 +126,7 @@ export function useAppController() {
       featuredIsLoading: featuredLibrary.isLoading,
       featuredPassageResponse: featuredLibrary.passageResponse,
       practiceSource,
-      savedError: savedLibrary.error,
+      savedPassageError: savedLibrary.selectedPassageError ?? savedLibrary.listError,
       savedIsLoading: savedLibrary.isLoading,
       savedPassageResponse: savedLibrary.passageResponse,
       savedPassageCount,
@@ -174,7 +170,6 @@ export function useAppController() {
     savedPassageCount,
     savedSelectedPassageId: savedLibrary.selectedSavedPassageId,
     selectedVerseNumbers: readerSelection.selectedVerseNumbers,
-    setAppMode: selectAppMode,
     setPracticeSource,
   });
   const appActions = createAppActions({
@@ -211,7 +206,7 @@ export function useAppController() {
     headerTitle,
     isCurrentPassageSaved,
     isSavingCurrentPassage: savedLibrary.isSaving,
-    saveError: appMode === "bible" ? savedLibrary.error : null,
+    saveError: appMode === "bible" ? savedLibrary.mutationError : null,
     saveCategory,
     savedPassageCategories,
     saveTitle,
@@ -243,6 +238,7 @@ export function useAppController() {
     }),
     practicePageProps: createPracticePageProps({
       appActions,
+      attemptSaveError: practiceAttempts.attemptSaveError,
       canSaveCurrentPassage: Boolean(saveInput),
       isCurrentPassageSaved,
       isSavingReflection: practiceAttempts.isSavingReflection,
@@ -250,7 +246,7 @@ export function useAppController() {
       practiceSession,
       practiceSource,
       practiceTitle: headerTitle,
-      reflectionError: practiceAttempts.error,
+      reflectionError: practiceAttempts.reflectionError,
       savedLibrary,
       canSaveReflection: authSession.isSignedIn && Boolean(completedPracticeAttemptId),
       isSignedIn: authSession.isSignedIn,
@@ -269,7 +265,6 @@ export function useAppController() {
     authMenuRequest,
     authSession,
     errorMessage,
-    hasSavedPassages: savedPassageCount > 0,
     headerProps,
     isLoading,
     onAuthMenuRequestHandled: () => setAuthMenuRequest(null),

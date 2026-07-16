@@ -1,42 +1,76 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getErrorMessage } from "../../../shared/utils/errors";
-import type { PracticeAttempt, SavePracticeAttemptInput } from "../../../shared/types/practice";
+import type {
+  PracticeAttempt,
+  PracticeAttemptSummary,
+  SavePracticeAttemptInput,
+} from "../../../shared/types/practice";
 import { createSupabasePracticeAttemptStore } from "../stores/supabasePracticeAttemptStore";
+
+const PRACTICE_ATTEMPT_PAGE_SIZE = 20;
+
+const EMPTY_PRACTICE_SUMMARY: PracticeAttemptSummary = {
+  averageAccuracy: 0,
+  bestWpm: 0,
+  completedAttempts: 0,
+  reflectionCount: 0,
+};
 
 /**
  * Manages cloud practice history for signed-in users.
- * Guests keep only local personal-best stats for now.
+ * Guest attempts are not persisted yet.
  */
 export function usePracticeAttempts(userId?: string | null) {
   const practiceAttemptStore = useMemo(() => {
     return userId ? createSupabasePracticeAttemptStore(userId) : null;
   }, [userId]);
   const [recentAttempts, setRecentAttempts] = useState<PracticeAttempt[]>([]);
+  const [summary, setSummary] = useState<PracticeAttemptSummary>(EMPTY_PRACTICE_SUMMARY);
+  const [hasMoreAttempts, setHasMoreAttempts] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [isLoadingSummary, setIsLoadingSummary] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isSavingReflection, setIsSavingReflection] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [historyError, setHistoryError] = useState<string | null>(null);
+  const [attemptSaveError, setAttemptSaveError] = useState<string | null>(null);
+  const [reflectionError, setReflectionError] = useState<string | null>(null);
+  const [loadMoreError, setLoadMoreError] = useState<string | null>(null);
+  const [summaryError, setSummaryError] = useState<string | null>(null);
+  const summaryRequestIdRef = useRef(0);
 
   useEffect(() => {
     if (!practiceAttemptStore) {
       setRecentAttempts([]);
-      setError(null);
+      setHasMoreAttempts(false);
+      setHistoryError(null);
+      setAttemptSaveError(null);
+      setReflectionError(null);
+      setLoadMoreError(null);
+      setIsLoading(false);
+      setIsLoadingMore(false);
       return;
     }
 
     const activePracticeAttemptStore = practiceAttemptStore;
     let isCurrent = true;
+    setRecentAttempts([]);
+    setHasMoreAttempts(false);
+    setHistoryError(null);
+    setAttemptSaveError(null);
+    setReflectionError(null);
+    setLoadMoreError(null);
     setIsLoading(true);
 
     async function loadRecentAttempts() {
       try {
-        const attempts = await activePracticeAttemptStore.listRecent();
+        const page = await activePracticeAttemptStore.listPage(0, PRACTICE_ATTEMPT_PAGE_SIZE);
         if (!isCurrent) return;
 
-        setRecentAttempts(attempts);
-        setError(null);
+        setRecentAttempts(page.attempts);
+        setHasMoreAttempts(page.hasMore);
       } catch (caughtError) {
-        if (isCurrent) setError(getErrorMessage(caughtError));
+        if (isCurrent) setHistoryError(getErrorMessage(caughtError));
       } finally {
         if (isCurrent) setIsLoading(false);
       }
@@ -49,28 +83,93 @@ export function usePracticeAttempts(userId?: string | null) {
     };
   }, [practiceAttemptStore]);
 
+  const loadMoreAttempts = useCallback(async () => {
+    if (!practiceAttemptStore || !hasMoreAttempts || isLoadingMore) return;
+
+    setIsLoadingMore(true);
+
+    try {
+      const page = await practiceAttemptStore.listPage(
+        recentAttempts.length,
+        PRACTICE_ATTEMPT_PAGE_SIZE,
+      );
+
+      setRecentAttempts((currentAttempts) =>
+        appendUniqueAttempts(currentAttempts, page.attempts),
+      );
+      setHasMoreAttempts(page.hasMore);
+      setLoadMoreError(null);
+    } catch (caughtError) {
+      setLoadMoreError(getErrorMessage(caughtError));
+    } finally {
+      setIsLoadingMore(false);
+    }
+  }, [hasMoreAttempts, isLoadingMore, practiceAttemptStore, recentAttempts.length]);
+
+  const refreshSummary = useCallback(async () => {
+    const requestId = ++summaryRequestIdRef.current;
+
+    if (!practiceAttemptStore) {
+      setSummary(EMPTY_PRACTICE_SUMMARY);
+      setSummaryError(null);
+      setIsLoadingSummary(false);
+      return;
+    }
+
+    setIsLoadingSummary(true);
+
+    try {
+      const nextSummary = await practiceAttemptStore.getSummary();
+      if (requestId !== summaryRequestIdRef.current) return;
+
+      setSummary(nextSummary);
+      setSummaryError(null);
+    } catch (caughtError) {
+      if (requestId === summaryRequestIdRef.current) {
+        setSummaryError(getErrorMessage(caughtError));
+      }
+    } finally {
+      if (requestId === summaryRequestIdRef.current) {
+        setIsLoadingSummary(false);
+      }
+    }
+  }, [practiceAttemptStore]);
+
+  useEffect(() => {
+    void refreshSummary();
+
+    return () => {
+      summaryRequestIdRef.current += 1;
+    };
+  }, [refreshSummary]);
+
   const saveAttempt = useCallback(async (input: SavePracticeAttemptInput) => {
     if (!practiceAttemptStore) return null;
 
     setIsSaving(true);
+    setAttemptSaveError(null);
 
     try {
       const attempt = await practiceAttemptStore.save(input);
-      setRecentAttempts((currentAttempts) => [attempt, ...currentAttempts].slice(0, 20));
-      setError(null);
+      setRecentAttempts((currentAttempts) => [
+        attempt,
+        ...currentAttempts.filter((currentAttempt) => currentAttempt.id !== attempt.id),
+      ]);
+      void refreshSummary();
       return attempt;
     } catch (caughtError) {
-      setError(getErrorMessage(caughtError));
+      setAttemptSaveError(getErrorMessage(caughtError));
       return null;
     } finally {
       setIsSaving(false);
     }
-  }, [practiceAttemptStore]);
+  }, [practiceAttemptStore, refreshSummary]);
 
   const updateReflection = useCallback(async (attemptId: string, reflection: string) => {
     if (!practiceAttemptStore) return null;
 
     setIsSavingReflection(true);
+    setReflectionError(null);
 
     try {
       const updatedAttempt = await practiceAttemptStore.updateReflection(attemptId, reflection);
@@ -79,23 +178,44 @@ export function usePracticeAttempts(userId?: string | null) {
       setRecentAttempts((currentAttempts) =>
         currentAttempts.map((attempt) => (attempt.id === attemptId ? updatedAttempt : attempt)),
       );
-      setError(null);
+      void refreshSummary();
       return updatedAttempt;
     } catch (caughtError) {
-      setError(getErrorMessage(caughtError));
+      setReflectionError(getErrorMessage(caughtError));
       return null;
     } finally {
       setIsSavingReflection(false);
     }
-  }, [practiceAttemptStore]);
+  }, [practiceAttemptStore, refreshSummary]);
 
   return {
-    error,
+    attemptSaveError,
+    hasMoreAttempts,
+    historyError,
     isLoading,
+    isLoadingMore,
+    isLoadingSummary,
     isSaving,
     isSavingReflection,
+    loadMoreAttempts,
+    loadMoreError,
     recentAttempts,
+    reflectionError,
     saveAttempt,
+    summary,
+    summaryError,
     updateReflection,
   };
+}
+
+function appendUniqueAttempts(
+  currentAttempts: PracticeAttempt[],
+  nextAttempts: PracticeAttempt[],
+) {
+  const existingAttemptIds = new Set(currentAttempts.map((attempt) => attempt.id));
+
+  return [
+    ...currentAttempts,
+    ...nextAttempts.filter((attempt) => !existingAttemptIds.has(attempt.id)),
+  ];
 }

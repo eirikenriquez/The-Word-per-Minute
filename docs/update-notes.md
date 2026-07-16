@@ -1,7 +1,7 @@
 # The Word per Minute Update Notes
 
-Current documentation version: `260714.1.a`
-Last updated: 14/07/26
+Current documentation version: `260716.1.a`
+Last updated: 16/07/26
 
 ## Update Rule
 
@@ -33,9 +33,27 @@ Example:
 
 Suggested next versions:
 
-- Small same-day documentation update: `260626.1.b`
-- Larger same-day documentation update: `260626.2.a`
+- Small same-day documentation update: `260716.1.b`
+- Larger same-day documentation update: `260716.2.a`
 - First update on a new day: `yymmdd.1.a`
+
+## `260716.1.a`
+
+This version documents the completed codebase audit and maintenance branch.
+
+It updates:
+
+- the README feature summary for all-time account progress, paginated practice history, scoped cloud-save feedback, and the refined saved Library,
+- Home and global navigation behaviour now that Library remains available when empty,
+- Practice behaviour for automatic history saving, scoped save failures, and reflection availability,
+- Library behaviour for its valid empty state, inline errors, pending edit/remove feedback, and removal of the misleading persistent practice selection,
+- Profile and practice-attempt storage notes for all-time summary data and 20-item history pagination,
+- the current file tree and important types to include the Supabase database type definitions,
+- domain responsibilities for concurrency-safe saved-passage updates and operation-specific error states,
+- app-controller responsibilities while preserving it as the cross-feature composition root,
+- known technical debt and next steps for bundle splitting, automated coverage, idempotent history-save retry design, and final desktop QA.
+
+This update records the audit branch only. It does not add new database tables, change Row Level Security policies, migrate Bible text, or introduce a custom backend.
 
 ## `260714.1.a`
 

@@ -59,6 +59,10 @@ export function createAppActions({
     resetPractice();
   }
 
+  function openProfile() {
+    setAppMode("profile");
+  }
+
   function startFeaturedPractice() {
     selectRandomFeaturedPassage();
     setPracticeSource("featured");
@@ -97,8 +101,8 @@ export function createAppActions({
     resetPractice();
   }
 
-  function removeSavedPractice(passageId: string) {
-    removeSavedPassage(passageId);
+  async function removeSavedPractice(passageId: string) {
+    await removeSavedPassage(passageId);
     resetPractice();
   }
 
@@ -173,6 +177,7 @@ export function createAppActions({
     nextFeaturedPassage,
     openBible,
     openLibrary,
+    openProfile,
     randomFeaturedReaderPassage,
     readSavedPassage,
     removeSavedPractice,

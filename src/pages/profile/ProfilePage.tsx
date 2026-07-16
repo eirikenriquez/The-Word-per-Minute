@@ -1,34 +1,40 @@
-import {
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-} from "@headlessui/react";
-
-import type { PracticeAttempt } from "../../shared/types/practice";
+import type {
+  PracticeAttempt,
+  PracticeAttemptSummary,
+} from "../../shared/types/practice";
+import { Button } from "../../shared/ui/Button";
+import { PracticeAttemptCard } from "./components/PracticeAttemptCard";
 
 export type ProfilePageProps = {
+  hasMoreRecentAttempts: boolean;
   isSignedIn: boolean;
-  isLoadingPracticeAttempts: boolean;
-  practiceAttempts: PracticeAttempt[];
-  practiceAttemptError: string | null;
+  isLoadingMoreRecentAttempts: boolean;
+  isLoadingPracticeSummary: boolean;
+  isLoadingRecentAttempts: boolean;
+  practiceSummary: PracticeAttemptSummary;
+  practiceSummaryError: string | null;
+  recentAttemptsError: string | null;
+  recentAttemptsLoadMoreError: string | null;
+  recentPracticeAttempts: PracticeAttempt[];
   userEmail?: string;
+  onLoadMoreRecentAttempts: () => void | Promise<void>;
 };
 
 export function ProfilePage({
+  hasMoreRecentAttempts,
   isSignedIn,
-  isLoadingPracticeAttempts,
-  practiceAttempts,
-  practiceAttemptError,
+  isLoadingMoreRecentAttempts,
+  isLoadingPracticeSummary,
+  isLoadingRecentAttempts,
+  practiceSummary,
+  practiceSummaryError,
+  recentAttemptsError,
+  recentAttemptsLoadMoreError,
+  recentPracticeAttempts,
   userEmail,
+  onLoadMoreRecentAttempts,
 }: ProfilePageProps) {
-  const completedAttempts = practiceAttempts.length;
-  const reflectionCount = practiceAttempts.filter((attempt) => attempt.reflection).length;
-  const bestWpm = practiceAttempts.reduce((best, attempt) => Math.max(best, attempt.wpm), 0);
-  const averageAccuracy = completedAttempts
-    ? Math.round(
-        practiceAttempts.reduce((total, attempt) => total + attempt.accuracy, 0) / completedAttempts,
-      )
-    : 0;
+  const isPracticeSummaryAvailable = !isLoadingPracticeSummary && !practiceSummaryError;
 
   return (
     <section className="grid gap-8">
@@ -71,15 +77,34 @@ export function ProfilePage({
               </p>
             </section>
 
-            <section className="grid gap-4">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
-                Overview
-              </h3>
+            <section aria-busy={isLoadingPracticeSummary} className="grid gap-4">
+              <div className="grid gap-2">
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
+                  Overview
+                </h3>
+                {practiceSummaryError && (
+                  <p className="text-sm text-red-700 dark:text-red-300">
+                    {practiceSummaryError}
+                  </p>
+                )}
+              </div>
               <div className="grid grid-cols-2 gap-4 lg:grid-cols-1">
-                <ProfileStat label="Sessions" value={completedAttempts} />
-                <ProfileStat label="Reflections" value={reflectionCount} />
-                <ProfileStat label="Average accuracy" value={`${averageAccuracy}%`} />
-                <ProfileStat label="Best WPM" value={bestWpm} />
+                <ProfileStat
+                  label="Sessions"
+                  value={isPracticeSummaryAvailable ? practiceSummary.completedAttempts : "—"}
+                />
+                <ProfileStat
+                  label="Reflections"
+                  value={isPracticeSummaryAvailable ? practiceSummary.reflectionCount : "—"}
+                />
+                <ProfileStat
+                  label="Average accuracy"
+                  value={isPracticeSummaryAvailable ? `${practiceSummary.averageAccuracy}%` : "—"}
+                />
+                <ProfileStat
+                  label="Best WPM"
+                  value={isPracticeSummaryAvailable ? practiceSummary.bestWpm : "—"}
+                />
               </div>
             </section>
           </aside>
@@ -92,15 +117,34 @@ export function ProfilePage({
               </p>
             </div>
 
-            {practiceAttemptError ? (
-              <ProfileMessage>{practiceAttemptError}</ProfileMessage>
-            ) : isLoadingPracticeAttempts ? (
+            {recentAttemptsError ? (
+              <ProfileMessage>{recentAttemptsError}</ProfileMessage>
+            ) : isLoadingRecentAttempts ? (
               <ProfileMessage>Loading practice history...</ProfileMessage>
-            ) : practiceAttempts.length ? (
+            ) : recentPracticeAttempts.length ? (
               <div className="grid gap-4">
-                {practiceAttempts.map((attempt) => (
+                {recentPracticeAttempts.map((attempt) => (
                   <PracticeAttemptCard attempt={attempt} key={attempt.id} />
                 ))}
+
+                {(hasMoreRecentAttempts || recentAttemptsLoadMoreError) && (
+                  <div className="grid justify-items-center gap-2 pt-2">
+                    {recentAttemptsLoadMoreError && (
+                      <p className="text-sm text-red-700 dark:text-red-300">
+                        {recentAttemptsLoadMoreError}
+                      </p>
+                    )}
+                    {hasMoreRecentAttempts && (
+                      <Button
+                        disabled={isLoadingMoreRecentAttempts}
+                        variant="secondary"
+                        onClick={() => void onLoadMoreRecentAttempts()}
+                      >
+                        {isLoadingMoreRecentAttempts ? "Loading..." : "Load more history"}
+                      </Button>
+                    )}
+                  </div>
+                )}
               </div>
             ) : (
               <ProfileMessage>
@@ -123,84 +167,10 @@ function ProfileStat({ label, value }: { label: string; value: number | string }
   );
 }
 
-function PracticeAttemptCard({ attempt }: { attempt: PracticeAttempt }) {
-  const shouldCollapseReflection = Boolean(attempt.reflection && attempt.reflection.length > 240);
-
-  return (
-    <article className="rounded-lg border border-line bg-surface p-5">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <h4 className="font-semibold text-ink">{attempt.passageReference}</h4>
-          <p className="mt-1 text-sm text-ink-subtle">
-            {formatCompletedDate(attempt.completedAt)}
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-x-5 gap-y-1 text-sm text-ink-muted">
-          <span>
-            <strong className="text-ink">{attempt.wpm}</strong> WPM
-          </span>
-          <span>
-            <strong className="text-ink">{attempt.accuracy}%</strong> accuracy
-          </span>
-          <span>
-            <strong className="text-ink">{attempt.durationSeconds}s</strong> typing
-          </span>
-        </div>
-      </div>
-
-      {attempt.reflection ? (
-        <Disclosure>
-          {({ open }) => (
-            <>
-              <DisclosurePanel
-                static
-                className={`relative mt-4 overflow-hidden border-l-2 border-accent-line pl-3 transition-[max-height] duration-200 ease-out ${
-                  shouldCollapseReflection && !open ? "max-h-28" : "max-h-[32rem] overflow-y-auto pr-2"
-                }`}
-              >
-                <p className="text-sm leading-6 text-ink-muted">
-                  {attempt.reflection}
-                </p>
-                {shouldCollapseReflection && !open ? (
-                  <div
-                    aria-hidden="true"
-                    className="pointer-events-none absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-surface to-transparent"
-                  />
-                ) : null}
-              </DisclosurePanel>
-
-              {shouldCollapseReflection ? (
-                <DisclosureButton className="mt-3 text-sm font-medium text-ink-muted transition-colors hover:text-ink">
-                  {open ? "Show less" : "View full reflection"}
-                </DisclosureButton>
-              ) : null}
-            </>
-          )}
-        </Disclosure>
-      ) : (
-        <p className="mt-4 text-sm text-ink-subtle">
-          No reflection yet.
-        </p>
-      )}
-    </article>
-  );
-}
-
 function ProfileMessage({ children }: { children: string }) {
   return (
     <div className="rounded-md border border-dashed border-line-strong bg-surface-muted p-4 text-sm text-ink-muted">
       {children}
     </div>
   );
-}
-
-function formatCompletedDate(completedAt: string) {
-  const date = new Date(completedAt);
-  if (Number.isNaN(date.getTime())) return "Completed";
-
-  return date.toLocaleDateString(undefined, {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
 }

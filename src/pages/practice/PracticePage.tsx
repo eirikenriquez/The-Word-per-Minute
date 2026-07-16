@@ -1,12 +1,13 @@
 import { PracticeControls } from "./components/PracticeControls";
+import { PracticeLiveMetrics } from "./components/PracticeLiveMetrics";
 import { PracticePassageDisplay } from "./components/PracticePassageDisplay";
-import { TypingPracticePanel } from "./components/TypingPracticePanel";
 import type { PracticeSource } from "../../shared/types/app";
 import type { PracticePassage, PracticeStatus } from "../../shared/types/practice";
 import type { SavedPassage } from "../../shared/types/savedPassage";
 
 export type PracticePageProps = {
   accuracy: number;
+  attemptSaveError: string | null;
   canSaveReflection: boolean;
   canSaveCurrentPassage: boolean;
   isCurrentPassageSaved: boolean;
@@ -39,6 +40,7 @@ export type PracticePageProps = {
  */
 export function PracticePage({
   accuracy,
+  attemptSaveError,
   canSaveReflection,
   canSaveCurrentPassage,
   isCurrentPassageSaved,
@@ -85,6 +87,7 @@ export function PracticePage({
       <section className="mx-auto grid w-full max-w-5xl gap-8">
         <PracticePassageDisplay
           accuracy={accuracy}
+          attemptSaveError={attemptSaveError}
           canSaveReflection={canSaveReflection}
           completionActionLabel={isPassageComplete && practiceSource === "featured" ? "Next Passage" : undefined}
           completionMessage={
@@ -103,15 +106,13 @@ export function PracticePage({
           wpm={wpm}
         />
 
-        <div className="grid gap-6">
-          <TypingPracticePanel
-            accuracy={accuracy}
-            isComplete={isPassageComplete}
-            progress={Math.min(progress, 100)}
-            status={status}
-            wpm={wpm}
-          />
-        </div>
+        <PracticeLiveMetrics
+          accuracy={accuracy}
+          isComplete={isPassageComplete}
+          progress={Math.min(progress, 100)}
+          status={status}
+          wpm={wpm}
+        />
       </section>
     </div>
   );

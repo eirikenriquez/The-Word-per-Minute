@@ -63,6 +63,7 @@ export function createHomePageProps({
     savedPassageCount,
     onOpenBible: appActions.openBible,
     onOpenLibrary: appActions.openLibrary,
+    onOpenProfile: appActions.openProfile,
     onSelectFeaturedCategory: appActions.startFeaturedCategory,
     onStartFeaturedPractice: appActions.startFeaturedPractice,
   };
@@ -76,17 +77,18 @@ export function createLibraryPageProps({
   savedLibrary: ReturnType<typeof useSavedPassages>;
 }): LibraryPageProps {
   return {
+    errorMessage: savedLibrary.listError ?? savedLibrary.mutationError,
     savedPassages: savedLibrary.savedPassages,
-    selectedSavedPassageId: savedLibrary.selectedSavedPassageId,
+    onPracticeSavedPassage: appActions.selectSavedPractice,
     onReadSavedPassage: appActions.readSavedPassage,
     onRemoveSavedPassage: appActions.removeSavedPractice,
-    onSelectSavedPassage: appActions.selectSavedPractice,
     onUpdateSavedPassage: savedLibrary.updatePassage,
   };
 }
 
 export function createPracticePageProps({
   appActions,
+  attemptSaveError,
   canSaveReflection,
   canSaveCurrentPassage,
   isCurrentPassageSaved,
@@ -103,6 +105,7 @@ export function createPracticePageProps({
   onSaveReflection,
 }: {
   appActions: AppActions;
+  attemptSaveError: string | null;
   canSaveReflection: boolean;
   canSaveCurrentPassage: boolean;
   isCurrentPassageSaved: boolean;
@@ -122,6 +125,7 @@ export function createPracticePageProps({
 
   return {
     accuracy: practiceSession.accuracy,
+    attemptSaveError,
     canSaveReflection,
     canSaveCurrentPassage,
     isCurrentPassageSaved,
@@ -163,10 +167,17 @@ export function createProfilePageProps({
   practiceAttempts: ReturnType<typeof usePracticeAttempts>;
 }): ProfilePageProps {
   return {
-    isLoadingPracticeAttempts: practiceAttempts.isLoading,
+    hasMoreRecentAttempts: practiceAttempts.hasMoreAttempts,
+    isLoadingMoreRecentAttempts: practiceAttempts.isLoadingMore,
+    isLoadingPracticeSummary: practiceAttempts.isLoadingSummary,
+    isLoadingRecentAttempts: practiceAttempts.isLoading,
     isSignedIn: authSession.isSignedIn,
-    practiceAttemptError: practiceAttempts.error,
-    practiceAttempts: practiceAttempts.recentAttempts,
+    practiceSummary: practiceAttempts.summary,
+    practiceSummaryError: practiceAttempts.summaryError,
+    recentAttemptsError: practiceAttempts.historyError,
+    recentAttemptsLoadMoreError: practiceAttempts.loadMoreError,
+    recentPracticeAttempts: practiceAttempts.recentAttempts,
     userEmail: authSession.user?.email,
+    onLoadMoreRecentAttempts: practiceAttempts.loadMoreAttempts,
   };
 }

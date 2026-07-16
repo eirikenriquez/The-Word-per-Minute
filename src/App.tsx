@@ -15,7 +15,6 @@ function App() {
     authMenuRequest,
     authSession,
     errorMessage,
-    hasSavedPassages,
     headerProps,
     isLoading,
     onAuthMenuRequestHandled,
@@ -47,7 +46,6 @@ function App() {
     <PageShell
       appMode={appMode}
       authMenuRequest={authMenuRequest}
-      hasSavedPassages={hasSavedPassages}
       authSession={authSession}
       theme={theme}
       onAuthMenuRequestHandled={onAuthMenuRequestHandled}

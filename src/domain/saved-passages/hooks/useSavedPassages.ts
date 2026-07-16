@@ -21,7 +21,9 @@ export function useSavedPassages(userId?: string | null) {
   const [isLoadingSavedPassages, setIsLoadingSavedPassages] = useState(false);
   const [isLoadingSelectedPassage, setIsLoadingSelectedPassage] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [listError, setListError] = useState<string | null>(null);
+  const [selectedPassageError, setSelectedPassageError] = useState<string | null>(null);
+  const [mutationError, setMutationError] = useState<string | null>(null);
   const isLoading = isLoadingSavedPassages || isLoadingSelectedPassage;
 
   const selectedSavedPassage = useMemo(
@@ -37,6 +39,9 @@ export function useSavedPassages(userId?: string | null) {
       setSelectedSavedPassageId("");
       setPassageResponse(null);
       setIsLoadingSavedPassages(true);
+      setListError(null);
+      setSelectedPassageError(null);
+      setMutationError(null);
 
       try {
         const nextSavedPassages = await savedPassageStore.list();
@@ -47,9 +52,8 @@ export function useSavedPassages(userId?: string | null) {
           if (nextSavedPassages.some((passage) => passage.id === currentPassageId)) return currentPassageId;
           return nextSavedPassages[0]?.id ?? "";
         });
-        setError(null);
       } catch (caughtError) {
-        if (isCurrent) setError(getErrorMessage(caughtError));
+        if (isCurrent) setListError(getErrorMessage(caughtError));
       } finally {
         if (isCurrent) setIsLoadingSavedPassages(false);
       }
@@ -63,20 +67,29 @@ export function useSavedPassages(userId?: string | null) {
   }, [savedPassageStore]);
 
   useEffect(() => {
-    if (selectedSavedPassageId || !savedPassages.length) return;
-    setSelectedSavedPassageId(savedPassages[0].id);
+    const selectedPassageExists = savedPassages.some(
+      (passage) => passage.id === selectedSavedPassageId,
+    );
+    if (selectedPassageExists) return;
+
+    const fallbackPassageId = savedPassages[0]?.id ?? "";
+    if (selectedSavedPassageId !== fallbackPassageId) {
+      setSelectedSavedPassageId(fallbackPassageId);
+    }
   }, [savedPassages, selectedSavedPassageId]);
 
   useEffect(() => {
     if (!selectedSavedPassage) {
       setPassageResponse(null);
       setIsLoadingSelectedPassage(false);
+      setSelectedPassageError(null);
       return;
     }
 
     let isCurrent = true;
     const passageToLoad = selectedSavedPassage;
     setIsLoadingSelectedPassage(true);
+    setSelectedPassageError(null);
 
     async function loadSavedPassage() {
       try {
@@ -84,12 +97,11 @@ export function useSavedPassages(userId?: string | null) {
         if (!isCurrent) return;
 
         setPassageResponse(response);
-        setError(null);
       } catch (caughtError) {
         if (!isCurrent) return;
 
         setPassageResponse(null);
-        setError(getErrorMessage(caughtError));
+        setSelectedPassageError(getErrorMessage(caughtError));
       } finally {
         if (isCurrent) setIsLoadingSelectedPassage(false);
       }
@@ -104,20 +116,19 @@ export function useSavedPassages(userId?: string | null) {
 
   async function savePassage(input: SavePassageInput) {
     setIsSaving(true);
+    setMutationError(null);
 
     try {
       const savedPassage = await savedPassageStore.save(input);
-      const nextSavedPassages = [
-        savedPassage,
-        ...savedPassages.filter((passage) => passage.id !== savedPassage.id),
-      ];
 
-      setSavedPassages(nextSavedPassages);
+      setSavedPassages((currentPassages) => [
+        savedPassage,
+        ...currentPassages.filter((passage) => passage.id !== savedPassage.id),
+      ]);
       setSelectedSavedPassageId(savedPassage.id);
-      setError(null);
       return savedPassage;
     } catch (caughtError) {
-      setError(getErrorMessage(caughtError));
+      setMutationError(getErrorMessage(caughtError));
       return null;
     } finally {
       setIsSaving(false);
@@ -125,37 +136,40 @@ export function useSavedPassages(userId?: string | null) {
   }
 
   async function removePassage(passageId: string) {
+    setMutationError(null);
+
     try {
       await savedPassageStore.remove(passageId);
 
-      const nextSavedPassages = savedPassages.filter((passage) => passage.id !== passageId);
-
-      setSavedPassages(nextSavedPassages);
+      setSavedPassages((currentPassages) => {
+        return currentPassages.filter((passage) => passage.id !== passageId);
+      });
       setSelectedSavedPassageId((currentPassageId) => {
         if (currentPassageId !== passageId) return currentPassageId;
-        return nextSavedPassages[0]?.id ?? "";
+        return "";
       });
-      setError(null);
     } catch (caughtError) {
-      setError(getErrorMessage(caughtError));
+      setMutationError(getErrorMessage(caughtError));
     }
   }
 
   async function updatePassage(passageId: string, update: SavedPassageUpdate) {
+    setMutationError(null);
+
     try {
       const updatedPassage = await savedPassageStore.update(passageId, update);
 
       if (!updatedPassage) return null;
 
-      const nextSavedPassages = savedPassages.map((passage) => {
-        return passage.id === passageId ? updatedPassage : passage;
+      setSavedPassages((currentPassages) => {
+        return currentPassages.map((passage) => {
+          return passage.id === passageId ? updatedPassage : passage;
+        });
       });
 
-      setSavedPassages(nextSavedPassages);
-      setError(null);
       return updatedPassage;
     } catch (caughtError) {
-      setError(getErrorMessage(caughtError));
+      setMutationError(getErrorMessage(caughtError));
       return null;
     }
   }
@@ -168,16 +182,18 @@ export function useSavedPassages(userId?: string | null) {
   }
 
   return {
-    error,
     isLoading,
     isSaving,
     isPassageSaved,
+    listError,
+    mutationError,
     passageResponse,
     removePassage,
     savePassage,
     savedPassages,
     selectSavedPassage: setSelectedSavedPassageId,
     selectedSavedPassage,
+    selectedPassageError,
     selectedSavedPassageId,
     updatePassage,
   };

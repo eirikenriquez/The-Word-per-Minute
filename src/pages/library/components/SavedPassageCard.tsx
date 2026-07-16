@@ -2,7 +2,6 @@ import { Transition } from "@headlessui/react";
 import {
   BookOpenIcon,
   BookmarkIcon,
-  CheckIcon,
   PencilSquareIcon,
   PlayIcon,
   TrashIcon,
@@ -15,65 +14,79 @@ import type { SavedPassage, SavedPassageUpdate } from "../../../shared/types/sav
 import { Button } from "../../../shared/ui/Button";
 
 type SavedPassageCardProps = {
-  isSelected: boolean;
   passage: SavedPassage;
   savedCategories: string[];
+  onPracticePassage: (passageId: string) => void;
   onReadPassage: (passageId: string) => void;
   onRemovePassage: (passageId: string) => void | Promise<void>;
-  onSelectSavedPassage: (passageId: string) => void;
   onUpdatePassage: (passageId: string, update: SavedPassageUpdate) => SavedPassage | null | Promise<SavedPassage | null>;
 };
+
+type SavedPassageCardMode = "view" | "edit" | "remove";
 
 /**
  * Displays one saved passage and owns its local edit form state.
  */
 export function SavedPassageCard({
-  isSelected,
   passage,
   savedCategories,
+  onPracticePassage,
   onReadPassage,
   onRemovePassage,
-  onSelectSavedPassage,
   onUpdatePassage,
 }: SavedPassageCardProps) {
-  const [isEditing, setIsEditing] = useState(false);
-  const [isConfirmingRemove, setIsConfirmingRemove] = useState(false);
+  const [mode, setMode] = useState<SavedPassageCardMode>("view");
   const [draftTitle, setDraftTitle] = useState(passage.title);
   const [draftCategory, setDraftCategory] = useState(passage.category);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [isRemoving, setIsRemoving] = useState(false);
+  const isEditing = mode === "edit";
+  const isConfirmingRemove = mode === "remove";
 
   function startEditing() {
-    setIsConfirmingRemove(false);
     setDraftTitle(passage.title);
     setDraftCategory(passage.category);
-    setIsEditing(true);
+    setMode("edit");
   }
 
   function cancelEditing() {
     setDraftTitle(passage.title);
     setDraftCategory(passage.category);
-    setIsEditing(false);
+    setMode("view");
   }
 
-  function confirmRemove() {
-    void onRemovePassage(passage.id);
+  async function confirmRemove() {
+    if (isRemoving) return;
+
+    setIsRemoving(true);
+
+    try {
+      await onRemovePassage(passage.id);
+    } finally {
+      setIsRemoving(false);
+    }
   }
 
   async function saveEdits() {
-    const updatedPassage = await onUpdatePassage(passage.id, {
-      title: draftTitle.trim() || passage.title,
-      category: draftCategory || passage.category,
-    });
+    if (isUpdating) return;
 
-    if (updatedPassage) setIsEditing(false);
+    setIsUpdating(true);
+
+    try {
+      const updatedPassage = await onUpdatePassage(passage.id, {
+        title: draftTitle.trim() || passage.title,
+        category: draftCategory || passage.category,
+      });
+
+      if (updatedPassage) setMode("view");
+    } finally {
+      setIsUpdating(false);
+    }
   }
 
   return (
     <article
-      className={`rounded-md border p-5 transition ${
-        isSelected
-          ? "border-accent-line bg-surface ring-1 ring-accent-line"
-          : "border-line bg-surface hover:border-line-strong"
-      }`}
+      className="rounded-md border border-line bg-surface p-5 transition hover:border-line-strong"
     >
       <div className="grid gap-5">
         <div className="grid min-h-20 flex-1 gap-3">
@@ -84,7 +97,8 @@ export function SavedPassageCard({
             <label className="grid gap-1">
               <span className="text-sm font-medium text-ink-muted">Title</span>
               <input
-                className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft"
+                className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft disabled:bg-surface-muted disabled:text-ink-subtle"
+                disabled={isUpdating}
                 value={draftTitle}
                 onChange={(event) => setDraftTitle(event.target.value)}
               />
@@ -92,7 +106,8 @@ export function SavedPassageCard({
             <label className="grid gap-1">
               <span className="text-sm font-medium text-ink-muted">Category</span>
               <select
-                className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft"
+                className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft disabled:bg-surface-muted disabled:text-ink-subtle"
+                disabled={isUpdating}
                 value={draftCategory}
                 onChange={(event) => setDraftCategory(event.target.value)}
               >
@@ -115,11 +130,6 @@ export function SavedPassageCard({
                   <h3 className="text-lg font-semibold text-ink">
                     {passage.title}
                   </h3>
-                  {isSelected && (
-                    <span className="rounded bg-selected px-2 py-1 text-xs font-semibold text-selected-ink">
-                      Practicing
-                    </span>
-                  )}
                 </div>
                 <p className="mt-1 text-sm font-semibold text-ink-muted">
                   {passage.reference}
@@ -145,13 +155,15 @@ export function SavedPassageCard({
             show={isEditing}
           >
             <Button
+              disabled={isUpdating}
               variant="primary"
               onClick={saveEdits}
             >
               <BookmarkIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
-              Save
+              {isUpdating ? "Saving..." : "Save"}
             </Button>
             <Button
+              disabled={isUpdating}
               onClick={cancelEditing}
             >
               Cancel
@@ -166,15 +178,16 @@ export function SavedPassageCard({
               Remove this saved passage?
             </p>
             <div className="flex flex-wrap gap-2">
-              <Button onClick={() => setIsConfirmingRemove(false)}>
+              <Button disabled={isRemoving} onClick={() => setMode("view")}>
                 Cancel
               </Button>
               <Button
+                disabled={isRemoving}
                 variant="danger"
                 onClick={confirmRemove}
               >
                 <TrashIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
-                Remove
+                {isRemoving ? "Removing..." : "Remove"}
               </Button>
             </div>
           </AnimatedCardState>
@@ -189,16 +202,11 @@ export function SavedPassageCard({
                 Read in Bible
               </Button>
               <Button
-                disabled={isSelected}
                 variant="primary"
-                onClick={() => onSelectSavedPassage(passage.id)}
+                onClick={() => onPracticePassage(passage.id)}
               >
-                {isSelected ? (
-                  <CheckIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
-                ) : (
-                  <PlayIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
-                )}
-                {isSelected ? "Practicing" : "Practice"}
+                <PlayIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
+                Practice
               </Button>
             </div>
             <div className="flex flex-wrap gap-1">
@@ -211,7 +219,7 @@ export function SavedPassageCard({
               </Button>
               <Button
                 variant="danger"
-                onClick={() => setIsConfirmingRemove(true)}
+                onClick={() => setMode("remove")}
               >
                 <TrashIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
                 Remove

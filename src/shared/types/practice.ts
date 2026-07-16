@@ -1,11 +1,5 @@
 import type { BibleVerse } from "./verse";
 
-export type PracticeStats = {
-  bestWpm: number;
-  bestAccuracy: number;
-  completedAttempts: number;
-};
-
 export type PracticeStatus = "Ready" | "Typing" | "Complete";
 
 export type PracticeCompletionResult = {
@@ -42,6 +36,18 @@ export type PracticeAttempt = {
   accuracy: number;
   reflection?: string;
   completedAt: string;
+};
+
+export type PracticeAttemptSummary = {
+  averageAccuracy: number;
+  bestWpm: number;
+  completedAttempts: number;
+  reflectionCount: number;
+};
+
+export type PracticeAttemptPage = {
+  attempts: PracticeAttempt[];
+  hasMore: boolean;
 };
 
 export type SavePracticeAttemptInput = Omit<PracticeAttempt, "completedAt" | "id"> & {

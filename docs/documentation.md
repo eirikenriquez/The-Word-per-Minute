@@ -1,7 +1,7 @@
 # The Word per Minute Documentation
 
-Document version: `260714.1.a`
-Last updated: 14/07/26
+Document version: `260716.1.a`
+Last updated: 16/07/26
 Update rule: only update this file when explicitly requested by the project owner.
 
 ## Purpose
@@ -30,9 +30,9 @@ Version history and documentation update notes live in `docs/update-notes.md`.
 - Headless UI for accessible disclosure, dialog, popover, and transition primitives
 - Local JSON Bible data
 - Supabase JavaScript client for authentication, signed-in saved passages, and signed-in practice history
-- `localStorage` for guest saved passages, personal-best stats, and theme preference
+- `localStorage` for guest saved passages and theme preference
 
-Supabase/Postgres is now used for authentication, signed-in saved passages, signed-in practice attempts, and reflections. Guest saved passages and personal-best stats still use browser storage.
+Supabase/Postgres is now used for authentication, signed-in saved passages, signed-in practice attempts, and reflections. Guest saved passages still use browser storage; guest practice attempts are not persisted.
 
 ## High-Level Architecture
 
@@ -94,7 +94,7 @@ It:
 - starts a random featured passage from a chosen category,
 - presents featured categories as a balanced desktop grid,
 - opens the Bible reader,
-- opens Library when saved passages exist.
+- opens Library whether it contains saved passages or is still empty.
 
 ### Practice
 
@@ -119,6 +119,7 @@ It:
 - keeps the Practice setup heading visible while letting users collapse or expand the setup controls,
 - shows live WPM, accuracy, progress, and status as one quiet horizontal summary while typing,
 - saves completed attempts for signed-in users,
+- keeps completion successful when cloud history saving fails and explains that a reflection cannot be attached,
 - lets signed-in users add a post-practice reflection from a focused modal after completing a passage,
 - closes the reflection modal after a successful save and leaves it open if saving fails.
 
@@ -154,6 +155,7 @@ It:
 - supports search by title, reference, category, book, or translation,
 - supports category filtering,
 - supports source filtering by All sources, Featured, or Saved,
+- remains accessible when empty and explains how passages are added,
 - lets the user practise a saved passage,
 - lets the user open a saved passage in its original Bible context,
 - restores exact custom verse selections when opening them in Bible,
@@ -161,8 +163,10 @@ It:
 - opens whole-chapter saves without individual verse highlighting,
 - lets the user edit saved passage title/category,
 - lets the user remove saved passages,
+- shows inline loading and mutation errors without replacing the whole page,
+- disables duplicate edit/remove submissions and labels pending mutations,
 - animates card state changes for edit and remove confirmation,
-- shows clearer card metadata, source labels, saved dates, and active practice state,
+- shows clearer card metadata, source labels, and saved dates without implying a passage is already being practised,
 - separates passage actions from edit/remove actions,
 - gives removal a restrained destructive treatment.
 
@@ -240,7 +244,6 @@ src/
       appRoutePaths.ts
   domain/
     auth/
-      checkSupabaseConnection.ts
       useAuthSession.ts
     bible/
       hooks/
@@ -256,7 +259,6 @@ src/
         usePracticeAttempts.ts
         usePracticePassage.ts
         usePracticeSession.ts
-        usePracticeStats.ts
       stores/
         practiceAttemptStore.ts
         supabasePracticeAttemptStore.ts
@@ -293,18 +295,23 @@ src/
         FeaturedSaveAction.tsx
         PracticeActionButtons.tsx
         PracticeControls.tsx
+        PracticeLiveMetrics.tsx
         PracticePassageDisplay.tsx
+        PracticeReflectionDialog.tsx
+        PracticeTypingSurface.tsx
         SavedPassageSelect.tsx
         SourcePicker.tsx
-        TypingPracticePanel.tsx
       PracticePage.tsx
     profile/
+      components/
+        PracticeAttemptCard.tsx
       ProfilePage.tsx
   shared/
     lib/
       supabaseClient.ts
     types/
       app.ts
+      database.ts
       featuredPassage.ts
       practice.ts
       savedPassage.ts
@@ -366,6 +373,7 @@ Responsibilities:
 - builds the active continuous practice passage,
 - builds display labels/loading/error state,
 - builds cross-page actions,
+- coordinates signed-in attempt completion and reflection persistence,
 - handles one-shot account-menu requests from Home,
 - prepares header props,
 - prepares routed page props through plain factory functions.
@@ -396,7 +404,7 @@ Shows the current title, subtitle, reference, and contextual passage-save contro
 
 ### `src/app/components/AppNavigation.tsx`
 
-Shows the global Home / Practice / Bible / Library navigation in the app shell.
+Shows the global Home / Practice / Bible / Library navigation in the app shell. Library remains available when empty because its empty state is a valid destination.
 
 ### `src/app/components/AppFooter.tsx`
 
@@ -513,19 +521,6 @@ Responsibilities:
 
 This should stay API-shaped so local JSON can later move to hosted data.
 
-### `src/domain/auth/checkSupabaseConnection.ts`
-
-Provides the first auth-domain Supabase helper.
-
-Current behaviour:
-
-- calls Supabase Auth through the shared browser client,
-- checks whether the client can read the current session,
-- treats a missing session as a valid guest state,
-- does not sign users in,
-- does not create or query app database tables,
-- is not wired into runtime UI yet.
-
 ### `src/domain/auth/useAuthSession.ts`
 
 Tracks the current Supabase Auth session.
@@ -538,7 +533,7 @@ Current behaviour:
 - exposes email/password sign-in, account creation, and sign-out actions,
 - provides the signed-in user id used by cloud saved-passage storage,
 - provides the signed-in user id used by cloud practice-attempt storage,
-- does not replace guest `localStorage` saved passages or personal-best stats.
+- does not replace guest `localStorage` saved passages.
 
 ### `supabase/schema.sql`
 
@@ -549,6 +544,7 @@ It creates:
 - `profiles`,
 - `saved_passages`,
 - `practice_attempts`,
+- an account-scoped practice-summary function,
 - timestamp update trigger helpers,
 - a profile creation trigger for new Supabase Auth users,
 - indexes for common user-owned queries,
@@ -579,9 +575,11 @@ Owns typing-practice rules:
 - live WPM timing,
 - mistake-aware accuracy session state,
 - completion detection,
-- legacy local personal-best recording,
 - signed-in practice-attempt loading and saving,
+- paginated recent-history loading,
+- all-time account summary loading through a scoped Supabase RPC,
 - reflection updates for completed signed-in attempts,
+- independent history, attempt-save, reflection, pagination, and summary errors,
 - `PracticeAttemptStore` abstraction,
 - Supabase practice-attempt store for signed-in history,
 - pure typing metric and character-equivalence logic.
@@ -592,7 +590,6 @@ Owns authentication-facing app logic.
 
 Current status:
 
-- contains a manual Supabase connection/session check helper,
 - contains a Supabase session observer hook,
 - supports email/password sign-in, account creation, and sign-out through the app shell,
 - supplies the active user id used by signed-in saved-passage persistence,
@@ -626,6 +623,8 @@ Owns saved passage storage and save rules:
 - save input creation,
 - save form state,
 - saved-passage list/update/remove state,
+- concurrency-safe state updates for overlapping saved-passage mutations,
+- independent library, selected-passage, and mutation errors,
 - saved-passage identity,
 - saved-passage category defaults,
 - `SavedPassageStore` abstraction,
@@ -711,15 +710,15 @@ Current backend scope:
 - Supabase Auth for user accounts and sessions.
 - Postgres table for user-owned saved passages.
 - Postgres table for signed-in practice attempts and reflections.
-- Local guest mode retained through `localStorage`.
+- Guest saved passages retained through `localStorage`.
 - Signed-in saved passages loaded from Supabase.
 - Signed-in practice history loaded from Supabase.
 - Guest and cloud saved-passage libraries intentionally separated.
 
 Planned backend scope:
 
-- Personal-best history in Postgres.
 - Optional signed-in import flow from existing `localStorage` saved passages.
+- Additional account/profile controls beyond the current read-only progress view.
 
 Out of initial backend scope:
 
@@ -904,6 +903,8 @@ Current behaviour:
 - signed-out users see and manage `localStorage` saved passages,
 - signed-in users see and manage Supabase saved passages,
 - switching auth state clears the previous store's list before loading the new store,
+- Library remains available with a useful empty state when the active store has no passages,
+- list and mutation failures are shown inline in Library while selected-passage loading failures stay scoped to Practice,
 - local saves are not editable/deletable while signed in because they are not shown in signed-in mode,
 - importing local saves into a signed-in account remains a future flow.
 
@@ -931,10 +932,14 @@ flowchart TD
 Current behaviour:
 
 - signed-in completed attempts are saved to Supabase,
-- signed-in users can view recent attempts on Profile/Progress,
+- Profile/Progress uses all-time account aggregates for its overview,
+- signed-in users initially see 20 recent attempts on Profile/Progress,
+- older attempts and reflections can be loaded in 20-item pages,
+- all-time account summaries load independently through a scoped Supabase RPC,
+- history, attempt-save, reflection, pagination, and summary failures remain scoped to their own UI,
+- a failed attempt save does not turn a completed typing session into a failed session, but it prevents attaching a reflection,
 - signed-in users can add or update reflection text on a completed attempt,
-- guest completed attempts are not saved as a history list,
-- personal-best stats still use local browser storage.
+- guest completed attempts are not persisted.
 
 The split keeps typing UI focused on practice state while persistence details stay in `src/domain/practice/stores`.
 
@@ -967,8 +972,7 @@ Add these in the Supabase dashboard before relying on email confirmation across 
 - browser body margin reset,
 - page enter animation,
 - Home section rise-in animation,
-- shared popover/panel/dialog entrance helpers,
-- subtle hover motion helpers.
+- subtle shared hover motion.
 
 Headless UI is used for interactive motion primitives where behaviour and accessibility matter:
 
@@ -997,6 +1001,7 @@ Heroicons supplies interface icons. Icons support labels and meaning rather than
 ## Important Types
 
 - `src/shared/types/app.ts`: route-backed app modes, practice source, and theme.
+- `src/shared/types/database.ts`: generated-style Supabase table, row, insert, update, and RPC shapes.
 - `src/shared/types/featuredPassage.ts`: featured passage references and resolved passage responses.
 - `src/shared/types/practice.ts`: practice statistics, typing status, continuous passage shape, completion results, and practice-attempt records.
 - `src/shared/types/savedPassage.ts`: saved passage and save input shapes.
@@ -1043,17 +1048,17 @@ flowchart TD
 
 - `useAppController` is the main app composition root and should not become a dumping ground for feature logic.
 - The UI overhaul still needs a final desktop visual QA pass in light and dark mode.
+- The main production JavaScript chunk still triggers Vite's 500 kB warning and should receive a dedicated lazy-loading/code-splitting pass.
 - Category management is still generated from featured themes.
 - Library filtering is UI-only and runs against whichever saved-passage store is active.
 - Guest saved passages and signed-in cloud saved passages are intentionally separate, but there is no import flow yet.
-- Legacy local personal-best recording still exists in the Practice domain, but the Practice page no longer displays a Personal Bests panel.
 - Guest users do not yet have a durable practice-history list.
 - The app uses local JSON Bible data only; no hosted API yet.
 - Form-control styling is repeated across components and may later benefit from a small shared primitive if it begins to drift.
 - Motion now has shared reduced-motion handling, but still needs final visual QA across light and dark mode.
 - Saved-passage removal has confirmation but no undo.
 - Automated tests are not set up yet.
-- Vercel deployment configuration is present, but the hosted deployment still needs manual verification.
+- The Vercel deployment is live, but release checks are still manual.
 - Supabase Auth, signed-in saved-passage persistence, and signed-in practice-attempt persistence are implemented.
 - Bible translation licensing must be resolved before hosting additional Bible text.
 
@@ -1081,8 +1086,10 @@ flowchart TD
 ## Likely Next Architecture Steps
 
 1. Add a one-time local saved-passage import flow after sign-in.
-2. Decide whether legacy local personal-best recording should be removed, moved to Profile, or replaced by Supabase-backed progress summaries.
-3. Run a final desktop visual QA pass for motion, focus states, and light/dark contrast.
-4. Consider custom SMTP/auth email delivery through Supabase and a provider such as Resend.
-5. Keep `useAppController` limited to cross-feature composition.
-6. Keep `verseService` API-shaped so local JSON can later move to hosted data if licensing allows it.
+2. Run a dedicated route-level lazy-loading and bundle-analysis pass.
+3. Run a final desktop visual QA pass for motion, focus states, pending states, and light/dark contrast.
+4. Add automated coverage for typing metrics, storage adapters, and the highest-risk signed-in flows.
+5. Design an idempotent retry strategy before allowing failed practice-attempt saves to retry.
+6. Consider custom SMTP/auth email delivery through Supabase and a provider such as Resend.
+7. Keep `useAppController` limited to cross-feature composition.
+8. Keep `verseService` API-shaped so local JSON can later move to hosted data if licensing allows it.

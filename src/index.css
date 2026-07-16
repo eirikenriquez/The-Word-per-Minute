@@ -35,43 +35,6 @@ body {
   }
 }
 
-@keyframes panel-enter {
-  from {
-    opacity: 0;
-    transform: translateY(-4px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes dialog-enter {
-  from {
-    opacity: 0;
-    transform: translateY(4px) scale(0.98);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-@keyframes dropdown-in {
-  from {
-    opacity: 0;
-    transform: translateY(-4px) scale(0.98);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.motion-page-in,
 .page-transition {
   animation: page-enter 320ms ease-out both;
 }
@@ -90,20 +53,6 @@ body {
 
 .rise-in-delay-3 {
   animation-delay: 250ms;
-}
-
-.motion-popover-in,
-.animate-dropdown-in {
-  animation: dropdown-in 140ms ease-out both;
-  transform-origin: top right;
-}
-
-.motion-panel-in {
-  animation: panel-enter 180ms ease-out both;
-}
-
-.motion-dialog-in {
-  animation: dialog-enter 160ms ease-out both;
 }
 
 .soft-hover {

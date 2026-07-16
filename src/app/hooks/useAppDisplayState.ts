@@ -12,7 +12,7 @@ type UseAppDisplayStateParams = {
   featuredIsLoading: boolean;
   featuredPassageResponse: PassageResponse | null;
   practiceSource: PracticeSource;
-  savedError: string | null;
+  savedPassageError: string | null;
   savedIsLoading: boolean;
   savedPassageResponse: PassageResponse | null;
   savedPassageCount: number;
@@ -33,7 +33,7 @@ export function useAppDisplayState({
   featuredIsLoading,
   featuredPassageResponse,
   practiceSource,
-  savedError,
+  savedPassageError,
   savedIsLoading,
   savedPassageResponse,
   savedPassageCount,
@@ -52,7 +52,7 @@ export function useAppDisplayState({
         bibleError,
         featuredError,
         practiceSource,
-        savedError,
+        savedPassageError,
       }),
       isLoading: getModeLoadingState({
         appMode,
@@ -97,7 +97,7 @@ export function useAppDisplayState({
     featuredIsLoading,
     featuredPassageResponse,
     practiceSource,
-    savedError,
+    savedPassageError,
     savedIsLoading,
     savedPassageResponse,
     savedPassageCount,
@@ -143,11 +143,11 @@ function getModeError({
   bibleError,
   featuredError,
   practiceSource,
-  savedError,
-}: Pick<UseAppDisplayStateParams, "appMode" | "bibleError" | "featuredError" | "practiceSource" | "savedError">) {
+  savedPassageError,
+}: Pick<UseAppDisplayStateParams, "appMode" | "bibleError" | "featuredError" | "practiceSource" | "savedPassageError">) {
   if (appMode === "home") return featuredError;
   if (appMode === "bible") return bibleError;
-  if (appMode === "practice") return practiceSource === "featured" ? featuredError : savedError;
+  if (appMode === "practice") return practiceSource === "featured" ? featuredError : savedPassageError;
   return null;
 }
 
