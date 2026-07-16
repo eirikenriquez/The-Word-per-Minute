@@ -101,8 +101,8 @@ export function createAppActions({
     resetPractice();
   }
 
-  function removeSavedPractice(passageId: string) {
-    removeSavedPassage(passageId);
+  async function removeSavedPractice(passageId: string) {
+    await removeSavedPassage(passageId);
     resetPractice();
   }
 
