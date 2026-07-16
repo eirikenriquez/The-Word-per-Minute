@@ -20,43 +20,38 @@ The architecture aims to keep the application understandable as it grows while p
 - Bible data can move from bundled JSON to another delivery mechanism without rewriting every consumer.
 - Cross-feature coordination has an explicit home rather than leaking into unrelated hooks.
 
+## Architectural Style
+
+The project is one deployable, client-side React application organised into modular layers and product domains. React hooks own state and lifecycle behaviour, while explicit props and callbacks connect the application shell to route pages. No global state-management library is currently used.
+
+This is a modular frontend rather than a collection of independently deployed services. Vercel serves the application, and the browser communicates directly with Supabase for authenticated operations.
+
 ## System Context
 
-The application is a client-rendered Vite single-page application hosted by Vercel. It has no custom Node or Express API.
+Vercel serves the production Vite build. Once loaded, the React single-page application runs in the user's browser and communicates directly with browser storage and Supabase. There is no custom Node or Express API between the browser and Supabase.
 
 ```mermaid
 flowchart LR
-  user["User"] --> app["React application on Vercel"]
-  content["Bundled Bible and featured-passage JSON"] --> app
-  app --> local["Browser localStorage"]
-  app --> auth["Supabase Auth"]
-  app --> database["Supabase Postgres"]
-  auth --> database
-  database --> rls["Row Level Security"]
+  vercel["Vercel"] -->|serves static build| browser["React SPA in the browser"]
+  user["User"] --> browser
+  content["Bundled Bible and featured-passage JSON"] --> browser
+  browser --> local["Browser localStorage"]
+  browser --> auth["Supabase Auth"]
+  browser --> database["Supabase Postgres protected by RLS"]
+  auth -->|authenticated identity| database
 ```
 
 The browser reads public scripture content from the application bundle. Guest saved passages remain in the current browser. Signed-in saved passages, practice attempts, and reflections are stored in Supabase.
 
-## Technology Stack
+## Technology Roles
 
-### Application
-
-- Vite for local development and production bundling.
-- React and TypeScript for the client application.
-- React Router for URL-based navigation.
-
-### Interface
-
-- Tailwind CSS v4 for utility styling and semantic theme tokens.
-- Headless UI for accessible interactive primitives such as dialogs, disclosures, and popovers.
-- Heroicons for contextual interface icons.
-
-### Data and hosting
-
-- Bundled JSON for the current WEB Bible and curated featured passages.
-- Browser `localStorage` for guest saved passages.
-- Supabase Auth and Postgres for account-owned data.
-- Vercel for the static frontend and single-page-app routing fallback.
+- React and TypeScript provide the client application, hook-based state owners, and typed page contracts.
+- React Router makes navigation URL-based rather than keeping the active page only in component state.
+- Vite provides local development and produces the static production build.
+- Tailwind CSS provides utility styling and semantic theme tokens; Headless UI provides accessible behaviour for compound interactions.
+- Bundled JSON supplies the current WEB Bible and curated featured passages.
+- Browser `localStorage` and Supabase provide the two saved-passage persistence strategies.
+- Supabase Auth and Postgres provide account identity and account-owned data.
 
 ## Routes
 
@@ -105,10 +100,13 @@ flowchart TD
   app --> pages["pages"]
   app --> domain["domain"]
   app --> shared["shared"]
+  pages --> domain
   pages --> shared
   domain --> shared
   domain --> data["data"]
 ```
+
+The arrows describe the intended dependency direction. These boundaries are currently maintained through project conventions and review rather than automated import restrictions.
 
 ### `app`
 
@@ -126,9 +124,9 @@ It may depend on pages, domains, and shared code because it is the top-level com
 
 ### `pages`
 
-Each page folder owns one route-level screen and the components used only by that screen. Pages receive prepared data and callbacks through typed props.
+Each page folder owns one route-level screen and the components used only by that screen. Pages normally receive state and callbacks through typed props prepared by the application layer.
 
-Pages may own visual state such as an open editor, selected filter, or dialog visibility. They should not choose persistence adapters, query Supabase directly, or coordinate unrelated domains.
+Pages may own visual state such as an open editor, selected filter, or dialog visibility. They may consume domain types and pure domain behaviour where the UI needs them, but stateful domain hooks are normally composed in `app`. Pages should not choose persistence adapters, query Supabase directly, or coordinate unrelated domains.
 
 ### `domain`
 
@@ -287,19 +285,11 @@ The visual system uses semantic tokens rather than direct palette values for ord
 - Bespoke controls such as navigation tabs and verse buttons may retain local styling when their interaction differs from an ordinary button.
 - Headless UI provides behaviour and accessibility for compound interactions; Tailwind controls their visual presentation.
 
-The warm stone and restrained ember palette is a product convention. Detailed colour values remain authoritative in `theme.css` rather than being copied into documentation.
-
 ## Deployment
 
-The production build runs:
+Vercel serves the generated `dist` directory and applies the single-page-app rewrite in `vercel.json`. After the application loads, authenticated requests go directly from the browser to Supabase rather than through Vercel application code.
 
-```txt
-npm run build
-```
-
-This performs a TypeScript project build followed by the Vite production build. Vercel serves the generated `dist` directory and applies the SPA rewrite in `vercel.json`.
-
-The frontend requires `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in local and deployed environments. Secret Supabase keys are not part of the frontend architecture.
+Local setup, build commands, and production environment variable names are documented in the repository [`README`](../README.md). Supabase key safety and the browser trust boundary are documented in [`data-and-security.md`](data-and-security.md).
 
 ## Where New Code Belongs
 
@@ -307,6 +297,7 @@ Use these placement rules before creating another folder or abstraction:
 
 - A new route-level screen belongs in `pages/<route>` and is wired through `AppRoutes`.
 - Visual components used by one page stay inside that page's `components` folder.
+- Page UI may import domain types or pure behaviour when necessary; stateful domain hooks should normally be composed through `app`.
 - Behaviour named after a product concept belongs in the corresponding `domain` folder.
 - Alternative persistence implementations belong behind a domain store contract.
 - Coordination involving several domains belongs in `app`.
@@ -326,4 +317,5 @@ Do not create wrapper components, hooks, or utility folders solely to satisfy th
 - Keep route paths centralised in `appRoutePaths.ts`.
 - Keep Bible reads behind `verseService.ts` so content delivery can change later.
 - Keep exact database rules in SQL rather than duplicated Markdown.
+- Treat layer boundaries as deliberate conventions; add automated import enforcement only if boundary drift becomes a recurring problem.
 - Add an architecture decision record only when a choice is significant, has real alternatives, and would be expensive to reverse.
