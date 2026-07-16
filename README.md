@@ -63,7 +63,7 @@ Use these Vercel build settings:
 ## Project Documentation
 
 - Current architecture and file structure: [`docs/documentation.md`](docs/documentation.md)
-- Documentation history: [`docs/update-notes.md`](docs/update-notes.md)
+- Release history: [`CHANGELOG.md`](CHANGELOG.md)
 
 ## Architecture
 

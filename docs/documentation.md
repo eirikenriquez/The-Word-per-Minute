@@ -1,9 +1,5 @@
 # The Word per Minute Documentation
 
-Document version: `260716.1.a`
-Last updated: 16/07/26
-Update rule: only update this file when explicitly requested by the project owner.
-
 ## Purpose
 
 The Word per Minute is a Bible typing practice app. It helps users practise typing while reading, discovering, selecting, saving, and revisiting Bible passages.
@@ -18,7 +14,7 @@ The current product direction is:
 - Saved passages can be practised from Practice.
 - Profile shows signed-in practice history, progress, and reflections.
 
-Version history and documentation update notes live in `docs/update-notes.md`.
+Release history and earlier documentation snapshots live in [`CHANGELOG.md`](../CHANGELOG.md).
 
 ## Tech Stack
 
