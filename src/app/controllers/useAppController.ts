@@ -246,7 +246,7 @@ export function useAppController() {
       practiceSession,
       practiceSource,
       practiceTitle: headerTitle,
-      reflectionError: practiceAttempts.error,
+      reflectionError: practiceAttempts.reflectionError,
       savedLibrary,
       canSaveReflection: authSession.isSignedIn && Boolean(completedPracticeAttemptId),
       isSignedIn: authSession.isSignedIn,

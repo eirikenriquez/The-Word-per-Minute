@@ -172,7 +172,7 @@ export function createProfilePageProps({
     isSignedIn: authSession.isSignedIn,
     practiceSummary: practiceAttempts.summary,
     practiceSummaryError: practiceAttempts.summaryError,
-    recentAttemptsError: practiceAttempts.error,
+    recentAttemptsError: practiceAttempts.historyError,
     recentAttemptsLoadMoreError: practiceAttempts.loadMoreError,
     recentPracticeAttempts: practiceAttempts.recentAttempts,
     userEmail: authSession.user?.email,
