@@ -2,7 +2,7 @@
 
 This document describes what The Word per Minute is trying to become, what currently works, and what should be prioritised next. It is a living product document rather than a record of individual releases.
 
-Release history lives in [`CHANGELOG.md`](../CHANGELOG.md). Technical structure lives in [`documentation.md`](documentation.md).
+Release history lives in [`CHANGELOG.md`](../CHANGELOG.md). Technical structure lives in [`architecture.md`](architecture.md).
 
 ## Product Vision
 

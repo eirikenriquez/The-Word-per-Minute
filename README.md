@@ -62,7 +62,7 @@ Use these Vercel build settings:
 
 ## Project Documentation
 
-- Current architecture and file structure: [`docs/documentation.md`](docs/documentation.md)
+- System architecture: [`docs/architecture.md`](docs/architecture.md)
 - Data storage and security: [`docs/data-and-security.md`](docs/data-and-security.md)
 - Product status and roadmap: [`docs/product-status.md`](docs/product-status.md)
 - Release history: [`CHANGELOG.md`](CHANGELOG.md)
