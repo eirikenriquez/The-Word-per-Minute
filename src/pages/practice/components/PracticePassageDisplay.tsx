@@ -6,6 +6,7 @@ import { PracticeTypingSurface } from "./PracticeTypingSurface";
 
 type PracticePassageDisplayProps = {
   accuracy: number;
+  attemptSaveError: string | null;
   canSaveReflection: boolean;
   completionActionLabel?: string;
   completionMessage: string;
@@ -27,6 +28,7 @@ type PracticePassageDisplayProps = {
  */
 export function PracticePassageDisplay({
   accuracy,
+  attemptSaveError,
   canSaveReflection,
   completionActionLabel,
   completionMessage,
@@ -42,6 +44,10 @@ export function PracticePassageDisplay({
   typedText,
   wpm,
 }: PracticePassageDisplayProps) {
+  const attemptSaveErrorMessage = attemptSaveError
+    ? "This attempt couldn't be saved to your history, so a reflection can't be attached."
+    : null;
+
   return (
     <section className="grid gap-4">
       <div className="flex flex-col gap-1">
@@ -83,6 +89,7 @@ export function PracticePassageDisplay({
               <div className="flex flex-wrap justify-center gap-2">
                 <PracticeReflectionDialog
                   key={passage.ref}
+                  attemptSaveErrorMessage={attemptSaveErrorMessage}
                   canSaveReflection={canSaveReflection}
                   isSavingReflection={isSavingReflection}
                   isSignedIn={isSignedIn}
@@ -96,6 +103,12 @@ export function PracticePassageDisplay({
                   </Button>
                 )}
               </div>
+
+              {attemptSaveErrorMessage && (
+                <p className="text-sm text-red-700 dark:text-red-300" role="alert">
+                  {attemptSaveErrorMessage}
+                </p>
+              )}
             </div>
           </div>
         )}

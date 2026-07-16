@@ -239,6 +239,7 @@ export function useAppController() {
     }),
     practicePageProps: createPracticePageProps({
       appActions,
+      attemptSaveError: practiceAttempts.attemptSaveError,
       canSaveCurrentPassage: Boolean(saveInput),
       isCurrentPassageSaved,
       isSavingReflection: practiceAttempts.isSavingReflection,

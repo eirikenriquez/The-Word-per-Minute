@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { Button } from "../../../shared/ui/Button";
 
 type PracticeReflectionDialogProps = {
+  attemptSaveErrorMessage: string | null;
   canSaveReflection: boolean;
   isSavingReflection: boolean;
   isSignedIn: boolean;
@@ -14,6 +15,7 @@ type PracticeReflectionDialogProps = {
  * Owns the reflection trigger, dialog state, and save interaction shown after practice.
  */
 export function PracticeReflectionDialog({
+  attemptSaveErrorMessage,
   canSaveReflection,
   isSavingReflection,
   isSignedIn,
@@ -36,7 +38,11 @@ export function PracticeReflectionDialog({
 
   return (
     <>
-      <Button variant="ghost" onClick={() => setIsOpen(true)}>
+      <Button
+        disabled={Boolean(attemptSaveErrorMessage)}
+        variant="ghost"
+        onClick={() => setIsOpen(true)}
+      >
         Add reflection
       </Button>
 
@@ -63,7 +69,7 @@ export function PracticeReflectionDialog({
             <span className="sr-only">Reflection</span>
             <textarea
               className="h-32 resize-none rounded-md border border-line-strong bg-canvas p-3 text-sm text-ink outline-none transition placeholder:text-ink-subtle focus:border-accent focus:ring-2 focus:ring-accent-soft disabled:bg-surface-muted disabled:text-ink-subtle"
-              disabled={!isSignedIn || hasSavedReflection}
+              disabled={!isSignedIn || hasSavedReflection || Boolean(attemptSaveErrorMessage)}
               placeholder={
                 isSignedIn
                   ? "Write a short reflection from this passage..."
@@ -97,8 +103,13 @@ export function PracticeReflectionDialog({
                   {isSavingReflection ? "Saving..." : hasSavedReflection ? "Saved" : "Save reflection"}
                 </Button>
               </div>
-              {!canSaveReflection && (
+              {!canSaveReflection && !attemptSaveErrorMessage && (
                 <p className="text-sm text-ink-subtle">Saving your practice history...</p>
+              )}
+              {attemptSaveErrorMessage && (
+                <p className="text-sm text-red-700 dark:text-red-300" role="alert">
+                  {attemptSaveErrorMessage}
+                </p>
               )}
               {hasSavedReflection && (
                 <p className="text-sm font-medium text-accent-ink">Reflection saved.</p>

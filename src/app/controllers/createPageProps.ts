@@ -89,6 +89,7 @@ export function createLibraryPageProps({
 
 export function createPracticePageProps({
   appActions,
+  attemptSaveError,
   canSaveReflection,
   canSaveCurrentPassage,
   isCurrentPassageSaved,
@@ -105,6 +106,7 @@ export function createPracticePageProps({
   onSaveReflection,
 }: {
   appActions: AppActions;
+  attemptSaveError: string | null;
   canSaveReflection: boolean;
   canSaveCurrentPassage: boolean;
   isCurrentPassageSaved: boolean;
@@ -124,6 +126,7 @@ export function createPracticePageProps({
 
   return {
     accuracy: practiceSession.accuracy,
+    attemptSaveError,
     canSaveReflection,
     canSaveCurrentPassage,
     isCurrentPassageSaved,

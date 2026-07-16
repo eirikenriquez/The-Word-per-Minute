@@ -7,6 +7,7 @@ import type { SavedPassage } from "../../shared/types/savedPassage";
 
 export type PracticePageProps = {
   accuracy: number;
+  attemptSaveError: string | null;
   canSaveReflection: boolean;
   canSaveCurrentPassage: boolean;
   isCurrentPassageSaved: boolean;
@@ -39,6 +40,7 @@ export type PracticePageProps = {
  */
 export function PracticePage({
   accuracy,
+  attemptSaveError,
   canSaveReflection,
   canSaveCurrentPassage,
   isCurrentPassageSaved,
@@ -85,6 +87,7 @@ export function PracticePage({
       <section className="mx-auto grid w-full max-w-5xl gap-8">
         <PracticePassageDisplay
           accuracy={accuracy}
+          attemptSaveError={attemptSaveError}
           canSaveReflection={canSaveReflection}
           completionActionLabel={isPassageComplete && practiceSource === "featured" ? "Next Passage" : undefined}
           completionMessage={
