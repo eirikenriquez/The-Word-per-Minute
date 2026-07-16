@@ -77,6 +77,7 @@ export function createLibraryPageProps({
   savedLibrary: ReturnType<typeof useSavedPassages>;
 }): LibraryPageProps {
   return {
+    errorMessage: savedLibrary.listError ?? savedLibrary.mutationError,
     savedPassages: savedLibrary.savedPassages,
     selectedSavedPassageId: savedLibrary.selectedSavedPassageId,
     onReadSavedPassage: appActions.readSavedPassage,
