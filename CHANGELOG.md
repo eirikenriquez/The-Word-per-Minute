@@ -1,43 +1,28 @@
-# The Word per Minute Update Notes
+# Changelog
 
-Current documentation version: `260716.1.a`
-Last updated: 16/07/26
+All notable changes to The Word per Minute are documented in this file.
 
-## Update Rule
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The project uses a SemVer-inspired product release scheme while it remains in pre-1.0 development.
 
-Only update documentation files when explicitly requested by the project owner.
+## [Unreleased]
 
-When documentation changes, include:
+## [0.1.0] - 2026-07-16
 
-- the new version,
-- what file or section changed,
-- what the update means for the current app architecture.
+This is the first formally versioned public-alpha release. The application had already undergone substantial development before formal release versioning began; that earlier work remains preserved in the development history below.
 
-## Version Format
+### Added
 
-Documentation versions use this format:
+- Featured and saved-passage typing practice with live WPM, accuracy, and completion feedback.
+- A local Bible reader with verse selection and passage saving.
+- Guest passage storage in the browser and account-based cloud storage through Supabase.
+- Email-and-password accounts, profile progress summaries, practice history, and reflections.
+- Light and dark themes, keyboard-focused interactions, and a Vercel-hosted production build.
 
-```txt
-yymmdd.major.minor
-```
+## Earlier development history
 
-Example:
+Before `0.1.0`, project changes were recorded as documentation snapshots rather than formal application releases. The original snapshot identifiers and notes are retained for traceability and should not be interpreted as Semantic Versions.
 
-```txt
-260614.1.a
-```
-
-- `260614` means 14/06/26.
-- `1` means the first major documentation snapshot for that day.
-- `a` means the first small revision of that snapshot.
-
-Suggested next versions:
-
-- Small same-day documentation update: `260716.1.b`
-- Larger same-day documentation update: `260716.2.a`
-- First update on a new day: `yymmdd.1.a`
-
-## `260716.1.a`
+### Snapshot `260716.1.a`
 
 This version documents the completed codebase audit and maintenance branch.
 
@@ -55,7 +40,7 @@ It updates:
 
 This update records the audit branch only. It does not add new database tables, change Row Level Security policies, migrate Bible text, or introduce a custom backend.
 
-## `260714.1.a`
+### Snapshot `260714.1.a`
 
 This version documents the motion and Headless UI cleanup branch.
 
@@ -72,7 +57,7 @@ It updates:
 
 This update documents UI behaviour and motion architecture only. It does not change Supabase schema, saved-passage persistence, practice-history persistence, or routing.
 
-## `260713.1.a`
+### Snapshot `260713.1.a`
 
 This version documents the Practice page simplification branch.
 
@@ -88,7 +73,7 @@ It updates:
 
 This update documents Practice simplification only. It does not change Supabase schema, practice-history storage, routing, or the planned future motion polish branch.
 
-## `260711.1.a`
+### Snapshot `260711.1.a`
 
 This version documents the inline Practice typing surface and reflection modal branch.
 
@@ -103,7 +88,7 @@ It updates:
 
 This update documents Practice UX changes only. It does not change the Supabase schema, saved-passage storage, practice-history storage, or app routing.
 
-## `260710.1.a`
+### Snapshot `260710.1.a`
 
 This version documents signed-in practice history, reflections, and the new Profile/Progress page.
 
@@ -122,7 +107,7 @@ It updates:
 
 This update documents the practice-history branch. Signed-in practice attempts and reflections are now implemented through Supabase; local personal-best stats and guest practice history are still not cloud-synced.
 
-## `260706.1.f`
+### Snapshot `260706.1.f`
 
 This version documents the auth dropdown polish pass.
 
@@ -136,7 +121,7 @@ It updates:
 
 This update documents UI polish only. It does not change the Supabase schema, saved-passage persistence, or practice-attempt persistence.
 
-## `260706.1.e`
+### Snapshot `260706.1.e`
 
 This version documents signed-in saved-passage persistence through Supabase.
 
@@ -154,7 +139,7 @@ It updates:
 
 This update documents the completed saved-passage cloud foundation. It does not add practice-attempt persistence, guest-to-cloud import, or auth UI polish.
 
-## `260706.1.d`
+### Snapshot `260706.1.d`
 
 This version documents the auth flow change from magic-link sign-in to email/password authentication.
 
@@ -168,7 +153,7 @@ It updates:
 
 This update changes the auth UI and auth hook behaviour only. It does not move saved passages, practice attempts, or personal-best data to Supabase.
 
-## `260706.1.c`
+### Snapshot `260706.1.c`
 
 This version documents the first Supabase auth UI wiring.
 
@@ -183,7 +168,7 @@ It updates:
 
 This update adds authentication UI only. It does not move saved passages, practice attempts, or personal-best data to Supabase.
 
-## `260706.1.b`
+### Snapshot `260706.1.b`
 
 This version documents the Supabase auth session hook.
 
@@ -197,7 +182,7 @@ It updates:
 
 This update adds session observation only. It does not render auth UI, sign users in, or move saved passages out of `localStorage`.
 
-## `260706.1.a`
+### Snapshot `260706.1.a`
 
 This version documents the Supabase database relationship diagram after the initial schema was run.
 
@@ -210,7 +195,7 @@ It updates:
 
 This update is documentation-only. It does not change frontend runtime behaviour.
 
-## `260705.1.e`
+### Snapshot `260705.1.e`
 
 This version documents the initial Supabase schema and Row Level Security setup.
 
@@ -225,7 +210,7 @@ It updates:
 
 This update adds setup SQL only. It does not run the schema against Supabase and does not change frontend runtime behaviour.
 
-## `260705.1.d`
+### Snapshot `260705.1.d`
 
 This version documents the first auth-domain Supabase helper.
 
@@ -239,7 +224,7 @@ It updates:
 
 This update adds a helper only. It does not wire Supabase into the UI, sign users in, create tables, or change saved-passage persistence.
 
-## `260705.1.c`
+### Snapshot `260705.1.c`
 
 This version updates Supabase key terminology for the current API key model.
 
@@ -252,7 +237,7 @@ It updates:
 
 This update aligns the project with Supabase's current publishable/secret key naming while keeping runtime behaviour unchanged.
 
-## `260705.1.b`
+### Snapshot `260705.1.b`
 
 This version documents the Supabase client configuration commit.
 
@@ -267,7 +252,7 @@ It updates:
 
 This update documents the client configuration only. Runtime saved passages, practice stats, and Bible data still use the existing local behaviour.
 
-## `260705.1.a`
+### Snapshot `260705.1.a`
 
 This version documents the planned Supabase backend foundation.
 
@@ -286,7 +271,7 @@ It updates:
 
 This update is documentation-only. It prepares the branch for incremental Supabase setup work without changing runtime behaviour.
 
-## `260704.1.b`
+### Snapshot `260704.1.b`
 
 This version documents Vercel deployment readiness.
 
@@ -300,7 +285,7 @@ It updates:
 
 This update documents the `Add Vercel SPA routing config` commit and prepares the app for hosted Vercel verification.
 
-## `260704.1.a`
+### Snapshot `260704.1.a`
 
 This version documents the featured passage content and category cleanup branch.
 
@@ -316,7 +301,7 @@ It updates:
 
 This update documents the friend-suggested passage additions, theme consolidation, and Home category grid balancing.
 
-## `260626.1.a`
+### Snapshot `260626.1.a`
 
 This version documents the structural refactor from feature folders to app, pages, domain, and shared layers.
 
@@ -333,7 +318,7 @@ It updates:
 
 This update documents the refactor only. It does not add product behaviour.
 
-## `260622.2.a`
+### Snapshot `260622.2.a`
 
 This version documents the application footer and continuous Practice passage redesign.
 
@@ -351,7 +336,7 @@ It updates:
 
 This update documents the merged footer commit and the `Changed to scrollable passage view in practice page` commit. It does not add further runtime behaviour.
 
-## `260622.1.a`
+### Snapshot `260622.1.a`
 
 This version documents the completed UI consistency, theme, icon, and branding branch.
 
@@ -369,7 +354,7 @@ It updates:
 
 This update records the UI branch from the shared button, heading, form, Practice, and Library refinements through semantic colors, icons, floating controls, and final brand integration.
 
-## `260620.1.b`
+### Snapshot `260620.1.b`
 
 This version documents the icon-free UI consistency pass across the app.
 
@@ -387,7 +372,7 @@ It updates:
 
 This update documents the UI work introduced by the button hierarchy, heading hierarchy, form-control consistency, Practice control layout, Practice metrics, and Library card refinement commits.
 
-## `260620.1.a`
+### Snapshot `260620.1.a`
 
 This version documents the Bible reader and saved-passage navigation improvements.
 
@@ -403,7 +388,7 @@ It updates:
 
 This update documents the runtime changes introduced by `Synchronize featured passage scrolling`, `Open saved passages in Bible`, and `Soften selected verse highlight`.
 
-## `260619.1.b`
+### Snapshot `260619.1.b`
 
 This version documents the Practice metric improvements.
 
@@ -417,7 +402,7 @@ It updates:
 
 This update documents the runtime changes introduced by `Track typing mistakes in accuracy` and `Update WPM while typing`. It does not add further runtime behaviour.
 
-## `260619.1.a`
+### Snapshot `260619.1.a`
 
 This version updates the architecture snapshot after the final project-structure simplification pass and records clarified product decisions.
 
@@ -435,7 +420,7 @@ It updates:
 
 This documentation update does not implement new runtime behaviour. It brings the written architecture up to date and records the owner's current product decisions.
 
-## `260618.1.a`
+### Snapshot `260618.1.a`
 
 This version updates the architecture snapshot after the UI theme, motion, and navigation polish work.
 
@@ -450,7 +435,7 @@ It updates:
 
 This does not change product scope. It documents the current UI polish layer while keeping the app simple and Tailwind-based.
 
-## `260615.1.b`
+### Snapshot `260615.1.b`
 
 This version updates the architecture snapshot after the Home and app shell UI layout changes.
 
@@ -466,7 +451,7 @@ It updates:
 
 This does not change product scope. It documents the move away from floating main content cards toward a cleaner web app shell.
 
-## `260615.1.a`
+### Snapshot `260615.1.a`
 
 This version updates the architecture snapshot after the Practice controls and Library polish work.
 
@@ -480,7 +465,7 @@ It updates:
 
 This does not add backend scope. It documents UI and modularity improvements while keeping saved passages behind local state and `localStorage`.
 
-## `260614.1.b`
+### Snapshot `260614.1.b`
 
 This version updates the architecture snapshot after the app modularisation cleanup.
 
@@ -496,7 +481,7 @@ It updates:
 
 This does not change product scope. It documents the refactor that made app composition more explicit and moved formerly shared shell/theme code into `src/app`.
 
-## `260614.1.a`
+### Snapshot `260614.1.a`
 
 This version changes the documentation version format.
 
@@ -508,7 +493,7 @@ It updates:
 
 This does not change the app architecture. Earlier version history entries keep their original labels for historical traceability.
 
-## `130626.1.a`
+### Snapshot `130626.1.a`
 
 This version updates the documentation after the modularity and routing refactor.
 
@@ -522,7 +507,7 @@ It updates:
 - the current architecture diagram,
 - known technical debt and likely next architecture steps.
 
-## `120626.1.d`
+### Snapshot `120626.1.d`
 
 This version splits the old combined architecture document into two focused docs.
 
@@ -532,7 +517,7 @@ It updates:
 - `docs/update-notes.md` now contains version history, update rules, and documentation change notes.
 - `docs/architecture.md` was removed to avoid competing sources of truth.
 
-## `120626.1.c`
+### Snapshot `120626.1.c`
 
 This version updated the architecture snapshot after the layout, practice flow, theme, and motion work.
 
@@ -549,7 +534,7 @@ It updated:
 - the architecture diagram,
 - known technical debt and likely next architecture steps.
 
-## `120626.1.b`
+### Snapshot `120626.1.b`
 
 This version updated the architecture snapshot after the Home/category picker and saved-passage editing work.
 
@@ -564,7 +549,7 @@ It updated:
 - the architecture diagram,
 - known technical debt and likely next architecture steps.
 
-## `120626.1.a`
+### Snapshot `120626.1.a`
 
 This version created the first architecture snapshot for the project.
 
