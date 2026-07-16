@@ -1,28 +1,46 @@
 # The Word per Minute
 
-A Bible passage typing practice app built with React, TypeScript, Vite, Tailwind CSS, Headless UI, and Supabase.
+A scripture-first typing practice app for slowing down and engaging more closely with Bible passages.
 
-The app helps users discover scripture, practise typing curated passages, read Bible chapters, and save passages for later practice.
+**[Use The Word per Minute](https://thewordperminute.com/)**
 
-## Current Features
+This repository contains the application source code, Supabase schema, bundled scripture data, and technical documentation behind the public application.
 
-- Featured passage typing practice
-- Curated featured passages grouped into focused themes
-- Inline passage typing surface with fixed-height automatic scrolling
-- WPM and accuracy tracking
-- Collapsible Practice setup controls and a compact live-metrics summary
-- Completion overlay with final metrics, next-passage action, reflection modal, and cloud-save feedback
-- Signed-in all-time progress summary with paginated practice history and passage reflections
-- Bible chapter reader with verse selection
-- Saved passage library with an empty state, search, filters, inline errors, mutation feedback, and Bible/Practice actions
-- Supabase email/password accounts for syncing saved passages
-- Guest saved passages for signed-out users through local browser storage
-- Warm light and dark themes with semantic color tokens
-- Branded navigation, contextual action icons, and an adaptive favicon
-- Branded footer with Bible attribution and local-data notice
-- Responsive page layouts
+## Project Status
 
-## Run Locally
+The Word per Minute is an independently developed personal project currently in public alpha. The core reading, practice, account, and cloud-storage flows are functional, while the product continues to evolve toward a more complete and reliable release.
+
+Current priorities and known limitations are tracked in [`docs/product-status.md`](docs/product-status.md).
+
+## Core Capabilities
+
+- Practise curated or personally saved Bible passages through an inline typing surface.
+- Read locally bundled World English Bible chapters and select verse ranges.
+- Save passages in the current browser as a guest or sync them through an account.
+- Track WPM, accuracy, completed attempts, and all-time account progress.
+- Add optional reflections to signed-in practice history.
+- Reopen saved passages in their original Bible context.
+- Use a keyboard-focused interface with light and dark themes.
+
+## Technology
+
+| Area | Technology |
+| --- | --- |
+| Application | React, TypeScript, and Vite |
+| Routing | React Router |
+| Interface | Tailwind CSS, Headless UI, and Heroicons |
+| Authentication and cloud data | Supabase Auth and Postgres |
+| Hosting | Vercel |
+
+## Local Development
+
+### Requirements
+
+- Node.js
+- npm
+- A Supabase project for authentication and account-owned data
+
+### Setup
 
 Install dependencies:
 
@@ -30,55 +48,66 @@ Install dependencies:
 npm install
 ```
 
+Create your local environment file:
+
+```powershell
+Copy-Item .env.example .env.local
+```
+
+Add the browser-safe values from your Supabase project:
+
+```txt
+VITE_SUPABASE_URL=
+VITE_SUPABASE_PUBLISHABLE_KEY=
+```
+
+Do not expose a Supabase secret key through a `VITE_` environment variable. The publishable key is intended for browser use when account-owned tables are protected by Row Level Security.
+
 Start the development server:
 
 ```powershell
 npm run dev
 ```
 
-Then open the local URL shown in the terminal, normally `http://localhost:5173`.
+Open the local URL shown by Vite, normally `http://localhost:5173`.
 
-## Checks
+## Available Scripts
 
-```powershell
-npm run lint
-npm run build
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the Vite development server. |
+| `npm run build` | Type-check and create the production build. |
+| `npm run lint` | Run ESLint across the repository. |
+| `npm run preview` | Preview the production build locally. |
+| `npm run import:bible` | Rebuild the bundled public-domain Bible data. |
+
+## Repository Structure
+
+```txt
+src/app       Application composition, routing, and global shell
+src/pages     Route-level screens and page-specific components
+src/domain    Product behaviour, hooks, and persistence contracts
+src/shared    Generic UI, types, utilities, and infrastructure clients
+src/data      Bundled Bible, translation, and featured-passage data
+supabase      Postgres schema, functions, grants, and RLS policies
+docs          Architecture, data/security, and product documentation
 ```
 
-## Deployment
+## Documentation
 
-The app is configured for Vercel as a Vite single page app.
+- [System architecture](docs/architecture.md)
+- [Data storage and security](docs/data-and-security.md)
+- [Product status and roadmap](docs/product-status.md)
+- [Release history](CHANGELOG.md)
 
-Use these Vercel build settings:
+## Production
 
-- Build Command: `npm run build`
-- Output Directory: `dist`
-- Install Command: `npm install`
-- Environment Variables:
-  - `VITE_SUPABASE_URL`
-  - `VITE_SUPABASE_PUBLISHABLE_KEY`
+The public application is hosted on Vercel at [thewordperminute.com](https://thewordperminute.com/). Vercel builds the Vite application into `dist` and uses `vercel.json` to support direct navigation and refreshes across client-side routes.
 
-`vercel.json` rewrites all routes to `index.html` so direct links and refreshes work for `/practice`, `/bible`, `/library`, and `/profile`.
+Production requires `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` in the Vercel environment.
 
-## Project Documentation
+## Project Ownership and Contributions
 
-- System architecture: [`docs/architecture.md`](docs/architecture.md)
-- Data storage and security: [`docs/data-and-security.md`](docs/data-and-security.md)
-- Product status and roadmap: [`docs/product-status.md`](docs/product-status.md)
-- Release history: [`CHANGELOG.md`](CHANGELOG.md)
+This repository is public for transparency, technical documentation, and development history. It is not currently maintained as a community open-source project, and no open-source licence has been selected.
 
-## Architecture
-
-The source is organised around `app`, `pages`, `domain`, and `shared` layers:
-
-- `app` wires routing, shell UI, navigation, and cross-page coordination.
-- `pages` owns route-level screens and page-specific visual components.
-- `domain` owns Bible, Practice, featured-passage, and saved-passage logic.
-- `shared` owns generic UI primitives, utilities, and shared TypeScript types.
-
-## Data and Accounts
-
-The app currently reads local public-domain Bible data from the repository.
-
-Signed-out guests can save passages in browser storage. Signed-in users save passages, completed practice attempts, and passage reflections to Supabase so their library and progress can sync across sessions.
- 
+Contribution and licensing guidelines may be introduced in the future as the project matures.
