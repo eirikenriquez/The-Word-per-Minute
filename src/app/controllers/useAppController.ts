@@ -170,7 +170,6 @@ export function useAppController() {
     savedPassageCount,
     savedSelectedPassageId: savedLibrary.selectedSavedPassageId,
     selectedVerseNumbers: readerSelection.selectedVerseNumbers,
-    setAppMode: selectAppMode,
     setPracticeSource,
   });
   const appActions = createAppActions({
@@ -266,7 +265,6 @@ export function useAppController() {
     authMenuRequest,
     authSession,
     errorMessage,
-    hasSavedPassages: savedPassageCount > 0,
     headerProps,
     isLoading,
     onAuthMenuRequestHandled: () => setAuthMenuRequest(null),

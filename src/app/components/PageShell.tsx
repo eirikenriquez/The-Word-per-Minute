@@ -13,7 +13,6 @@ type PageShellProps = {
   authMenuRequest?: AuthMenuRequest | null;
   authSession?: AuthSessionState;
   children: ReactNode;
-  hasSavedPassages?: boolean;
   theme: Theme;
   onToggleTheme: () => void;
   onAuthMenuRequestHandled?: () => void;
@@ -28,7 +27,6 @@ export function PageShell({
   authMenuRequest,
   authSession,
   children,
-  hasSavedPassages = false,
   theme,
   onToggleTheme,
   onAuthMenuRequestHandled,
@@ -58,7 +56,7 @@ export function PageShell({
 
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
             {appMode && onSelectMode && (
-              <AppNavigation appMode={appMode} hasSavedPassages={hasSavedPassages} onSelectMode={onSelectMode} />
+              <AppNavigation appMode={appMode} onSelectMode={onSelectMode} />
             )}
             {authSession && (
               <AuthControls
