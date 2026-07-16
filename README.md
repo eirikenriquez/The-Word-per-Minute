@@ -11,10 +11,10 @@ The app helps users discover scripture, practise typing curated passages, read B
 - Inline passage typing surface with fixed-height automatic scrolling
 - WPM and accuracy tracking
 - Collapsible Practice setup controls and a compact live-metrics summary
-- Completion overlay with final metrics, next-passage action, and reflection modal
-- Signed-in practice history and passage reflections
+- Completion overlay with final metrics, next-passage action, reflection modal, and cloud-save feedback
+- Signed-in all-time progress summary with paginated practice history and passage reflections
 - Bible chapter reader with verse selection
-- Saved passage library with search, filters, animated editing/removal states, and Bible/Practice actions
+- Saved passage library with an empty state, search, filters, inline errors, mutation feedback, and Bible/Practice actions
 - Supabase email/password accounts for syncing saved passages
 - Guest saved passages for signed-out users through local browser storage
 - Warm light and dark themes with semantic color tokens
