@@ -1,12 +1,12 @@
 # Data, Storage, and Security
 
-This document explains where application data lives, who owns it, and how access is protected. It describes the intended data boundaries rather than duplicating every implementation detail.
+This document explains what data the application handles, where it lives, who can access it, and which lifecycle limitations still exist. It describes the intended data boundaries rather than duplicating every implementation detail.
 
-The executable source of truth for the current cloud schema, constraints, indexes, grants, database functions, and Row Level Security policies is [`supabase/schema.sql`](../supabase/schema.sql). Product priorities and future work live in [`product-status.md`](product-status.md).
+[`supabase/schema.sql`](../supabase/schema.sql) records the intended current cloud schema, constraints, indexes, grants, database functions, and Row Level Security policies. Database changes are currently applied to Supabase manually; versioned migrations have not yet been adopted. Product priorities and future work live in [`product-status.md`](product-status.md).
 
 ## Data Landscape
 
-The application uses three data locations:
+The application uses bundled content, browser-local storage, Supabase Auth, and Supabase Postgres:
 
 ```mermaid
 flowchart LR
@@ -67,6 +67,23 @@ Guest and account data are deliberately separate:
 - Local passages are not shown while signed in, avoiding records that the active cloud store cannot edit or delete.
 - A future import flow must be explicit and should handle duplicates before writing to the account.
 
+## Data Inventory
+
+The application currently handles these categories of data:
+
+| Data | Location | Notes |
+| --- | --- | --- |
+| Bible text, translation metadata, and featured passages | Application bundle | Public content stored in the repository. |
+| Guest saved passages | Browser `localStorage` | Includes passage identity, title, category, source, and creation time. |
+| Theme preference | Browser `localStorage` | Stores the current light or dark preference. |
+| Authentication account and session | Supabase Auth and browser session storage | Supabase Auth handles email addresses, password credentials, confirmation, and session tokens. Passwords are not stored in the app's public tables. |
+| Profile | Supabase Postgres | Currently contains the Auth user ID, optional display name, and timestamps. |
+| Account saved passages | Supabase Postgres | Contains passage identity, title, category, source, translation metadata, exact verse selection, and timestamps. |
+| Practice attempts | Supabase Postgres | Contains passage identity, duration, mistakes, typed-character count, WPM, accuracy, and completion time. |
+| Reflections | Supabase Postgres | Optional user-written text attached to a practice attempt. |
+
+Reflections and account activity should be treated as private user content. The application does not intentionally expose one account's records to another account.
+
 ## Cloud Data Model
 
 ```mermaid
@@ -74,47 +91,16 @@ erDiagram
   AUTH_USERS ||--|| PROFILES : owns
   AUTH_USERS ||--o{ SAVED_PASSAGES : saves
   AUTH_USERS ||--o{ PRACTICE_ATTEMPTS : completes
-  SAVED_PASSAGES ||--o{ PRACTICE_ATTEMPTS : can_reference
-
-  AUTH_USERS {
-    uuid id PK
-  }
-
-  PROFILES {
-    uuid id PK, FK
-    text display_name
-    timestamptz created_at
-    timestamptz updated_at
-  }
-
-  SAVED_PASSAGES {
-    uuid id PK
-    uuid user_id FK
-    text passage_identity
-    text user_metadata
-    timestamptz created_at
-    timestamptz updated_at
-  }
-
-  PRACTICE_ATTEMPTS {
-    uuid id PK
-    uuid user_id FK
-    uuid saved_passage_id FK
-    text featured_passage_id
-    text passage_identity
-    integer typing_metrics
-    text reflection
-    timestamptz completed_at
-  }
+  SAVED_PASSAGES o|--o{ PRACTICE_ATTEMPTS : can_reference
 ```
 
-The grouped fields in this conceptual diagram represent several columns in the SQL schema. They are intentionally summarised here to keep the diagram readable.
+The diagram shows ownership and optional references only. Exact columns and constraints remain defined in `supabase/schema.sql`.
 
 ### Profiles
 
 Each Supabase Auth user receives one matching `profiles` row. A database trigger creates it when the account is created. `display_name` is optional, so a newly created profile may validly contain `null` until profile editing is added.
 
-Deleting the Auth user cascades to the profile and other user-owned rows.
+Deleting the Auth user at the database or project-administration level cascades to the profile and other user-owned rows. The application does not yet provide self-service account deletion.
 
 ### Saved passages
 
@@ -154,6 +140,26 @@ The policies compare `auth.uid()` with the row owner. A publishable key without 
 
 Practice-attempt updates are intentionally narrower than the row-level policy alone: the authenticated role receives column-level update permission for `reflection`, not general update permission for stored metrics.
 
+RLS isolates ordinary browser users from one another. It does not restrict trusted project administrators or properly secured backend credentials with privileged database access. Supabase secret keys therefore require stricter handling than the browser-safe publishable key.
+
+Automated RLS policy tests are not currently part of the repository. Policy behaviour must be verified manually when the schema changes until that coverage exists.
+
+## Data Lifecycle and User Controls
+
+Current deletion and retention behaviour is limited:
+
+- Guest saved passages remain in the current browser until the user removes them or clears that site's browser storage.
+- Signed-in users can remove individual saved passages.
+- Removing a saved passage preserves associated historical practice attempts by setting their saved-passage reference to `null`.
+- Users can replace or clear reflection text; an empty reflection is stored as `null`.
+- Practice attempts cannot currently be deleted through the application.
+- The application does not yet provide account-data export or self-service account deletion.
+- No formal retention period has been defined for account data.
+
+Deleting a Supabase Auth user through an authorised administrative process cascades to their profile, saved passages, and practice attempts because those records reference the Auth user with `on delete cascade`.
+
+These limitations should be resolved or explicitly reflected in the public privacy information before the product is considered beta-ready.
+
 ## Frontend Storage Boundaries
 
 UI components do not call `localStorage` or Supabase persistence directly. Domain hooks depend on store contracts, and the active implementation is selected outside the visual components.
@@ -185,6 +191,19 @@ flowchart TD
 Completed signed-in attempts are sent to the cloud store. Attempt-save, history, reflection, pagination, and summary failures are kept as separate domain states so one failure does not incorrectly invalidate unrelated data.
 
 A failed history save does not turn a completed typing session into a failed session. A reflection cannot be attached until the corresponding cloud attempt exists.
+
+## Schema and Type Workflow
+
+The repository currently uses a manual database workflow:
+
+- `supabase/schema.sql` records the intended current schema and the setup/update SQL used during the initial backend phase.
+- Schema changes are run manually against the Supabase project.
+- The repository does not yet contain timestamped Supabase migrations or a local Supabase configuration.
+- `src/shared/types/database.ts` mirrors the database contract and is currently maintained manually rather than generated from Supabase.
+
+Every schema change must therefore update both `supabase/schema.sql` and `src/shared/types/database.ts`, then be applied and verified against the remote project. The repository alone cannot currently prove which SQL changes have already been applied to production.
+
+Adopting versioned migrations, generated database types, local schema replay, and automated RLS checks is future maintenance work. Until then, `schema.sql` describes the intended state while the deployed Supabase project remains the runtime state.
 
 ## Bundled Content
 
@@ -236,10 +255,12 @@ http://localhost:5173
 Production:
 
 ```txt
-https://thewordperminute.vercel.app
+https://thewordperminute.com
 ```
 
-The matching site URL and redirect URLs are configured in the Supabase dashboard rather than in this repository. Changes should be verified in both environments before relying on email links in production.
+The canonical Supabase Site URL should use the production domain. Localhost must remain in the allowed redirect list for local confirmation flows. Vercel preview URLs should be allowed only if authentication is deliberately tested in preview deployments.
+
+These settings live in the Supabase dashboard rather than this repository. Changes should be verified in each allowed environment before relying on confirmation or future password-recovery links.
 
 ## Security Invariants
 
@@ -248,7 +269,8 @@ Future changes should preserve these rules:
 - Never expose a Supabase secret key to the Vite application.
 - Keep RLS enabled for every user-owned table exposed through the Data API.
 - Scope every user-owned query and mutation to the authenticated user through policy, not UI assumptions.
-- Keep exact database behaviour in version-controlled SQL.
+- Record every intended database change in version-controlled SQL and keep the deployed project aligned with it.
+- Keep `src/shared/types/database.ts` aligned with the deployed schema until generated types are adopted.
 - Keep persistence details behind domain store contracts rather than page components.
 - Never merge guest data into an account without an explicit user action and duplicate strategy.
 - Do not host or redistribute additional Bible translations until licensing and attribution are resolved.
