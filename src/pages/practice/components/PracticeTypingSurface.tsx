@@ -117,7 +117,7 @@ export function PracticeTypingSurface({
         onChange={(event) => onTypingChange(event.target.value)}
       />
       <div
-        className={`h-56 overflow-hidden border-y py-5 pr-4 scroll-smooth transition duration-200 ${
+        className={`h-56 overflow-hidden border-y py-5 pr-4 scroll-smooth transition-[border-color,filter,opacity] duration-500 ease-out ${
           isComplete
             ? "border-transparent opacity-30 blur-[1px] [mask-image:linear-gradient(to_bottom,transparent,black_18%,black_82%,transparent)]"
             : "border-line"
