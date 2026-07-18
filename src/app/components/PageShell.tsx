@@ -54,7 +54,7 @@ export function PageShell({
             </Link>
           </h1>
 
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             {appMode && onSelectMode && (
               <AppNavigation appMode={appMode} onSelectMode={onSelectMode} />
             )}
