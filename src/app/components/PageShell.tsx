@@ -69,7 +69,7 @@ export function PageShell({
         </div>
       </header>
 
-      <main className="mx-auto grid w-full max-w-7xl flex-1 gap-5 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+      <main className="mx-auto grid w-full max-w-7xl flex-1 content-start gap-5 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
         {children}
       </main>
       <AppFooter />
