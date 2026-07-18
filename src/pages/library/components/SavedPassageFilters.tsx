@@ -2,7 +2,6 @@ export type SavedPassageSourceFilter = "all" | "featured" | "saved";
 
 type SavedPassageFiltersProps = {
   categories: string[];
-  hasSavedPassages: boolean;
   resultSummary: string;
   searchTerm: string;
   selectedCategory: string;
@@ -17,7 +16,6 @@ type SavedPassageFiltersProps = {
  */
 export function SavedPassageFilters({
   categories,
-  hasSavedPassages,
   resultSummary,
   searchTerm,
   selectedCategory,
@@ -39,8 +37,7 @@ export function SavedPassageFilters({
         <label className="grid gap-1">
           <span className="text-sm font-medium text-ink-muted">Search</span>
           <input
-            className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition placeholder:text-ink-subtle focus:border-accent focus:ring-2 focus:ring-accent-soft disabled:bg-surface-muted disabled:text-ink-subtle"
-            disabled={!hasSavedPassages}
+            className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition placeholder:text-ink-subtle focus:border-accent focus:ring-2 focus:ring-accent-soft"
             placeholder="Search title, reference, category, or book"
             value={searchTerm}
             onChange={(event) => onSearchTermChange(event.target.value)}
@@ -55,8 +52,7 @@ export function SavedPassageFilters({
         <label className="grid gap-1 sm:w-56">
           <span className="text-sm font-medium text-ink-muted">Category</span>
           <select
-            className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft disabled:bg-surface-muted disabled:text-ink-subtle"
-            disabled={!hasSavedPassages}
+            className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft"
             value={selectedCategory}
             onChange={(event) => onSelectedCategoryChange(event.target.value)}
           >
@@ -71,8 +67,7 @@ export function SavedPassageFilters({
         <label className="grid gap-1 sm:w-56">
           <span className="text-sm font-medium text-ink-muted">Source</span>
           <select
-            className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft disabled:bg-surface-muted disabled:text-ink-subtle"
-            disabled={!hasSavedPassages}
+            className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft"
             value={selectedSource}
             onChange={(event) =>
               onSelectedSourceChange(event.target.value as SavedPassageSourceFilter)

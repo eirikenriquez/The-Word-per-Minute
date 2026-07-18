@@ -41,8 +41,6 @@ export function HomePage({
     (total, category) => total + category.count,
     0,
   );
-  const hasSavedPassages = savedPassageCount > 0;
-
   return (
     <section className="grid gap-10">
       <section className="grid gap-8 py-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-center lg:py-12">
@@ -132,7 +130,6 @@ export function HomePage({
           />
           <HomePathButton
             description="Your practice library"
-            disabled={!hasSavedPassages}
             icon={<BookmarkSquareIcon aria-hidden="true" className="h-5 w-5 shrink-0" />}
             label="Library"
             meta={`${savedPassageCount} saved`}
@@ -200,7 +197,6 @@ function CountUpNumber({ durationMs = 950, value }: CountUpNumberProps) {
 
 type HomePathButtonProps = {
   description: string;
-  disabled?: boolean;
   icon: ReactNode;
   label: string;
   meta: string;
@@ -209,7 +205,6 @@ type HomePathButtonProps = {
 
 function HomePathButton({
   description,
-  disabled = false,
   icon,
   label,
   meta,
@@ -217,12 +212,11 @@ function HomePathButton({
 }: HomePathButtonProps) {
   return (
     <button
-      className="soft-hover group rounded-lg border border-line bg-surface p-4 text-left hover:border-accent-line hover:shadow-sm disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-ink-subtle disabled:shadow-none"
-      disabled={disabled}
+      className="soft-hover group rounded-lg border border-line bg-surface p-4 text-left hover:border-accent-line hover:shadow-sm"
       type="button"
       onClick={onSelect}
     >
-      <span className="flex items-center gap-2 text-base font-bold text-ink group-disabled:text-ink-subtle">
+      <span className="flex items-center gap-2 text-base font-bold text-ink">
         {icon}
         <span>{label}</span>
       </span>

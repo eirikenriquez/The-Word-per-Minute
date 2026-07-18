@@ -1,3 +1,4 @@
+import { Transition } from "@headlessui/react";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import type { PracticePassage } from "../../../shared/types/practice";
 import { Button } from "../../../shared/ui/Button";
@@ -67,51 +68,59 @@ export function PracticePassageDisplay({
           onTypingChange={onTypingChange}
         />
 
-        {isComplete && (
-          <div className="absolute inset-0 z-20 grid place-items-center overflow-y-auto bg-gradient-to-b from-canvas/80 via-canvas/35 to-canvas/80 px-4 py-4 text-center backdrop-blur-[2px]">
-            <div className="grid w-full max-w-2xl justify-items-center gap-3">
-              <p className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
-                Complete
+        <Transition
+          as="div"
+          className="absolute inset-0 z-20 grid place-items-center overflow-y-auto bg-gradient-to-b from-canvas/80 via-canvas/35 to-canvas/80 px-4 py-4 text-center backdrop-blur-[2px]"
+          enter="transition-opacity duration-500 ease-out motion-reduce:transition-none"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="transition-opacity duration-150 ease-in motion-reduce:transition-none"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+          show={isComplete}
+        >
+          <div className="grid w-full max-w-2xl justify-items-center gap-3">
+            <p className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
+              Complete
+            </p>
+            <p className="text-lg font-semibold text-ink">
+              {completionMessage}
+            </p>
+
+            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-lg text-ink-muted">
+              <p>
+                <strong className="font-semibold text-ink">{wpm}</strong> WPM
               </p>
-              <p className="text-lg font-semibold text-ink">
-                {completionMessage}
+              <p>
+                <strong className="font-semibold text-ink">{accuracy}%</strong> accuracy
               </p>
+            </div>
 
-              <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-lg text-ink-muted">
-                <p>
-                  <strong className="font-semibold text-ink">{wpm}</strong> WPM
-                </p>
-                <p>
-                  <strong className="font-semibold text-ink">{accuracy}%</strong> accuracy
-                </p>
-              </div>
-
-              <div className="flex flex-wrap justify-center gap-2">
-                <PracticeReflectionDialog
-                  key={passage.ref}
-                  attemptSaveErrorMessage={attemptSaveErrorMessage}
-                  canSaveReflection={canSaveReflection}
-                  isSavingReflection={isSavingReflection}
-                  isSignedIn={isSignedIn}
-                  reflectionError={reflectionError}
-                  onSaveReflection={onSaveReflection}
-                />
-                {completionActionLabel && onCompletionAction && (
-                  <Button variant="primary" onClick={onCompletionAction}>
-                    <ArrowRightIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
-                    {completionActionLabel}
-                  </Button>
-                )}
-              </div>
-
-              {attemptSaveErrorMessage && (
-                <p className="text-sm text-red-700 dark:text-red-300" role="alert">
-                  {attemptSaveErrorMessage}
-                </p>
+            <div className="flex flex-wrap justify-center gap-2">
+              <PracticeReflectionDialog
+                key={passage.ref}
+                attemptSaveErrorMessage={attemptSaveErrorMessage}
+                canSaveReflection={canSaveReflection}
+                isSavingReflection={isSavingReflection}
+                isSignedIn={isSignedIn}
+                reflectionError={reflectionError}
+                onSaveReflection={onSaveReflection}
+              />
+              {completionActionLabel && onCompletionAction && (
+                <Button variant="primary" onClick={onCompletionAction}>
+                  <ArrowRightIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
+                  {completionActionLabel}
+                </Button>
               )}
             </div>
+
+            {attemptSaveErrorMessage && (
+              <p className="text-sm text-red-700 dark:text-red-300" role="alert">
+                {attemptSaveErrorMessage}
+              </p>
+            )}
           </div>
-        )}
+        </Transition>
       </div>
     </section>
   );
