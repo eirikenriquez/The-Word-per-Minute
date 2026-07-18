@@ -50,15 +50,20 @@ export function SavedPassageLibrary({
     [savedPassages, searchTerm, selectedCategory, selectedSource],
   );
 
-  const resultSummary = hasSavedPassages
-    ? `${visiblePassages.length} of ${savedPassages.length} passage${savedPassages.length === 1 ? "" : "s"}`
-    : "0 passages";
+  if (!hasSavedPassages) {
+    return (
+      <section className="grid gap-6">
+        <LibraryMessage>Saved passages will appear here after you save one from Featured or Bible.</LibraryMessage>
+      </section>
+    );
+  }
+
+  const resultSummary = `${visiblePassages.length} of ${savedPassages.length} passage${savedPassages.length === 1 ? "" : "s"}`;
 
   return (
     <section className="grid gap-6">
       <SavedPassageFilters
         categories={categories}
-        hasSavedPassages={hasSavedPassages}
         resultSummary={resultSummary}
         searchTerm={searchTerm}
         selectedCategory={selectedCategory}
@@ -68,9 +73,7 @@ export function SavedPassageLibrary({
         onSelectedSourceChange={setSelectedSource}
       />
 
-      {!hasSavedPassages ? (
-        <LibraryMessage>Saved passages will appear here after you save one from Featured or Bible.</LibraryMessage>
-      ) : visiblePassages.length ? (
+      {visiblePassages.length ? (
         <div className="grid gap-3">
           {visiblePassages.map((passage) => (
             <SavedPassageCard
