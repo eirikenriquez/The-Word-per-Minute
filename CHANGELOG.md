@@ -4,11 +4,18 @@ All notable changes to The Word per Minute are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). The project uses a SemVer-inspired product release scheme while it remains in pre-1.0 development.
 
+During public alpha:
+
+- `0.x.0` marks a meaningful feature release or product milestone.
+- `0.x.y` marks fixes, maintenance, or small refinements to the current milestone.
+- Notable work is collected under `[Unreleased]` until a release is prepared.
+- A formal release updates the package version, dates the matching changelog section, and creates a `vX.Y.Z` Git tag from the release commit.
+
 ## [Unreleased]
 
 ## [0.1.0] - 2026-07-16
 
-This is the first formally versioned public-alpha release. The application had already undergone substantial development before formal release versioning began; that earlier work remains preserved in the development history below.
+This is the first versioned public-alpha baseline. The application had already undergone substantial development before SemVer-inspired version tracking began; that earlier work remains preserved in the development history below.
 
 ### Added
 
