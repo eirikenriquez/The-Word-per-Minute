@@ -36,9 +36,11 @@ Current priorities and known limitations are tracked in [`docs/product-status.md
 
 ### Requirements
 
-- Node.js
+- Node.js compatible with Vite (`^20.19.0 || >=22.12.0`) for local development and builds
 - npm
-- A Supabase project for authentication and account-owned data
+- A Supabase project configured for authentication and account-owned data
+
+Node.js runs the project's development and build tooling. The production application is a client-side React build and does not use a custom Node backend.
 
 ### Setup
 
@@ -63,6 +65,10 @@ VITE_SUPABASE_PUBLISHABLE_KEY=
 
 Do not expose a Supabase secret key through a `VITE_` environment variable. The publishable key is intended for browser use when account-owned tables are protected by Row Level Security.
 
+In the Supabase SQL Editor, run [`supabase/schema.sql`](supabase/schema.sql) to create the account-owned tables, database functions, grants, and Row Level Security policies required by the app.
+
+Configure the Supabase Site URL and allowed redirect URLs for the environment you are using. See [Authentication URLs](docs/data-and-security.md#authentication-urls) for the current local and production values.
+
 Start the development server:
 
 ```powershell
@@ -79,7 +85,7 @@ Open the local URL shown by Vite, normally `http://localhost:5173`.
 | `npm run build` | Type-check and create the production build. |
 | `npm run lint` | Run ESLint across the repository. |
 | `npm run preview` | Preview the production build locally. |
-| `npm run import:bible` | Rebuild the bundled public-domain Bible data. |
+| `npm run import:bible` | Download and rebuild the bundled public-domain Bible data. This maintenance command replaces the generated WEB data under `src/data/bibles/web`. |
 
 ## Repository Structure
 

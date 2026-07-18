@@ -47,7 +47,7 @@ The browser reads public scripture content from the application bundle. Guest sa
 
 - React and TypeScript provide the client application, hook-based state owners, and typed page contracts.
 - React Router makes navigation URL-based rather than keeping the active page only in component state.
-- Vite provides local development and produces the static production build.
+- Vite runs through Node.js during local development and builds, then produces the static client-side application served in production.
 - Tailwind CSS provides utility styling and semantic theme tokens; Headless UI provides accessible behaviour for compound interactions.
 - Bundled JSON supplies the current WEB Bible and curated featured passages.
 - Browser `localStorage` and Supabase provide the two saved-passage persistence strategies.
