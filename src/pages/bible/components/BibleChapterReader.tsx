@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import type { BibleChapter, BookSummary } from "../../../shared/types/verse";
+import type { BibleChapter } from "../../../shared/types/verse";
 
 type BibleChapterReaderProps = {
   chapter: BibleChapter | null;
   focusSelectedVerseKey: number;
-  selectedBook?: BookSummary;
   selectedChapter: number;
   selectedVerseNumbers: number[];
   onSelectRange: (startVerse: number, endVerse: number) => void;
@@ -18,7 +17,6 @@ type BibleChapterReaderProps = {
 export function BibleChapterReader({
   chapter,
   focusSelectedVerseKey,
-  selectedBook,
   selectedChapter,
   selectedVerseNumbers,
   onSelectRange,
@@ -48,7 +46,7 @@ export function BibleChapterReader({
     });
   }, [chapter, focusSelectedVerseKey, selectedChapter, selectedVerseNumbers]);
 
-  if (!chapter || !selectedBook) return null;
+  if (!chapter) return null;
 
   function startVerseSelection(verseNumber: number) {
     setDragStartVerse(verseNumber);
@@ -81,15 +79,10 @@ export function BibleChapterReader({
   }
 
   return (
-    <section className="mx-auto grid w-full max-w-5xl gap-5">
-      <div>
-        <h2 className="text-2xl font-bold text-ink">
-          {selectedBook.name} {selectedChapter}
-        </h2>
-        <p className="mt-1 text-sm text-ink-subtle">
-          Click a verse to select or deselect it. Drag across verses to select a range.
-        </p>
-      </div>
+    <div className="mx-auto grid w-full max-w-5xl gap-5">
+      <p className="text-sm text-ink-subtle">
+        Click a verse to select or deselect it. Drag across verses to select a range.
+      </p>
 
       <div
         className="text-xl leading-10 text-ink-muted sm:text-2xl sm:leading-[3rem]"
@@ -141,6 +134,6 @@ export function BibleChapterReader({
           );
         })}
       </div>
-    </section>
+    </div>
   );
 }

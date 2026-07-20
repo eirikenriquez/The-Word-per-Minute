@@ -43,6 +43,7 @@ export function BibleSaveDock({
   const [isOpen, setIsOpen] = useState(false);
   const titleInputRef = useRef<HTMLInputElement>(null);
   const hasSelectedVerses = selectedVerseCount > 0;
+  const saveActionLabel = hasSelectedVerses ? "Save Selection" : "Save Chapter";
 
   async function savePassage() {
     const didSave = await onSaveCurrentPassage();
@@ -52,11 +53,11 @@ export function BibleSaveDock({
   return (
     <section
       aria-label="Bible passage save actions"
-      className="sticky top-48 z-30 bg-canvas sm:top-40 lg:top-24"
+      className="sticky top-[11.4rem] z-30 bg-canvas sm:top-[8.4rem] lg:top-[4.8rem]"
     >
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 border-y border-line py-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-ink">{passageReference}</p>
+          <h2 className="truncate text-lg font-semibold text-ink">{passageReference}</h2>
           <p aria-live="polite" className="mt-0.5 text-sm text-ink-subtle">
             {hasSelectedVerses
               ? `${selectedVerseCount} ${selectedVerseCount === 1 ? "verse" : "verses"} selected`
@@ -65,14 +66,16 @@ export function BibleSaveDock({
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <Button disabled={!hasSelectedVerses} variant="ghost" onClick={onClearSelection}>
-            Clear Selection
-          </Button>
+          {hasSelectedVerses && (
+            <Button variant="ghost" onClick={onClearSelection}>
+              Clear Selection
+            </Button>
+          )}
           <SaveButton
             disabled={!canSaveCurrentPassage || isCurrentPassageSaved || isSavingCurrentPassage}
             isSaved={isCurrentPassageSaved}
             isSaving={isSavingCurrentPassage}
-            label={hasSelectedVerses ? "Save Selection" : "Save Chapter"}
+            label={saveActionLabel}
             onSave={() => setIsOpen(true)}
           />
         </div>
@@ -90,7 +93,7 @@ export function BibleSaveDock({
         >
           <div className="grid gap-1">
             <DialogTitle className="text-lg font-semibold text-ink">
-              Save Bible passage
+              {hasSelectedVerses ? "Save selected verses" : "Save Bible chapter"}
             </DialogTitle>
             <p className="text-sm text-ink-muted">
               Review the title and category before adding this passage to your library.
@@ -138,7 +141,7 @@ export function BibleSaveDock({
               disabled={!canSaveCurrentPassage || isCurrentPassageSaved || isSavingCurrentPassage}
               isSaved={isCurrentPassageSaved}
               isSaving={isSavingCurrentPassage}
-              label="Save Passage"
+              label={saveActionLabel}
               onSave={savePassage}
             />
           </div>

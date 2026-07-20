@@ -80,7 +80,6 @@ export function BiblePage({
       <BibleChapterReader
         chapter={bibleChapter}
         focusSelectedVerseKey={focusSelectedVerseKey}
-        selectedBook={selectedBibleBook}
         selectedChapter={selectedBibleChapter}
         selectedVerseNumbers={selectedVerseNumbers}
         onSelectRange={onSelectReaderRange}
