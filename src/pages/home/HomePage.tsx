@@ -1,10 +1,6 @@
-import {
-  BookOpenIcon,
-  BookmarkSquareIcon,
-  SparklesIcon,
-} from "@heroicons/react/24/outline";
+import { BookOpenIcon, SparklesIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
-import type { ReactNode } from "react";
+import { Button } from "../../shared/ui/Button";
 
 export type HomeCategory = {
   count: number;
@@ -17,8 +13,6 @@ export type HomePageProps = {
   savedPassageCount: number;
   onCreateAccount: () => void;
   onOpenBible: () => void;
-  onOpenLibrary: () => void;
-  onOpenProfile: () => void;
   onSelectFeaturedCategory: (category: string) => void;
   onStartFeaturedPractice: () => void;
 };
@@ -32,8 +26,6 @@ export function HomePage({
   savedPassageCount,
   onCreateAccount,
   onOpenBible,
-  onOpenLibrary,
-  onOpenProfile,
   onSelectFeaturedCategory,
   onStartFeaturedPractice,
 }: HomePageProps) {
@@ -46,15 +38,26 @@ export function HomePage({
       <section className="grid gap-8 py-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-center lg:py-12">
         <div className="rise-in max-w-3xl">
           <p className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
-            Quiet typing practice
+            Bible typing practice
           </p>
           <h2 className="mt-3 text-4xl font-bold text-ink sm:text-5xl">
-            Slow down with scripture and build your rhythm.
+            Slow down with Scripture and build your rhythm.
           </h2>
           <p className="mt-5 max-w-2xl text-base leading-7 text-ink-muted">
-            Start with a passage chosen for you, read through a chapter, or return to verses you have saved
-            for memorisation.
+            Type Bible passages at your own pace to build accuracy and rhythm
+            while spending focused time in Scripture. Begin with a curated
+            passage, choose a theme, or practice something you have saved.
           </p>
+          <div className="mt-7 flex flex-wrap gap-3">
+            <Button variant="primary" onClick={onStartFeaturedPractice}>
+              <SparklesIcon aria-hidden="true" className="h-5 w-5 shrink-0" />
+              Start typing
+            </Button>
+            <Button variant="secondary" onClick={onOpenBible}>
+              <BookOpenIcon aria-hidden="true" className="h-5 w-5 shrink-0" />
+              Read the Bible
+            </Button>
+          </div>
         </div>
 
         <dl className="rise-in rise-in-delay-1 grid grid-cols-2 gap-6 border-t border-line pt-6 lg:grid-cols-1 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
@@ -73,76 +76,11 @@ export function HomePage({
         </dl>
       </section>
 
-      <section className="rise-in rise-in-delay-2 mx-auto grid max-w-2xl justify-items-center gap-4 py-2 text-center">
-        <div className="grid gap-2">
-          <h3 className="font-semibold text-ink">
-            {isSignedIn ? "Your progress can grow with you." : "Keep your passages and progress with you."}
-          </h3>
-          <p className="text-sm leading-6 text-ink-muted">
-            {isSignedIn
-              ? "Visit your profile to review recent practice sessions and reflections as they build over time."
-              : "Create a free account to sync saved passages and start keeping a cloud practice history."}
-          </p>
-        </div>
-
-        {isSignedIn ? (
-          <button
-            className="inline-flex min-h-10 items-center justify-center rounded-md bg-action px-5 py-2 text-sm font-semibold text-action-ink transition-colors hover:bg-action-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
-            type="button"
-            onClick={onOpenProfile}
-          >
-            View profile
-          </button>
-        ) : (
-          <button
-            className="inline-flex min-h-10 items-center justify-center rounded-md bg-action px-5 py-2 text-sm font-semibold text-action-ink transition-colors hover:bg-action-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
-            type="button"
-            onClick={onCreateAccount}
-          >
-            Create account
-          </button>
-        )}
-      </section>
-
-      <section className="rise-in rise-in-delay-3 grid gap-4">
-        <div>
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
-            Practice paths
-          </h3>
-          <p className="mt-2 text-sm text-ink-muted">
-            Choose the kind of session you want to start.
-          </p>
-        </div>
-        <div className="grid gap-3 md:grid-cols-3">
-          <HomePathButton
-            description="Start with a curated scripture prompt"
-            icon={<SparklesIcon aria-hidden="true" className="h-5 w-5 shrink-0" />}
-            label="Featured"
-            meta={`${totalFeaturedPassages} passages`}
-            onSelect={onStartFeaturedPractice}
-          />
-          <HomePathButton
-            description="Read and select verses"
-            icon={<BookOpenIcon aria-hidden="true" className="h-5 w-5 shrink-0" />}
-            label="Bible"
-            meta="Book and chapter"
-            onSelect={onOpenBible}
-          />
-          <HomePathButton
-            description="Your practice library"
-            icon={<BookmarkSquareIcon aria-hidden="true" className="h-5 w-5 shrink-0" />}
-            label="Library"
-            meta={`${savedPassageCount} saved`}
-            onSelect={onOpenLibrary}
-          />
-        </div>
-      </section>
-
-      <section className="rise-in rise-in-delay-3 grid gap-4 border-t border-line pt-8">
+      <section className="rise-in rise-in-delay-2 grid gap-4 border-t border-line pt-8">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
-              Featured categories
+              Practice by theme
             </h3>
             <p className="mt-2 text-sm text-ink-muted">
               Pick a theme when you want a more focused passage.
@@ -163,6 +101,25 @@ export function HomePage({
           ))}
         </div>
       </section>
+
+      {!isSignedIn && (
+        <section className="rise-in rise-in-delay-3 border-t border-line py-10">
+          <div className="mx-auto grid max-w-xl justify-items-center gap-5 text-center">
+            <div className="grid gap-2">
+              <h3 className="text-xl font-semibold text-ink">
+                Keep your practice with you.
+              </h3>
+              <p className="text-base leading-7 text-ink-muted">
+                Create a free account to sync saved passages and keep your
+                practice history across devices.
+              </p>
+            </div>
+            <Button variant="primary" onClick={onCreateAccount}>
+              Create free account
+            </Button>
+          </div>
+        </section>
+      )}
     </section>
   );
 }
@@ -193,41 +150,6 @@ function CountUpNumber({ durationMs = 950, value }: CountUpNumberProps) {
   }, [durationMs, value]);
 
   return displayValue;
-}
-
-type HomePathButtonProps = {
-  description: string;
-  icon: ReactNode;
-  label: string;
-  meta: string;
-  onSelect: () => void;
-};
-
-function HomePathButton({
-  description,
-  icon,
-  label,
-  meta,
-  onSelect,
-}: HomePathButtonProps) {
-  return (
-    <button
-      className="soft-hover group rounded-lg border border-line bg-surface p-4 text-left hover:border-accent-line hover:shadow-sm"
-      type="button"
-      onClick={onSelect}
-    >
-      <span className="flex items-center gap-2 text-base font-bold text-ink">
-        {icon}
-        <span>{label}</span>
-      </span>
-      <span className="mt-2 block text-sm leading-6 text-ink-muted">
-        {description}
-      </span>
-      <span className="mt-4 block text-xs font-semibold uppercase tracking-wide text-ink-subtle">
-        {meta}
-      </span>
-    </button>
-  );
 }
 
 type HomeCategoryButtonProps = {

@@ -65,8 +65,6 @@ export function createHomePageProps({
     onCreateAccount,
     savedPassageCount,
     onOpenBible: appActions.openBible,
-    onOpenLibrary: appActions.openLibrary,
-    onOpenProfile: appActions.openProfile,
     onSelectFeaturedCategory: appActions.startFeaturedCategory,
     onStartFeaturedPractice: appActions.startFeaturedPractice,
   };
