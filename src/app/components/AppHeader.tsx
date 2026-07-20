@@ -1,44 +1,17 @@
-import type { AppMode } from "../../shared/types/app";
-import { PassageSaveControls } from "./PassageSaveControls";
-
 export type AppHeaderProps = {
-  appMode: AppMode;
-  canSaveCurrentPassage: boolean;
-  isCurrentPassageSaved: boolean;
-  isSavingCurrentPassage: boolean;
   headerReference: string;
   headerSubtitle: string;
   headerTitle: string;
-  saveError: string | null;
-  saveCategory: string;
-  savedPassageCategories: string[];
-  saveTitle: string;
-  onSaveCategoryChange: (category: string) => void;
-  onSaveCurrentPassage: () => void;
-  onSaveTitleChange: (title: string) => void;
 };
 
 /**
- * Displays the current page title and contextual passage-save controls.
+ * Displays the current page title and context.
  */
 export function AppHeader({
-  appMode,
-  canSaveCurrentPassage,
   headerReference,
   headerSubtitle,
   headerTitle,
-  isCurrentPassageSaved,
-  isSavingCurrentPassage,
-  saveError,
-  saveCategory,
-  savedPassageCategories,
-  saveTitle,
-  onSaveCategoryChange,
-  onSaveCurrentPassage,
-  onSaveTitleChange,
 }: AppHeaderProps) {
-  const showSaveControls = appMode === "bible";
-
   return (
     <section className="border-b border-line pb-5">
       <div className="min-w-0">
@@ -54,22 +27,6 @@ export function AppHeader({
           </p>
         )}
       </div>
-
-      {showSaveControls && (
-        <PassageSaveControls
-          canSaveCurrentPassage={canSaveCurrentPassage}
-          isCurrentPassageSaved={isCurrentPassageSaved}
-          isSavingCurrentPassage={isSavingCurrentPassage}
-          saveError={saveError}
-          saveCategory={saveCategory}
-          savedPassageCategories={savedPassageCategories}
-          saveTitle={saveTitle}
-          showFields={appMode === "bible"}
-          onSaveCategoryChange={onSaveCategoryChange}
-          onSaveCurrentPassage={onSaveCurrentPassage}
-          onSaveTitleChange={onSaveTitleChange}
-        />
-      )}
     </section>
   );
 }

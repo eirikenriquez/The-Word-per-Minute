@@ -1,6 +1,8 @@
 import { BibleChapterReader } from "./components/BibleChapterReader";
 import { BibleReaderControls } from "./components/BibleReaderControls";
+import { BibleSaveDock, type BibleSaveFormProps } from "./components/BibleSaveDock";
 import type { BibleChapter, BookSummary, Translation } from "../../shared/types/verse";
+import { formatChapterReference, formatSelectedVerseReference } from "../../shared/utils/passageReference";
 
 export type BiblePageProps = {
   bibleBooks: BookSummary[];
@@ -11,6 +13,7 @@ export type BiblePageProps = {
   selectedBibleChapter: number;
   selectedTranslationId: string;
   selectedVerseNumbers: number[];
+  saveControls: BibleSaveFormProps;
   translations: Translation[];
   onClearBibleSelection: () => void;
   onRandomFeaturedReaderPassage: () => void;
@@ -34,6 +37,7 @@ export function BiblePage({
   selectedBibleChapter,
   selectedTranslationId,
   selectedVerseNumbers,
+  saveControls,
   translations,
   onClearBibleSelection,
   onRandomFeaturedReaderPassage,
@@ -43,6 +47,16 @@ export function BiblePage({
   onSelectReaderVerse,
   onSelectTranslation,
 }: BiblePageProps) {
+  const passageReference = selectedBibleBook
+    ? selectedVerseNumbers.length
+      ? formatSelectedVerseReference(
+          selectedBibleBook.name,
+          selectedBibleChapter,
+          selectedVerseNumbers,
+        )
+      : formatChapterReference(selectedBibleBook.name, selectedBibleChapter)
+    : "Bible passage";
+
   return (
     <div className="grid gap-8">
       <BibleReaderControls
@@ -57,13 +71,17 @@ export function BiblePage({
         onSelectChapter={onSelectBibleChapter}
         onSelectTranslation={onSelectTranslation}
       />
+      <BibleSaveDock
+        {...saveControls}
+        passageReference={passageReference}
+        selectedVerseCount={selectedVerseNumbers.length}
+        onClearSelection={onClearBibleSelection}
+      />
       <BibleChapterReader
         chapter={bibleChapter}
         focusSelectedVerseKey={focusSelectedVerseKey}
-        selectedBook={selectedBibleBook}
         selectedChapter={selectedBibleChapter}
         selectedVerseNumbers={selectedVerseNumbers}
-        onClearSelection={onClearBibleSelection}
         onSelectRange={onSelectReaderRange}
         onSelectVerse={onSelectReaderVerse}
       />

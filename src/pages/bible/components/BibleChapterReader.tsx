@@ -1,14 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import type { BibleChapter, BookSummary } from "../../../shared/types/verse";
-import { Button } from "../../../shared/ui/Button";
+import type { BibleChapter } from "../../../shared/types/verse";
 
 type BibleChapterReaderProps = {
   chapter: BibleChapter | null;
   focusSelectedVerseKey: number;
-  selectedBook?: BookSummary;
   selectedChapter: number;
   selectedVerseNumbers: number[];
-  onClearSelection: () => void;
   onSelectRange: (startVerse: number, endVerse: number) => void;
   onSelectVerse: (verseNumber: number) => void;
 };
@@ -20,18 +17,14 @@ type BibleChapterReaderProps = {
 export function BibleChapterReader({
   chapter,
   focusSelectedVerseKey,
-  selectedBook,
   selectedChapter,
   selectedVerseNumbers,
-  onClearSelection,
   onSelectRange,
   onSelectVerse,
 }: BibleChapterReaderProps) {
   const [dragStartVerse, setDragStartVerse] = useState<number | null>(null);
   const [hasDragged, setHasDragged] = useState(false);
-  const shouldSkipNextClear = useRef(false);
   const verseButtonRefs = useRef(new Map<number, HTMLButtonElement>());
-  const hasSelectedVerses = selectedVerseNumbers.length > 0;
 
   useEffect(() => {
     if (
@@ -53,7 +46,7 @@ export function BibleChapterReader({
     });
   }, [chapter, focusSelectedVerseKey, selectedChapter, selectedVerseNumbers]);
 
-  if (!chapter || !selectedBook) return null;
+  if (!chapter) return null;
 
   function startVerseSelection(verseNumber: number) {
     setDragStartVerse(verseNumber);
@@ -72,7 +65,6 @@ export function BibleChapterReader({
 
     if (hasDragged) {
       onSelectRange(dragStartVerse, verseNumber);
-      shouldSkipNextClear.current = true;
     } else {
       onSelectVerse(verseNumber);
     }
@@ -87,38 +79,14 @@ export function BibleChapterReader({
   }
 
   return (
-    <section className="mx-auto grid w-full max-w-5xl gap-5">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-ink">
-            {selectedBook.name} {selectedChapter}
-          </h2>
-          <p className="mt-1 text-sm text-ink-subtle">
-            Select individual verses or drag across a range.
-          </p>
-        </div>
-        <Button
-          className="w-fit"
-          disabled={!hasSelectedVerses}
-          variant="ghost"
-          onClick={onClearSelection}
-        >
-          Clear Selection
-        </Button>
-      </div>
+    <div className="mx-auto grid w-full max-w-5xl gap-5">
+      <p className="text-sm text-ink-subtle">
+        Click a verse to select or deselect it. Drag across verses to select a range.
+      </p>
 
       <div
         className="text-xl leading-10 text-ink-muted sm:text-2xl sm:leading-[3rem]"
         role="presentation"
-        onClick={() => {
-          if (shouldSkipNextClear.current) {
-            shouldSkipNextClear.current = false;
-            return;
-          }
-
-          onClearSelection();
-          cancelDragState();
-        }}
         onPointerLeave={cancelDragState}
         onPointerUp={cancelDragState}
       >
@@ -127,6 +95,7 @@ export function BibleChapterReader({
 
           return (
             <button
+              aria-pressed={isSelected}
               className={`mr-1 rounded px-1 text-left transition ${
                 isSelected
                   ? "bg-selected text-selected-ink ring-1 ring-accent-line"
@@ -142,7 +111,12 @@ export function BibleChapterReader({
                 verseButtonRefs.current.delete(verse.number);
               }}
               type="button"
-              onClick={(event) => event.stopPropagation()}
+              onKeyDown={(event) => {
+                if (event.key !== "Enter" && event.key !== " ") return;
+
+                event.preventDefault();
+                onSelectVerse(verse.number);
+              }}
               onPointerDown={(event) => {
                 event.preventDefault();
                 event.stopPropagation();
@@ -160,6 +134,6 @@ export function BibleChapterReader({
           );
         })}
       </div>
-    </section>
+    </div>
   );
 }
