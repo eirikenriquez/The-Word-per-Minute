@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import type { BibleChapter, BookSummary } from "../../../shared/types/verse";
-import { Button } from "../../../shared/ui/Button";
 
 type BibleChapterReaderProps = {
   chapter: BibleChapter | null;
@@ -8,7 +7,6 @@ type BibleChapterReaderProps = {
   selectedBook?: BookSummary;
   selectedChapter: number;
   selectedVerseNumbers: number[];
-  onClearSelection: () => void;
   onSelectRange: (startVerse: number, endVerse: number) => void;
   onSelectVerse: (verseNumber: number) => void;
 };
@@ -23,14 +21,12 @@ export function BibleChapterReader({
   selectedBook,
   selectedChapter,
   selectedVerseNumbers,
-  onClearSelection,
   onSelectRange,
   onSelectVerse,
 }: BibleChapterReaderProps) {
   const [dragStartVerse, setDragStartVerse] = useState<number | null>(null);
   const [hasDragged, setHasDragged] = useState(false);
   const verseButtonRefs = useRef(new Map<number, HTMLButtonElement>());
-  const hasSelectedVerses = selectedVerseNumbers.length > 0;
 
   useEffect(() => {
     if (
@@ -86,28 +82,13 @@ export function BibleChapterReader({
 
   return (
     <section className="mx-auto grid w-full max-w-5xl gap-5">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-ink">
-            {selectedBook.name} {selectedChapter}
-          </h2>
-          <p className="mt-1 text-sm text-ink-subtle">
-            Click a verse to select or deselect it. Drag across verses to select a range.
-          </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <p aria-live="polite" className="text-sm text-ink-subtle">
-            {selectedVerseNumbers.length} {selectedVerseNumbers.length === 1 ? "verse" : "verses"} selected
-          </p>
-          <Button
-            className="w-fit"
-            disabled={!hasSelectedVerses}
-            variant="ghost"
-            onClick={onClearSelection}
-          >
-            Clear Selection
-          </Button>
-        </div>
+      <div>
+        <h2 className="text-2xl font-bold text-ink">
+          {selectedBook.name} {selectedChapter}
+        </h2>
+        <p className="mt-1 text-sm text-ink-subtle">
+          Click a verse to select or deselect it. Drag across verses to select a range.
+        </p>
       </div>
 
       <div

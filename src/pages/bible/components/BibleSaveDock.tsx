@@ -1,9 +1,9 @@
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { BookmarkIcon } from "@heroicons/react/24/outline";
 import { useRef, useState } from "react";
-import { Button } from "../../shared/ui/Button";
+import { Button } from "../../../shared/ui/Button";
 
-type PassageSaveControlsProps = {
+export type BibleSaveFormProps = {
   canSaveCurrentPassage: boolean;
   isCurrentPassageSaved: boolean;
   isSavingCurrentPassage: boolean;
@@ -16,23 +16,33 @@ type PassageSaveControlsProps = {
   onSaveTitleChange: (title: string) => void;
 };
 
+type BibleSaveDockProps = BibleSaveFormProps & {
+  passageReference: string;
+  selectedVerseCount: number;
+  onClearSelection: () => void;
+};
+
 /**
- * Opens the Bible passage save form without permanently taking up header space.
+ * Keeps the current Bible save target and actions available while reading.
  */
-export function PassageSaveControls({
+export function BibleSaveDock({
   canSaveCurrentPassage,
   isCurrentPassageSaved,
   isSavingCurrentPassage,
+  passageReference,
   saveError,
   saveCategory,
   savedPassageCategories,
   saveTitle,
+  selectedVerseCount,
+  onClearSelection,
   onSaveCategoryChange,
   onSaveCurrentPassage,
   onSaveTitleChange,
-}: PassageSaveControlsProps) {
+}: BibleSaveDockProps) {
   const [isOpen, setIsOpen] = useState(false);
   const titleInputRef = useRef<HTMLInputElement>(null);
+  const hasSelectedVerses = selectedVerseCount > 0;
 
   async function savePassage() {
     const didSave = await onSaveCurrentPassage();
@@ -40,14 +50,32 @@ export function PassageSaveControls({
   }
 
   return (
-    <>
-      <div className="mt-4 flex justify-end border-t border-line pt-4">
-        <SaveButton
-          disabled={!canSaveCurrentPassage || isCurrentPassageSaved || isSavingCurrentPassage}
-          isSaved={isCurrentPassageSaved}
-          isSaving={isSavingCurrentPassage}
-          onSave={() => setIsOpen(true)}
-        />
+    <section
+      aria-label="Bible passage save actions"
+      className="sticky top-48 z-30 bg-canvas sm:top-40 lg:top-24"
+    >
+      <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 border-y border-line py-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <p className="truncate text-sm font-semibold text-ink">{passageReference}</p>
+          <p aria-live="polite" className="mt-0.5 text-sm text-ink-subtle">
+            {hasSelectedVerses
+              ? `${selectedVerseCount} ${selectedVerseCount === 1 ? "verse" : "verses"} selected`
+              : "Whole chapter"}
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <Button disabled={!hasSelectedVerses} variant="ghost" onClick={onClearSelection}>
+            Clear Selection
+          </Button>
+          <SaveButton
+            disabled={!canSaveCurrentPassage || isCurrentPassageSaved || isSavingCurrentPassage}
+            isSaved={isCurrentPassageSaved}
+            isSaving={isSavingCurrentPassage}
+            label={hasSelectedVerses ? "Save Selection" : "Save Chapter"}
+            onSave={() => setIsOpen(true)}
+          />
+        </div>
       </div>
 
       <Dialog
@@ -110,12 +138,13 @@ export function PassageSaveControls({
               disabled={!canSaveCurrentPassage || isCurrentPassageSaved || isSavingCurrentPassage}
               isSaved={isCurrentPassageSaved}
               isSaving={isSavingCurrentPassage}
+              label="Save Passage"
               onSave={savePassage}
             />
           </div>
         </DialogPanel>
       </Dialog>
-    </>
+    </section>
   );
 }
 
@@ -123,10 +152,11 @@ type SaveButtonProps = {
   disabled: boolean;
   isSaved: boolean;
   isSaving: boolean;
+  label: string;
   onSave: () => void | Promise<void>;
 };
 
-function SaveButton({ disabled, isSaved, isSaving, onSave }: SaveButtonProps) {
+function SaveButton({ disabled, isSaved, isSaving, label, onSave }: SaveButtonProps) {
   return (
     <Button
       disabled={disabled}
@@ -136,7 +166,7 @@ function SaveButton({ disabled, isSaved, isSaving, onSave }: SaveButtonProps) {
       }}
     >
       <BookmarkIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
-      {isSaving ? "Saving..." : isSaved ? "Saved" : "Save Passage"}
+      {isSaving ? "Saving..." : isSaved ? "Saved" : label}
     </Button>
   );
 }

@@ -199,20 +199,9 @@ export function useAppController() {
       : null);
 
   const headerProps: AppHeaderProps = {
-    appMode,
-    canSaveCurrentPassage: Boolean(saveInput),
     headerReference,
     headerSubtitle,
     headerTitle,
-    isCurrentPassageSaved,
-    isSavingCurrentPassage: savedLibrary.isSaving,
-    saveError: appMode === "bible" ? savedLibrary.mutationError : null,
-    saveCategory,
-    savedPassageCategories,
-    saveTitle,
-    onSaveCategoryChange: setSaveCategory,
-    onSaveCurrentPassage: saveCurrentPassage,
-    onSaveTitleChange: setSaveTitle,
   };
 
   const pageRoutesProps: AppRoutesProps = {
@@ -220,6 +209,18 @@ export function useAppController() {
       appActions,
       bibleLibrary,
       readerSelection,
+      saveControls: {
+        canSaveCurrentPassage: Boolean(saveInput),
+        isCurrentPassageSaved,
+        isSavingCurrentPassage: savedLibrary.isSaving,
+        saveError: savedLibrary.mutationError,
+        saveCategory,
+        savedPassageCategories,
+        saveTitle,
+        onSaveCategoryChange: setSaveCategory,
+        onSaveCurrentPassage: saveCurrentPassage,
+        onSaveTitleChange: setSaveTitle,
+      },
     }),
     homePageProps: createHomePageProps({
       appActions,

@@ -18,10 +18,12 @@ export function createBiblePageProps({
   appActions,
   bibleLibrary,
   readerSelection,
+  saveControls,
 }: {
   appActions: AppActions;
   bibleLibrary: ReturnType<typeof useVerseLibrary>;
   readerSelection: ReturnType<typeof useReaderSelection>;
+  saveControls: BiblePageProps["saveControls"];
 }): BiblePageProps {
   return {
     bibleBooks: bibleLibrary.books,
@@ -32,6 +34,7 @@ export function createBiblePageProps({
     selectedBibleChapter: bibleLibrary.selectedChapter,
     selectedTranslationId: bibleLibrary.selectedTranslationId,
     selectedVerseNumbers: readerSelection.selectedVerseNumbers,
+    saveControls,
     translations: bibleLibrary.translations,
     onClearBibleSelection: appActions.clearBibleSelection,
     onRandomFeaturedReaderPassage: appActions.randomFeaturedReaderPassage,
