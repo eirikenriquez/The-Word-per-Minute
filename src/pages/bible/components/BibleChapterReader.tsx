@@ -29,7 +29,6 @@ export function BibleChapterReader({
 }: BibleChapterReaderProps) {
   const [dragStartVerse, setDragStartVerse] = useState<number | null>(null);
   const [hasDragged, setHasDragged] = useState(false);
-  const shouldSkipNextClear = useRef(false);
   const verseButtonRefs = useRef(new Map<number, HTMLButtonElement>());
   const hasSelectedVerses = selectedVerseNumbers.length > 0;
 
@@ -72,7 +71,6 @@ export function BibleChapterReader({
 
     if (hasDragged) {
       onSelectRange(dragStartVerse, verseNumber);
-      shouldSkipNextClear.current = true;
     } else {
       onSelectVerse(verseNumber);
     }
@@ -94,31 +92,27 @@ export function BibleChapterReader({
             {selectedBook.name} {selectedChapter}
           </h2>
           <p className="mt-1 text-sm text-ink-subtle">
-            Select individual verses or drag across a range.
+            Click a verse to select or deselect it. Drag across verses to select a range.
           </p>
         </div>
-        <Button
-          className="w-fit"
-          disabled={!hasSelectedVerses}
-          variant="ghost"
-          onClick={onClearSelection}
-        >
-          Clear Selection
-        </Button>
+        <div className="flex items-center gap-3">
+          <p aria-live="polite" className="text-sm text-ink-subtle">
+            {selectedVerseNumbers.length} {selectedVerseNumbers.length === 1 ? "verse" : "verses"} selected
+          </p>
+          <Button
+            className="w-fit"
+            disabled={!hasSelectedVerses}
+            variant="ghost"
+            onClick={onClearSelection}
+          >
+            Clear Selection
+          </Button>
+        </div>
       </div>
 
       <div
         className="text-xl leading-10 text-ink-muted sm:text-2xl sm:leading-[3rem]"
         role="presentation"
-        onClick={() => {
-          if (shouldSkipNextClear.current) {
-            shouldSkipNextClear.current = false;
-            return;
-          }
-
-          onClearSelection();
-          cancelDragState();
-        }}
         onPointerLeave={cancelDragState}
         onPointerUp={cancelDragState}
       >
@@ -127,6 +121,7 @@ export function BibleChapterReader({
 
           return (
             <button
+              aria-pressed={isSelected}
               className={`mr-1 rounded px-1 text-left transition ${
                 isSelected
                   ? "bg-selected text-selected-ink ring-1 ring-accent-line"
@@ -142,7 +137,12 @@ export function BibleChapterReader({
                 verseButtonRefs.current.delete(verse.number);
               }}
               type="button"
-              onClick={(event) => event.stopPropagation()}
+              onKeyDown={(event) => {
+                if (event.key !== "Enter" && event.key !== " ") return;
+
+                event.preventDefault();
+                onSelectVerse(verse.number);
+              }}
               onPointerDown={(event) => {
                 event.preventDefault();
                 event.stopPropagation();
