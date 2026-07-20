@@ -32,7 +32,7 @@ export function useSavePassageForm({
   }, [saveInput]);
 
   async function saveCurrentPassage() {
-    if (!saveInput) return;
+    if (!saveInput) return false;
 
     const passageToSave =
       appMode === "bible"
@@ -43,7 +43,8 @@ export function useSavePassageForm({
           }
         : saveInput;
 
-    await savePassage(passageToSave);
+    const savedPassage = await savePassage(passageToSave);
+    return Boolean(savedPassage);
   }
 
   return {

@@ -1,4 +1,6 @@
+import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { BookmarkIcon } from "@heroicons/react/24/outline";
+import { useRef, useState } from "react";
 import { Button } from "../../shared/ui/Button";
 
 type PassageSaveControlsProps = {
@@ -9,14 +11,13 @@ type PassageSaveControlsProps = {
   saveCategory: string;
   savedPassageCategories: string[];
   saveTitle: string;
-  showFields: boolean;
   onSaveCategoryChange: (category: string) => void;
-  onSaveCurrentPassage: () => void;
+  onSaveCurrentPassage: () => Promise<boolean>;
   onSaveTitleChange: (title: string) => void;
 };
 
 /**
- * Header controls for saving the current featured or Bible-selected passage.
+ * Opens the Bible passage save form without permanently taking up header space.
  */
 export function PassageSaveControls({
   canSaveCurrentPassage,
@@ -26,66 +27,95 @@ export function PassageSaveControls({
   saveCategory,
   savedPassageCategories,
   saveTitle,
-  showFields,
   onSaveCategoryChange,
   onSaveCurrentPassage,
   onSaveTitleChange,
 }: PassageSaveControlsProps) {
-  if (!showFields) {
-    return (
+  const [isOpen, setIsOpen] = useState(false);
+  const titleInputRef = useRef<HTMLInputElement>(null);
+
+  async function savePassage() {
+    const didSave = await onSaveCurrentPassage();
+    if (didSave) setIsOpen(false);
+  }
+
+  return (
+    <>
       <div className="mt-4 flex justify-end border-t border-line pt-4">
         <SaveButton
           disabled={!canSaveCurrentPassage || isCurrentPassageSaved || isSavingCurrentPassage}
           isSaved={isCurrentPassageSaved}
           isSaving={isSavingCurrentPassage}
-          onSave={onSaveCurrentPassage}
+          onSave={() => setIsOpen(true)}
         />
-        {saveError && (
-          <p className="mt-2 text-sm text-red-600 dark:text-red-300">
-            {saveError}
-          </p>
-        )}
       </div>
-    );
-  }
 
-  return (
-    <div className="mt-4 grid gap-3 border-t border-line pt-4 sm:grid-cols-[1fr_12rem_auto] sm:items-end">
-      <label className="grid gap-1">
-        <span className="text-sm font-medium text-ink-muted">Saved Title</span>
-        <input
-          className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition placeholder:text-ink-subtle focus:border-accent focus:ring-2 focus:ring-accent-soft"
-          placeholder="Name this saved passage"
-          value={saveTitle}
-          onChange={(event) => onSaveTitleChange(event.target.value)}
-        />
-      </label>
-      <label className="grid gap-1">
-        <span className="text-sm font-medium text-ink-muted">Category</span>
-        <select
-          className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft"
-          value={saveCategory}
-          onChange={(event) => onSaveCategoryChange(event.target.value)}
+      <Dialog
+        className="fixed inset-0 z-50 grid place-items-center px-4 py-6"
+        initialFocus={titleInputRef}
+        open={isOpen}
+        onClose={setIsOpen}
+      >
+        <DialogPanel
+          transition
+          className="grid w-full max-w-lg gap-5 rounded-xl border border-line bg-surface p-5 text-left shadow-2xl transition duration-150 ease-out data-closed:translate-y-1 data-closed:scale-[0.98] data-closed:opacity-0 data-enter:duration-150 data-leave:duration-100 data-leave:ease-in motion-reduce:transform-none motion-reduce:transition-none"
         >
-          {savedPassageCategories.map((category) => (
-            <option key={category} value={category}>
-              {category}
-            </option>
-          ))}
-        </select>
-      </label>
-      <SaveButton
-        disabled={!canSaveCurrentPassage || isCurrentPassageSaved || isSavingCurrentPassage}
-        isSaved={isCurrentPassageSaved}
-        isSaving={isSavingCurrentPassage}
-        onSave={onSaveCurrentPassage}
-      />
-      {saveError && (
-        <p className="text-sm text-red-600 dark:text-red-300 sm:col-span-3">
-          {saveError}
-        </p>
-      )}
-    </div>
+          <div className="grid gap-1">
+            <DialogTitle className="text-lg font-semibold text-ink">
+              Save Bible passage
+            </DialogTitle>
+            <p className="text-sm text-ink-muted">
+              Review the title and category before adding this passage to your library.
+            </p>
+          </div>
+
+          <div className="grid gap-4">
+            <label className="grid gap-1">
+              <span className="text-sm font-medium text-ink-muted">Saved Title</span>
+              <input
+                className="rounded-md border border-line-strong bg-canvas px-3 py-2 text-sm text-ink outline-none transition placeholder:text-ink-subtle focus:border-accent focus:ring-2 focus:ring-accent-soft"
+                placeholder="Name this saved passage"
+                ref={titleInputRef}
+                value={saveTitle}
+                onChange={(event) => onSaveTitleChange(event.target.value)}
+              />
+            </label>
+            <label className="grid gap-1">
+              <span className="text-sm font-medium text-ink-muted">Category</span>
+              <select
+                className="rounded-md border border-line-strong bg-canvas px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft"
+                value={saveCategory}
+                onChange={(event) => onSaveCategoryChange(event.target.value)}
+              >
+                {savedPassageCategories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          {saveError && (
+            <p className="text-sm text-red-700 dark:text-red-300" role="alert">
+              {saveError}
+            </p>
+          )}
+
+          <div className="flex flex-wrap justify-end gap-2">
+            <Button variant="ghost" onClick={() => setIsOpen(false)}>
+              Cancel
+            </Button>
+            <SaveButton
+              disabled={!canSaveCurrentPassage || isCurrentPassageSaved || isSavingCurrentPassage}
+              isSaved={isCurrentPassageSaved}
+              isSaving={isSavingCurrentPassage}
+              onSave={savePassage}
+            />
+          </div>
+        </DialogPanel>
+      </Dialog>
+    </>
   );
 }
 

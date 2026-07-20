@@ -14,7 +14,7 @@ export type AppHeaderProps = {
   savedPassageCategories: string[];
   saveTitle: string;
   onSaveCategoryChange: (category: string) => void;
-  onSaveCurrentPassage: () => void;
+  onSaveCurrentPassage: () => Promise<boolean>;
   onSaveTitleChange: (title: string) => void;
 };
 
@@ -64,7 +64,6 @@ export function AppHeader({
           saveCategory={saveCategory}
           savedPassageCategories={savedPassageCategories}
           saveTitle={saveTitle}
-          showFields={appMode === "bible"}
           onSaveCategoryChange={onSaveCategoryChange}
           onSaveCurrentPassage={onSaveCurrentPassage}
           onSaveTitleChange={onSaveTitleChange}
