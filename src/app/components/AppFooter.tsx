@@ -22,7 +22,7 @@ export function AppFooter() {
           </Link>
 
           <p className="max-w-xl text-sm leading-6 text-ink-muted">
-            A quiet place to read Scripture, save meaningful passages, and practise typing.
+            A quiet place to read Scripture, save meaningful passages, and practice typing.
           </p>
 
           <p className="text-xs text-ink-subtle">
