@@ -1,8 +1,19 @@
-# The Word per Minute
+<h1 align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="public/brand/wordmark-dark.svg" />
+    <img src="public/brand/wordmark-light.svg" alt="The Word per Minute" width="520" />
+  </picture>
+</h1>
 
-A scripture-first typing practice app for slowing down and engaging more closely with Bible passages.
+<p align="center">
+  A scripture-first typing practice app for slowing down and engaging more closely with Bible passages.
+</p>
 
-**[Use The Word per Minute](https://thewordperminute.com/)**
+<p align="center">
+  <strong><a href="https://thewordperminute.com/">Use The Word per Minute</a></strong>
+</p>
+
+![The Word per Minute home page](docs/images/home-page.png)
 
 This repository contains the application source code, Supabase schema, bundled scripture data, and technical documentation behind the public application.
 
@@ -21,6 +32,12 @@ Current priorities and known limitations are tracked in [`docs/product-status.md
 - Add optional reflections to signed-in practice history.
 - Reopen saved passages in their original Bible context.
 - Use a keyboard-focused interface with light and dark themes.
+
+## Product Preview
+
+The practice experience keeps the selected passage at the centre of the page while providing live progress and typing feedback.
+
+![Typing a Bible passage in The Word per Minute](docs/images/practice-page.png)
 
 ## Technology
 
