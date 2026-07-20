@@ -38,19 +38,20 @@ export function HomePage({
       <section className="grid gap-8 py-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-center lg:py-12">
         <div className="rise-in max-w-3xl">
           <p className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
-            Quiet typing practice
+            Bible typing practice
           </p>
           <h2 className="mt-3 text-4xl font-bold text-ink sm:text-5xl">
-            Slow down with scripture and build your rhythm.
+            Slow down with Scripture and build your rhythm.
           </h2>
           <p className="mt-5 max-w-2xl text-base leading-7 text-ink-muted">
-            Start with a passage chosen for you, read through a chapter, or
-            return to verses you have saved for memorisation.
+            Type Bible passages at your own pace to build accuracy and rhythm
+            while spending focused time in Scripture. Begin with a curated
+            passage, choose a theme, or practice something you have saved.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Button variant="primary" onClick={onStartFeaturedPractice}>
               <SparklesIcon aria-hidden="true" className="h-5 w-5 shrink-0" />
-              Start practising
+              Start typing
             </Button>
             <Button variant="secondary" onClick={onOpenBible}>
               <BookOpenIcon aria-hidden="true" className="h-5 w-5 shrink-0" />
