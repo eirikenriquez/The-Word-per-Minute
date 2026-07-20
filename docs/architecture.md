@@ -59,10 +59,10 @@ Route paths are defined in `src/app/routes/appRoutePaths.ts` and rendered throug
 
 | Path | Page | Responsibility |
 | --- | --- | --- |
-| `/` | Home | Introduces the product and routes users into reading, practice, Library, or Profile. |
+| `/` | Home | Introduces the Bible typing experience and routes users into typing, reading, themed passage selection, or account creation. |
 | `/practice` | Practice | Selects a featured or saved source and runs the typing session. |
 | `/bible` | Bible | Loads chapters, manages verse selection, and provides passage-saving context. |
-| `/library` | Library | Filters, edits, removes, reads, and practises saved passages. |
+| `/library` | Library | Filters, edits, removes, reads, and practices saved passages. |
 | `/profile` | Profile | Presents account progress, paginated attempt history, and reflections. |
 
 Unknown paths redirect to Home. Vercel rewrites direct route requests to `index.html`, allowing React Router to resolve the URL after the app loads.

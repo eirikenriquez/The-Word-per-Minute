@@ -13,6 +13,12 @@ During public alpha:
 
 ## [Unreleased]
 
+### Changed
+
+- Reworked Home to explain the Bible typing experience more clearly, lead with direct typing and reading actions, and move themed passage choices earlier in the page flow.
+- Refined the signed-out account invitation as a quiet closing section with clearer syncing and practice-history benefits.
+- Standardized user-facing application copy on the American `practice` spelling.
+
 ## [0.1.0] - 2026-07-16
 
 This is the first versioned public-alpha baseline. The application had already undergone substantial development before SemVer-inspired version tracking began; that earlier work remains preserved in the development history below.

@@ -238,7 +238,7 @@ Adding another translation is not only a UI change. Before scripture moves to ho
 - book and verse identity across translation-specific differences,
 - storage and delivery strategy,
 - saved-passage behaviour when a translation becomes unavailable,
-- and whether users can practise or reopen a passage in a different translation.
+- and whether users can practice or reopen a passage in a different translation.
 
 The current saved-passage and practice-attempt records include translation and passage identity fields so this work can remain incremental. They do not yet represent a complete multi-translation content model.
 

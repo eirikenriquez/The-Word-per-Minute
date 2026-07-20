@@ -22,7 +22,7 @@ The exact current release and previous changes are tracked in [`CHANGELOG.md`](.
 
 - Discover curated passages through broad scripture themes.
 - Read locally bundled World English Bible chapters and select verse ranges.
-- Practise featured or saved passages through one continuous, keyboard-focused typing surface.
+- Practice featured or saved passages through one continuous, keyboard-focused typing surface.
 - Receive live WPM, accuracy, progress, and completion feedback.
 - Save passages in the current browser as a guest.
 - Sync saved passages through a signed-in Supabase account.

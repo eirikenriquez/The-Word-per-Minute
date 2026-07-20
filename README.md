@@ -14,7 +14,7 @@ Current priorities and known limitations are tracked in [`docs/product-status.md
 
 ## Core Capabilities
 
-- Practise curated or personally saved Bible passages through an inline typing surface.
+- Practice curated or personally saved Bible passages through an inline typing surface.
 - Read locally bundled World English Bible chapters and select verse ranges.
 - Save passages in the current browser as a guest or sync them through an account.
 - Track WPM, accuracy, completed attempts, and all-time account progress.
