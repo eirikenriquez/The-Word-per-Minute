@@ -103,19 +103,21 @@ export function HomePage({
       </section>
 
       {!isSignedIn && (
-        <section className="rise-in rise-in-delay-3 mx-auto grid max-w-2xl justify-items-center gap-4 border-t border-line pt-8 text-center">
-          <div className="grid gap-2">
-            <h3 className="font-semibold text-ink">
-              Keep your passages and progress with you.
-            </h3>
-            <p className="text-sm leading-6 text-ink-muted">
-              Create a free account to sync saved passages and start keeping a
-              cloud practice history.
-            </p>
+        <section className="rise-in rise-in-delay-3 border-t border-line py-10">
+          <div className="mx-auto grid max-w-xl justify-items-center gap-5 text-center">
+            <div className="grid gap-2">
+              <h3 className="text-xl font-semibold text-ink">
+                Keep your practice with you.
+              </h3>
+              <p className="text-base leading-7 text-ink-muted">
+                Create a free account to sync saved passages and keep your
+                practice history across devices.
+              </p>
+            </div>
+            <Button variant="primary" onClick={onCreateAccount}>
+              Create free account
+            </Button>
           </div>
-          <Button variant="primary" onClick={onCreateAccount}>
-            Create account
-          </Button>
         </section>
       )}
     </section>
