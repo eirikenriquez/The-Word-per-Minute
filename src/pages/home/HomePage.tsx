@@ -42,7 +42,8 @@ export function HomePage({
       <section className="grid gap-8 py-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-center lg:py-12">
         <div className="rise-in max-w-3xl">
           <h1 className="text-4xl font-bold text-ink sm:text-5xl">
-            Type a Bible passage, one word at a time.
+            Type a Bible passage,
+            <span className="block">one word at a time.</span>
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-7 text-ink-muted">
             Choose from curated passages, browse the Bible, or return to
@@ -86,9 +87,6 @@ export function HomePage({
               Pick a theme when you want a more focused passage.
             </p>
           </div>
-          <span className="text-sm font-medium text-ink-subtle">
-            {featuredHomeCategories.length} themes
-          </span>
         </div>
         <div className="grid gap-x-4 gap-y-2 sm:grid-cols-2 lg:grid-cols-4">
           {featuredHomeCategories.map((category) => (
