@@ -33,6 +33,10 @@ export function HomePage({
     (total, category) => total + category.count,
     0,
   );
+  const secondaryStat = savedPassageCount > 0
+    ? { label: "Saved passages", value: savedPassageCount }
+    : { label: "Themes", value: featuredHomeCategories.length };
+
   return (
     <section className="grid gap-10">
       <section className="grid gap-8 py-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-center lg:py-12">
@@ -64,9 +68,9 @@ export function HomePage({
             </dd>
           </div>
           <div>
-            <dt className="text-sm font-medium text-ink-subtle">Saved passages</dt>
+            <dt className="text-sm font-medium text-ink-subtle">{secondaryStat.label}</dt>
             <dd className="mt-1 text-4xl font-bold text-ink">
-              <CountUpNumber value={savedPassageCount} />
+              <CountUpNumber value={secondaryStat.value} />
             </dd>
           </div>
         </dl>
