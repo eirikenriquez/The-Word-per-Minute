@@ -43,9 +43,9 @@ export function ProfilePage({
           <p className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
             Account and progress
           </p>
-          <h2 className="text-3xl font-bold text-ink sm:text-4xl">
+          <h1 className="text-3xl font-bold text-ink sm:text-4xl">
             Progress
-          </h2>
+          </h1>
           <p className="max-w-2xl text-base leading-7 text-ink-muted">
             A quiet record of passages you have practiced and reflections you have kept.
           </p>
@@ -66,9 +66,9 @@ export function ProfilePage({
         <div className="grid gap-8 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start">
           <aside className="grid gap-6 border-y border-line py-5 lg:sticky lg:top-28 lg:border-y-0 lg:border-r lg:py-0 lg:pr-6">
             <section className="grid gap-2">
-              <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
                 Account
-              </h3>
+              </h2>
               <p className="break-words text-sm font-medium text-ink-muted">
                 {userEmail ?? "Account active"}
               </p>
@@ -79,9 +79,9 @@ export function ProfilePage({
 
             <section aria-busy={isLoadingPracticeSummary} className="grid gap-4">
               <div className="grid gap-2">
-                <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
+                <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
                   Overview
-                </h3>
+                </h2>
                 {practiceSummaryError && (
                   <p className="text-sm text-red-700 dark:text-red-300">
                     {practiceSummaryError}
@@ -111,7 +111,7 @@ export function ProfilePage({
 
           <section className="grid gap-5">
             <div>
-              <h3 className="text-xl font-semibold text-ink">Recent practice</h3>
+              <h2 className="text-xl font-semibold text-ink">Recent practice</h2>
               <p className="mt-1 text-sm text-ink-subtle">
                 Revisit the passages you have typed and what stood out along the way.
               </p>

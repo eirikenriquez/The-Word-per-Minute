@@ -40,9 +40,9 @@ export function HomePage({
           <p className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
             Bible typing practice
           </p>
-          <h2 className="mt-3 text-4xl font-bold text-ink sm:text-5xl">
+          <h1 className="mt-3 text-4xl font-bold text-ink sm:text-5xl">
             Slow down with Scripture and build your rhythm.
-          </h2>
+          </h1>
           <p className="mt-5 max-w-2xl text-base leading-7 text-ink-muted">
             Type Bible passages at your own pace to build accuracy and rhythm
             while spending focused time in Scripture. Begin with a curated
@@ -79,9 +79,9 @@ export function HomePage({
       <section className="rise-in rise-in-delay-2 grid gap-4 border-t border-line pt-8">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
               Practice by theme
-            </h3>
+            </h2>
             <p className="mt-2 text-sm text-ink-muted">
               Pick a theme when you want a more focused passage.
             </p>
@@ -106,9 +106,9 @@ export function HomePage({
         <section className="rise-in rise-in-delay-3 border-t border-line py-10">
           <div className="mx-auto grid max-w-xl justify-items-center gap-5 text-center">
             <div className="grid gap-2">
-              <h3 className="text-xl font-semibold text-ink">
+              <h2 className="text-xl font-semibold text-ink">
                 Keep your practice with you.
-              </h3>
+              </h2>
               <p className="text-base leading-7 text-ink-muted">
                 Create a free account to sync saved passages and keep your
                 practice history across devices.

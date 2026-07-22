@@ -36,7 +36,7 @@ export function PageShell({
     <div className="flex min-h-screen flex-col bg-canvas text-ink">
       <header className="sticky top-0 z-50 border-b border-line bg-surface/90 backdrop-blur">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
-          <h1>
+          <div>
             <Link className="inline-flex items-center gap-3" to="/" aria-label="The Word per Minute home">
               <span className="relative h-9 w-8 shrink-0" aria-hidden="true">
                 <img
@@ -52,7 +52,7 @@ export function PageShell({
               </span>
               <span className="text-xl font-bold tracking-normal text-ink">The Word per Minute</span>
             </Link>
-          </h1>
+          </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             {appMode && onSelectMode && (
