@@ -19,7 +19,7 @@ export function PracticeAttemptCard({ attempt }: PracticeAttemptCardProps) {
     <article className="rounded-lg border border-line bg-surface p-5">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h4 className="font-semibold text-ink">{attempt.passageReference}</h4>
+          <h3 className="font-semibold text-ink">{attempt.passageReference}</h3>
           <p className="mt-1 text-sm text-ink-subtle">
             {formatCompletedDate(attempt.completedAt)}
           </p>

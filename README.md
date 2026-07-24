@@ -45,7 +45,7 @@ The practice experience keeps the selected passage at the centre of the page whi
 | --- | --- |
 | Application | React, TypeScript, and Vite |
 | Routing | React Router |
-| Interface | Tailwind CSS, Headless UI, and Heroicons |
+| Interface | Tailwind CSS, Headless UI, Heroicons, and self-hosted Instrument Sans |
 | Authentication and cloud data | Supabase Auth and Postgres |
 | Hosting | Vercel |
 

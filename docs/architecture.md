@@ -280,6 +280,7 @@ The schema and security model are documented in [`data-and-security.md`](data-an
 The visual system uses semantic tokens rather than direct palette values for ordinary surfaces:
 
 - `theme.css` maps light and dark CSS variables into Tailwind v4 tokens through `@theme inline`.
+- `main.tsx` loads the self-hosted Instrument Sans variable font through Fontsource, and `theme.css` assigns it to Tailwind's default sans token.
 - `index.css` imports Tailwind and the theme, defines global motion helpers, reserves a stable scrollbar gutter, and honours `prefers-reduced-motion`.
 - `shared/ui/Button.tsx` supplies the ordinary action hierarchy.
 - Bespoke controls such as navigation tabs and verse buttons may retain local styling when their interaction differs from an ordinary button.

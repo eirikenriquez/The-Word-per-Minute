@@ -33,20 +33,22 @@ export function HomePage({
     (total, category) => total + category.count,
     0,
   );
+  const secondaryStat = savedPassageCount > 0
+    ? { label: "Saved passages", value: savedPassageCount }
+    : { label: "Themes", value: featuredHomeCategories.length };
+
   return (
     <section className="grid gap-10">
       <section className="grid gap-8 py-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-center lg:py-12">
         <div className="rise-in max-w-3xl">
-          <p className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
-            Bible typing practice
-          </p>
-          <h2 className="mt-3 text-4xl font-bold text-ink sm:text-5xl">
-            Slow down with Scripture and build your rhythm.
-          </h2>
+          <h1 className="text-4xl font-bold text-ink sm:text-5xl">
+            Type a Bible passage,
+            <span className="block">one word at a time.</span>
+          </h1>
           <p className="mt-5 max-w-2xl text-base leading-7 text-ink-muted">
-            Type Bible passages at your own pace to build accuracy and rhythm
-            while spending focused time in Scripture. Begin with a curated
-            passage, choose a theme, or practice something you have saved.
+            Choose from curated passages, browse the Bible, or return to
+            something you have saved. See your accuracy and progress as you
+            type.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Button variant="primary" onClick={onStartFeaturedPractice}>
@@ -55,7 +57,7 @@ export function HomePage({
             </Button>
             <Button variant="secondary" onClick={onOpenBible}>
               <BookOpenIcon aria-hidden="true" className="h-5 w-5 shrink-0" />
-              Read the Bible
+              Browse the Bible
             </Button>
           </div>
         </div>
@@ -68,9 +70,9 @@ export function HomePage({
             </dd>
           </div>
           <div>
-            <dt className="text-sm font-medium text-ink-subtle">Saved passages</dt>
+            <dt className="text-sm font-medium text-ink-subtle">{secondaryStat.label}</dt>
             <dd className="mt-1 text-4xl font-bold text-ink">
-              <CountUpNumber value={savedPassageCount} />
+              <CountUpNumber value={secondaryStat.value} />
             </dd>
           </div>
         </dl>
@@ -79,16 +81,13 @@ export function HomePage({
       <section className="rise-in rise-in-delay-2 grid gap-4 border-t border-line pt-8">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
               Practice by theme
-            </h3>
+            </h2>
             <p className="mt-2 text-sm text-ink-muted">
               Pick a theme when you want a more focused passage.
             </p>
           </div>
-          <span className="text-sm font-medium text-ink-subtle">
-            {featuredHomeCategories.length} themes
-          </span>
         </div>
         <div className="grid gap-x-4 gap-y-2 sm:grid-cols-2 lg:grid-cols-4">
           {featuredHomeCategories.map((category) => (
@@ -106,9 +105,9 @@ export function HomePage({
         <section className="rise-in rise-in-delay-3 border-t border-line py-10">
           <div className="mx-auto grid max-w-xl justify-items-center gap-5 text-center">
             <div className="grid gap-2">
-              <h3 className="text-xl font-semibold text-ink">
+              <h2 className="text-xl font-semibold text-ink">
                 Keep your practice with you.
-              </h3>
+              </h2>
               <p className="text-base leading-7 text-ink-muted">
                 Create a free account to sync saved passages and keep your
                 practice history across devices.
