@@ -47,7 +47,8 @@ export function HomePage({
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-7 text-ink-muted">
             Choose from curated passages, browse the Bible, or return to
-            something you have saved.
+            something you have saved. See your accuracy and progress as you
+            type.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Button variant="primary" onClick={onStartFeaturedPractice}>
