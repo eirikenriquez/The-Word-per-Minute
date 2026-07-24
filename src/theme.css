@@ -47,6 +47,12 @@
 }
 
 @theme inline {
+  --font-sans:
+    "Instrument Sans Variable",
+    ui-sans-serif,
+    system-ui,
+    sans-serif;
+
   --color-canvas: var(--app-canvas);
   --color-surface: var(--app-surface);
   --color-surface-muted: var(--app-surface-muted);
