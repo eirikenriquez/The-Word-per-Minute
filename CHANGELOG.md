@@ -13,6 +13,12 @@ During public alpha:
 
 ## [Unreleased]
 
+### Changed
+
+- Refined the Home hero copy, action wording, and signed-out statistics so the first screen explains how to begin and what feedback appears while typing.
+- Corrected heading hierarchy across the application shell, Home, Profile, and practice-history cards.
+- Adopted self-hosted Instrument Sans as the default interface typeface.
+
 ## [0.1.0] - 2026-07-20
 
 This is the first versioned public-alpha baseline. The application had already undergone substantial development before SemVer-inspired version tracking began; that earlier work remains preserved in the development history below.
