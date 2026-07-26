@@ -12,7 +12,7 @@ import type {
   Translation,
   TranslationListResponse,
 } from "../../types/bible";
-import { formatPassageReference, formatSelectedVerseReference } from "../../shared/utils/passageReference";
+import { formatPassageReference, formatSelectedVerseReference } from "../../utils/passageReference";
 
 type BibleManifest = {
   translationId: string;

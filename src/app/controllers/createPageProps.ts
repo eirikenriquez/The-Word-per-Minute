@@ -7,7 +7,7 @@ import type { HomeCategory, HomePageProps } from "../../pages/home/HomePage";
 import type { LibraryPageProps } from "../../pages/library/LibraryPage";
 import type { PracticePageProps } from "../../pages/practice/PracticePage";
 import type { ProfilePageProps } from "../../pages/profile/ProfilePage";
-import type { PracticeSource } from "../../shared/types/app";
+import type { PracticeSource } from "../../types/app";
 import type { PracticePassage } from "../../features/practice/types/practice";
 import type { createAppActions } from "./createAppActions";
 import type { usePracticeAttempts } from "../../features/practice/hooks/usePracticeAttempts";

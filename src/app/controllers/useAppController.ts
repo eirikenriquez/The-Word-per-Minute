@@ -11,7 +11,7 @@ import { usePracticeSession } from "../../features/practice/hooks/usePracticeSes
 import { usePassageSaveInput } from "../../features/saved-passages/hooks/usePassageSaveInput";
 import { useSavePassageForm } from "../../features/saved-passages/hooks/useSavePassageForm";
 import { useSavedPassages } from "../../features/saved-passages/hooks/useSavedPassages";
-import type { PracticeSource } from "../../shared/types/app";
+import type { PracticeSource } from "../../types/app";
 import type { PracticeCompletionResult } from "../../features/practice/types/practice";
 import { useAppDisplayState } from "../hooks/useAppDisplayState";
 import { useAppModeEffects } from "../hooks/useAppModeEffects";

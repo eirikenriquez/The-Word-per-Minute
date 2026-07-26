@@ -3,10 +3,10 @@ import {
   DEFAULT_SAVED_CATEGORY,
   getDefaultSavedCategory,
 } from "../constants/savedPassageCategories";
-import type { AppMode, PracticeSource } from "../../../shared/types/app";
+import type { AppMode, PracticeSource } from "../../../types/app";
 import type { PassageResponse } from "../../../types/passage";
 import type { BibleChapter, BookSummary, Translation } from "../../../types/bible";
-import { formatPassageReference, formatSelectedVerseReference } from "../../../shared/utils/passageReference";
+import { formatPassageReference, formatSelectedVerseReference } from "../../../utils/passageReference";
 import type { SavePassageInput } from "../types/savedPassage";
 
 type UsePassageSaveInputParams = {

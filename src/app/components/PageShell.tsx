@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { AuthControls, type AuthMenuRequest } from "../../features/auth/components/AuthControls";
 import type { AuthSessionState } from "../../features/auth/hooks/useAuthSession";
-import type { AppMode, Theme } from "../../shared/types/app";
+import type { AppMode, Theme } from "../../types/app";
 import { AppFooter } from "./AppFooter";
 import { AppNavigation } from "./AppNavigation";
 import { BackToTopButton } from "./BackToTopButton";

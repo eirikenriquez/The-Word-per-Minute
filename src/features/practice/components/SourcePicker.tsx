@@ -1,4 +1,4 @@
-import type { PracticeSource } from "../../../shared/types/app";
+import type { PracticeSource } from "../../../types/app";
 import type { SavedPassage } from "../../saved-passages/types/savedPassage";
 
 type SourcePickerProps = {

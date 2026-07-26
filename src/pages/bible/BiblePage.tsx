@@ -2,7 +2,7 @@ import { BibleChapterReader } from "../../features/bible-reader/components/Bible
 import { BibleReaderControls } from "../../features/bible-reader/components/BibleReaderControls";
 import { BibleSaveDock, type BibleSaveFormProps } from "./components/BibleSaveDock";
 import type { BibleChapter, BookSummary, Translation } from "../../types/bible";
-import { formatChapterReference, formatSelectedVerseReference } from "../../shared/utils/passageReference";
+import { formatChapterReference, formatSelectedVerseReference } from "../../utils/passageReference";
 
 export type BiblePageProps = {
   bibleBooks: BookSummary[];

@@ -4,7 +4,7 @@ import {
   DisclosurePanel,
 } from "@headlessui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
-import type { PracticeSource } from "../../../shared/types/app";
+import type { PracticeSource } from "../../../types/app";
 import type { SavedPassage } from "../../saved-passages/types/savedPassage";
 import { Button } from "../../../components/ui/Button";
 import { FeaturedSaveAction } from "./FeaturedSaveAction";
