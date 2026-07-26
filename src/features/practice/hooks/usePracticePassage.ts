@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import type { AppMode, PracticeSource } from "../../../shared/types/app";
 import type { PassageResponse } from "../../../types/passage";
-import type { PracticePassage } from "../../../shared/types/practice";
 import type { BibleChapter, BookSummary } from "../../../types/bible";
+import type { PracticePassage } from "../types/practice";
 import { buildPracticePassage } from "../utils/practicePassage";
 
 type UsePracticePassageParams = {

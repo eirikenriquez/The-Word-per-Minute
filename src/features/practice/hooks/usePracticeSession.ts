@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { PracticeCompletionResult, PracticePassage } from "../../../shared/types/practice";
+import type {
+  PracticeCompletionResult,
+  PracticePassage,
+} from "../types/practice";
 import {
   calculatePracticeSessionMetrics,
   countCorrectCharacters,

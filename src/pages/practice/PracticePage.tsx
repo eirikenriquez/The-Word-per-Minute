@@ -2,7 +2,10 @@ import { PracticeControls } from "./components/PracticeControls";
 import { PracticeLiveMetrics } from "./components/PracticeLiveMetrics";
 import { PracticePassageDisplay } from "./components/PracticePassageDisplay";
 import type { PracticeSource } from "../../shared/types/app";
-import type { PracticePassage, PracticeStatus } from "../../shared/types/practice";
+import type {
+  PracticePassage,
+  PracticeStatus,
+} from "../../features/practice/types/practice";
 import type { SavedPassage } from "../../features/saved-passages/types/savedPassage";
 
 export type PracticePageProps = {

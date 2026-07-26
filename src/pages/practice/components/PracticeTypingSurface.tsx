@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import { areCharactersEquivalent } from "../../../domain/practice/utils/typingMetrics";
-import type { PracticePassage } from "../../../shared/types/practice";
+import type { PracticePassage } from "../../../features/practice/types/practice";
+import { areCharactersEquivalent } from "../../../features/practice/utils/typingMetrics";
 
 type PracticeTypingSurfaceProps = {
   isComplete: boolean;

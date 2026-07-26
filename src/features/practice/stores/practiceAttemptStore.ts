@@ -3,7 +3,7 @@ import type {
   PracticeAttemptPage,
   PracticeAttemptSummary,
   SavePracticeAttemptInput,
-} from "../../../shared/types/practice";
+} from "../types/practice";
 
 export type PracticeAttemptStore = {
   getSummary: () => Promise<PracticeAttemptSummary>;

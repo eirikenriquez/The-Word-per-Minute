@@ -5,7 +5,7 @@ import type {
   PracticeAttemptPage,
   PracticeAttemptSummary,
   SavePracticeAttemptInput,
-} from "../../../shared/types/practice";
+} from "../types/practice";
 import type { PracticeAttemptStore } from "./practiceAttemptStore";
 
 type PracticeAttemptRow = Database["public"]["Tables"]["practice_attempts"]["Row"];

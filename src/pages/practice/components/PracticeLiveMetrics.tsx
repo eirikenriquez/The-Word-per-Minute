@@ -1,4 +1,4 @@
-import type { PracticeStatus } from "../../../shared/types/practice";
+import type { PracticeStatus } from "../../../features/practice/types/practice";
 
 type PracticeLiveMetricsProps = {
   accuracy: number;

@@ -1,4 +1,4 @@
-import type { PracticePassage, PracticeStatus } from "../../../shared/types/practice";
+import type { PracticePassage, PracticeStatus } from "../types/practice";
 
 type PracticeSessionMetricsInput = {
   passage: PracticePassage | undefined;

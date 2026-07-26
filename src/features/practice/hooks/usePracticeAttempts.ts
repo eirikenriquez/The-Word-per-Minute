@@ -4,7 +4,7 @@ import type {
   PracticeAttempt,
   PracticeAttemptSummary,
   SavePracticeAttemptInput,
-} from "../../../shared/types/practice";
+} from "../types/practice";
 import { createSupabasePracticeAttemptStore } from "../stores/supabasePracticeAttemptStore";
 
 const PRACTICE_ATTEMPT_PAGE_SIZE = 20;

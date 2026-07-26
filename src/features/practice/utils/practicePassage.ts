@@ -1,5 +1,5 @@
-import type { PracticePassage } from "../../../shared/types/practice";
 import type { BibleVerse } from "../../../types/bible";
+import type { PracticePassage } from "../types/practice";
 
 /**
  * Converts a verse selection into one continuous typing target.
