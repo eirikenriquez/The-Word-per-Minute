@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { verseService } from "../../../lib/bible/verseService";
-import type { FeaturedPassage, PassageResponse } from "../../../shared/types/featuredPassage";
+import type { PassageResponse } from "../../../types/passage";
 import { getErrorMessage } from "../../../utils/errors";
+import { featuredPassageService } from "../api/featuredPassageService";
+import type { FeaturedPassage } from "../types/featuredPassage";
 
 /**
  * Loads the curated featured-passage list and resolves the selected prompt
@@ -24,7 +25,7 @@ export function useFeaturedPassages() {
 
     async function loadPassages() {
       try {
-        const response = await verseService.getFeaturedPassages();
+        const response = await featuredPassageService.getFeaturedPassages();
         if (!isCurrent) return;
 
         setPassages(response.passages);
@@ -49,7 +50,7 @@ export function useFeaturedPassages() {
 
     async function loadPassage() {
       try {
-        const response = await verseService.getPassage(selectedPassageId);
+        const response = await featuredPassageService.getPassage(selectedPassageId);
         if (!isCurrent) return;
 
         setPassageResponse(response);

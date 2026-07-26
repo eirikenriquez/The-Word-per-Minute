@@ -1,12 +1,9 @@
-import featuredPassagesData from "../../data/featuredPassages.json";
 import translationsData from "../../data/translations.json";
 import webManifest from "../../data/bibles/web/manifest.json";
 import type {
-  FeaturedPassage,
-  FeaturedPassageListResponse,
   PassageReference,
   PassageResponse,
-} from "../../shared/types/featuredPassage";
+} from "../../types/passage";
 import type {
   BibleBook,
   BookListResponse,
@@ -23,7 +20,6 @@ type BibleManifest = {
 };
 
 const translations = translationsData.translations as Translation[];
-const featuredPassages = featuredPassagesData.passages as FeaturedPassage[];
 const manifestsByTranslation: Record<string, BibleManifest> = {
   web: webManifest as BibleManifest,
 };
@@ -105,28 +101,6 @@ export const verseService = {
       book,
       chapter,
     };
-  },
-
-  /**
-   * Lists curated prompts used by the default featured mode.
-   */
-  async getFeaturedPassages(): Promise<FeaturedPassageListResponse> {
-    return {
-      passages: featuredPassages,
-    };
-  },
-
-  /**
-   * Resolves a curated passage reference into verse text ready for typing.
-   */
-  async getPassage(passageId: string): Promise<PassageResponse> {
-    const passage = featuredPassages.find((availablePassage) => availablePassage.id === passageId);
-
-    if (!passage) {
-      throw new Error(`Passage not found: ${passageId}`);
-    }
-
-    return this.getReferencePassage(passage);
   },
 
   /**

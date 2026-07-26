@@ -1,4 +1,4 @@
-import type { BibleChapter, BibleVerse, Translation } from "../../types/bible";
+import type { BibleChapter, BibleVerse, Translation } from "./bible";
 
 export type PassageReference = {
   title: string;
@@ -9,14 +9,6 @@ export type PassageReference = {
   startVerse: number;
   endVerse: number;
   selectedVerses?: number[];
-};
-
-export type FeaturedPassage = PassageReference & {
-  id: string;
-};
-
-export type FeaturedPassageListResponse = {
-  passages: FeaturedPassage[];
 };
 
 export type PassageResponse = {
