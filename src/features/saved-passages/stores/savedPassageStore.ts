@@ -1,4 +1,8 @@
-import type { SavedPassage, SavePassageInput, SavedPassageUpdate } from "../../../shared/types/savedPassage";
+import type {
+  SavedPassage,
+  SavePassageInput,
+  SavedPassageUpdate,
+} from "../types/savedPassage";
 
 export type SavedPassageStore = {
   list: () => Promise<SavedPassage[]>;

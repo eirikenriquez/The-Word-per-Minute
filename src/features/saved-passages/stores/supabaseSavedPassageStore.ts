@@ -1,7 +1,11 @@
-import { DEFAULT_SAVED_CATEGORY } from "../savedPassageCategories";
+import { DEFAULT_SAVED_CATEGORY } from "../constants/savedPassageCategories";
 import { supabase } from "../../../lib/supabase/client";
 import type { Database } from "../../../lib/supabase/database.types";
-import type { SavedPassage, SavePassageInput, SavedPassageUpdate } from "../../../shared/types/savedPassage";
+import type {
+  SavedPassage,
+  SavePassageInput,
+  SavedPassageUpdate,
+} from "../types/savedPassage";
 import type { SavedPassageStore } from "./savedPassageStore";
 
 type SavedPassageRow = Database["public"]["Tables"]["saved_passages"]["Row"];

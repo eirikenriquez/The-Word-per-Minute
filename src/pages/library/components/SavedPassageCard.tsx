@@ -10,7 +10,10 @@ import {
   type ReactNode,
   useState,
 } from "react";
-import type { SavedPassage, SavedPassageUpdate } from "../../../shared/types/savedPassage";
+import type {
+  SavedPassage,
+  SavedPassageUpdate,
+} from "../../../features/saved-passages/types/savedPassage";
 import { Button } from "../../../components/ui/Button";
 
 type SavedPassageCardProps = {

@@ -1,6 +1,10 @@
-import { DEFAULT_SAVED_CATEGORY } from "../savedPassageCategories";
-import { getSavedPassageIdentity } from "../savedPassageIdentity";
-import type { SavedPassage, SavePassageInput, SavedPassageUpdate } from "../../../shared/types/savedPassage";
+import { DEFAULT_SAVED_CATEGORY } from "../constants/savedPassageCategories";
+import type {
+  SavedPassage,
+  SavePassageInput,
+  SavedPassageUpdate,
+} from "../types/savedPassage";
+import { getSavedPassageIdentity } from "../utils/savedPassageIdentity";
 import type { SavedPassageStore } from "./savedPassageStore";
 
 const SAVED_PASSAGES_STORAGE_KEY = "the-word-per-minute-saved-passages";

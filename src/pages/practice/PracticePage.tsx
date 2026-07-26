@@ -3,7 +3,7 @@ import { PracticeLiveMetrics } from "./components/PracticeLiveMetrics";
 import { PracticePassageDisplay } from "./components/PracticePassageDisplay";
 import type { PracticeSource } from "../../shared/types/app";
 import type { PracticePassage, PracticeStatus } from "../../shared/types/practice";
-import type { SavedPassage } from "../../shared/types/savedPassage";
+import type { SavedPassage } from "../../features/saved-passages/types/savedPassage";
 
 export type PracticePageProps = {
   accuracy: number;

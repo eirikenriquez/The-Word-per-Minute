@@ -1,11 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
-import { getSavedPassageIdentity } from "../savedPassageIdentity";
 import { localSavedPassageStore } from "../stores/localSavedPassageStore";
 import { createSupabaseSavedPassageStore } from "../stores/supabaseSavedPassageStore";
 import { verseService } from "../../../lib/bible/verseService";
 import type { PassageResponse } from "../../../types/passage";
-import type { SavedPassage, SavePassageInput, SavedPassageUpdate } from "../../../shared/types/savedPassage";
 import { getErrorMessage } from "../../../utils/errors";
+import type {
+  SavedPassage,
+  SavePassageInput,
+  SavedPassageUpdate,
+} from "../types/savedPassage";
+import { getSavedPassageIdentity } from "../utils/savedPassageIdentity";
 
 /**
  * Manages saved passages through a repository boundary.

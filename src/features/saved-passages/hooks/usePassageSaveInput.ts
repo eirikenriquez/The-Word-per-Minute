@@ -1,10 +1,13 @@
 import { useMemo } from "react";
-import { DEFAULT_SAVED_CATEGORY, getDefaultSavedCategory } from "../savedPassageCategories";
+import {
+  DEFAULT_SAVED_CATEGORY,
+  getDefaultSavedCategory,
+} from "../constants/savedPassageCategories";
 import type { AppMode, PracticeSource } from "../../../shared/types/app";
 import type { PassageResponse } from "../../../types/passage";
-import type { SavePassageInput } from "../../../shared/types/savedPassage";
 import type { BibleChapter, BookSummary, Translation } from "../../../types/bible";
 import { formatPassageReference, formatSelectedVerseReference } from "../../../shared/utils/passageReference";
+import type { SavePassageInput } from "../types/savedPassage";
 
 type UsePassageSaveInputParams = {
   appMode: AppMode;

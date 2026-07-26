@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import type { SavedPassage } from "../../../shared/types/savedPassage";
+import type { SavedPassage } from "../../../features/saved-passages/types/savedPassage";
 
 type SavedPassageSelectProps = {
   savedPassages: SavedPassage[];

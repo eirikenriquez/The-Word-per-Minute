@@ -1,4 +1,4 @@
-import type { SavePassageInput } from "../../shared/types/savedPassage";
+import type { SavePassageInput } from "../types/savedPassage";
 
 /**
  * Creates a stable identity for the Bible passage itself.
