@@ -3,7 +3,7 @@ import {
   DisclosureButton,
   DisclosurePanel,
 } from "@headlessui/react";
-import type { PracticeAttempt } from "../../../features/practice/types/practice";
+import type { PracticeAttempt } from "../types/practice";
 
 type PracticeAttemptCardProps = {
   attempt: PracticeAttempt;
