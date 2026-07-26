@@ -4,10 +4,10 @@ import {
   PopoverPanel,
 } from "@headlessui/react";
 import { useEffect, useRef, useState } from "react";
-import type { AuthSessionState } from "../../domain/auth/useAuthSession";
-import { AuthMenuButton } from "./auth/AuthMenuButton";
-import { SignedInAuthMenu } from "./auth/SignedInAuthMenu";
-import { SignedOutAuthMenu, type AuthMode } from "./auth/SignedOutAuthMenu";
+import type { AuthSessionState } from "../hooks/useAuthSession";
+import { AuthMenuButton } from "./AuthMenuButton";
+import { SignedInAuthMenu } from "./SignedInAuthMenu";
+import { SignedOutAuthMenu, type AuthMode } from "./SignedOutAuthMenu";
 
 export type AuthMenuRequest = {
   id: number;

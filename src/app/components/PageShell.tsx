@@ -1,12 +1,12 @@
 import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
 import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
+import { AuthControls, type AuthMenuRequest } from "../../features/auth/components/AuthControls";
+import type { AuthSessionState } from "../../features/auth/hooks/useAuthSession";
+import type { AppMode, Theme } from "../../shared/types/app";
 import { AppFooter } from "./AppFooter";
-import { AuthControls, type AuthMenuRequest } from "./AuthControls";
 import { AppNavigation } from "./AppNavigation";
 import { BackToTopButton } from "./BackToTopButton";
-import type { AuthSessionState } from "../../domain/auth/useAuthSession";
-import type { AppMode, Theme } from "../../shared/types/app";
 
 type PageShellProps = {
   appMode?: AppMode;

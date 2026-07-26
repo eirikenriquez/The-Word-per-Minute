@@ -4,8 +4,8 @@ import {
 } from "@heroicons/react/24/outline";
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
-import type { AuthSessionState } from "../../../domain/auth/useAuthSession";
 import { Button } from "../../../components/ui/Button";
+import type { AuthSessionState } from "../hooks/useAuthSession";
 
 export type AuthMode = "signIn" | "signUp";
 

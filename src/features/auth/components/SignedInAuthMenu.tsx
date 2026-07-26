@@ -3,9 +3,9 @@ import {
   ChartBarIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
-import type { AuthSessionState } from "../../../domain/auth/useAuthSession";
 import { Button } from "../../../components/ui/Button";
-import { APP_ROUTE_PATHS } from "../../routes/appRoutePaths";
+import { APP_ROUTE_PATHS } from "../../../app/routes/appRoutePaths";
+import type { AuthSessionState } from "../hooks/useAuthSession";
 
 type SignedInAuthMenuProps = {
   authSession: AuthSessionState;

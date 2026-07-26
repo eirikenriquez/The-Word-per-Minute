@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 import type { AppHeaderProps } from "../components/AppHeader";
 import type { AppRoutesProps } from "../components/AppRoutes";
-import { useAuthSession } from "../../domain/auth/useAuthSession";
+import { useAuthSession } from "../../features/auth/hooks/useAuthSession";
 import { useReaderSelection } from "../../domain/bible/hooks/useReaderSelection";
 import { useVerseLibrary } from "../../domain/bible/hooks/useVerseLibrary";
 import { useFeaturedPassages } from "../../domain/featured-passages/hooks/useFeaturedPassages";
