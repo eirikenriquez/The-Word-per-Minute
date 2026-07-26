@@ -21,7 +21,7 @@ const variantClasses: Record<ButtonVariant, string> = {
 };
 
 /**
- * Shared visual hierarchy for ordinary app actions.
+ * Common visual hierarchy for ordinary app actions.
  * Bespoke controls such as navigation tabs and verse buttons keep their own styling.
  */
 export function Button({

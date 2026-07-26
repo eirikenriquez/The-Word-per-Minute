@@ -1,7 +1,7 @@
 import { Transition } from "@headlessui/react";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import type { PracticePassage } from "../../../shared/types/practice";
-import { Button } from "../../../shared/ui/Button";
+import { Button } from "../../../components/ui/Button";
 import { PracticeReflectionDialog } from "./PracticeReflectionDialog";
 import { PracticeTypingSurface } from "./PracticeTypingSurface";
 

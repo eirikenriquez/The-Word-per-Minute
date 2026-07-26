@@ -5,7 +5,7 @@ import { createSupabaseSavedPassageStore } from "../stores/supabaseSavedPassageS
 import { verseService } from "../../bible/verseService";
 import type { PassageResponse } from "../../../shared/types/featuredPassage";
 import type { SavedPassage, SavePassageInput, SavedPassageUpdate } from "../../../shared/types/savedPassage";
-import { getErrorMessage } from "../../../shared/utils/errors";
+import { getErrorMessage } from "../../../utils/errors";
 
 /**
  * Manages saved passages through a repository boundary.

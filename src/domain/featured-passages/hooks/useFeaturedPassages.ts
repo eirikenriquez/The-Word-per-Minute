@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { verseService } from "../../bible/verseService";
 import type { FeaturedPassage, PassageResponse } from "../../../shared/types/featuredPassage";
-import { getErrorMessage } from "../../../shared/utils/errors";
+import { getErrorMessage } from "../../../utils/errors";
 
 /**
  * Loads the curated featured-passage list and resolves the selected prompt

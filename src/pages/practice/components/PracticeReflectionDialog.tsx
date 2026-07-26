@@ -1,6 +1,6 @@
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { useRef, useState } from "react";
-import { Button } from "../../../shared/ui/Button";
+import { Button } from "../../../components/ui/Button";
 
 type PracticeReflectionDialogProps = {
   attemptSaveErrorMessage: string | null;

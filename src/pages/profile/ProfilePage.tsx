@@ -2,7 +2,7 @@ import type {
   PracticeAttempt,
   PracticeAttemptSummary,
 } from "../../shared/types/practice";
-import { Button } from "../../shared/ui/Button";
+import { Button } from "../../components/ui/Button";
 import { PracticeAttemptCard } from "./components/PracticeAttemptCard";
 
 export type ProfilePageProps = {

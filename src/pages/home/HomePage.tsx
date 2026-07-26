@@ -1,6 +1,6 @@
 import { BookOpenIcon, SparklesIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
-import { Button } from "../../shared/ui/Button";
+import { Button } from "../../components/ui/Button";
 
 export type HomeCategory = {
   count: number;

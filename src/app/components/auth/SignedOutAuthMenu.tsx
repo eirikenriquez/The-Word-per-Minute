@@ -5,7 +5,7 @@ import {
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 import type { AuthSessionState } from "../../../domain/auth/useAuthSession";
-import { Button } from "../../../shared/ui/Button";
+import { Button } from "../../../components/ui/Button";
 
 export type AuthMode = "signIn" | "signUp";
 

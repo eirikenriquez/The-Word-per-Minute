@@ -6,7 +6,7 @@ import {
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import type { PracticeSource } from "../../../shared/types/app";
 import type { SavedPassage } from "../../../shared/types/savedPassage";
-import { Button } from "../../../shared/ui/Button";
+import { Button } from "../../../components/ui/Button";
 import { FeaturedSaveAction } from "./FeaturedSaveAction";
 import { PracticeActionButtons } from "./PracticeActionButtons";
 import { SavedPassageSelect } from "./SavedPassageSelect";

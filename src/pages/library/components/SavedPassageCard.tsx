@@ -11,7 +11,7 @@ import {
   useState,
 } from "react";
 import type { SavedPassage, SavedPassageUpdate } from "../../../shared/types/savedPassage";
-import { Button } from "../../../shared/ui/Button";
+import { Button } from "../../../components/ui/Button";
 
 type SavedPassageCardProps = {
   passage: SavedPassage;

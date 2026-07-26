@@ -4,7 +4,7 @@ import {
   FolderOpenIcon,
 } from "@heroicons/react/24/outline";
 import type { PracticeSource } from "../../../shared/types/app";
-import { Button } from "../../../shared/ui/Button";
+import { Button } from "../../../components/ui/Button";
 
 type PracticeActionButtonsProps = {
   practiceSource: PracticeSource;

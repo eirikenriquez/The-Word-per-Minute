@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { getErrorMessage } from "../../../shared/utils/errors";
+import { getErrorMessage } from "../../../utils/errors";
 import type {
   PracticeAttempt,
   PracticeAttemptSummary,

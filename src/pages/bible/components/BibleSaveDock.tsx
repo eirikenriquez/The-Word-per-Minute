@@ -1,7 +1,7 @@
 import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
 import { BookmarkIcon } from "@heroicons/react/24/outline";
 import { useRef, useState } from "react";
-import { Button } from "../../../shared/ui/Button";
+import { Button } from "../../../components/ui/Button";
 
 export type BibleSaveFormProps = {
   canSaveCurrentPassage: boolean;
