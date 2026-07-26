@@ -13,7 +13,7 @@ import {
 import type {
   SavedPassage,
   SavedPassageUpdate,
-} from "../../../features/saved-passages/types/savedPassage";
+} from "../types/savedPassage";
 import { Button } from "../../../components/ui/Button";
 
 type SavedPassageCardProps = {

@@ -1,4 +1,4 @@
-import { SavedPassageLibrary } from "./components/SavedPassageLibrary";
+import { SavedPassageLibrary } from "../../features/saved-passages/components/SavedPassageLibrary";
 import type {
   SavedPassage,
   SavedPassageUpdate,
