@@ -1,6 +1,6 @@
 import { DEFAULT_SAVED_CATEGORY } from "../savedPassageCategories";
-import { supabase } from "../../../shared/lib/supabaseClient";
-import type { Database } from "../../../shared/types/database";
+import { supabase } from "../../../lib/supabase/client";
+import type { Database } from "../../../lib/supabase/database.types";
 import type { SavedPassage, SavePassageInput, SavedPassageUpdate } from "../../../shared/types/savedPassage";
 import type { SavedPassageStore } from "./savedPassageStore";
 

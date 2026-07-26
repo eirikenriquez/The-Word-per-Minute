@@ -1,6 +1,6 @@
 import type { Session, User } from "@supabase/supabase-js";
 import { useCallback, useEffect, useState } from "react";
-import { supabase } from "../../shared/lib/supabaseClient";
+import { supabase } from "../../lib/supabase/client";
 import { getErrorMessage } from "../../utils/errors";
 
 export type AuthSessionState = {

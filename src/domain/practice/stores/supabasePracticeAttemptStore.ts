@@ -1,5 +1,5 @@
-import { supabase } from "../../../shared/lib/supabaseClient";
-import type { Database } from "../../../shared/types/database";
+import { supabase } from "../../../lib/supabase/client";
+import type { Database } from "../../../lib/supabase/database.types";
 import type {
   PracticeAttempt,
   PracticeAttemptPage,
