@@ -1,6 +1,6 @@
-import { PracticeControls } from "./components/PracticeControls";
-import { PracticeLiveMetrics } from "./components/PracticeLiveMetrics";
-import { PracticePassageDisplay } from "./components/PracticePassageDisplay";
+import { PracticeControls } from "../../features/practice/components/PracticeControls";
+import { PracticeLiveMetrics } from "../../features/practice/components/PracticeLiveMetrics";
+import { PracticePassageDisplay } from "../../features/practice/components/PracticePassageDisplay";
 import type { PracticeSource } from "../../shared/types/app";
 import type {
   PracticePassage,

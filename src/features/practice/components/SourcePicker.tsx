@@ -1,5 +1,5 @@
 import type { PracticeSource } from "../../../shared/types/app";
-import type { SavedPassage } from "../../../features/saved-passages/types/savedPassage";
+import type { SavedPassage } from "../../saved-passages/types/savedPassage";
 
 type SourcePickerProps = {
   hasSavedPassages: boolean;
