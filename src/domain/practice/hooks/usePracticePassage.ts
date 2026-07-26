@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import type { AppMode, PracticeSource } from "../../../shared/types/app";
 import type { PassageResponse } from "../../../shared/types/featuredPassage";
 import type { PracticePassage } from "../../../shared/types/practice";
-import type { BibleChapter, BookSummary } from "../../../shared/types/verse";
+import type { BibleChapter, BookSummary } from "../../../types/bible";
 import { buildPracticePassage } from "../utils/practicePassage";
 
 type UsePracticePassageParams = {

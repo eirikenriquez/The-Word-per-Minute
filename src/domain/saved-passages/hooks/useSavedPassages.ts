@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { getSavedPassageIdentity } from "../savedPassageIdentity";
 import { localSavedPassageStore } from "../stores/localSavedPassageStore";
 import { createSupabaseSavedPassageStore } from "../stores/supabaseSavedPassageStore";
-import { verseService } from "../../bible/verseService";
+import { verseService } from "../../../lib/bible/verseService";
 import type { PassageResponse } from "../../../shared/types/featuredPassage";
 import type { SavedPassage, SavePassageInput, SavedPassageUpdate } from "../../../shared/types/savedPassage";
 import { getErrorMessage } from "../../../utils/errors";

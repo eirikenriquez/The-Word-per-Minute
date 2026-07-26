@@ -14,7 +14,7 @@ import type {
   ChapterResponse,
   Translation,
   TranslationListResponse,
-} from "../../shared/types/verse";
+} from "../../types/bible";
 import { formatPassageReference, formatSelectedVerseReference } from "../../shared/utils/passageReference";
 
 type BibleManifest = {

@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import type { AppMode, PracticeSource } from "../../shared/types/app";
 import type { PassageResponse } from "../../shared/types/featuredPassage";
 import type { SavedPassage } from "../../shared/types/savedPassage";
-import type { Translation } from "../../shared/types/verse";
+import type { Translation } from "../../types/bible";
 
 type UseAppDisplayStateParams = {
   appMode: AppMode;

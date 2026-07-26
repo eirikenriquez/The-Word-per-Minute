@@ -1,4 +1,4 @@
-import type { BibleVerse } from "./verse";
+import type { BibleVerse } from "../../types/bible";
 
 export type PracticeStatus = "Ready" | "Typing" | "Complete";
 

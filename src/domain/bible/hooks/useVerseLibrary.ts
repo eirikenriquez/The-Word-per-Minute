@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { verseService } from "../verseService";
-import type { BibleChapter, BookSummary, Translation } from "../../../shared/types/verse";
+import { verseService } from "../../../lib/bible/verseService";
+import type { BibleChapter, BookSummary, Translation } from "../../../types/bible";
 import { getErrorMessage } from "../../../utils/errors";
 
 /**

@@ -1,4 +1,4 @@
-import type { BibleChapter, BibleVerse, Translation } from "./verse";
+import type { BibleChapter, BibleVerse, Translation } from "../../types/bible";
 
 export type PassageReference = {
   title: string;
