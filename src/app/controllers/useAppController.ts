@@ -4,8 +4,7 @@ import type { AppRoutesProps } from "../components/AppRoutes";
 import { useAuthSession } from "../../features/auth/hooks/useAuthSession";
 import { useReaderSelection } from "../../features/bible-reader/hooks/useReaderSelection";
 import { useVerseLibrary } from "../../features/bible-reader/hooks/useVerseLibrary";
-import { useFeaturedPassages } from "../../domain/featured-passages/hooks/useFeaturedPassages";
-import { usePassageCategories } from "../../domain/featured-passages/hooks/usePassageCategories";
+import { useFeaturedPassages } from "../../features/featured-passages/hooks/useFeaturedPassages";
 import { usePracticePassage } from "../../domain/practice/hooks/usePracticePassage";
 import { usePracticeAttempts } from "../../domain/practice/hooks/usePracticeAttempts";
 import { usePracticeSession } from "../../domain/practice/hooks/usePracticeSession";
@@ -17,6 +16,7 @@ import type { PracticeCompletionResult } from "../../shared/types/practice";
 import { useAppDisplayState } from "../hooks/useAppDisplayState";
 import { useAppModeEffects } from "../hooks/useAppModeEffects";
 import { useAppNavigation } from "../hooks/useAppNavigation";
+import { usePassageCategories } from "../hooks/usePassageCategories";
 import { useTheme } from "../hooks/useTheme";
 import { createAppActions } from "./createAppActions";
 import {
