@@ -10,7 +10,9 @@
     "format:check": "prettier --check .",
     "import:bible": "node scripts/importPublicDomainBible.mjs",
     "lint": "eslint .",
-    "preview": "vite preview --configLoader runner"
+    "preview": "vite preview --configLoader runner",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "engines": {
     "node": ">=22.22.0"
@@ -40,6 +42,7 @@
     "prettier": "3.9.6",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.65.0",
-    "vite": "^8.1.5"
+    "vite": "^8.1.5",
+    "vitest": "^4.1.10"
   }
 }
