@@ -17,7 +17,7 @@ export const appRouter = createBrowserRouter([
       {
         index: true,
         lazy: async () => {
-          const { HomeRoute } = await import('./HomeRoute');
+          const { HomeRoute } = await import('./home/HomeRoute');
 
           return { Component: HomeRoute };
         },
@@ -25,7 +25,7 @@ export const appRouter = createBrowserRouter([
       {
         path: APP_ROUTE_PATHS.profile,
         lazy: async () => {
-          const { ProfileRoute } = await import('./ProfileRoute');
+          const { ProfileRoute } = await import('./profile/ProfileRoute');
 
           return { Component: ProfileRoute };
         },
@@ -33,7 +33,7 @@ export const appRouter = createBrowserRouter([
       {
         path: APP_ROUTE_PATHS.library,
         lazy: async () => {
-          const { LibraryRoute } = await import('./LibraryRoute');
+          const { LibraryRoute } = await import('./library/LibraryRoute');
 
           return { Component: LibraryRoute };
         },

@@ -1,6 +1,6 @@
-import { useAuth } from '../../features/auth/context/authContext';
-import { usePracticeAttemptHistory } from '../../features/practice/hooks/usePracticeAttemptHistory';
-import { ProfilePage } from '../../pages/profile/ProfilePage';
+import { useAuth } from '../../../features/auth/context/authContext';
+import { usePracticeAttemptHistory } from '../../../features/practice/hooks/usePracticeAttemptHistory';
+import { ProfilePage } from './ProfilePage';
 
 /**
  * Composes account and practice-history data needed only by the Profile page.

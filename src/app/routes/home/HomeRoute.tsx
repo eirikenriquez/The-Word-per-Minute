@@ -1,15 +1,15 @@
 import { useNavigate } from 'react-router';
-import { AppErrorState } from '../components/AppErrorState';
-import { AppLoadingState } from '../components/AppLoadingState';
-import { usePassageCategories } from '../hooks/usePassageCategories';
-import { useAuth } from '../../features/auth/context/authContext';
-import { useAuthMenu } from '../../features/auth/context/authMenuContext';
-import { useFeaturedPassageCatalog } from '../../features/featured-passages/hooks/useFeaturedPassageCatalog';
-import { getRandomFeaturedPassage } from '../../features/featured-passages/utils/featuredPassageSelection';
-import { useSavedPassageCollection } from '../../features/saved-passages/hooks/useSavedPassageCollection';
-import { HomePage } from '../../pages/home/HomePage';
-import { APP_ROUTE_PATHS } from './appRoutePaths';
-import { createPracticePath } from './practiceRouteState';
+import { AppErrorState } from '../../components/AppErrorState';
+import { AppLoadingState } from '../../components/AppLoadingState';
+import { usePassageCategories } from '../../hooks/usePassageCategories';
+import { useAuth } from '../../../features/auth/context/authContext';
+import { useAuthMenu } from '../../../features/auth/context/authMenuContext';
+import { useFeaturedPassageCatalog } from '../../../features/featured-passages/hooks/useFeaturedPassageCatalog';
+import { getRandomFeaturedPassage } from '../../../features/featured-passages/utils/featuredPassageSelection';
+import { useSavedPassageCollection } from '../../../features/saved-passages/hooks/useSavedPassageCollection';
+import { APP_ROUTE_PATHS } from '../appRoutePaths';
+import { createPracticePath } from '../practiceRouteState';
+import { HomePage } from './HomePage';
 
 /**
  * Composes the feature data and navigation needed only by the Home page.

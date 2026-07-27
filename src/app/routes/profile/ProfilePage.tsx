@@ -1,9 +1,9 @@
 import type {
   PracticeAttempt,
   PracticeAttemptSummary,
-} from '../../features/practice/types/practice';
-import { Button } from '../../components/ui/Button';
-import { PracticeAttemptCard } from '../../features/practice/components/PracticeAttemptCard';
+} from '../../../features/practice/types/practice';
+import { Button } from '../../../components/ui/Button';
+import { PracticeAttemptCard } from '../../../features/practice/components/PracticeAttemptCard';
 
 export type ProfilePageProps = {
   hasMoreRecentAttempts: boolean;

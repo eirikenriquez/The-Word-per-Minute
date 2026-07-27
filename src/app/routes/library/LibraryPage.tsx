@@ -1,8 +1,8 @@
-import { SavedPassageLibrary } from '../../features/saved-passages/components/SavedPassageLibrary';
+import { SavedPassageLibrary } from '../../../features/saved-passages/components/SavedPassageLibrary';
 import type {
   SavedPassage,
   SavedPassageUpdate,
-} from '../../features/saved-passages/types/savedPassage';
+} from '../../../features/saved-passages/types/savedPassage';
 
 export type LibraryPageProps = {
   errorMessage: string | null;

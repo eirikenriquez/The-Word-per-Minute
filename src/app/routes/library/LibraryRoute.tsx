@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router';
-import { useAuth } from '../../features/auth/context/authContext';
-import { useSavedPassageCollection } from '../../features/saved-passages/hooks/useSavedPassageCollection';
-import type { SavedPassage } from '../../features/saved-passages/types/savedPassage';
-import { LibraryPage } from '../../pages/library/LibraryPage';
-import { AppHeader } from '../components/AppHeader';
-import { createBiblePath } from './bibleRouteState';
-import { createPracticePath } from './practiceRouteState';
+import { AppHeader } from '../../components/AppHeader';
+import { useAuth } from '../../../features/auth/context/authContext';
+import { useSavedPassageCollection } from '../../../features/saved-passages/hooks/useSavedPassageCollection';
+import type { SavedPassage } from '../../../features/saved-passages/types/savedPassage';
+import { createBiblePath } from '../bibleRouteState';
+import { createPracticePath } from '../practiceRouteState';
+import { LibraryPage } from './LibraryPage';
 
 /**
  * Composes saved-passage data and cross-page navigation for the Library page.
