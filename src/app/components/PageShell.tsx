@@ -1,10 +1,7 @@
 import { MoonIcon, SunIcon } from '@heroicons/react/24/outline';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
-import {
-  AuthControls,
-  type AuthMenuRequest,
-} from '../../features/auth/components/AuthControls';
+import { AuthControls } from '../../features/auth/components/AuthControls';
 import type { AppMode, Theme } from '../../types/app';
 import { APP_ROUTE_PATHS } from '../routes/appRoutePaths';
 import { AppFooter } from './AppFooter';
@@ -13,11 +10,9 @@ import { BackToTopButton } from './BackToTopButton';
 
 type PageShellProps = {
   appMode?: AppMode;
-  authMenuRequest?: AuthMenuRequest | null;
   children: ReactNode;
   theme: Theme;
   onToggleTheme: () => void;
-  onAuthMenuRequestHandled?: () => void;
   onSelectMode?: (mode: AppMode) => void;
 };
 
@@ -26,11 +21,9 @@ type PageShellProps = {
  */
 export function PageShell({
   appMode,
-  authMenuRequest,
   children,
   theme,
   onToggleTheme,
-  onAuthMenuRequestHandled,
   onSelectMode,
 }: PageShellProps) {
   return (
@@ -65,11 +58,7 @@ export function PageShell({
             {appMode && onSelectMode && (
               <AppNavigation appMode={appMode} onSelectMode={onSelectMode} />
             )}
-            <AuthControls
-              menuRequest={authMenuRequest}
-              onMenuRequestHandled={onAuthMenuRequestHandled}
-              profilePath={APP_ROUTE_PATHS.profile}
-            />
+            <AuthControls profilePath={APP_ROUTE_PATHS.profile} />
           </div>
         </div>
       </header>

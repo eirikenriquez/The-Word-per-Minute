@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import type { AppHeaderProps } from '../components/AppHeader';
 import type { AppRoutesProps } from '../components/AppRoutes';
 import { useAuth } from '../../features/auth/context/authContext';
+import { useAuthMenu } from '../../features/auth/context/authMenuContext';
 import { useReaderSelection } from '../../features/bible-reader/hooks/useReaderSelection';
 import { useVerseLibrary } from '../../features/bible-reader/hooks/useVerseLibrary';
 import { useFeaturedPassages } from '../../features/featured-passages/hooks/useFeaturedPassages';
@@ -38,10 +39,6 @@ import {
  */
 export function useAppController() {
   const { appMode, selectAppMode } = useAppNavigation();
-  const [authMenuRequest, setAuthMenuRequest] = useState<{
-    id: number;
-    mode: 'signUp';
-  } | null>(null);
   const [completedPracticeAttemptId, setCompletedPracticeAttemptId] = useState<
     string | null
   >(null);
@@ -49,6 +46,7 @@ export function useAppController() {
     useState<PracticeSource>('featured');
   const { theme, toggleTheme } = useTheme();
   const authSession = useAuth();
+  const { openSignUpMenu } = useAuthMenu();
 
   const readerSelection = useReaderSelection();
   const featuredLibrary = useFeaturedPassages();
@@ -276,11 +274,7 @@ export function useAppController() {
       appActions,
       featuredHomeCategories,
       isSignedIn: authSession.isSignedIn,
-      onCreateAccount: () =>
-        setAuthMenuRequest((currentRequest) => ({
-          id: (currentRequest?.id ?? 0) + 1,
-          mode: 'signUp',
-        })),
+      onCreateAccount: openSignUpMenu,
       savedPassageCount,
     }),
     libraryPageProps: createLibraryPageProps({
@@ -314,11 +308,9 @@ export function useAppController() {
 
   return {
     appMode,
-    authMenuRequest,
     errorMessage,
     headerProps,
     isLoading,
-    onAuthMenuRequestHandled: () => setAuthMenuRequest(null),
     onSelectMode: selectAppMode,
     pageRoutesProps,
     theme,

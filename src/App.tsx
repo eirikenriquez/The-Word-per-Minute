@@ -12,11 +12,9 @@ import { useAppController } from './app/controllers/useAppController';
 function App() {
   const {
     appMode,
-    authMenuRequest,
     errorMessage,
     headerProps,
     isLoading,
-    onAuthMenuRequestHandled,
     onSelectMode,
     pageRoutesProps,
     theme,
@@ -43,9 +41,7 @@ function App() {
   return (
     <PageShell
       appMode={appMode}
-      authMenuRequest={authMenuRequest}
       theme={theme}
-      onAuthMenuRequestHandled={onAuthMenuRequestHandled}
       onSelectMode={onSelectMode}
       onToggleTheme={toggleTheme}
     >
