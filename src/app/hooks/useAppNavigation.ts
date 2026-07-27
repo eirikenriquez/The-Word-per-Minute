@@ -1,7 +1,10 @@
-import { useCallback } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import type { AppMode } from "../../shared/types/app";
-import { getAppModeFromPathname, getPathnameFromAppMode } from "../routes/appRoutePaths";
+import { useCallback } from 'react';
+import { useLocation, useNavigate } from 'react-router';
+import type { AppMode } from '../types';
+import {
+  getAppModeFromPathname,
+  getPathnameFromAppMode,
+} from '../routes/appRoutePaths';
 
 /**
  * Bridges React Router URLs with the app's mode-based navigation.

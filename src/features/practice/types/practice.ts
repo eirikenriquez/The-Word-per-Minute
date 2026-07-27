@@ -1,0 +1,66 @@
+import type { BibleVerse } from '../../../types/bible';
+
+export type PracticeSource = 'featured' | 'saved';
+export type PracticeStatus = 'Ready' | 'Typing' | 'Complete';
+
+export type PracticeCompletionResult = {
+  accuracy: number;
+  durationSeconds: number;
+  mistakeCount: number;
+  typedCharacterCount: number;
+  wpm: number;
+};
+
+export type PracticePassage = {
+  startVerse: number;
+  endVerse: number;
+  ref: string;
+  text: string;
+  verses: BibleVerse[];
+};
+
+export type PracticePassageOption = {
+  id: string;
+  title: string;
+  category: string;
+};
+
+export type PracticeAttempt = {
+  id: string;
+  featuredPassageId?: string;
+  savedPassageId?: string;
+  passageReference: string;
+  translationId: string;
+  bookId: string;
+  chapter: number;
+  startVerse: number;
+  endVerse: number;
+  selectedVerses?: number[];
+  durationSeconds: number;
+  mistakeCount: number;
+  typedCharacterCount: number;
+  wpm: number;
+  accuracy: number;
+  reflection?: string;
+  completedAt: string;
+};
+
+export type PracticeAttemptSummary = {
+  averageAccuracy: number;
+  bestWpm: number;
+  completedAttempts: number;
+  reflectionCount: number;
+};
+
+export type PracticeAttemptPage = {
+  attempts: PracticeAttempt[];
+  hasMore: boolean;
+};
+
+export type SavePracticeAttemptInput = Omit<
+  PracticeAttempt,
+  'completedAt' | 'id'
+> & {
+  featuredPassageId?: string | null;
+  savedPassageId?: string | null;
+};

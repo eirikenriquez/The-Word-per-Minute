@@ -1,0 +1,313 @@
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router';
+import { AppErrorState } from '../../components/AppErrorState';
+import { AppHeader } from '../../components/AppHeader';
+import { AppLoadingState } from '../../components/AppLoadingState';
+import { usePassageCategories } from '../../hooks/usePassageCategories';
+import { useAuth } from '../../../features/auth/context/authContext';
+import { useFeaturedPassageCatalog } from '../../../features/featured-passages/hooks/useFeaturedPassageCatalog';
+import { useSelectedFeaturedPassage } from '../../../features/featured-passages/hooks/useSelectedFeaturedPassage';
+import { getRandomFeaturedPassage } from '../../../features/featured-passages/utils/featuredPassageSelection';
+import { usePracticeAttemptMutations } from '../../../features/practice/hooks/usePracticeAttemptMutations';
+import { usePracticePassage } from '../../../features/practice/hooks/usePracticePassage';
+import { usePracticeSession } from '../../../features/practice/hooks/usePracticeSession';
+import type {
+  PracticeCompletionResult,
+  PracticeSource,
+} from '../../../features/practice/types/practice';
+import { createPracticeAttemptInput } from '../../../features/practice/utils/practiceAttemptInput';
+import { useSavePassageForm } from '../../../features/saved-passages/hooks/useSavePassageForm';
+import { useSavedPassages } from '../../../features/saved-passages/hooks/useSavedPassages';
+import type { SavedPassage } from '../../../features/saved-passages/types/savedPassage';
+import { createFeaturedPassageSaveInput } from '../../../features/saved-passages/utils/passageSaveInput';
+import type { PassageResponse } from '../../../types/passage';
+import { APP_ROUTE_PATHS } from '../appRoutePaths';
+import { PracticePage } from './PracticePage';
+import { usePracticeRouteSelection } from './usePracticeRouteSelection';
+
+/**
+ * Composes passage selection, typing state, persistence, and URL state needed
+ * only by the Practice page.
+ */
+export function PracticeRoute() {
+  const navigate = useNavigate();
+  const authSession = useAuth();
+  const [completedPracticeAttemptId, setCompletedPracticeAttemptId] = useState<
+    string | null
+  >(null);
+  const featuredCatalog = useFeaturedPassageCatalog();
+  const selectedFeaturedPassage = useSelectedFeaturedPassage(
+    featuredCatalog.passages,
+  );
+  const savedLibrary = useSavedPassages(authSession.user?.id);
+  const {
+    attemptSaveError,
+    isSavingReflection,
+    reflectionError,
+    saveAttempt,
+    updateReflection,
+  } = usePracticeAttemptMutations(authSession.user?.id);
+  const { savedPassageCategories } = usePassageCategories(
+    featuredCatalog.passages,
+  );
+  const { practiceSource, selectPracticeRoute } = usePracticeRouteSelection({
+    featuredPassages: featuredCatalog.passages,
+    isSavedPassageListLoading: savedLibrary.isLoadingSavedPassages,
+    savedPassages: savedLibrary.savedPassages,
+    selectedFeaturedPassageId: selectedFeaturedPassage.selectedPassageId,
+    selectedSavedPassageId: savedLibrary.selectedSavedPassageId,
+    selectFeaturedPassage: selectedFeaturedPassage.selectPassage,
+    selectSavedPassage: savedLibrary.selectSavedPassage,
+  });
+  const practicePassage = usePracticePassage({
+    enabled: true,
+    featuredPassageResponse: selectedFeaturedPassage.passageResponse,
+    practiceSource,
+    savedPassageResponse: savedLibrary.passageResponse,
+  });
+
+  const handleCompletedPracticeAttempt = useCallback(
+    (result: PracticeCompletionResult) => {
+      setCompletedPracticeAttemptId(null);
+
+      const activePassageResponse =
+        practiceSource === 'featured'
+          ? selectedFeaturedPassage.passageResponse
+          : savedLibrary.passageResponse;
+      const attemptInput = createPracticeAttemptInput({
+        completionResult: result,
+        featuredPassageId: selectedFeaturedPassage.selectedPassageId,
+        passageResponse: activePassageResponse,
+        practiceSource,
+        savedPassageId: savedLibrary.selectedSavedPassageId,
+      });
+      if (!attemptInput) return;
+
+      void saveAttempt(attemptInput).then((savedAttempt) => {
+        if (savedAttempt) setCompletedPracticeAttemptId(savedAttempt.id);
+      });
+    },
+    [
+      practiceSource,
+      saveAttempt,
+      selectedFeaturedPassage.passageResponse,
+      selectedFeaturedPassage.selectedPassageId,
+      savedLibrary.passageResponse,
+      savedLibrary.selectedSavedPassageId,
+    ],
+  );
+  const practiceSession = usePracticeSession({
+    passage: practicePassage,
+    onCompletedAttempt: handleCompletedPracticeAttempt,
+  });
+  const { resetPractice } = practiceSession;
+  const resetPracticeSession = useCallback(() => {
+    resetPractice();
+    setCompletedPracticeAttemptId(null);
+  }, [resetPractice]);
+
+  useEffect(() => {
+    resetPracticeSession();
+  }, [
+    practiceSource,
+    resetPracticeSession,
+    savedLibrary.selectedSavedPassageId,
+    selectedFeaturedPassage.selectedPassageId,
+  ]);
+
+  const saveInput = useMemo(() => {
+    if (practiceSource !== 'featured') return null;
+
+    return createFeaturedPassageSaveInput(
+      selectedFeaturedPassage.passageResponse,
+      savedPassageCategories,
+    );
+  }, [
+    practiceSource,
+    savedPassageCategories,
+    selectedFeaturedPassage.passageResponse,
+  ]);
+  const { isCurrentPassageSaved, saveCurrentPassage } = useSavePassageForm({
+    isPassageSaved: savedLibrary.isPassageSaved,
+    saveInput,
+    savePassage: savedLibrary.savePassage,
+  });
+  const displayState = getPracticeDisplayState({
+    featuredError: featuredCatalog.error ?? selectedFeaturedPassage.error,
+    featuredIsLoading:
+      featuredCatalog.isLoading || selectedFeaturedPassage.isLoading,
+    featuredPassageResponse: selectedFeaturedPassage.passageResponse,
+    practiceSource,
+    savedPassageError:
+      savedLibrary.selectedPassageError ?? savedLibrary.listError,
+    savedIsLoading: savedLibrary.isLoading,
+    savedPassageResponse: savedLibrary.passageResponse,
+    selectedSavedPassage: savedLibrary.selectedSavedPassage,
+  });
+
+  const savePracticeReflection = useCallback(
+    async (reflection: string) => {
+      if (!completedPracticeAttemptId) return false;
+
+      const updatedAttempt = await updateReflection(
+        completedPracticeAttemptId,
+        reflection,
+      );
+      return Boolean(updatedAttempt);
+    },
+    [completedPracticeAttemptId, updateReflection],
+  );
+
+  const openLibrary = useCallback(() => {
+    resetPracticeSession();
+    void navigate(APP_ROUTE_PATHS.library);
+  }, [navigate, resetPracticeSession]);
+
+  const nextFeaturedPassage = useCallback(() => {
+    const passage = getRandomFeaturedPassage(
+      featuredCatalog.passages,
+      selectedFeaturedPassage.selectedPassageId,
+    );
+    selectPracticeRoute({
+      passageId: passage?.id ?? null,
+      source: 'featured',
+    });
+    resetPracticeSession();
+  }, [
+    featuredCatalog.passages,
+    resetPracticeSession,
+    selectedFeaturedPassage.selectedPassageId,
+    selectPracticeRoute,
+  ]);
+
+  const selectFeaturedPractice = useCallback(() => {
+    selectPracticeRoute({
+      passageId: selectedFeaturedPassage.selectedPassageId || null,
+      source: 'featured',
+    });
+    resetPracticeSession();
+  }, [
+    resetPracticeSession,
+    selectedFeaturedPassage.selectedPassageId,
+    selectPracticeRoute,
+  ]);
+
+  const selectSavedPractice = useCallback(
+    (passageId: string) => {
+      selectPracticeRoute({
+        passageId,
+        source: 'saved',
+      });
+      resetPracticeSession();
+    },
+    [resetPracticeSession, selectPracticeRoute],
+  );
+
+  if (displayState.isLoading) {
+    return <AppLoadingState />;
+  }
+
+  if (displayState.error) {
+    return <AppErrorState message={displayState.error} />;
+  }
+
+  if (!practicePassage) {
+    return (
+      <AppErrorState
+        message={
+          practiceSource === 'saved'
+            ? 'Save a passage first.'
+            : 'No practice passage found.'
+        }
+      />
+    );
+  }
+
+  return (
+    <div className="page-transition grid gap-4">
+      <AppHeader
+        headerReference={displayState.headerReference}
+        headerSubtitle={displayState.headerSubtitle}
+        headerTitle={displayState.headerTitle}
+      />
+      <PracticePage
+        accuracy={practiceSession.accuracy}
+        attemptSaveError={attemptSaveError}
+        canSaveCurrentPassage={Boolean(saveInput)}
+        canSaveReflection={
+          authSession.isSignedIn && Boolean(completedPracticeAttemptId)
+        }
+        isCurrentPassageSaved={isCurrentPassageSaved}
+        isPassageComplete={practiceSession.isPassageComplete}
+        isSavingReflection={isSavingReflection}
+        isSignedIn={authSession.isSignedIn}
+        passage={practicePassage}
+        practiceSource={practiceSource}
+        practiceTitle={displayState.headerTitle}
+        progress={practiceSession.progress}
+        reflectionError={reflectionError}
+        savedPassageOptions={savedLibrary.savedPassages.map(
+          ({ category, id, title }) => ({
+            category,
+            id,
+            title,
+          }),
+        )}
+        selectedSavedPassageId={savedLibrary.selectedSavedPassageId}
+        status={practiceSession.status}
+        translationName={displayState.translationName}
+        typedText={practiceSession.typedText}
+        wpm={practiceSession.wpm}
+        onNextFeaturedPassage={nextFeaturedPassage}
+        onOpenLibrary={openLibrary}
+        onResetPractice={resetPracticeSession}
+        onSaveCurrentPassage={saveCurrentPassage}
+        onSaveReflection={savePracticeReflection}
+        onSelectFeaturedPractice={selectFeaturedPractice}
+        onSelectSavedPassage={selectSavedPractice}
+        onTypingChange={practiceSession.handleTyping}
+      />
+    </div>
+  );
+}
+
+function getPracticeDisplayState({
+  featuredError,
+  featuredIsLoading,
+  featuredPassageResponse,
+  practiceSource,
+  savedPassageError,
+  savedIsLoading,
+  savedPassageResponse,
+  selectedSavedPassage,
+}: {
+  featuredError: string | null;
+  featuredIsLoading: boolean;
+  featuredPassageResponse: PassageResponse | null;
+  practiceSource: PracticeSource;
+  savedPassageError: string | null;
+  savedIsLoading: boolean;
+  savedPassageResponse: PassageResponse | null;
+  selectedSavedPassage?: SavedPassage;
+}) {
+  const isFeaturedPractice = practiceSource === 'featured';
+
+  return {
+    error: isFeaturedPractice ? featuredError : savedPassageError,
+    isLoading: isFeaturedPractice
+      ? featuredIsLoading && !featuredPassageResponse
+      : savedIsLoading && !savedPassageResponse,
+    headerReference: isFeaturedPractice
+      ? (featuredPassageResponse?.reference ?? '')
+      : (selectedSavedPassage?.reference ?? ''),
+    headerSubtitle: isFeaturedPractice
+      ? `Practice - ${featuredPassageResponse?.passage.theme ?? 'Discovery'}`
+      : 'Practice - Saved passage',
+    headerTitle: isFeaturedPractice
+      ? (featuredPassageResponse?.passage.title ?? 'Featured Passage')
+      : (selectedSavedPassage?.title ?? 'Saved Passage'),
+    translationName: isFeaturedPractice
+      ? (featuredPassageResponse?.translation.abbreviation ?? 'WEB')
+      : (selectedSavedPassage?.translationAbbreviation ?? 'WEB'),
+  };
+}

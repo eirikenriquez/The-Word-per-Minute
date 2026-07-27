@@ -1,0 +1,7 @@
+package-lock.json
+
+src/data/bibles/
+src/lib/supabase/database.types.ts
+
+public/brand/
+public/favicon.svg

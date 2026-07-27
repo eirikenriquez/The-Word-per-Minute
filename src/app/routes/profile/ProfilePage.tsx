@@ -1,0 +1,209 @@
+import type {
+  PracticeAttempt,
+  PracticeAttemptSummary,
+} from '../../../features/practice/types/practice';
+import { Button } from '../../../components/ui/Button';
+import { PracticeAttemptCard } from '../../../features/practice/components/PracticeAttemptCard';
+
+export type ProfilePageProps = {
+  hasMoreRecentAttempts: boolean;
+  isSignedIn: boolean;
+  isLoadingMoreRecentAttempts: boolean;
+  isLoadingPracticeSummary: boolean;
+  isLoadingRecentAttempts: boolean;
+  practiceSummary: PracticeAttemptSummary;
+  practiceSummaryError: string | null;
+  recentAttemptsError: string | null;
+  recentAttemptsLoadMoreError: string | null;
+  recentPracticeAttempts: PracticeAttempt[];
+  userEmail?: string;
+  onLoadMoreRecentAttempts: () => void | Promise<void>;
+};
+
+export function ProfilePage({
+  hasMoreRecentAttempts,
+  isSignedIn,
+  isLoadingMoreRecentAttempts,
+  isLoadingPracticeSummary,
+  isLoadingRecentAttempts,
+  practiceSummary,
+  practiceSummaryError,
+  recentAttemptsError,
+  recentAttemptsLoadMoreError,
+  recentPracticeAttempts,
+  userEmail,
+  onLoadMoreRecentAttempts,
+}: ProfilePageProps) {
+  const isPracticeSummaryAvailable =
+    !isLoadingPracticeSummary && !practiceSummaryError;
+
+  return (
+    <section className="grid gap-8">
+      <div className="grid gap-4">
+        <div className="grid gap-3">
+          <p className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
+            Account and progress
+          </p>
+          <h1 className="text-3xl font-bold text-ink sm:text-4xl">Progress</h1>
+          <p className="max-w-2xl text-base leading-7 text-ink-muted">
+            A quiet record of passages you have practiced and reflections you
+            have kept.
+          </p>
+        </div>
+
+        {isSignedIn && (
+          <p className="text-sm text-ink-subtle">
+            Signed in as{' '}
+            <span className="font-medium text-ink-muted">
+              {userEmail ?? 'your account'}
+            </span>
+          </p>
+        )}
+      </div>
+
+      {!isSignedIn ? (
+        <ProfileMessage>
+          Create an account to keep your practice history and reflections across
+          sessions.
+        </ProfileMessage>
+      ) : (
+        <div className="grid gap-8 lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start">
+          <aside className="grid gap-6 border-y border-line py-5 lg:sticky lg:top-28 lg:border-y-0 lg:border-r lg:py-0 lg:pr-6">
+            <section className="grid gap-2">
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
+                Account
+              </h2>
+              <p className="break-words text-sm font-medium text-ink-muted">
+                {userEmail ?? 'Account active'}
+              </p>
+              <p className="text-sm leading-6 text-ink-subtle">
+                Saved passages and practice history can sync with this account.
+              </p>
+            </section>
+
+            <section
+              aria-busy={isLoadingPracticeSummary}
+              className="grid gap-4"
+            >
+              <div className="grid gap-2">
+                <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
+                  Overview
+                </h2>
+                {practiceSummaryError && (
+                  <p className="text-sm text-red-700 dark:text-red-300">
+                    {practiceSummaryError}
+                  </p>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-4 lg:grid-cols-1">
+                <ProfileStat
+                  label="Sessions"
+                  value={
+                    isPracticeSummaryAvailable
+                      ? practiceSummary.completedAttempts
+                      : '—'
+                  }
+                />
+                <ProfileStat
+                  label="Reflections"
+                  value={
+                    isPracticeSummaryAvailable
+                      ? practiceSummary.reflectionCount
+                      : '—'
+                  }
+                />
+                <ProfileStat
+                  label="Average accuracy"
+                  value={
+                    isPracticeSummaryAvailable
+                      ? `${practiceSummary.averageAccuracy}%`
+                      : '—'
+                  }
+                />
+                <ProfileStat
+                  label="Best WPM"
+                  value={
+                    isPracticeSummaryAvailable ? practiceSummary.bestWpm : '—'
+                  }
+                />
+              </div>
+            </section>
+          </aside>
+
+          <section className="grid gap-5">
+            <div>
+              <h2 className="text-xl font-semibold text-ink">
+                Recent practice
+              </h2>
+              <p className="mt-1 text-sm text-ink-subtle">
+                Revisit the passages you have typed and what stood out along the
+                way.
+              </p>
+            </div>
+
+            {recentAttemptsError ? (
+              <ProfileMessage>{recentAttemptsError}</ProfileMessage>
+            ) : isLoadingRecentAttempts ? (
+              <ProfileMessage>Loading practice history...</ProfileMessage>
+            ) : recentPracticeAttempts.length ? (
+              <div className="grid gap-4">
+                {recentPracticeAttempts.map((attempt) => (
+                  <PracticeAttemptCard attempt={attempt} key={attempt.id} />
+                ))}
+
+                {(hasMoreRecentAttempts || recentAttemptsLoadMoreError) && (
+                  <div className="grid justify-items-center gap-2 pt-2">
+                    {recentAttemptsLoadMoreError && (
+                      <p className="text-sm text-red-700 dark:text-red-300">
+                        {recentAttemptsLoadMoreError}
+                      </p>
+                    )}
+                    {hasMoreRecentAttempts && (
+                      <Button
+                        disabled={isLoadingMoreRecentAttempts}
+                        variant="secondary"
+                        onClick={() => void onLoadMoreRecentAttempts()}
+                      >
+                        {isLoadingMoreRecentAttempts
+                          ? 'Loading...'
+                          : 'Load more history'}
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <ProfileMessage>
+                Complete a passage while signed in to begin your practice
+                history.
+              </ProfileMessage>
+            )}
+          </section>
+        </div>
+      )}
+    </section>
+  );
+}
+
+function ProfileStat({
+  label,
+  value,
+}: {
+  label: string;
+  value: number | string;
+}) {
+  return (
+    <div>
+      <p className="text-sm text-ink-subtle">{label}</p>
+      <p className="mt-1 text-2xl font-bold text-ink lg:text-xl">{value}</p>
+    </div>
+  );
+}
+
+function ProfileMessage({ children }: { children: string }) {
+  return (
+    <div className="rounded-md border border-dashed border-line-strong bg-surface-muted p-4 text-sm text-ink-muted">
+      {children}
+    </div>
+  );
+}

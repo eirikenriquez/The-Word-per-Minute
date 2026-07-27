@@ -13,11 +13,27 @@ During public alpha:
 
 ## [Unreleased]
 
+### Added
+
+- Added React Router data routing with a shared application layout, route error boundary, and independently composed Home, Profile, Library, Bible, and Practice routes.
+- Added URL-backed Bible and Practice selection state so route navigation and direct links resolve through explicit, tested rules.
+- Added Prettier configuration, enforced one-way dependency boundaries, and characterization tests for critical typing, passage, selection, and route behaviour.
+
 ### Changed
 
 - Refined the Home hero copy, action wording, and signed-out statistics so the first screen explains how to begin and what feedback appears while typing.
 - Corrected heading hierarchy across the application shell, Home, Profile, and practice-history cards.
 - Adopted self-hosted Instrument Sans as the default interface typeface.
+- Reorganised the frontend around independent feature modules, shared foundations, and application-owned route composition following Bulletproof React principles.
+- Colocated each page component, route-specific URL state, and route coordination hook with the route that owns it.
+- Split saved-passage, featured-passage, and practice behaviour into focused hooks, stores, types, and pure utilities with explicit ownership.
+- Lazy-loaded page routes to reduce the initial JavaScript bundle while keeping the application shell eager.
+- Updated React Router, Vite, ESLint, and related build dependencies.
+
+### Removed
+
+- Removed the legacy global application controller, page-prop factories, and manual route-switching layer.
+- Removed the obsolete `domain`, `shared`, and top-level `pages` folder layers after moving their responsibilities to features, shared foundations, and application routes.
 
 ## [0.1.0] - 2026-07-20
 

@@ -1,0 +1,57 @@
+import { useEffect, useState } from 'react';
+import { DEFAULT_SAVED_CATEGORY } from '../constants/savedPassageCategories';
+import type { SavedPassage, SavePassageInput } from '../types/savedPassage';
+
+type UseSavePassageFormParams = {
+  isPassageSaved: (input: SavePassageInput | null) => boolean;
+  saveInput: SavePassageInput | null;
+  savePassage: (
+    input: SavePassageInput,
+  ) => SavedPassage | null | Promise<SavedPassage | null>;
+};
+
+/**
+ * Manages title/category form state for saving the current passage.
+ * Featured passages keep their curated metadata; Bible selections can be renamed before saving.
+ */
+export function useSavePassageForm({
+  isPassageSaved,
+  saveInput,
+  savePassage,
+}: UseSavePassageFormParams) {
+  const [saveTitle, setSaveTitle] = useState('');
+  const [saveCategory, setSaveCategory] = useState(DEFAULT_SAVED_CATEGORY);
+  const isCurrentPassageSaved = isPassageSaved(saveInput);
+
+  useEffect(() => {
+    if (!saveInput) return;
+
+    setSaveTitle(saveInput.title);
+    setSaveCategory(saveInput.category);
+  }, [saveInput]);
+
+  async function saveCurrentPassage() {
+    if (!saveInput) return false;
+
+    const passageToSave =
+      saveInput.source === 'bible'
+        ? {
+            ...saveInput,
+            category: saveCategory,
+            title: saveTitle.trim() || saveInput.title,
+          }
+        : saveInput;
+
+    const savedPassage = await savePassage(passageToSave);
+    return Boolean(savedPassage);
+  }
+
+  return {
+    isCurrentPassageSaved,
+    saveCategory,
+    saveCurrentPassage,
+    saveTitle,
+    setSaveCategory,
+    setSaveTitle,
+  };
+}
