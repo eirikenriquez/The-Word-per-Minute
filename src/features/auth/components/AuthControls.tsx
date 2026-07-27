@@ -1,5 +1,6 @@
 import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
 import { useEffect, useRef, useState } from 'react';
+import { useAuth } from '../context/authContext';
 import type { AuthSessionState } from '../hooks/useAuthSession';
 import { AuthMenuButton } from './AuthMenuButton';
 import { SignedInAuthMenu } from './SignedInAuthMenu';
@@ -11,7 +12,6 @@ export type AuthMenuRequest = {
 };
 
 type AuthControlsProps = {
-  authSession: AuthSessionState;
   menuRequest?: AuthMenuRequest | null;
   onMenuRequestHandled?: () => void;
   profilePath: string;
@@ -21,11 +21,12 @@ type AuthControlsProps = {
  * Small app-shell auth control for Supabase email/password authentication.
  */
 export function AuthControls({
-  authSession,
   menuRequest,
   onMenuRequestHandled,
   profilePath,
 }: AuthControlsProps) {
+  const authSession = useAuth();
+
   return (
     <Popover className="relative">
       {({ close, open }) => (
@@ -43,6 +44,7 @@ export function AuthControls({
 }
 
 type AuthPopoverContentProps = AuthControlsProps & {
+  authSession: AuthSessionState;
   closePopover: () => void;
   isOpen: boolean;
 };

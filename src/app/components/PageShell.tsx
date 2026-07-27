@@ -5,7 +5,6 @@ import {
   AuthControls,
   type AuthMenuRequest,
 } from '../../features/auth/components/AuthControls';
-import type { AuthSessionState } from '../../features/auth/hooks/useAuthSession';
 import type { AppMode, Theme } from '../../types/app';
 import { APP_ROUTE_PATHS } from '../routes/appRoutePaths';
 import { AppFooter } from './AppFooter';
@@ -15,7 +14,6 @@ import { BackToTopButton } from './BackToTopButton';
 type PageShellProps = {
   appMode?: AppMode;
   authMenuRequest?: AuthMenuRequest | null;
-  authSession?: AuthSessionState;
   children: ReactNode;
   theme: Theme;
   onToggleTheme: () => void;
@@ -29,7 +27,6 @@ type PageShellProps = {
 export function PageShell({
   appMode,
   authMenuRequest,
-  authSession,
   children,
   theme,
   onToggleTheme,
@@ -68,14 +65,11 @@ export function PageShell({
             {appMode && onSelectMode && (
               <AppNavigation appMode={appMode} onSelectMode={onSelectMode} />
             )}
-            {authSession && (
-              <AuthControls
-                authSession={authSession}
-                menuRequest={authMenuRequest}
-                onMenuRequestHandled={onAuthMenuRequestHandled}
-                profilePath={APP_ROUTE_PATHS.profile}
-              />
-            )}
+            <AuthControls
+              menuRequest={authMenuRequest}
+              onMenuRequestHandled={onAuthMenuRequestHandled}
+              profilePath={APP_ROUTE_PATHS.profile}
+            />
           </div>
         </div>
       </header>

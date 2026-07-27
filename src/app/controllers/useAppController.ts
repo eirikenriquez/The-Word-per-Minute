@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import type { AppHeaderProps } from '../components/AppHeader';
 import type { AppRoutesProps } from '../components/AppRoutes';
-import { useAuthSession } from '../../features/auth/hooks/useAuthSession';
+import { useAuth } from '../../features/auth/context/authContext';
 import { useReaderSelection } from '../../features/bible-reader/hooks/useReaderSelection';
 import { useVerseLibrary } from '../../features/bible-reader/hooks/useVerseLibrary';
 import { useFeaturedPassages } from '../../features/featured-passages/hooks/useFeaturedPassages';
@@ -48,7 +48,7 @@ export function useAppController() {
   const [practiceSource, setPracticeSource] =
     useState<PracticeSource>('featured');
   const { theme, toggleTheme } = useTheme();
-  const authSession = useAuthSession();
+  const authSession = useAuth();
 
   const readerSelection = useReaderSelection();
   const featuredLibrary = useFeaturedPassages();
@@ -315,7 +315,6 @@ export function useAppController() {
   return {
     appMode,
     authMenuRequest,
-    authSession,
     errorMessage,
     headerProps,
     isLoading,

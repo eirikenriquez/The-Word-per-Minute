@@ -13,7 +13,6 @@ function App() {
   const {
     appMode,
     authMenuRequest,
-    authSession,
     errorMessage,
     headerProps,
     isLoading,
@@ -27,11 +26,7 @@ function App() {
   // App-level guards keep incomplete data out of the page tree.
   if (isLoading) {
     return (
-      <PageShell
-        authSession={authSession}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-      >
+      <PageShell theme={theme} onToggleTheme={toggleTheme}>
         <AppLoadingState />
       </PageShell>
     );
@@ -39,11 +34,7 @@ function App() {
 
   if (errorMessage) {
     return (
-      <PageShell
-        authSession={authSession}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-      >
+      <PageShell theme={theme} onToggleTheme={toggleTheme}>
         <AppErrorState message={errorMessage} />
       </PageShell>
     );
@@ -53,7 +44,6 @@ function App() {
     <PageShell
       appMode={appMode}
       authMenuRequest={authMenuRequest}
-      authSession={authSession}
       theme={theme}
       onAuthMenuRequestHandled={onAuthMenuRequestHandled}
       onSelectMode={onSelectMode}
