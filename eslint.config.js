@@ -26,9 +26,9 @@ const featureBoundaryConfigs = featureNames.map((featureName) => {
         {
           patterns: [
             {
-              regex: '^(?:@/|(?:\\.\\./)+)(?:app|pages)(?:/|$)',
+              regex: '^(?:@/|(?:\\.\\./)+)app(?:/|$)',
               message:
-                'Features cannot import app or pages. Compose features in the application layer.',
+                'Features cannot import app. Compose features in the application layer.',
             },
             {
               regex: `^(?:@/features/|(?:\\.\\./)+(?:features/)?)(?:${otherFeatureNames})(?:/|$)`,
@@ -62,23 +62,6 @@ export default defineConfig([
   },
   ...featureBoundaryConfigs,
   {
-    files: ['src/pages/**/*.{ts,tsx}'],
-    rules: {
-      'no-restricted-imports': [
-        'error',
-        {
-          patterns: [
-            {
-              regex: '^(?:@/|(?:\\.\\./)+)app(?:/|$)',
-              message:
-                'Pages cannot import app. The app owns routing and page composition.',
-            },
-          ],
-        },
-      ],
-    },
-  },
-  {
     files: ['src/{components,lib,types,utils}/**/*.{ts,tsx}'],
     rules: {
       'no-restricted-imports': [
@@ -86,7 +69,7 @@ export default defineConfig([
         {
           patterns: [
             {
-              regex: '^(?:@/|(?:\\.\\./)+)(?:app|features|pages)(?:/|$)',
+              regex: '^(?:@/|(?:\\.\\./)+)(?:app|features)(?:/|$)',
               message:
                 'Shared modules cannot import higher application layers.',
             },

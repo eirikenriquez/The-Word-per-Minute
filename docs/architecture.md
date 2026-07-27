@@ -28,8 +28,8 @@ The project is one client-side React application organised by feature, with rout
 The responsibilities resemble MVC without forcing React into a strict MVC framework:
 
 - Feature hooks, stores, services, and pure utilities own product state and behaviour.
-- Pages and feature components own rendering and local visual interaction.
-- Route modules compose features, prepare page props, and coordinate navigation.
+- Page components and feature components own rendering and local visual interaction.
+- Route modules compose features, prepare page props, and coordinate navigation. Each page component is colocated with its route.
 
 React Router owns URL state and route lifecycles. React hooks own local state and asynchronous effects. Supabase Auth providers own the limited state that must remain available across routes. No global state-management or server-state library is currently used.
 
@@ -100,14 +100,14 @@ src/
     hooks/             navigation, theme, category, and URL coordination
     layouts/           global route layout
     providers/         provider composition
-    routes/            route composition and URL-state modules
+    routes/            route folders containing composition, page UI, and URL state
+    types.ts           application-shell and navigation types
   features/
     auth/
     bible-reader/
     featured-passages/
     practice/
     saved-passages/
-  pages/               route-level screens
   components/          reusable UI primitives
   lib/                 shared infrastructure and content services
   types/               cross-feature TypeScript contracts
@@ -131,21 +131,17 @@ Feature-owned static content can stay inside its feature. The curated catalogue 
 ```mermaid
 flowchart TD
   entry["main.tsx"] --> app["app"]
-  app --> pages["pages"]
   app --> features["features"]
   app --> foundations["components, lib, types, and utils"]
-  pages --> features
-  pages --> foundations
   features --> foundations
   foundations --> data["data"]
 ```
 
 ESLint enforces the important boundaries:
 
-- Features cannot import `app` or `pages`.
+- Features cannot import `app`.
 - Features cannot import other features.
-- Pages cannot import `app`.
-- Shared foundations cannot import `app`, `features`, or `pages`.
+- Shared foundations cannot import `app` or `features`.
 
 Cross-feature coordination belongs in `app`, normally in the route that owns the workflow. A reusable app-level hook is justified only when coordination is genuinely shared between routes.
 
@@ -159,13 +155,11 @@ The application layer owns:
 - URL synchronization,
 - and workflows that coordinate several features.
 
-It may depend on pages, features, and shared foundations because it is the composition layer. Product calculations and persistence implementations should remain inside their feature.
+It may depend on features and shared foundations because it is the composition layer. Product calculations and persistence implementations should remain inside their feature.
 
-### `pages`
+Each route folder owns one route-level screen. Its route module coordinates feature state and navigation, while its page component receives explicit state and callbacks and composes visual components.
 
-Each page folder owns one route-level screen. Pages receive explicit state and callbacks from a route module and compose visual components.
-
-Pages may import feature components and feature types. They should not:
+Page components may import feature components and feature types. They should not:
 
 - select persistence adapters,
 - access Supabase directly,
@@ -222,7 +216,7 @@ Each kind of state has one primary owner:
 | Attempt history and summary           | `usePracticeAttemptHistory`             | Supabase                          |
 | Attempt and reflection writes         | `usePracticeAttemptMutations`           | Supabase                          |
 
-State should not be copied into pages when it can be derived from these owners. Navigating away from a route unmounts its route-specific state.
+State should not be copied into page components when it can be derived from these owners. Navigating away from a route unmounts its route-specific state.
 
 ## Major Runtime Flows
 
@@ -320,9 +314,9 @@ These constraints should be addressed through focused changes. They do not justi
 
 Use these placement rules before creating another abstraction:
 
-- A new screen belongs in `pages/<route>` and receives an accompanying composition module in `app/routes`.
-- Route parsing and canonical URL creation belong beside the route in `app/routes`.
-- Visual components used by one page stay in that page or its feature.
+- A new screen belongs in `app/routes/<route>` with its route module and page component.
+- Route parsing and canonical URL creation belong beside the route in its route folder.
+- Visual components used by one page stay in that route folder or its feature.
 - Product behaviour belongs in the corresponding feature.
 - Cross-feature workflows belong in the route that owns the workflow.
 - Alternative persistence implementations belong behind a feature store contract.
@@ -336,7 +330,7 @@ Do not create wrappers, hooks, factories, or utility folders solely to satisfy t
 ## Architectural Guardrails
 
 - Keep route modules responsible for composition, navigation, and cross-feature coordination.
-- Keep features independent from other features, pages, and app code.
+- Keep features independent from other features and app code.
 - Keep page contracts explicit rather than passing whole hook result objects.
 - Keep page components unaware of persistence implementations.
 - Keep shared foundations free of feature-specific behaviour.

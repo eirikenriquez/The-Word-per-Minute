@@ -5,7 +5,7 @@ import {
   PencilSquareIcon,
 } from '@heroicons/react/24/outline';
 import type { ReactNode } from 'react';
-import type { AppMode } from '../../types/app';
+import type { AppMode } from '../types';
 
 type AppNavigationProps = {
   appMode: AppMode;

@@ -2,7 +2,7 @@ import { MoonIcon, SunIcon } from '@heroicons/react/24/outline';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router';
 import { AuthControls } from '../../features/auth/components/AuthControls';
-import type { AppMode, Theme } from '../../types/app';
+import type { AppMode, Theme } from '../types';
 import { APP_ROUTE_PATHS } from '../routes/appRoutePaths';
 import { AppFooter } from './AppFooter';
 import { AppNavigation } from './AppNavigation';

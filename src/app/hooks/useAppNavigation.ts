@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import type { AppMode } from '../../types/app';
+import type { AppMode } from '../types';
 import {
   getAppModeFromPathname,
   getPathnameFromAppMode,
