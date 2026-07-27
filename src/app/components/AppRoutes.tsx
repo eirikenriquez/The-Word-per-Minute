@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router";
 import type { BiblePageProps } from "../../pages/bible/BiblePage";
 import { BiblePage } from "../../pages/bible/BiblePage";
 import type { HomePageProps } from "../../pages/home/HomePage";
