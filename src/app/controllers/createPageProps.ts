@@ -1,9 +1,5 @@
-import type { useReaderSelection } from '../../features/bible-reader/hooks/useReaderSelection';
-import type { useVerseLibrary } from '../../features/bible-reader/hooks/useVerseLibrary';
-import type { useBibleRouteSelection } from '../hooks/useBibleRouteSelection';
 import type { usePracticeSession } from '../../features/practice/hooks/usePracticeSession';
 import type { useSavedPassages } from '../../features/saved-passages/hooks/useSavedPassages';
-import type { BiblePageProps } from '../../pages/bible/BiblePage';
 import type { PracticePageProps } from '../../pages/practice/PracticePage';
 import type {
   PracticePassage,
@@ -12,40 +8,6 @@ import type {
 import type { createAppActions } from './createAppActions';
 
 type AppActions = ReturnType<typeof createAppActions>;
-
-export function createBiblePageProps({
-  appActions,
-  bibleLibrary,
-  bibleRouteSelection,
-  readerSelection,
-  saveControls,
-}: {
-  appActions: AppActions;
-  bibleLibrary: ReturnType<typeof useVerseLibrary>;
-  bibleRouteSelection: ReturnType<typeof useBibleRouteSelection>;
-  readerSelection: ReturnType<typeof useReaderSelection>;
-  saveControls: BiblePageProps['saveControls'];
-}): BiblePageProps {
-  return {
-    bibleBooks: bibleLibrary.books,
-    bibleChapter: bibleLibrary.chapter,
-    focusSelectedVerseKey: readerSelection.focusSelectedVerseKey,
-    selectedBibleBook: bibleLibrary.selectedBook,
-    selectedBibleBookId: bibleLibrary.selectedBookId,
-    selectedBibleChapter: bibleLibrary.selectedChapter,
-    selectedTranslationId: bibleLibrary.selectedTranslationId,
-    selectedVerseNumbers: readerSelection.selectedVerseNumbers,
-    saveControls,
-    translations: bibleLibrary.translations,
-    onClearBibleSelection: bibleRouteSelection.clearReaderSelection,
-    onRandomFeaturedReaderPassage: appActions.randomFeaturedReaderPassage,
-    onSelectBibleBook: bibleRouteSelection.selectReaderBook,
-    onSelectBibleChapter: bibleRouteSelection.selectReaderChapter,
-    onSelectReaderRange: bibleRouteSelection.selectReaderRange,
-    onSelectReaderVerse: bibleRouteSelection.selectReaderVerse,
-    onSelectTranslation: bibleRouteSelection.selectReaderTranslation,
-  };
-}
 
 export function createPracticePageProps({
   appActions,

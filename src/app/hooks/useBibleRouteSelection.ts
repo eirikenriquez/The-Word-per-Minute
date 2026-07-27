@@ -5,7 +5,6 @@ import {
   addVerseRange,
   toggleVerseSelection,
 } from '../../features/bible-reader/utils/readerSelection';
-import type { AppMode } from '../../types/app';
 import {
   createBiblePath,
   readBibleRouteState,
@@ -13,7 +12,6 @@ import {
 } from '../routes/bibleRouteState';
 
 type UseBibleRouteSelectionParams = {
-  appMode: AppMode;
   books: readonly BookSummary[];
   focusSelectedVerses: () => void;
   selectedBookId: string;
@@ -36,7 +34,6 @@ type SelectBibleRouteOptions = {
  * Keeps shareable Bible URL state and Bible-reader feature state synchronized.
  */
 export function useBibleRouteSelection({
-  appMode,
   books,
   focusSelectedVerses,
   selectedBookId,
@@ -79,8 +76,6 @@ export function useBibleRouteSelection({
   );
 
   useEffect(() => {
-    if (appMode !== 'bible') return;
-
     const translationId = resolveIdentifier(
       routeState.translationId,
       selectedTranslationId,
@@ -136,7 +131,6 @@ export function useBibleRouteSelection({
       { replace: true },
     );
   }, [
-    appMode,
     books,
     focusSelectedVerses,
     routeState,
