@@ -1,5 +1,5 @@
-import type { PracticeSource } from '../../features/practice/types/practice';
-import { APP_ROUTE_PATHS } from './appRoutePaths';
+import type { PracticeSource } from '../../../features/practice/types/practice';
+import { APP_ROUTE_PATHS } from '../appRoutePaths';
 
 export type PracticeRouteState = {
   passageId: string | null;

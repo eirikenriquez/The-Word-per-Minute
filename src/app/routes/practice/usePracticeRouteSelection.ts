@@ -5,7 +5,7 @@ import {
   readPracticeRouteState,
   resolvePracticeRouteState,
   type PracticeRouteState,
-} from '../routes/practiceRouteState';
+} from './practiceRouteState';
 
 type PassageOption = {
   id: string;

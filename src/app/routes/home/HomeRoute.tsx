@@ -8,7 +8,7 @@ import { useFeaturedPassageCatalog } from '../../../features/featured-passages/h
 import { getRandomFeaturedPassage } from '../../../features/featured-passages/utils/featuredPassageSelection';
 import { useSavedPassageCollection } from '../../../features/saved-passages/hooks/useSavedPassageCollection';
 import { APP_ROUTE_PATHS } from '../appRoutePaths';
-import { createPracticePath } from '../practiceRouteState';
+import { createPracticePath } from '../practice/practiceRouteState';
 import { HomePage } from './HomePage';
 
 /**

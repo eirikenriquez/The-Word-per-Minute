@@ -4,7 +4,7 @@ import { useAuth } from '../../../features/auth/context/authContext';
 import { useSavedPassageCollection } from '../../../features/saved-passages/hooks/useSavedPassageCollection';
 import type { SavedPassage } from '../../../features/saved-passages/types/savedPassage';
 import { createBiblePath } from '../bible/bibleRouteState';
-import { createPracticePath } from '../practiceRouteState';
+import { createPracticePath } from '../practice/practiceRouteState';
 import { LibraryPage } from './LibraryPage';
 
 /**

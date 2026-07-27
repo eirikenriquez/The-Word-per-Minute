@@ -49,7 +49,7 @@ export const appRouter = createBrowserRouter([
       {
         path: APP_ROUTE_PATHS.practice,
         lazy: async () => {
-          const { PracticeRoute } = await import('./PracticeRoute');
+          const { PracticeRoute } = await import('./practice/PracticeRoute');
 
           return { Component: PracticeRoute };
         },

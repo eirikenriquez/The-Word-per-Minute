@@ -1,29 +1,29 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useAuth } from '../../features/auth/context/authContext';
-import { useFeaturedPassageCatalog } from '../../features/featured-passages/hooks/useFeaturedPassageCatalog';
-import { useSelectedFeaturedPassage } from '../../features/featured-passages/hooks/useSelectedFeaturedPassage';
-import { getRandomFeaturedPassage } from '../../features/featured-passages/utils/featuredPassageSelection';
-import { usePracticeAttemptMutations } from '../../features/practice/hooks/usePracticeAttemptMutations';
-import { usePracticePassage } from '../../features/practice/hooks/usePracticePassage';
-import { usePracticeSession } from '../../features/practice/hooks/usePracticeSession';
+import { AppErrorState } from '../../components/AppErrorState';
+import { AppHeader } from '../../components/AppHeader';
+import { AppLoadingState } from '../../components/AppLoadingState';
+import { usePassageCategories } from '../../hooks/usePassageCategories';
+import { useAuth } from '../../../features/auth/context/authContext';
+import { useFeaturedPassageCatalog } from '../../../features/featured-passages/hooks/useFeaturedPassageCatalog';
+import { useSelectedFeaturedPassage } from '../../../features/featured-passages/hooks/useSelectedFeaturedPassage';
+import { getRandomFeaturedPassage } from '../../../features/featured-passages/utils/featuredPassageSelection';
+import { usePracticeAttemptMutations } from '../../../features/practice/hooks/usePracticeAttemptMutations';
+import { usePracticePassage } from '../../../features/practice/hooks/usePracticePassage';
+import { usePracticeSession } from '../../../features/practice/hooks/usePracticeSession';
 import type {
   PracticeCompletionResult,
   PracticeSource,
-} from '../../features/practice/types/practice';
-import { createPracticeAttemptInput } from '../../features/practice/utils/practiceAttemptInput';
-import { useSavePassageForm } from '../../features/saved-passages/hooks/useSavePassageForm';
-import { useSavedPassages } from '../../features/saved-passages/hooks/useSavedPassages';
-import type { SavedPassage } from '../../features/saved-passages/types/savedPassage';
-import { createFeaturedPassageSaveInput } from '../../features/saved-passages/utils/passageSaveInput';
-import type { PassageResponse } from '../../types/passage';
-import { PracticePage } from '../../pages/practice/PracticePage';
-import { AppErrorState } from '../components/AppErrorState';
-import { AppHeader } from '../components/AppHeader';
-import { AppLoadingState } from '../components/AppLoadingState';
-import { usePassageCategories } from '../hooks/usePassageCategories';
-import { usePracticeRouteSelection } from '../hooks/usePracticeRouteSelection';
-import { APP_ROUTE_PATHS } from './appRoutePaths';
+} from '../../../features/practice/types/practice';
+import { createPracticeAttemptInput } from '../../../features/practice/utils/practiceAttemptInput';
+import { useSavePassageForm } from '../../../features/saved-passages/hooks/useSavePassageForm';
+import { useSavedPassages } from '../../../features/saved-passages/hooks/useSavedPassages';
+import type { SavedPassage } from '../../../features/saved-passages/types/savedPassage';
+import { createFeaturedPassageSaveInput } from '../../../features/saved-passages/utils/passageSaveInput';
+import type { PassageResponse } from '../../../types/passage';
+import { APP_ROUTE_PATHS } from '../appRoutePaths';
+import { PracticePage } from './PracticePage';
+import { usePracticeRouteSelection } from './usePracticeRouteSelection';
 
 /**
  * Composes passage selection, typing state, persistence, and URL state needed
