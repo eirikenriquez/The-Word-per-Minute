@@ -75,6 +75,7 @@ Route modules are the top-level composition boundary. They may import several in
 ## Routes
 
 Paths are defined in `src/app/routes/appRoutePaths.ts` and registered in `src/app/routes/appRouter.ts`.
+The application shell and route definitions load eagerly, while each page route module is lazy-loaded when its path is visited.
 
 | Path        | Route module    | Main responsibilities                                                                                                           |
 | ----------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------- |
@@ -307,7 +308,7 @@ The structure is stable, but several implementation tradeoffs remain:
 
 - Practice initializes featured and saved source state together, which can load the inactive source.
 - Route remounting can repeat data requests because the app has no shared server-state cache.
-- Route modules are statically imported, so the initial JavaScript bundle contains code for every route.
+- Route modules are lazy-loaded, but dependencies shared by several routes can still contribute to the initial or shared JavaScript bundles.
 - `PracticeRoute` remains the largest route composition module and should be reduced only through cohesive, testable feature behaviour.
 - `useBibleRouteSelection` remains long because it exposes the reader's URL-backed event handlers, but its pure fallback and bounds rules are isolated and tested in `bibleRouteState`.
 - Database types are manually maintained and Supabase changes use one schema file rather than versioned migrations.

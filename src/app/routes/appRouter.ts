@@ -2,11 +2,6 @@ import { createBrowserRouter, redirect } from 'react-router';
 import { AppRouteErrorBoundary } from '../components/AppRouteErrorBoundary';
 import { AppLayout } from '../layouts/AppLayout';
 import { APP_ROUTE_PATHS } from './appRoutePaths';
-import { BibleRoute } from './BibleRoute';
-import { HomeRoute } from './HomeRoute';
-import { LibraryRoute } from './LibraryRoute';
-import { PracticeRoute } from './PracticeRoute';
-import { ProfileRoute } from './ProfileRoute';
 
 /**
  * Browser router created once outside the React render tree.
@@ -21,23 +16,43 @@ export const appRouter = createBrowserRouter([
     children: [
       {
         index: true,
-        Component: HomeRoute,
+        lazy: async () => {
+          const { HomeRoute } = await import('./HomeRoute');
+
+          return { Component: HomeRoute };
+        },
       },
       {
         path: APP_ROUTE_PATHS.profile,
-        Component: ProfileRoute,
+        lazy: async () => {
+          const { ProfileRoute } = await import('./ProfileRoute');
+
+          return { Component: ProfileRoute };
+        },
       },
       {
         path: APP_ROUTE_PATHS.library,
-        Component: LibraryRoute,
+        lazy: async () => {
+          const { LibraryRoute } = await import('./LibraryRoute');
+
+          return { Component: LibraryRoute };
+        },
       },
       {
         path: APP_ROUTE_PATHS.bible,
-        Component: BibleRoute,
+        lazy: async () => {
+          const { BibleRoute } = await import('./BibleRoute');
+
+          return { Component: BibleRoute };
+        },
       },
       {
         path: APP_ROUTE_PATHS.practice,
-        Component: PracticeRoute,
+        lazy: async () => {
+          const { PracticeRoute } = await import('./PracticeRoute');
+
+          return { Component: PracticeRoute };
+        },
       },
       {
         path: '*',
