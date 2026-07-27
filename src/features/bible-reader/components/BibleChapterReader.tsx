@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import type { BibleChapter } from "../../../types/bible";
+import { useEffect, useRef, useState } from 'react';
+import type { BibleChapter } from '../../../types/bible';
 
 type BibleChapterReaderProps = {
   chapter: BibleChapter | null;
@@ -40,9 +40,9 @@ export function BibleChapterReader({
     if (!selectedVerseButton) return;
 
     selectedVerseButton.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-      inline: "nearest",
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'nearest',
     });
   }, [chapter, focusSelectedVerseKey, selectedChapter, selectedVerseNumbers]);
 
@@ -81,7 +81,8 @@ export function BibleChapterReader({
   return (
     <div className="mx-auto grid w-full max-w-5xl gap-5">
       <p className="text-sm text-ink-subtle">
-        Click a verse to select or deselect it. Drag across verses to select a range.
+        Click a verse to select or deselect it. Drag across verses to select a
+        range.
       </p>
 
       <div
@@ -98,8 +99,8 @@ export function BibleChapterReader({
               aria-pressed={isSelected}
               className={`mr-1 rounded px-1 text-left transition ${
                 isSelected
-                  ? "bg-selected text-selected-ink ring-1 ring-accent-line"
-                  : "text-ink-muted hover:bg-accent-soft"
+                  ? 'bg-selected text-selected-ink ring-1 ring-accent-line'
+                  : 'text-ink-muted hover:bg-accent-soft'
               }`}
               key={verse.number}
               ref={(buttonElement) => {
@@ -112,7 +113,7 @@ export function BibleChapterReader({
               }}
               type="button"
               onKeyDown={(event) => {
-                if (event.key !== "Enter" && event.key !== " ") return;
+                if (event.key !== 'Enter' && event.key !== ' ') return;
 
                 event.preventDefault();
                 onSelectVerse(verse.number);
@@ -128,7 +129,9 @@ export function BibleChapterReader({
                 finishVerseSelection(verse.number);
               }}
             >
-              <sup className="mr-1 text-xs font-bold text-ink-subtle">{verse.number}</sup>
+              <sup className="mr-1 text-xs font-bold text-ink-subtle">
+                {verse.number}
+              </sup>
               {verse.text}
             </button>
           );

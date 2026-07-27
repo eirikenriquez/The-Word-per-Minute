@@ -1,5 +1,5 @@
-export const DEFAULT_SAVED_CATEGORY = "Memorise";
-export const CUSTOM_SAVED_CATEGORY = "Other";
+export const DEFAULT_SAVED_CATEGORY = 'Memorise';
+export const CUSTOM_SAVED_CATEGORY = 'Other';
 
 /**
  * Uses a featured theme as the saved category when that theme is available.

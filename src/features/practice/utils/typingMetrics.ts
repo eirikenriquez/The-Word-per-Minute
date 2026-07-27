@@ -1,4 +1,4 @@
-import type { PracticePassage, PracticeStatus } from "../types/practice";
+import type { PracticePassage, PracticeStatus } from '../types/practice';
 
 type PracticeSessionMetricsInput = {
   passage: PracticePassage | undefined;
@@ -23,8 +23,10 @@ type PracticeSessionMetrics = {
  */
 export function countCorrectCharacters(targetText: string, typedText: string) {
   return typedText
-    .split("")
-    .filter((character, index) => areCharactersEquivalent(targetText[index], character)).length;
+    .split('')
+    .filter((character, index) =>
+      areCharactersEquivalent(targetText[index], character),
+    ).length;
 }
 
 /**
@@ -64,13 +66,10 @@ export function countNewTypingMistakes(
     nextTypedText.length - sharedSuffixLength,
   );
 
-  return newlyEnteredText
-    .split("")
-    .filter((character, index) => {
-      const targetIndex = sharedPrefixLength + index;
-      return !areCharactersEquivalent(targetText[targetIndex], character);
-    })
-    .length;
+  return newlyEnteredText.split('').filter((character, index) => {
+    const targetIndex = sharedPrefixLength + index;
+    return !areCharactersEquivalent(targetText[targetIndex], character);
+  }).length;
 }
 
 /**
@@ -78,9 +77,16 @@ export function countNewTypingMistakes(
  * Bible text can contain curly quotes or typographic dashes, while users usually
  * type straight quotes and hyphens from a normal keyboard.
  */
-export function areCharactersEquivalent(targetCharacter: string | undefined, typedCharacter: string | undefined) {
-  if (targetCharacter === undefined || typedCharacter === undefined) return false;
-  return normalizeComparableCharacter(targetCharacter) === normalizeComparableCharacter(typedCharacter);
+export function areCharactersEquivalent(
+  targetCharacter: string | undefined,
+  typedCharacter: string | undefined,
+) {
+  if (targetCharacter === undefined || typedCharacter === undefined)
+    return false;
+  return (
+    normalizeComparableCharacter(targetCharacter) ===
+    normalizeComparableCharacter(typedCharacter)
+  );
 }
 
 /**
@@ -90,8 +96,8 @@ function normalizeComparableCharacter(character: string) {
   return character
     .replace(/[\u2018\u2019\u201A\u201B`]/g, "'")
     .replace(/[\u201C\u201D\u201E\u201F]/g, '"')
-    .replace(/[\u2010-\u2015]/g, "-")
-    .replace(/[\u00A0\u202F]/g, " ");
+    .replace(/[\u2010-\u2015]/g, '-')
+    .replace(/[\u00A0\u202F]/g, ' ');
 }
 
 /**
@@ -105,7 +111,7 @@ export function calculatePracticeSessionMetrics({
   finishedAt,
   now = Date.now(),
 }: PracticeSessionMetricsInput): PracticeSessionMetrics {
-  const targetText = passage?.text ?? "";
+  const targetText = passage?.text ?? '';
   const correctCharacters = countCorrectCharacters(targetText, typedText);
   const progress = targetText.length
     ? Math.round((typedText.length / targetText.length) * 100)
@@ -116,16 +122,19 @@ export function calculatePracticeSessionMetrics({
     : 100;
   const elapsedMs = startedAt ? (finishedAt ?? now) - startedAt : 0;
   const elapsedMinutes = elapsedMs / 1000 / 60;
-  const wpm = elapsedMinutes > 0 ? Math.round(correctCharacters / 5 / elapsedMinutes) : 0;
+  const wpm =
+    elapsedMinutes > 0 ? Math.round(correctCharacters / 5 / elapsedMinutes) : 0;
   const isPassageComplete = Boolean(
-    targetText && typedText.length === targetText.length && correctCharacters === targetText.length,
+    targetText &&
+    typedText.length === targetText.length &&
+    correctCharacters === targetText.length,
   );
 
   return {
     accuracy,
     isPassageComplete,
     progress: Math.min(progress, 100),
-    status: isPassageComplete ? "Complete" : startedAt ? "Typing" : "Ready",
+    status: isPassageComplete ? 'Complete' : startedAt ? 'Typing' : 'Ready',
     targetText,
     wpm,
   };

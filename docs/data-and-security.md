@@ -55,10 +55,10 @@ Supabase secret keys provide privileged backend access and must never be:
 
 The active saved-passage store depends on authentication state:
 
-| Session | Saved passages | Practice history |
-| --- | --- | --- |
-| Signed out | Current browser's `localStorage` | Not persisted |
-| Signed in | Current user's Supabase rows | Current user's Supabase rows |
+| Session    | Saved passages                   | Practice history             |
+| ---------- | -------------------------------- | ---------------------------- |
+| Signed out | Current browser's `localStorage` | Not persisted                |
+| Signed in  | Current user's Supabase rows     | Current user's Supabase rows |
 
 Guest and account data are deliberately separate:
 
@@ -71,16 +71,16 @@ Guest and account data are deliberately separate:
 
 The application currently handles these categories of data:
 
-| Data | Location | Notes |
-| --- | --- | --- |
-| Bible text, translation metadata, and featured passages | Application bundle | Public content stored in the repository. |
-| Guest saved passages | Browser `localStorage` | Includes passage identity, title, category, source, and creation time. |
-| Theme preference | Browser `localStorage` | Stores the current light or dark preference. |
-| Authentication account and session | Supabase Auth and browser session storage | Supabase Auth handles email addresses, password credentials, confirmation, and session tokens. Passwords are not stored in the app's public tables. |
-| Profile | Supabase Postgres | Currently contains the Auth user ID, optional display name, and timestamps. |
-| Account saved passages | Supabase Postgres | Contains passage identity, title, category, source, translation metadata, exact verse selection, and timestamps. |
-| Practice attempts | Supabase Postgres | Contains passage identity, duration, mistakes, typed-character count, WPM, accuracy, and completion time. |
-| Reflections | Supabase Postgres | Optional user-written text attached to a practice attempt. |
+| Data                                                    | Location                                  | Notes                                                                                                                                               |
+| ------------------------------------------------------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Bible text, translation metadata, and featured passages | Application bundle                        | Public content stored in the repository.                                                                                                            |
+| Guest saved passages                                    | Browser `localStorage`                    | Includes passage identity, title, category, source, and creation time.                                                                              |
+| Theme preference                                        | Browser `localStorage`                    | Stores the current light or dark preference.                                                                                                        |
+| Authentication account and session                      | Supabase Auth and browser session storage | Supabase Auth handles email addresses, password credentials, confirmation, and session tokens. Passwords are not stored in the app's public tables. |
+| Profile                                                 | Supabase Postgres                         | Currently contains the Auth user ID, optional display name, and timestamps.                                                                         |
+| Account saved passages                                  | Supabase Postgres                         | Contains passage identity, title, category, source, translation metadata, exact verse selection, and timestamps.                                    |
+| Practice attempts                                       | Supabase Postgres                         | Contains passage identity, duration, mistakes, typed-character count, WPM, accuracy, and completion time.                                           |
+| Reflections                                             | Supabase Postgres                         | Optional user-written text attached to a practice attempt.                                                                                          |
 
 Reflections and account activity should be treated as private user content. The application does not intentionally expose one account's records to another account.
 
@@ -129,12 +129,12 @@ RLS is enabled for every user-owned public table. Access requires both a Postgre
 
 Current policy intent:
 
-| Data | Allowed operations |
-| --- | --- |
-| Own profile | Select, insert, and update |
-| Own saved passages | Select, insert, update, and delete |
-| Own practice attempts | Select and insert |
-| Own practice reflection | Update the `reflection` column |
+| Data                    | Allowed operations                 |
+| ----------------------- | ---------------------------------- |
+| Own profile             | Select, insert, and update         |
+| Own saved passages      | Select, insert, update, and delete |
+| Own practice attempts   | Select and insert                  |
+| Own practice reflection | Update the `reflection` column     |
 
 The policies compare `auth.uid()` with the row owner. A publishable key without an authenticated user does not grant access to another user's data.
 

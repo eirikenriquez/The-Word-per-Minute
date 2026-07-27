@@ -1,15 +1,15 @@
-import { useEffect, useMemo, useState } from "react";
-import { localSavedPassageStore } from "../stores/localSavedPassageStore";
-import { createSupabaseSavedPassageStore } from "../stores/supabaseSavedPassageStore";
-import { verseService } from "../../../lib/bible/verseService";
-import type { PassageResponse } from "../../../types/passage";
-import { getErrorMessage } from "../../../utils/errors";
+import { useEffect, useMemo, useState } from 'react';
+import { localSavedPassageStore } from '../stores/localSavedPassageStore';
+import { createSupabaseSavedPassageStore } from '../stores/supabaseSavedPassageStore';
+import { verseService } from '../../../lib/bible/verseService';
+import type { PassageResponse } from '../../../types/passage';
+import { getErrorMessage } from '../../../utils/errors';
 import type {
   SavedPassage,
   SavePassageInput,
   SavedPassageUpdate,
-} from "../types/savedPassage";
-import { getSavedPassageIdentity } from "../utils/savedPassageIdentity";
+} from '../types/savedPassage';
+import { getSavedPassageIdentity } from '../utils/savedPassageIdentity';
 
 /**
  * Manages saved passages through a repository boundary.
@@ -17,21 +17,28 @@ import { getSavedPassageIdentity } from "../utils/savedPassageIdentity";
  */
 export function useSavedPassages(userId?: string | null) {
   const savedPassageStore = useMemo(() => {
-    return userId ? createSupabaseSavedPassageStore(userId) : localSavedPassageStore;
+    return userId
+      ? createSupabaseSavedPassageStore(userId)
+      : localSavedPassageStore;
   }, [userId]);
   const [savedPassages, setSavedPassages] = useState<SavedPassage[]>([]);
-  const [selectedSavedPassageId, setSelectedSavedPassageId] = useState("");
-  const [passageResponse, setPassageResponse] = useState<PassageResponse | null>(null);
+  const [selectedSavedPassageId, setSelectedSavedPassageId] = useState('');
+  const [passageResponse, setPassageResponse] =
+    useState<PassageResponse | null>(null);
   const [isLoadingSavedPassages, setIsLoadingSavedPassages] = useState(false);
-  const [isLoadingSelectedPassage, setIsLoadingSelectedPassage] = useState(false);
+  const [isLoadingSelectedPassage, setIsLoadingSelectedPassage] =
+    useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [listError, setListError] = useState<string | null>(null);
-  const [selectedPassageError, setSelectedPassageError] = useState<string | null>(null);
+  const [selectedPassageError, setSelectedPassageError] = useState<
+    string | null
+  >(null);
   const [mutationError, setMutationError] = useState<string | null>(null);
   const isLoading = isLoadingSavedPassages || isLoadingSelectedPassage;
 
   const selectedSavedPassage = useMemo(
-    () => savedPassages.find((passage) => passage.id === selectedSavedPassageId),
+    () =>
+      savedPassages.find((passage) => passage.id === selectedSavedPassageId),
     [savedPassages, selectedSavedPassageId],
   );
 
@@ -40,7 +47,7 @@ export function useSavedPassages(userId?: string | null) {
 
     async function loadSavedPassages() {
       setSavedPassages([]);
-      setSelectedSavedPassageId("");
+      setSelectedSavedPassageId('');
       setPassageResponse(null);
       setIsLoadingSavedPassages(true);
       setListError(null);
@@ -53,8 +60,11 @@ export function useSavedPassages(userId?: string | null) {
 
         setSavedPassages(nextSavedPassages);
         setSelectedSavedPassageId((currentPassageId) => {
-          if (nextSavedPassages.some((passage) => passage.id === currentPassageId)) return currentPassageId;
-          return nextSavedPassages[0]?.id ?? "";
+          if (
+            nextSavedPassages.some((passage) => passage.id === currentPassageId)
+          )
+            return currentPassageId;
+          return nextSavedPassages[0]?.id ?? '';
         });
       } catch (caughtError) {
         if (isCurrent) setListError(getErrorMessage(caughtError));
@@ -76,7 +86,7 @@ export function useSavedPassages(userId?: string | null) {
     );
     if (selectedPassageExists) return;
 
-    const fallbackPassageId = savedPassages[0]?.id ?? "";
+    const fallbackPassageId = savedPassages[0]?.id ?? '';
     if (selectedSavedPassageId !== fallbackPassageId) {
       setSelectedSavedPassageId(fallbackPassageId);
     }
@@ -150,7 +160,7 @@ export function useSavedPassages(userId?: string | null) {
       });
       setSelectedSavedPassageId((currentPassageId) => {
         if (currentPassageId !== passageId) return currentPassageId;
-        return "";
+        return '';
       });
     } catch (caughtError) {
       setMutationError(getErrorMessage(caughtError));
@@ -182,7 +192,9 @@ export function useSavedPassages(userId?: string | null) {
     if (!input) return false;
 
     const passageIdentity = getSavedPassageIdentity(input);
-    return savedPassages.some((passage) => getSavedPassageIdentity(passage) === passageIdentity);
+    return savedPassages.some(
+      (passage) => getSavedPassageIdentity(passage) === passageIdentity,
+    );
   }
 
   return {

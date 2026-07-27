@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { getErrorMessage } from "../../../utils/errors";
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { getErrorMessage } from '../../../utils/errors';
 import type {
   PracticeAttempt,
   PracticeAttemptSummary,
   SavePracticeAttemptInput,
-} from "../types/practice";
-import { createSupabasePracticeAttemptStore } from "../stores/supabasePracticeAttemptStore";
+} from '../types/practice';
+import { createSupabasePracticeAttemptStore } from '../stores/supabasePracticeAttemptStore';
 
 const PRACTICE_ATTEMPT_PAGE_SIZE = 20;
 
@@ -25,7 +25,9 @@ export function usePracticeAttempts(userId?: string | null) {
     return userId ? createSupabasePracticeAttemptStore(userId) : null;
   }, [userId]);
   const [recentAttempts, setRecentAttempts] = useState<PracticeAttempt[]>([]);
-  const [summary, setSummary] = useState<PracticeAttemptSummary>(EMPTY_PRACTICE_SUMMARY);
+  const [summary, setSummary] = useState<PracticeAttemptSummary>(
+    EMPTY_PRACTICE_SUMMARY,
+  );
   const [hasMoreAttempts, setHasMoreAttempts] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -64,7 +66,10 @@ export function usePracticeAttempts(userId?: string | null) {
 
     async function loadRecentAttempts() {
       try {
-        const page = await activePracticeAttemptStore.listPage(0, PRACTICE_ATTEMPT_PAGE_SIZE);
+        const page = await activePracticeAttemptStore.listPage(
+          0,
+          PRACTICE_ATTEMPT_PAGE_SIZE,
+        );
         if (!isCurrent) return;
 
         setRecentAttempts(page.attempts);
@@ -104,7 +109,12 @@ export function usePracticeAttempts(userId?: string | null) {
     } finally {
       setIsLoadingMore(false);
     }
-  }, [hasMoreAttempts, isLoadingMore, practiceAttemptStore, recentAttempts.length]);
+  }, [
+    hasMoreAttempts,
+    isLoadingMore,
+    practiceAttemptStore,
+    recentAttempts.length,
+  ]);
 
   const refreshSummary = useCallback(async () => {
     const requestId = ++summaryRequestIdRef.current;
@@ -143,50 +153,63 @@ export function usePracticeAttempts(userId?: string | null) {
     };
   }, [refreshSummary]);
 
-  const saveAttempt = useCallback(async (input: SavePracticeAttemptInput) => {
-    if (!practiceAttemptStore) return null;
+  const saveAttempt = useCallback(
+    async (input: SavePracticeAttemptInput) => {
+      if (!practiceAttemptStore) return null;
 
-    setIsSaving(true);
-    setAttemptSaveError(null);
+      setIsSaving(true);
+      setAttemptSaveError(null);
 
-    try {
-      const attempt = await practiceAttemptStore.save(input);
-      setRecentAttempts((currentAttempts) => [
-        attempt,
-        ...currentAttempts.filter((currentAttempt) => currentAttempt.id !== attempt.id),
-      ]);
-      void refreshSummary();
-      return attempt;
-    } catch (caughtError) {
-      setAttemptSaveError(getErrorMessage(caughtError));
-      return null;
-    } finally {
-      setIsSaving(false);
-    }
-  }, [practiceAttemptStore, refreshSummary]);
+      try {
+        const attempt = await practiceAttemptStore.save(input);
+        setRecentAttempts((currentAttempts) => [
+          attempt,
+          ...currentAttempts.filter(
+            (currentAttempt) => currentAttempt.id !== attempt.id,
+          ),
+        ]);
+        void refreshSummary();
+        return attempt;
+      } catch (caughtError) {
+        setAttemptSaveError(getErrorMessage(caughtError));
+        return null;
+      } finally {
+        setIsSaving(false);
+      }
+    },
+    [practiceAttemptStore, refreshSummary],
+  );
 
-  const updateReflection = useCallback(async (attemptId: string, reflection: string) => {
-    if (!practiceAttemptStore) return null;
+  const updateReflection = useCallback(
+    async (attemptId: string, reflection: string) => {
+      if (!practiceAttemptStore) return null;
 
-    setIsSavingReflection(true);
-    setReflectionError(null);
+      setIsSavingReflection(true);
+      setReflectionError(null);
 
-    try {
-      const updatedAttempt = await practiceAttemptStore.updateReflection(attemptId, reflection);
-      if (!updatedAttempt) return null;
+      try {
+        const updatedAttempt = await practiceAttemptStore.updateReflection(
+          attemptId,
+          reflection,
+        );
+        if (!updatedAttempt) return null;
 
-      setRecentAttempts((currentAttempts) =>
-        currentAttempts.map((attempt) => (attempt.id === attemptId ? updatedAttempt : attempt)),
-      );
-      void refreshSummary();
-      return updatedAttempt;
-    } catch (caughtError) {
-      setReflectionError(getErrorMessage(caughtError));
-      return null;
-    } finally {
-      setIsSavingReflection(false);
-    }
-  }, [practiceAttemptStore, refreshSummary]);
+        setRecentAttempts((currentAttempts) =>
+          currentAttempts.map((attempt) =>
+            attempt.id === attemptId ? updatedAttempt : attempt,
+          ),
+        );
+        void refreshSummary();
+        return updatedAttempt;
+      } catch (caughtError) {
+        setReflectionError(getErrorMessage(caughtError));
+        return null;
+      } finally {
+        setIsSavingReflection(false);
+      }
+    },
+    [practiceAttemptStore, refreshSummary],
+  );
 
   return {
     attemptSaveError,
@@ -212,7 +235,9 @@ function appendUniqueAttempts(
   currentAttempts: PracticeAttempt[],
   nextAttempts: PracticeAttempt[],
 ) {
-  const existingAttemptIds = new Set(currentAttempts.map((attempt) => attempt.id));
+  const existingAttemptIds = new Set(
+    currentAttempts.map((attempt) => attempt.id),
+  );
 
   return [
     ...currentAttempts,

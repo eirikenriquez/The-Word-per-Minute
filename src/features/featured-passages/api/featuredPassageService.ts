@@ -1,10 +1,10 @@
-import { verseService } from "../../../lib/bible/verseService";
-import type { PassageResponse } from "../../../types/passage";
-import featuredPassagesData from "../data/featuredPassages.json";
+import { verseService } from '../../../lib/bible/verseService';
+import type { PassageResponse } from '../../../types/passage';
+import featuredPassagesData from '../data/featuredPassages.json';
 import type {
   FeaturedPassage,
   FeaturedPassageListResponse,
-} from "../types/featuredPassage";
+} from '../types/featuredPassage';
 
 const featuredPassages = featuredPassagesData.passages as FeaturedPassage[];
 

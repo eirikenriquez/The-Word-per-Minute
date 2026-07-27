@@ -1,13 +1,13 @@
-import { DEFAULT_SAVED_CATEGORY } from "../constants/savedPassageCategories";
+import { DEFAULT_SAVED_CATEGORY } from '../constants/savedPassageCategories';
 import type {
   SavedPassage,
   SavePassageInput,
   SavedPassageUpdate,
-} from "../types/savedPassage";
-import { getSavedPassageIdentity } from "../utils/savedPassageIdentity";
-import type { SavedPassageStore } from "./savedPassageStore";
+} from '../types/savedPassage';
+import { getSavedPassageIdentity } from '../utils/savedPassageIdentity';
+import type { SavedPassageStore } from './savedPassageStore';
 
-const SAVED_PASSAGES_STORAGE_KEY = "the-word-per-minute-saved-passages";
+const SAVED_PASSAGES_STORAGE_KEY = 'the-word-per-minute-saved-passages';
 
 /**
  * Browser-only saved passage storage for signed-out users.
@@ -25,16 +25,23 @@ export const localSavedPassageStore: SavedPassageStore = {
     };
     const nextSavedPassages = [
       savedPassage,
-      ...listLocalSavedPassages().filter((passage) => passage.id !== savedPassage.id),
+      ...listLocalSavedPassages().filter(
+        (passage) => passage.id !== savedPassage.id,
+      ),
     ];
 
-    localStorage.setItem(SAVED_PASSAGES_STORAGE_KEY, JSON.stringify(nextSavedPassages));
+    localStorage.setItem(
+      SAVED_PASSAGES_STORAGE_KEY,
+      JSON.stringify(nextSavedPassages),
+    );
     return savedPassage;
   },
 
   async update(passageId: string, update: SavedPassageUpdate) {
     const savedPassages = listLocalSavedPassages();
-    const passageToUpdate = savedPassages.find((passage) => passage.id === passageId);
+    const passageToUpdate = savedPassages.find(
+      (passage) => passage.id === passageId,
+    );
 
     if (!passageToUpdate) return null;
 
@@ -47,13 +54,21 @@ export const localSavedPassageStore: SavedPassageStore = {
       return passage.id === passageId ? updatedPassage : passage;
     });
 
-    localStorage.setItem(SAVED_PASSAGES_STORAGE_KEY, JSON.stringify(nextSavedPassages));
+    localStorage.setItem(
+      SAVED_PASSAGES_STORAGE_KEY,
+      JSON.stringify(nextSavedPassages),
+    );
     return updatedPassage;
   },
 
   async remove(passageId: string) {
-    const nextSavedPassages = listLocalSavedPassages().filter((passage) => passage.id !== passageId);
-    localStorage.setItem(SAVED_PASSAGES_STORAGE_KEY, JSON.stringify(nextSavedPassages));
+    const nextSavedPassages = listLocalSavedPassages().filter(
+      (passage) => passage.id !== passageId,
+    );
+    localStorage.setItem(
+      SAVED_PASSAGES_STORAGE_KEY,
+      JSON.stringify(nextSavedPassages),
+    );
   },
 };
 

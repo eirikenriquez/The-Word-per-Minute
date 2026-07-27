@@ -1,7 +1,7 @@
-import type { PracticeSource } from "@/features/practice/types/practice";
-import type { AppMode } from "../../types/app";
-import type { FeaturedPassage } from "../../features/featured-passages/types/featuredPassage";
-import type { SavedPassage } from "../../features/saved-passages/types/savedPassage";
+import type { PracticeSource } from '@/features/practice/types/practice';
+import type { AppMode } from '../../types/app';
+import type { FeaturedPassage } from '../../features/featured-passages/types/featuredPassage';
+import type { SavedPassage } from '../../features/saved-passages/types/savedPassage';
 
 type CreateAppActionsParams = {
   clearReaderSelection: () => void;
@@ -45,60 +45,65 @@ export function createAppActions({
   setSelectedVerseNumbers,
 }: CreateAppActionsParams) {
   function openBible() {
-    setAppMode("bible");
+    setAppMode('bible');
     resetPractice();
   }
 
   function openLibrary() {
-    const selectedPassageStillExists = savedPassages.some((passage) => passage.id === selectedSavedPassageId);
+    const selectedPassageStillExists = savedPassages.some(
+      (passage) => passage.id === selectedSavedPassageId,
+    );
 
     if (!selectedPassageStillExists && savedPassages[0]) {
       selectSavedPassage(savedPassages[0].id);
     }
 
-    setAppMode("library");
+    setAppMode('library');
     resetPractice();
   }
 
   function openProfile() {
-    setAppMode("profile");
+    setAppMode('profile');
   }
 
   function startFeaturedPractice() {
     selectRandomFeaturedPassage();
-    setPracticeSource("featured");
-    setAppMode("practice");
+    setPracticeSource('featured');
+    setAppMode('practice');
     resetPractice();
   }
 
   function startFeaturedCategory(category: string) {
-    const categoryPassages = featuredPassages.filter((passage) => passage.theme === category);
-    const passage = categoryPassages[Math.floor(Math.random() * categoryPassages.length)];
+    const categoryPassages = featuredPassages.filter(
+      (passage) => passage.theme === category,
+    );
+    const passage =
+      categoryPassages[Math.floor(Math.random() * categoryPassages.length)];
     if (!passage) return;
 
     selectFeaturedPassage(passage.id);
-    setPracticeSource("featured");
-    setAppMode("practice");
+    setPracticeSource('featured');
+    setAppMode('practice');
     resetPractice();
   }
 
   function nextFeaturedPassage() {
     selectRandomFeaturedPassage();
-    setPracticeSource("featured");
-    setAppMode("practice");
+    setPracticeSource('featured');
+    setAppMode('practice');
     resetPractice();
   }
 
   function selectFeaturedPractice() {
-    setPracticeSource("featured");
-    setAppMode("practice");
+    setPracticeSource('featured');
+    setAppMode('practice');
     resetPractice();
   }
 
   function selectSavedPractice(passageId: string) {
     selectSavedPassage(passageId);
-    setPracticeSource("saved");
-    setAppMode("practice");
+    setPracticeSource('saved');
+    setAppMode('practice');
     resetPractice();
   }
 
@@ -110,26 +115,27 @@ export function createAppActions({
   function selectReaderTranslation(translationId: string) {
     selectTranslation(translationId);
     clearReaderSelection();
-    setAppMode("bible");
+    setAppMode('bible');
     resetPractice();
   }
 
   function selectReaderBook(bookId: string) {
     selectBibleBook(bookId);
     clearReaderSelection();
-    setAppMode("bible");
+    setAppMode('bible');
     resetPractice();
   }
 
   function selectReaderChapter(chapterNumber: number) {
     selectBibleChapter(chapterNumber);
     clearReaderSelection();
-    setAppMode("bible");
+    setAppMode('bible');
     resetPractice();
   }
 
   function randomFeaturedReaderPassage() {
-    const passage = featuredPassages[Math.floor(Math.random() * featuredPassages.length)];
+    const passage =
+      featuredPassages[Math.floor(Math.random() * featuredPassages.length)];
     if (!passage) return;
 
     openReaderPassage(
@@ -139,12 +145,14 @@ export function createAppActions({
   }
 
   function readSavedPassage(passageId: string) {
-    const passage = savedPassages.find((savedPassage) => savedPassage.id === passageId);
+    const passage = savedPassages.find(
+      (savedPassage) => savedPassage.id === passageId,
+    );
     if (!passage) return;
 
     const selectedVerses = passage.selectedVerses?.length
       ? passage.selectedVerses
-      : passage.source === "featured"
+      : passage.source === 'featured'
         ? createVerseRange(passage.startVerse, passage.endVerse)
         : [];
 
@@ -152,7 +160,10 @@ export function createAppActions({
   }
 
   function openReaderPassage(
-    passage: Pick<SavedPassage | FeaturedPassage, "bookId" | "chapter" | "translationId">,
+    passage: Pick<
+      SavedPassage | FeaturedPassage,
+      'bookId' | 'chapter' | 'translationId'
+    >,
     selectedVerses: number[],
   ) {
     selectTranslation(passage.translationId);
@@ -164,7 +175,7 @@ export function createAppActions({
       focusSelectedVerses();
     }
 
-    setAppMode("bible");
+    setAppMode('bible');
     resetPractice();
   }
 

@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import type { PracticePassageOption } from "../types/practice";
+import { useEffect, useMemo, useState } from 'react';
+import type { PracticePassageOption } from '../types/practice';
 
 type SavedPassageSelectProps = {
   savedPassageOptions: PracticePassageOption[];
@@ -17,14 +17,16 @@ export function SavedPassageSelect({
   onSelectSavedPractice,
 }: SavedPassageSelectProps) {
   const categories = useMemo(() => {
-    const savedCategories = savedPassageOptions.map((passage) => getSavedCategory(passage));
-    return ["All", ...Array.from(new Set(savedCategories))];
+    const savedCategories = savedPassageOptions.map((passage) =>
+      getSavedCategory(passage),
+    );
+    return ['All', ...Array.from(new Set(savedCategories))];
   }, [savedPassageOptions]);
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
   const visiblePassages = useMemo(
     () =>
-      selectedCategory === "All"
+      selectedCategory === 'All'
         ? savedPassageOptions
         : savedPassageOptions.filter(
             (passage) => getSavedCategory(passage) === selectedCategory,
@@ -33,15 +35,17 @@ export function SavedPassageSelect({
   );
 
   useEffect(() => {
-    if (!categories.includes(selectedCategory)) setSelectedCategory("All");
+    if (!categories.includes(selectedCategory)) setSelectedCategory('All');
   }, [categories, selectedCategory]);
 
   function handleCategoryChange(category: string) {
     setSelectedCategory(category);
     const firstPassage =
-      category === "All"
+      category === 'All'
         ? savedPassageOptions[0]
-        : savedPassageOptions.find((passage) => getSavedCategory(passage) === category);
+        : savedPassageOptions.find(
+            (passage) => getSavedCategory(passage) === category,
+          );
     if (firstPassage) onSelectSavedPractice(firstPassage.id);
   }
 
@@ -63,7 +67,9 @@ export function SavedPassageSelect({
       </label>
 
       <label className="grid gap-1">
-        <span className="text-sm font-medium text-ink-muted">Saved passage</span>
+        <span className="text-sm font-medium text-ink-muted">
+          Saved passage
+        </span>
         <select
           className="w-full rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft"
           value={selectedSavedPassageId}
@@ -81,5 +87,5 @@ export function SavedPassageSelect({
 }
 
 function getSavedCategory(passage: PracticePassageOption) {
-  return passage.category || "Other";
+  return passage.category || 'Other';
 }

@@ -1,7 +1,7 @@
-import { SparklesIcon } from "@heroicons/react/24/outline";
-import type { ReactNode } from "react";
-import type { BookSummary, Translation } from "../../../types/bible";
-import { Button } from "../../../components/ui/Button";
+import { SparklesIcon } from '@heroicons/react/24/outline';
+import type { ReactNode } from 'react';
+import type { BookSummary, Translation } from '../../../types/bible';
+import { Button } from '../../../components/ui/Button';
 
 type BibleReaderControlsProps = {
   books: BookSummary[];
@@ -69,13 +69,14 @@ export function BibleReaderControls({
               value={selectedChapter}
               onChange={(event) => onSelectChapter(Number(event.target.value))}
             >
-              {Array.from({ length: selectedBook?.chapterCount ?? 0 }, (_, index) => index + 1).map(
-                (chapterNumber) => (
-                  <option key={chapterNumber} value={chapterNumber}>
-                    {chapterNumber}
-                  </option>
-                ),
-              )}
+              {Array.from(
+                { length: selectedBook?.chapterCount ?? 0 },
+                (_, index) => index + 1,
+              ).map((chapterNumber) => (
+                <option key={chapterNumber} value={chapterNumber}>
+                  {chapterNumber}
+                </option>
+              ))}
             </select>
           </PickerLabel>
         </div>

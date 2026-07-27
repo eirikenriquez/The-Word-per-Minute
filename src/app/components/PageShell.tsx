@@ -1,13 +1,16 @@
-import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
-import type { ReactNode } from "react";
-import { Link } from "react-router";
-import { AuthControls, type AuthMenuRequest } from "../../features/auth/components/AuthControls";
-import type { AuthSessionState } from "../../features/auth/hooks/useAuthSession";
-import type { AppMode, Theme } from "../../types/app";
-import { APP_ROUTE_PATHS } from "../routes/appRoutePaths";
-import { AppFooter } from "./AppFooter";
-import { AppNavigation } from "./AppNavigation";
-import { BackToTopButton } from "./BackToTopButton";
+import { MoonIcon, SunIcon } from '@heroicons/react/24/outline';
+import type { ReactNode } from 'react';
+import { Link } from 'react-router';
+import {
+  AuthControls,
+  type AuthMenuRequest,
+} from '../../features/auth/components/AuthControls';
+import type { AuthSessionState } from '../../features/auth/hooks/useAuthSession';
+import type { AppMode, Theme } from '../../types/app';
+import { APP_ROUTE_PATHS } from '../routes/appRoutePaths';
+import { AppFooter } from './AppFooter';
+import { AppNavigation } from './AppNavigation';
+import { BackToTopButton } from './BackToTopButton';
 
 type PageShellProps = {
   appMode?: AppMode;
@@ -38,7 +41,11 @@ export function PageShell({
       <header className="sticky top-0 z-50 border-b border-line bg-surface/90 backdrop-blur">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
           <div>
-            <Link className="inline-flex items-center gap-3" to="/" aria-label="The Word per Minute home">
+            <Link
+              className="inline-flex items-center gap-3"
+              to="/"
+              aria-label="The Word per Minute home"
+            >
               <span className="relative h-9 w-8 shrink-0" aria-hidden="true">
                 <img
                   alt=""
@@ -51,7 +58,9 @@ export function PageShell({
                   src="/brand/symbol-dark.svg"
                 />
               </span>
-              <span className="text-xl font-bold tracking-normal text-ink">The Word per Minute</span>
+              <span className="text-xl font-bold tracking-normal text-ink">
+                The Word per Minute
+              </span>
             </Link>
           </div>
 
@@ -76,18 +85,20 @@ export function PageShell({
       </main>
       <AppFooter />
       <button
-        aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
+        aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
         className="fixed bottom-5 left-5 z-40 grid h-11 w-11 place-items-center rounded-full border border-line-strong bg-surface/90 text-ink-muted shadow-sm backdrop-blur transition hover:-translate-y-0.5 hover:border-accent-line hover:bg-accent-soft hover:text-accent-ink"
         type="button"
         onClick={onToggleTheme}
       >
-        {theme === "light" ? (
+        {theme === 'light' ? (
           <MoonIcon aria-hidden="true" className="h-5 w-5" />
         ) : (
           <SunIcon aria-hidden="true" className="h-5 w-5" />
         )}
       </button>
-      <BackToTopButton isEnabled={appMode === "bible" || appMode === "library"} />
+      <BackToTopButton
+        isEnabled={appMode === 'bible' || appMode === 'library'}
+      />
     </div>
   );
 }

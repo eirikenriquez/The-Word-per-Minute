@@ -1,6 +1,6 @@
-import { useEffect } from "react";
-import type { PracticeSource } from "@/features/practice/types/practice";
-import type { AppMode } from "../../types/app";
+import { useEffect } from 'react';
+import type { PracticeSource } from '@/features/practice/types/practice';
+import type { AppMode } from '../../types/app';
 
 type UseAppModeEffectsParams = {
   appMode: AppMode;
@@ -32,8 +32,8 @@ export function useAppModeEffects({
   setPracticeSource,
 }: UseAppModeEffectsParams) {
   useEffect(() => {
-    if (practiceSource === "saved" && !savedPassageCount) {
-      setPracticeSource("featured");
+    if (practiceSource === 'saved' && !savedPassageCount) {
+      setPracticeSource('featured');
     }
   }, [practiceSource, savedPassageCount, setPracticeSource]);
 

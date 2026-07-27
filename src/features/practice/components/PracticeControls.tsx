@@ -2,14 +2,14 @@ import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
-} from "@headlessui/react";
-import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
-import { Button } from "../../../components/ui/Button";
-import type { PracticePassageOption, PracticeSource } from "../types/practice";
-import { FeaturedSaveAction } from "./FeaturedSaveAction";
-import { PracticeActionButtons } from "./PracticeActionButtons";
-import { SavedPassageSelect } from "./SavedPassageSelect";
-import { SourcePicker } from "./SourcePicker";
+} from '@headlessui/react';
+import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
+import { Button } from '../../../components/ui/Button';
+import type { PracticePassageOption, PracticeSource } from '../types/practice';
+import { FeaturedSaveAction } from './FeaturedSaveAction';
+import { PracticeActionButtons } from './PracticeActionButtons';
+import { SavedPassageSelect } from './SavedPassageSelect';
+import { SourcePicker } from './SourcePicker';
 
 type PracticeControlsProps = {
   canSaveCurrentPassage: boolean;
@@ -52,7 +52,9 @@ export function PracticeControls({
             <div className="flex items-center justify-between gap-3">
               <h2 className="text-lg font-semibold text-ink">Practice setup</h2>
               <DisclosureButton
-                aria-label={open ? "Hide practice setup" : "Show practice setup"}
+                aria-label={
+                  open ? 'Hide practice setup' : 'Show practice setup'
+                }
                 as={Button}
                 className="px-2"
                 variant="ghost"
@@ -64,14 +66,13 @@ export function PracticeControls({
             <div
               aria-hidden={!open}
               className={`grid overflow-hidden transition-[grid-template-rows,opacity] duration-200 ease-out ${
-                open ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                open
+                  ? 'grid-rows-[1fr] opacity-100'
+                  : 'grid-rows-[0fr] opacity-0'
               }`}
               inert={open ? undefined : true}
             >
-              <DisclosurePanel
-                static
-                className="min-h-0"
-              >
+              <DisclosurePanel static className="min-h-0">
                 <div className="grid gap-4 pt-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
                   <div className="grid gap-3 xl:min-h-16 xl:grid-cols-[auto_minmax(0,1fr)] xl:items-end">
                     <SourcePicker
@@ -82,7 +83,7 @@ export function PracticeControls({
                       onSelectSavedPractice={onSelectSavedPractice}
                     />
 
-                    {practiceSource === "saved" && (
+                    {practiceSource === 'saved' && (
                       <SavedPassageSelect
                         savedPassageOptions={savedPassageOptions}
                         selectedSavedPassageId={selectedSavedPassageId}
@@ -92,7 +93,7 @@ export function PracticeControls({
                   </div>
 
                   <div className="flex flex-wrap gap-2 lg:justify-end">
-                    {practiceSource === "featured" && (
+                    {practiceSource === 'featured' && (
                       <FeaturedSaveAction
                         canSaveCurrentPassage={canSaveCurrentPassage}
                         isCurrentPassageSaved={isCurrentPassageSaved}

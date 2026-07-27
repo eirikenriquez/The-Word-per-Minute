@@ -3,11 +3,14 @@ import type {
   PracticeAttemptPage,
   PracticeAttemptSummary,
   SavePracticeAttemptInput,
-} from "../types/practice";
+} from '../types/practice';
 
 export type PracticeAttemptStore = {
   getSummary: () => Promise<PracticeAttemptSummary>;
   listPage: (offset?: number, limit?: number) => Promise<PracticeAttemptPage>;
   save: (input: SavePracticeAttemptInput) => Promise<PracticeAttempt>;
-  updateReflection: (attemptId: string, reflection: string) => Promise<PracticeAttempt | null>;
+  updateReflection: (
+    attemptId: string,
+    reflection: string,
+  ) => Promise<PracticeAttempt | null>;
 };

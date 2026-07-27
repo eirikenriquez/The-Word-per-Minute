@@ -1,6 +1,6 @@
-import { BookOpenIcon, SparklesIcon } from "@heroicons/react/24/outline";
-import { useEffect, useState } from "react";
-import { Button } from "../../components/ui/Button";
+import { BookOpenIcon, SparklesIcon } from '@heroicons/react/24/outline';
+import { useEffect, useState } from 'react';
+import { Button } from '../../components/ui/Button';
 
 export type HomeCategory = {
   count: number;
@@ -33,9 +33,10 @@ export function HomePage({
     (total, category) => total + category.count,
     0,
   );
-  const secondaryStat = savedPassageCount > 0
-    ? { label: "Saved passages", value: savedPassageCount }
-    : { label: "Themes", value: featuredHomeCategories.length };
+  const secondaryStat =
+    savedPassageCount > 0
+      ? { label: 'Saved passages', value: savedPassageCount }
+      : { label: 'Themes', value: featuredHomeCategories.length };
 
   return (
     <section className="grid gap-10">
@@ -64,13 +65,17 @@ export function HomePage({
 
         <dl className="rise-in rise-in-delay-1 grid grid-cols-2 gap-6 border-t border-line pt-6 lg:grid-cols-1 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
           <div>
-            <dt className="text-sm font-medium text-ink-subtle">Curated passages</dt>
+            <dt className="text-sm font-medium text-ink-subtle">
+              Curated passages
+            </dt>
             <dd className="mt-1 text-4xl font-bold text-ink">
               <CountUpNumber value={totalFeaturedPassages} />
             </dd>
           </div>
           <div>
-            <dt className="text-sm font-medium text-ink-subtle">{secondaryStat.label}</dt>
+            <dt className="text-sm font-medium text-ink-subtle">
+              {secondaryStat.label}
+            </dt>
             <dd className="mt-1 text-4xl font-bold text-ink">
               <CountUpNumber value={secondaryStat.value} />
             </dd>
@@ -94,7 +99,7 @@ export function HomePage({
             <HomeCategoryButton
               key={category.label}
               label={category.label}
-              meta={`${category.count} ${category.count === 1 ? "passage" : "passages"}`}
+              meta={`${category.count} ${category.count === 1 ? 'passage' : 'passages'}`}
               onSelect={() => onSelectFeaturedCategory(category.label)}
             />
           ))}
@@ -141,7 +146,8 @@ function CountUpNumber({ durationMs = 950, value }: CountUpNumberProps) {
       const easedProgress = 1 - (1 - progress) ** 3;
       setDisplayValue(Math.round(value * easedProgress));
 
-      if (progress < 1) animationFrameId = window.requestAnimationFrame(updateCount);
+      if (progress < 1)
+        animationFrameId = window.requestAnimationFrame(updateCount);
     }
 
     animationFrameId = window.requestAnimationFrame(updateCount);
@@ -157,7 +163,11 @@ type HomeCategoryButtonProps = {
   onSelect: () => void;
 };
 
-function HomeCategoryButton({ label, meta, onSelect }: HomeCategoryButtonProps) {
+function HomeCategoryButton({
+  label,
+  meta,
+  onSelect,
+}: HomeCategoryButtonProps) {
   return (
     <button
       className="soft-hover group flex items-center justify-between gap-4 border-b border-line py-3 text-left hover:border-accent-line"

@@ -1,28 +1,32 @@
-import { DEFAULT_SAVED_CATEGORY } from "../constants/savedPassageCategories";
-import { supabase } from "../../../lib/supabase/client";
-import type { Database } from "../../../lib/supabase/database.types";
+import { DEFAULT_SAVED_CATEGORY } from '../constants/savedPassageCategories';
+import { supabase } from '../../../lib/supabase/client';
+import type { Database } from '../../../lib/supabase/database.types';
 import type {
   SavedPassage,
   SavePassageInput,
   SavedPassageUpdate,
-} from "../types/savedPassage";
-import type { SavedPassageStore } from "./savedPassageStore";
+} from '../types/savedPassage';
+import type { SavedPassageStore } from './savedPassageStore';
 
-type SavedPassageRow = Database["public"]["Tables"]["saved_passages"]["Row"];
-type SavedPassageInsert = Database["public"]["Tables"]["saved_passages"]["Insert"];
-type SavedPassageRowUpdate = Database["public"]["Tables"]["saved_passages"]["Update"];
+type SavedPassageRow = Database['public']['Tables']['saved_passages']['Row'];
+type SavedPassageInsert =
+  Database['public']['Tables']['saved_passages']['Insert'];
+type SavedPassageRowUpdate =
+  Database['public']['Tables']['saved_passages']['Update'];
 
 /**
  * Supabase-backed saved passage storage for signed-in users.
  */
-export function createSupabaseSavedPassageStore(userId: string): SavedPassageStore {
+export function createSupabaseSavedPassageStore(
+  userId: string,
+): SavedPassageStore {
   return {
     async list() {
       const { data, error } = await supabase
-        .from("saved_passages")
+        .from('saved_passages')
         .select(SAVED_PASSAGE_COLUMNS)
-        .eq("user_id", userId)
-        .order("created_at", { ascending: false });
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
 
@@ -31,7 +35,7 @@ export function createSupabaseSavedPassageStore(userId: string): SavedPassageSto
 
     async save(input: SavePassageInput) {
       const { data, error } = await supabase
-        .from("saved_passages")
+        .from('saved_passages')
         .insert(mapSavePassageInput(userId, input))
         .select(SAVED_PASSAGE_COLUMNS)
         .single();
@@ -48,9 +52,9 @@ export function createSupabaseSavedPassageStore(userId: string): SavedPassageSto
       };
 
       const { data, error } = await supabase
-        .from("saved_passages")
+        .from('saved_passages')
         .update(rowUpdate)
-        .eq("id", passageId)
+        .eq('id', passageId)
         .select(SAVED_PASSAGE_COLUMNS)
         .maybeSingle();
 
@@ -62,9 +66,9 @@ export function createSupabaseSavedPassageStore(userId: string): SavedPassageSto
 
     async remove(passageId: string) {
       const { error } = await supabase
-        .from("saved_passages")
+        .from('saved_passages')
         .delete()
-        .eq("id", passageId);
+        .eq('id', passageId);
 
       if (error) throw error;
     },
@@ -72,9 +76,12 @@ export function createSupabaseSavedPassageStore(userId: string): SavedPassageSto
 }
 
 const SAVED_PASSAGE_COLUMNS =
-  "id,user_id,title,category,theme,reference,translation_id,translation_abbreviation,book_id,book_name,chapter,start_verse,end_verse,selected_verses,source,created_at,updated_at";
+  'id,user_id,title,category,theme,reference,translation_id,translation_abbreviation,book_id,book_name,chapter,start_verse,end_verse,selected_verses,source,created_at,updated_at';
 
-function mapSavePassageInput(userId: string, input: SavePassageInput): SavedPassageInsert {
+function mapSavePassageInput(
+  userId: string,
+  input: SavePassageInput,
+): SavedPassageInsert {
   return {
     user_id: userId,
     title: input.title,
@@ -107,7 +114,9 @@ function mapSavedPassageRow(row: SavedPassageRow): SavedPassage {
     chapter: row.chapter,
     startVerse: row.start_verse,
     endVerse: row.end_verse,
-    selectedVerses: row.selected_verses.length ? row.selected_verses : undefined,
+    selectedVerses: row.selected_verses.length
+      ? row.selected_verses
+      : undefined,
     source: row.source,
     createdAt: row.created_at,
   };

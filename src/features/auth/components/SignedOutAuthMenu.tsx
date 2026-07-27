@@ -1,13 +1,13 @@
 import {
   ArrowRightEndOnRectangleIcon,
   UserPlusIcon,
-} from "@heroicons/react/24/outline";
-import type { FormEvent } from "react";
-import { useEffect, useState } from "react";
-import { Button } from "../../../components/ui/Button";
-import type { AuthSessionState } from "../hooks/useAuthSession";
+} from '@heroicons/react/24/outline';
+import type { FormEvent } from 'react';
+import { useEffect, useState } from 'react';
+import { Button } from '../../../components/ui/Button';
+import type { AuthSessionState } from '../hooks/useAuthSession';
 
-export type AuthMode = "signIn" | "signUp";
+export type AuthMode = 'signIn' | 'signUp';
 
 type SignedOutAuthMenuProps = {
   authSession: AuthSessionState;
@@ -18,13 +18,18 @@ type SignedOutAuthMenuProps = {
   onSignedIn: () => void;
 };
 
-export function SignedOutAuthMenu({ authSession, modeRequest, onSignedIn }: SignedOutAuthMenuProps) {
-  const [authMode, setAuthMode] = useState<AuthMode>("signIn");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+export function SignedOutAuthMenu({
+  authSession,
+  modeRequest,
+  onSignedIn,
+}: SignedOutAuthMenuProps) {
+  const [authMode, setAuthMode] = useState<AuthMode>('signIn');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [formMessage, setFormMessage] = useState<string | null>(null);
-  const isSignUpMode = authMode === "signUp";
-  const canSubmit = Boolean(email.trim()) && password.length >= 6 && !authSession.isLoading;
+  const isSignUpMode = authMode === 'signUp';
+  const canSubmit =
+    Boolean(email.trim()) && password.length >= 6 && !authSession.isLoading;
 
   useEffect(() => {
     if (!modeRequest) return;
@@ -40,25 +45,33 @@ export function SignedOutAuthMenu({ authSession, modeRequest, onSignedIn }: Sign
     if (!trimmedEmail || !password) return;
 
     if (password.length < 6) {
-      setFormMessage("Password must be at least 6 characters.");
+      setFormMessage('Password must be at least 6 characters.');
       return;
     }
 
-    if (authMode === "signUp") {
-      const result = await authSession.signUpWithPassword(trimmedEmail, password);
+    if (authMode === 'signUp') {
+      const result = await authSession.signUpWithPassword(
+        trimmedEmail,
+        password,
+      );
 
-      if (result === "signedIn") {
-        setFormMessage("Account created. You are signed in.");
+      if (result === 'signedIn') {
+        setFormMessage('Account created. You are signed in.');
       }
 
-      if (result === "confirmationRequired") {
-        setFormMessage("Account created. Check your email to confirm it, then sign in.");
+      if (result === 'confirmationRequired') {
+        setFormMessage(
+          'Account created. Check your email to confirm it, then sign in.',
+        );
       }
 
       return;
     }
 
-    const didSignIn = await authSession.signInWithPassword(trimmedEmail, password);
+    const didSignIn = await authSession.signInWithPassword(
+      trimmedEmail,
+      password,
+    );
 
     if (didSignIn) {
       setFormMessage(null);
@@ -67,18 +80,15 @@ export function SignedOutAuthMenu({ authSession, modeRequest, onSignedIn }: Sign
   }
 
   return (
-    <form
-      className="grid gap-4"
-      onSubmit={submitAuthForm}
-    >
+    <form className="grid gap-4" onSubmit={submitAuthForm}>
       <div>
         <p className="text-sm font-semibold text-ink">
-          {isSignUpMode ? "Create account" : "Sign in"}
+          {isSignUpMode ? 'Create account' : 'Sign in'}
         </p>
         <p className="mt-1 text-sm text-ink-subtle">
           {isSignUpMode
-            ? "Start syncing saved passages across sessions."
-            : "Save passages to your account."}
+            ? 'Start syncing saved passages across sessions.'
+            : 'Save passages to your account.'}
         </p>
       </div>
 
@@ -106,7 +116,7 @@ export function SignedOutAuthMenu({ authSession, modeRequest, onSignedIn }: Sign
             id="auth-password"
             placeholder="At least 6 characters"
             type="password"
-            autoComplete={isSignUpMode ? "new-password" : "current-password"}
+            autoComplete={isSignUpMode ? 'new-password' : 'current-password'}
             value={password}
             onChange={(event) => {
               setPassword(event.target.value);
@@ -126,9 +136,12 @@ export function SignedOutAuthMenu({ authSession, modeRequest, onSignedIn }: Sign
           {isSignUpMode ? (
             <UserPlusIcon aria-hidden="true" className="h-4 w-4" />
           ) : (
-            <ArrowRightEndOnRectangleIcon aria-hidden="true" className="h-4 w-4" />
+            <ArrowRightEndOnRectangleIcon
+              aria-hidden="true"
+              className="h-4 w-4"
+            />
           )}
-          {isSignUpMode ? "Create account" : "Sign in"}
+          {isSignUpMode ? 'Create account' : 'Sign in'}
         </Button>
 
         <Button
@@ -136,16 +149,18 @@ export function SignedOutAuthMenu({ authSession, modeRequest, onSignedIn }: Sign
           type="button"
           variant="ghost"
           onClick={() => {
-            setAuthMode(isSignUpMode ? "signIn" : "signUp");
+            setAuthMode(isSignUpMode ? 'signIn' : 'signUp');
             setFormMessage(null);
           }}
         >
-          {isSignUpMode ? "Use existing account" : "Create account"}
+          {isSignUpMode ? 'Use existing account' : 'Create account'}
         </Button>
       </div>
 
       {(formMessage || authSession.error) && (
-        <p className={`text-sm ${authSession.error ? "text-red-600 dark:text-red-300" : "text-ink-subtle"}`}>
+        <p
+          className={`text-sm ${authSession.error ? 'text-red-600 dark:text-red-300' : 'text-ink-subtle'}`}
+        >
           {authSession.error ?? formMessage}
         </p>
       )}

@@ -1,7 +1,7 @@
-import { useMemo } from "react";
-import type { PassageResponse } from "../../../types/passage";
-import type { PracticePassage, PracticeSource } from "../types/practice";
-import { buildPracticePassage } from "../utils/practicePassage";
+import { useMemo } from 'react';
+import type { PassageResponse } from '../../../types/passage';
+import type { PracticePassage, PracticeSource } from '../types/practice';
+import { buildPracticePassage } from '../utils/practicePassage';
 
 type UsePracticePassageParams = {
   enabled: boolean;
@@ -21,7 +21,7 @@ export function usePracticePassage({
   savedPassageResponse,
 }: UsePracticePassageParams) {
   const activePassageResponse = enabled
-    ? practiceSource === "featured"
+    ? practiceSource === 'featured'
       ? featuredPassageResponse
       : savedPassageResponse
     : null;
@@ -32,8 +32,14 @@ export function usePracticePassage({
   );
 }
 
-function getPracticePassageFromResponse(response: PassageResponse | null): PracticePassage | undefined {
+function getPracticePassageFromResponse(
+  response: PassageResponse | null,
+): PracticePassage | undefined {
   if (!response) return undefined;
 
-  return buildPracticePassage(response.bookName, response.passage.chapter, response.verses);
+  return buildPracticePassage(
+    response.bookName,
+    response.passage.chapter,
+    response.verses,
+  );
 }

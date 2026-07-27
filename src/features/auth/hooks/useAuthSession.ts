@@ -1,7 +1,7 @@
-import type { Session, User } from "@supabase/supabase-js";
-import { useCallback, useEffect, useState } from "react";
-import { supabase } from "../../../lib/supabase/client";
-import { getErrorMessage } from "../../../utils/errors";
+import type { Session, User } from '@supabase/supabase-js';
+import { useCallback, useEffect, useState } from 'react';
+import { supabase } from '../../../lib/supabase/client';
+import { getErrorMessage } from '../../../utils/errors';
 
 export type AuthSessionState = {
   error: string | null;
@@ -10,11 +10,14 @@ export type AuthSessionState = {
   session: Session | null;
   signInWithPassword: (email: string, password: string) => Promise<boolean>;
   signOut: () => Promise<void>;
-  signUpWithPassword: (email: string, password: string) => Promise<SignUpResult>;
+  signUpWithPassword: (
+    email: string,
+    password: string,
+  ) => Promise<SignUpResult>;
   user: User | null;
 };
 
-export type SignUpResult = "confirmationRequired" | "error" | "signedIn";
+export type SignUpResult = 'confirmationRequired' | 'error' | 'signedIn';
 
 /**
  * Tracks the current Supabase Auth session.
@@ -62,53 +65,60 @@ export function useAuthSession(): AuthSessionState {
     };
   }, []);
 
-  const signInWithPassword = useCallback(async (email: string, password: string) => {
-    setIsLoading(true);
+  const signInWithPassword = useCallback(
+    async (email: string, password: string) => {
+      setIsLoading(true);
 
-    try {
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      try {
+        const { data, error: signInError } =
+          await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
 
-      if (signInError) throw signInError;
+        if (signInError) throw signInError;
 
-      setSession(data.session);
-      setError(null);
-      return true;
-    } catch (caughtError) {
-      setError(getErrorMessage(caughtError));
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+        setSession(data.session);
+        setError(null);
+        return true;
+      } catch (caughtError) {
+        setError(getErrorMessage(caughtError));
+        return false;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [],
+  );
 
-  const signUpWithPassword = useCallback(async (email: string, password: string): Promise<SignUpResult> => {
-    setIsLoading(true);
+  const signUpWithPassword = useCallback(
+    async (email: string, password: string): Promise<SignUpResult> => {
+      setIsLoading(true);
 
-    try {
-      const { data, error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: window.location.origin,
-        },
-      });
+      try {
+        const { data, error: signUpError } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: window.location.origin,
+          },
+        });
 
-      if (signUpError) throw signUpError;
+        if (signUpError) throw signUpError;
 
-      setSession(data.session);
-      setError(null);
+        setSession(data.session);
+        setError(null);
 
-      return data.session ? "signedIn" : "confirmationRequired";
-    } catch (caughtError) {
-      setError(getErrorMessage(caughtError));
-      return "error";
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+        return data.session ? 'signedIn' : 'confirmationRequired';
+      } catch (caughtError) {
+        setError(getErrorMessage(caughtError));
+        return 'error';
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [],
+  );
 
   const signOut = useCallback(async () => {
     setIsLoading(true);

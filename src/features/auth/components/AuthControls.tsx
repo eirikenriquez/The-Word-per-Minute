@@ -1,13 +1,9 @@
-import {
-  Popover,
-  PopoverButton,
-  PopoverPanel,
-} from "@headlessui/react";
-import { useEffect, useRef, useState } from "react";
-import type { AuthSessionState } from "../hooks/useAuthSession";
-import { AuthMenuButton } from "./AuthMenuButton";
-import { SignedInAuthMenu } from "./SignedInAuthMenu";
-import { SignedOutAuthMenu, type AuthMode } from "./SignedOutAuthMenu";
+import { Popover, PopoverButton, PopoverPanel } from '@headlessui/react';
+import { useEffect, useRef, useState } from 'react';
+import type { AuthSessionState } from '../hooks/useAuthSession';
+import { AuthMenuButton } from './AuthMenuButton';
+import { SignedInAuthMenu } from './SignedInAuthMenu';
+import { SignedOutAuthMenu, type AuthMode } from './SignedOutAuthMenu';
 
 export type AuthMenuRequest = {
   id: number;
@@ -59,7 +55,8 @@ function AuthPopoverContent({
   onMenuRequestHandled,
   profilePath,
 }: AuthPopoverContentProps) {
-  const [activeMenuRequest, setActiveMenuRequest] = useState<AuthMenuRequest | null>(null);
+  const [activeMenuRequest, setActiveMenuRequest] =
+    useState<AuthMenuRequest | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -73,14 +70,14 @@ function AuthPopoverContent({
     onMenuRequestHandled?.();
   }, [authSession.isSignedIn, isOpen, menuRequest, onMenuRequestHandled]);
 
-  const panelWidthClassName = authSession.isSignedIn ? "w-72" : "w-80";
+  const panelWidthClassName = authSession.isSignedIn ? 'w-72' : 'w-80';
 
   return (
     <>
       <PopoverButton
         as={AuthMenuButton}
         isOpen={isOpen}
-        label={authSession.isSignedIn ? "Account" : "Sign in"}
+        label={authSession.isSignedIn ? 'Account' : 'Sign in'}
         ref={buttonRef}
       />
 

@@ -1,9 +1,9 @@
-import { useMemo } from "react";
+import { useMemo } from 'react';
 import {
   CUSTOM_SAVED_CATEGORY,
   DEFAULT_SAVED_CATEGORY,
-} from "../../features/saved-passages/constants/savedPassageCategories";
-import type { FeaturedPassage } from "../../features/featured-passages/types/featuredPassage";
+} from '../../features/saved-passages/constants/savedPassageCategories';
+import type { FeaturedPassage } from '../../features/featured-passages/types/featuredPassage';
 
 /**
  * Builds category lists from featured passage themes.
@@ -11,14 +11,21 @@ import type { FeaturedPassage } from "../../features/featured-passages/types/fea
  */
 export function usePassageCategories(featuredPassages: FeaturedPassage[]) {
   return useMemo(() => {
-    const featuredThemes = [...new Set(featuredPassages.map((passage) => passage.theme))];
+    const featuredThemes = [
+      ...new Set(featuredPassages.map((passage) => passage.theme)),
+    ];
 
     return {
       featuredHomeCategories: featuredThemes.map((theme) => ({
-        count: featuredPassages.filter((passage) => passage.theme === theme).length,
+        count: featuredPassages.filter((passage) => passage.theme === theme)
+          .length,
         label: theme,
       })),
-      savedPassageCategories: [DEFAULT_SAVED_CATEGORY, ...featuredThemes, CUSTOM_SAVED_CATEGORY],
+      savedPassageCategories: [
+        DEFAULT_SAVED_CATEGORY,
+        ...featuredThemes,
+        CUSTOM_SAVED_CATEGORY,
+      ],
     };
   }, [featuredPassages]);
 }

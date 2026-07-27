@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from "react";
-import type { PassageResponse } from "../../../types/passage";
-import { getErrorMessage } from "../../../utils/errors";
-import { featuredPassageService } from "../api/featuredPassageService";
-import type { FeaturedPassage } from "../types/featuredPassage";
+import { useEffect, useMemo, useState } from 'react';
+import type { PassageResponse } from '../../../types/passage';
+import { getErrorMessage } from '../../../utils/errors';
+import { featuredPassageService } from '../api/featuredPassageService';
+import type { FeaturedPassage } from '../types/featuredPassage';
 
 /**
  * Loads the curated featured-passage list and resolves the selected prompt
@@ -10,8 +10,9 @@ import type { FeaturedPassage } from "../types/featuredPassage";
  */
 export function useFeaturedPassages() {
   const [passages, setPassages] = useState<FeaturedPassage[]>([]);
-  const [selectedPassageId, setSelectedPassageId] = useState("");
-  const [passageResponse, setPassageResponse] = useState<PassageResponse | null>(null);
+  const [selectedPassageId, setSelectedPassageId] = useState('');
+  const [passageResponse, setPassageResponse] =
+    useState<PassageResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,7 +30,7 @@ export function useFeaturedPassages() {
         if (!isCurrent) return;
 
         setPassages(response.passages);
-        setSelectedPassageId(getRandomPassageId(response.passages, ""));
+        setSelectedPassageId(getRandomPassageId(response.passages, ''));
       } catch (caughtError) {
         if (isCurrent) setError(getErrorMessage(caughtError));
       }
@@ -50,7 +51,8 @@ export function useFeaturedPassages() {
 
     async function loadPassage() {
       try {
-        const response = await featuredPassageService.getPassage(selectedPassageId);
+        const response =
+          await featuredPassageService.getPassage(selectedPassageId);
         if (!isCurrent) return;
 
         setPassageResponse(response);
@@ -92,8 +94,11 @@ export function useFeaturedPassages() {
   };
 }
 
-function getRandomPassageId(passages: FeaturedPassage[], currentPassageId: string) {
-  if (!passages.length) return "";
+function getRandomPassageId(
+  passages: FeaturedPassage[],
+  currentPassageId: string,
+) {
+  if (!passages.length) return '';
   if (passages.length === 1) return passages[0].id;
 
   let nextPassageId = currentPassageId;

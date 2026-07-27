@@ -1,7 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
-import { verseService } from "../../../lib/bible/verseService";
-import type { BibleChapter, BookSummary, Translation } from "../../../types/bible";
-import { getErrorMessage } from "../../../utils/errors";
+import { useEffect, useMemo, useState } from 'react';
+import { verseService } from '../../../lib/bible/verseService';
+import type {
+  BibleChapter,
+  BookSummary,
+  Translation,
+} from '../../../types/bible';
+import { getErrorMessage } from '../../../utils/errors';
 
 /**
  * Handles the manual library flow: translation, book, and chapter selection.
@@ -11,8 +15,8 @@ export function useVerseLibrary() {
   const [translations, setTranslations] = useState<Translation[]>([]);
   const [books, setBooks] = useState<BookSummary[]>([]);
   const [chapter, setChapter] = useState<BibleChapter | null>(null);
-  const [selectedTranslationId, setSelectedTranslationId] = useState("");
-  const [selectedBookId, setSelectedBookId] = useState("");
+  const [selectedTranslationId, setSelectedTranslationId] = useState('');
+  const [selectedBookId, setSelectedBookId] = useState('');
   const [selectedChapter, setSelectedChapter] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -31,7 +35,7 @@ export function useVerseLibrary() {
         if (!isCurrent) return;
 
         setTranslations(response.translations);
-        setSelectedTranslationId(response.translations[0]?.id ?? "");
+        setSelectedTranslationId(response.translations[0]?.id ?? '');
       } catch (caughtError) {
         if (isCurrent) setError(getErrorMessage(caughtError));
       }
@@ -56,7 +60,7 @@ export function useVerseLibrary() {
         if (!isCurrent) return;
 
         setBooks(response.books);
-        setSelectedBookId(response.books[0]?.id ?? "");
+        setSelectedBookId(response.books[0]?.id ?? '');
         setSelectedChapter(1);
         setError(null);
       } catch (caughtError) {
@@ -82,7 +86,11 @@ export function useVerseLibrary() {
 
     async function loadChapter() {
       try {
-        const response = await verseService.getChapter(selectedTranslationId, selectedBookId, selectedChapter);
+        const response = await verseService.getChapter(
+          selectedTranslationId,
+          selectedBookId,
+          selectedChapter,
+        );
         if (!isCurrent) return;
 
         setChapter(response.chapter);

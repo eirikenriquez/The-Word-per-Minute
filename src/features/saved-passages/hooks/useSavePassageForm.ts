@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
-import { DEFAULT_SAVED_CATEGORY } from "../constants/savedPassageCategories";
-import type { SavedPassage, SavePassageInput } from "../types/savedPassage";
+import { useEffect, useState } from 'react';
+import { DEFAULT_SAVED_CATEGORY } from '../constants/savedPassageCategories';
+import type { SavedPassage, SavePassageInput } from '../types/savedPassage';
 
 type UseSavePassageFormParams = {
   isPassageSaved: (input: SavePassageInput | null) => boolean;
   saveInput: SavePassageInput | null;
-  savePassage: (input: SavePassageInput) => SavedPassage | null | Promise<SavedPassage | null>;
+  savePassage: (
+    input: SavePassageInput,
+  ) => SavedPassage | null | Promise<SavedPassage | null>;
 };
 
 /**
@@ -17,7 +19,7 @@ export function useSavePassageForm({
   saveInput,
   savePassage,
 }: UseSavePassageFormParams) {
-  const [saveTitle, setSaveTitle] = useState("");
+  const [saveTitle, setSaveTitle] = useState('');
   const [saveCategory, setSaveCategory] = useState(DEFAULT_SAVED_CATEGORY);
   const isCurrentPassageSaved = isPassageSaved(saveInput);
 
@@ -32,7 +34,7 @@ export function useSavePassageForm({
     if (!saveInput) return false;
 
     const passageToSave =
-      saveInput.source === "bible"
+      saveInput.source === 'bible'
         ? {
             ...saveInput,
             category: saveCategory,

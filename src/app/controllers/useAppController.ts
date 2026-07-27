@@ -1,36 +1,36 @@
-import { useCallback, useMemo, useState } from "react";
-import type { AppHeaderProps } from "../components/AppHeader";
-import type { AppRoutesProps } from "../components/AppRoutes";
-import { useAuthSession } from "../../features/auth/hooks/useAuthSession";
-import { useReaderSelection } from "../../features/bible-reader/hooks/useReaderSelection";
-import { useVerseLibrary } from "../../features/bible-reader/hooks/useVerseLibrary";
-import { useFeaturedPassages } from "../../features/featured-passages/hooks/useFeaturedPassages";
-import { usePracticePassage } from "../../features/practice/hooks/usePracticePassage";
-import { usePracticeAttempts } from "../../features/practice/hooks/usePracticeAttempts";
-import { usePracticeSession } from "../../features/practice/hooks/usePracticeSession";
-import { useSavePassageForm } from "../../features/saved-passages/hooks/useSavePassageForm";
-import { useSavedPassages } from "../../features/saved-passages/hooks/useSavedPassages";
+import { useCallback, useMemo, useState } from 'react';
+import type { AppHeaderProps } from '../components/AppHeader';
+import type { AppRoutesProps } from '../components/AppRoutes';
+import { useAuthSession } from '../../features/auth/hooks/useAuthSession';
+import { useReaderSelection } from '../../features/bible-reader/hooks/useReaderSelection';
+import { useVerseLibrary } from '../../features/bible-reader/hooks/useVerseLibrary';
+import { useFeaturedPassages } from '../../features/featured-passages/hooks/useFeaturedPassages';
+import { usePracticePassage } from '../../features/practice/hooks/usePracticePassage';
+import { usePracticeAttempts } from '../../features/practice/hooks/usePracticeAttempts';
+import { usePracticeSession } from '../../features/practice/hooks/usePracticeSession';
+import { useSavePassageForm } from '../../features/saved-passages/hooks/useSavePassageForm';
+import { useSavedPassages } from '../../features/saved-passages/hooks/useSavedPassages';
 import {
   createBiblePassageSaveInput,
   createFeaturedPassageSaveInput,
-} from "../../features/saved-passages/utils/passageSaveInput";
+} from '../../features/saved-passages/utils/passageSaveInput';
 import type {
   PracticeCompletionResult,
   PracticeSource,
-} from "@/features/practice/types/practice";
-import { useAppDisplayState } from "../hooks/useAppDisplayState";
-import { useAppModeEffects } from "../hooks/useAppModeEffects";
-import { useAppNavigation } from "../hooks/useAppNavigation";
-import { usePassageCategories } from "../hooks/usePassageCategories";
-import { useTheme } from "../hooks/useTheme";
-import { createAppActions } from "./createAppActions";
+} from '@/features/practice/types/practice';
+import { useAppDisplayState } from '../hooks/useAppDisplayState';
+import { useAppModeEffects } from '../hooks/useAppModeEffects';
+import { useAppNavigation } from '../hooks/useAppNavigation';
+import { usePassageCategories } from '../hooks/usePassageCategories';
+import { useTheme } from '../hooks/useTheme';
+import { createAppActions } from './createAppActions';
 import {
   createBiblePageProps,
   createHomePageProps,
   createLibraryPageProps,
   createPracticePageProps,
   createProfilePageProps,
-} from "./createPageProps";
+} from './createPageProps';
 
 /**
  * App-level controller for cross-feature state.
@@ -38,9 +38,15 @@ import {
  */
 export function useAppController() {
   const { appMode, selectAppMode } = useAppNavigation();
-  const [authMenuRequest, setAuthMenuRequest] = useState<{ id: number; mode: "signUp" } | null>(null);
-  const [completedPracticeAttemptId, setCompletedPracticeAttemptId] = useState<string | null>(null);
-  const [practiceSource, setPracticeSource] = useState<PracticeSource>("featured");
+  const [authMenuRequest, setAuthMenuRequest] = useState<{
+    id: number;
+    mode: 'signUp';
+  } | null>(null);
+  const [completedPracticeAttemptId, setCompletedPracticeAttemptId] = useState<
+    string | null
+  >(null);
+  const [practiceSource, setPracticeSource] =
+    useState<PracticeSource>('featured');
   const { theme, toggleTheme } = useTheme();
   const authSession = useAuthSession();
 
@@ -54,51 +60,61 @@ export function useAppController() {
     updateReflection: updatePracticeReflection,
   } = practiceAttempts;
   const savedPassageCount = savedLibrary.savedPassages.length;
-  const { featuredHomeCategories, savedPassageCategories } = usePassageCategories(featuredLibrary.passages);
+  const { featuredHomeCategories, savedPassageCategories } =
+    usePassageCategories(featuredLibrary.passages);
 
   const practicePassage = usePracticePassage({
-    enabled: appMode === "practice",
+    enabled: appMode === 'practice',
     featuredPassageResponse: featuredLibrary.passageResponse,
     practiceSource,
     savedPassageResponse: savedLibrary.passageResponse,
   });
 
-  const handleCompletedPracticeAttempt = useCallback((result: PracticeCompletionResult) => {
-    setCompletedPracticeAttemptId(null);
+  const handleCompletedPracticeAttempt = useCallback(
+    (result: PracticeCompletionResult) => {
+      setCompletedPracticeAttemptId(null);
 
-    const activePassageResponse =
-      practiceSource === "featured"
-        ? featuredLibrary.passageResponse
-        : savedLibrary.passageResponse;
+      const activePassageResponse =
+        practiceSource === 'featured'
+          ? featuredLibrary.passageResponse
+          : savedLibrary.passageResponse;
 
-    if (!activePassageResponse) return;
+      if (!activePassageResponse) return;
 
-    void savePracticeAttempt({
-      accuracy: result.accuracy,
-      bookId: activePassageResponse.passage.bookId,
-      chapter: activePassageResponse.passage.chapter,
-      durationSeconds: result.durationSeconds,
-      endVerse: activePassageResponse.passage.endVerse,
-      featuredPassageId: practiceSource === "featured" ? featuredLibrary.selectedPassageId : undefined,
-      mistakeCount: result.mistakeCount,
-      passageReference: activePassageResponse.reference,
-      savedPassageId: practiceSource === "saved" ? savedLibrary.selectedSavedPassageId : undefined,
-      selectedVerses: activePassageResponse.passage.selectedVerses,
-      startVerse: activePassageResponse.passage.startVerse,
-      translationId: activePassageResponse.translation.id,
-      typedCharacterCount: result.typedCharacterCount,
-      wpm: result.wpm,
-    }).then((savedAttempt) => {
-      if (savedAttempt) setCompletedPracticeAttemptId(savedAttempt.id);
-    });
-  }, [
-    featuredLibrary.passageResponse,
-    featuredLibrary.selectedPassageId,
-    practiceSource,
-    savePracticeAttempt,
-    savedLibrary.passageResponse,
-    savedLibrary.selectedSavedPassageId,
-  ]);
+      void savePracticeAttempt({
+        accuracy: result.accuracy,
+        bookId: activePassageResponse.passage.bookId,
+        chapter: activePassageResponse.passage.chapter,
+        durationSeconds: result.durationSeconds,
+        endVerse: activePassageResponse.passage.endVerse,
+        featuredPassageId:
+          practiceSource === 'featured'
+            ? featuredLibrary.selectedPassageId
+            : undefined,
+        mistakeCount: result.mistakeCount,
+        passageReference: activePassageResponse.reference,
+        savedPassageId:
+          practiceSource === 'saved'
+            ? savedLibrary.selectedSavedPassageId
+            : undefined,
+        selectedVerses: activePassageResponse.passage.selectedVerses,
+        startVerse: activePassageResponse.passage.startVerse,
+        translationId: activePassageResponse.translation.id,
+        typedCharacterCount: result.typedCharacterCount,
+        wpm: result.wpm,
+      }).then((savedAttempt) => {
+        if (savedAttempt) setCompletedPracticeAttemptId(savedAttempt.id);
+      });
+    },
+    [
+      featuredLibrary.passageResponse,
+      featuredLibrary.selectedPassageId,
+      practiceSource,
+      savePracticeAttempt,
+      savedLibrary.passageResponse,
+      savedLibrary.selectedSavedPassageId,
+    ],
+  );
 
   const practiceSession = usePracticeSession({
     passage: practicePassage,
@@ -111,39 +127,52 @@ export function useAppController() {
     setCompletedPracticeAttemptId(null);
   }, [resetPractice]);
 
-  const savePracticeReflection = useCallback(async (reflection: string) => {
-    if (!completedPracticeAttemptId) return false;
+  const savePracticeReflection = useCallback(
+    async (reflection: string) => {
+      if (!completedPracticeAttemptId) return false;
 
-    const updatedAttempt = await updatePracticeReflection(completedPracticeAttemptId, reflection);
-    return Boolean(updatedAttempt);
-  }, [completedPracticeAttemptId, updatePracticeReflection]);
+      const updatedAttempt = await updatePracticeReflection(
+        completedPracticeAttemptId,
+        reflection,
+      );
+      return Boolean(updatedAttempt);
+    },
+    [completedPracticeAttemptId, updatePracticeReflection],
+  );
 
-  const { error, headerReference, headerSubtitle, headerTitle, isLoading, translationName } =
-    useAppDisplayState({
-      appMode,
-      bibleError: bibleLibrary.error,
-      bibleIsLoading: bibleLibrary.isLoading,
-      featuredError: featuredLibrary.error,
-      featuredIsLoading: featuredLibrary.isLoading,
-      featuredPassageResponse: featuredLibrary.passageResponse,
-      practiceSource,
-      savedPassageError: savedLibrary.selectedPassageError ?? savedLibrary.listError,
-      savedIsLoading: savedLibrary.isLoading,
-      savedPassageResponse: savedLibrary.passageResponse,
-      savedPassageCount,
-      selectedSavedPassage: savedLibrary.selectedSavedPassage,
-      selectedTranslationId: bibleLibrary.selectedTranslationId,
-      translations: bibleLibrary.translations,
-    });
+  const {
+    error,
+    headerReference,
+    headerSubtitle,
+    headerTitle,
+    isLoading,
+    translationName,
+  } = useAppDisplayState({
+    appMode,
+    bibleError: bibleLibrary.error,
+    bibleIsLoading: bibleLibrary.isLoading,
+    featuredError: featuredLibrary.error,
+    featuredIsLoading: featuredLibrary.isLoading,
+    featuredPassageResponse: featuredLibrary.passageResponse,
+    practiceSource,
+    savedPassageError:
+      savedLibrary.selectedPassageError ?? savedLibrary.listError,
+    savedIsLoading: savedLibrary.isLoading,
+    savedPassageResponse: savedLibrary.passageResponse,
+    savedPassageCount,
+    selectedSavedPassage: savedLibrary.selectedSavedPassage,
+    selectedTranslationId: bibleLibrary.selectedTranslationId,
+    translations: bibleLibrary.translations,
+  });
   const saveInput = useMemo(() => {
-    if (appMode === "practice" && practiceSource === "featured") {
+    if (appMode === 'practice' && practiceSource === 'featured') {
       return createFeaturedPassageSaveInput(
         featuredLibrary.passageResponse,
         savedPassageCategories,
       );
     }
 
-    if (appMode === "bible") {
+    if (appMode === 'bible') {
       return createBiblePassageSaveInput({
         bibleChapter: bibleLibrary.chapter,
         selectedBook: bibleLibrary.selectedBook,
@@ -212,10 +241,11 @@ export function useAppController() {
   });
 
   const errorMessage =
-    error ?? (appMode === "practice" && !practicePassage
-      ? practiceSource === "saved"
-        ? "Save a passage first."
-        : "No practice passage found."
+    error ??
+    (appMode === 'practice' && !practicePassage
+      ? practiceSource === 'saved'
+        ? 'Save a passage first.'
+        : 'No practice passage found.'
       : null);
 
   const headerProps: AppHeaderProps = {
@@ -249,7 +279,7 @@ export function useAppController() {
       onCreateAccount: () =>
         setAuthMenuRequest((currentRequest) => ({
           id: (currentRequest?.id ?? 0) + 1,
-          mode: "signUp",
+          mode: 'signUp',
         })),
       savedPassageCount,
     }),
@@ -269,7 +299,8 @@ export function useAppController() {
       practiceTitle: headerTitle,
       reflectionError: practiceAttempts.reflectionError,
       savedLibrary,
-      canSaveReflection: authSession.isSignedIn && Boolean(completedPracticeAttemptId),
+      canSaveReflection:
+        authSession.isSignedIn && Boolean(completedPracticeAttemptId),
       isSignedIn: authSession.isSignedIn,
       translationName,
       onSaveCurrentPassage: saveCurrentPassage,

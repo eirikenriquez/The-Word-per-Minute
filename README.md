@@ -41,13 +41,13 @@ The practice experience keeps the selected passage at the centre of the page whi
 
 ## Technology
 
-| Area | Technology |
-| --- | --- |
-| Application | React, TypeScript, and Vite |
-| Routing | React Router |
-| Interface | Tailwind CSS, Headless UI, Heroicons, and self-hosted Instrument Sans |
-| Authentication and cloud data | Supabase Auth and Postgres |
-| Hosting | Vercel |
+| Area                          | Technology                                                            |
+| ----------------------------- | --------------------------------------------------------------------- |
+| Application                   | React, TypeScript, and Vite                                           |
+| Routing                       | React Router                                                          |
+| Interface                     | Tailwind CSS, Headless UI, Heroicons, and self-hosted Instrument Sans |
+| Authentication and cloud data | Supabase Auth and Postgres                                            |
+| Hosting                       | Vercel                                                                |
 
 ## Local Development
 
@@ -96,12 +96,12 @@ Open the local URL shown by Vite, normally `http://localhost:5173`.
 
 ## Available Scripts
 
-| Command | Purpose |
-| --- | --- |
-| `npm run dev` | Start the Vite development server. |
-| `npm run build` | Type-check and create the production build. |
-| `npm run lint` | Run ESLint across the repository. |
-| `npm run preview` | Preview the production build locally. |
+| Command                | Purpose                                                                                                                                          |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `npm run dev`          | Start the Vite development server.                                                                                                               |
+| `npm run build`        | Type-check and create the production build.                                                                                                      |
+| `npm run lint`         | Run ESLint across the repository.                                                                                                                |
+| `npm run preview`      | Preview the production build locally.                                                                                                            |
 | `npm run import:bible` | Download and rebuild the bundled public-domain Bible data. This maintenance command replaces the generated WEB data under `src/data/bibles/web`. |
 
 ## Repository Structure

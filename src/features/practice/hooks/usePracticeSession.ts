@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type {
   PracticeCompletionResult,
   PracticePassage,
-} from "../types/practice";
+} from '../types/practice';
 import {
   calculatePracticeSessionMetrics,
   countCorrectCharacters,
   countNewTypingMistakes,
-} from "../utils/typingMetrics";
+} from '../utils/typingMetrics';
 
 type UsePracticeSessionParams = {
   passage: PracticePassage | undefined;
@@ -17,29 +17,26 @@ type UsePracticeSessionParams = {
 /**
  * Owns the active typing attempt: timers, typed text, scoring, and completion recording.
  */
-export function usePracticeSession({ passage, onCompletedAttempt }: UsePracticeSessionParams) {
-  const [typedText, setTypedText] = useState("");
+export function usePracticeSession({
+  passage,
+  onCompletedAttempt,
+}: UsePracticeSessionParams) {
+  const [typedText, setTypedText] = useState('');
   const [mistakeCount, setMistakeCount] = useState(0);
   const [startedAt, setStartedAt] = useState<number | null>(null);
   const [finishedAt, setFinishedAt] = useState<number | null>(null);
   const [metricTime, setMetricTime] = useState(Date.now);
   const savedFinishAt = useRef<number | null>(null);
 
-  const {
-    accuracy,
-    isPassageComplete,
-    progress,
-    status,
-    targetText,
-    wpm,
-  } = calculatePracticeSessionMetrics({
-    passage,
-    typedText,
-    mistakeCount,
-    startedAt,
-    finishedAt,
-    now: metricTime,
-  });
+  const { accuracy, isPassageComplete, progress, status, targetText, wpm } =
+    calculatePracticeSessionMetrics({
+      passage,
+      typedText,
+      mistakeCount,
+      startedAt,
+      finishedAt,
+      now: metricTime,
+    });
 
   useEffect(() => {
     if (!startedAt || finishedAt) return;
@@ -52,7 +49,13 @@ export function usePracticeSession({ passage, onCompletedAttempt }: UsePracticeS
   }, [finishedAt, startedAt]);
 
   useEffect(() => {
-    if (!isPassageComplete || !finishedAt || !startedAt || savedFinishAt.current === finishedAt) return;
+    if (
+      !isPassageComplete ||
+      !finishedAt ||
+      !startedAt ||
+      savedFinishAt.current === finishedAt
+    )
+      return;
 
     savedFinishAt.current = finishedAt;
     onCompletedAttempt({
@@ -74,42 +77,54 @@ export function usePracticeSession({ passage, onCompletedAttempt }: UsePracticeS
   ]);
 
   const resetPractice = useCallback(() => {
-    setTypedText("");
+    setTypedText('');
     setMistakeCount(0);
     setStartedAt(null);
     setFinishedAt(null);
     savedFinishAt.current = null;
   }, []);
 
-  const handleTyping = useCallback((nextTypedText: string) => {
-    const limitedText = nextTypedText.slice(0, targetText.length);
-    const newMistakes = countNewTypingMistakes(targetText, typedText, limitedText);
+  const handleTyping = useCallback(
+    (nextTypedText: string) => {
+      const limitedText = nextTypedText.slice(0, targetText.length);
+      const newMistakes = countNewTypingMistakes(
+        targetText,
+        typedText,
+        limitedText,
+      );
 
-    if (!startedAt && limitedText.length > 0) {
-      const startTime = Date.now();
-      setStartedAt(startTime);
-      setMetricTime(startTime);
-    }
+      if (!startedAt && limitedText.length > 0) {
+        const startTime = Date.now();
+        setStartedAt(startTime);
+        setMetricTime(startTime);
+      }
 
-    if (newMistakes) {
-      setMistakeCount((currentMistakeCount) => currentMistakeCount + newMistakes);
-    }
+      if (newMistakes) {
+        setMistakeCount(
+          (currentMistakeCount) => currentMistakeCount + newMistakes,
+        );
+      }
 
-    setTypedText(limitedText);
+      setTypedText(limitedText);
 
-    const nextCorrectCharacters = countCorrectCharacters(targetText, limitedText);
-    const nextPassageComplete =
-      targetText.length > 0 &&
-      limitedText.length === targetText.length &&
-      nextCorrectCharacters === targetText.length;
+      const nextCorrectCharacters = countCorrectCharacters(
+        targetText,
+        limitedText,
+      );
+      const nextPassageComplete =
+        targetText.length > 0 &&
+        limitedText.length === targetText.length &&
+        nextCorrectCharacters === targetText.length;
 
-    if (nextPassageComplete) {
-      setFinishedAt((currentFinishedAt) => currentFinishedAt ?? Date.now());
-      return;
-    }
+      if (nextPassageComplete) {
+        setFinishedAt((currentFinishedAt) => currentFinishedAt ?? Date.now());
+        return;
+      }
 
-    setFinishedAt(null);
-  }, [startedAt, targetText, typedText]);
+      setFinishedAt(null);
+    },
+    [startedAt, targetText, typedText],
+  );
 
   return {
     accuracy,

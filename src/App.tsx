@@ -1,9 +1,9 @@
-import { AppErrorState } from "./app/components/AppErrorState";
-import { AppHeader } from "./app/components/AppHeader";
-import { AppLoadingState } from "./app/components/AppLoadingState";
-import { AppRoutes } from "./app/components/AppRoutes";
-import { PageShell } from "./app/components/PageShell";
-import { useAppController } from "./app/controllers/useAppController";
+import { AppErrorState } from './app/components/AppErrorState';
+import { AppHeader } from './app/components/AppHeader';
+import { AppLoadingState } from './app/components/AppLoadingState';
+import { AppRoutes } from './app/components/AppRoutes';
+import { PageShell } from './app/components/PageShell';
+import { useAppController } from './app/controllers/useAppController';
 
 /**
  * Root application shell.
@@ -22,13 +22,16 @@ function App() {
     pageRoutesProps,
     theme,
     toggleTheme,
-  } =
-    useAppController();
+  } = useAppController();
 
   // App-level guards keep incomplete data out of the page tree.
   if (isLoading) {
     return (
-      <PageShell authSession={authSession} theme={theme} onToggleTheme={toggleTheme}>
+      <PageShell
+        authSession={authSession}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+      >
         <AppLoadingState />
       </PageShell>
     );
@@ -36,7 +39,11 @@ function App() {
 
   if (errorMessage) {
     return (
-      <PageShell authSession={authSession} theme={theme} onToggleTheme={toggleTheme}>
+      <PageShell
+        authSession={authSession}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+      >
         <AppErrorState message={errorMessage} />
       </PageShell>
     );
@@ -53,7 +60,9 @@ function App() {
       onToggleTheme={toggleTheme}
     >
       <div key={appMode} className="page-transition grid gap-4">
-        {appMode !== "home" && appMode !== "profile" && <AppHeader {...headerProps} />}
+        {appMode !== 'home' && appMode !== 'profile' && (
+          <AppHeader {...headerProps} />
+        )}
 
         <AppRoutes {...pageRoutesProps} />
       </div>

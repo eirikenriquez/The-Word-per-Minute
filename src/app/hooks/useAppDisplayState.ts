@@ -1,9 +1,9 @@
-import { useMemo } from "react";
-import type { PracticeSource } from "@/features/practice/types/practice";
-import type { AppMode } from "../../types/app";
-import type { PassageResponse } from "../../types/passage";
-import type { SavedPassage } from "../../features/saved-passages/types/savedPassage";
-import type { Translation } from "../../types/bible";
+import { useMemo } from 'react';
+import type { PracticeSource } from '@/features/practice/types/practice';
+import type { AppMode } from '../../types/app';
+import type { PassageResponse } from '../../types/passage';
+import type { SavedPassage } from '../../features/saved-passages/types/savedPassage';
+import type { Translation } from '../../types/bible';
 
 type UseAppDisplayStateParams = {
   appMode: AppMode;
@@ -44,8 +44,9 @@ export function useAppDisplayState({
 }: UseAppDisplayStateParams) {
   return useMemo(() => {
     const selectedTranslation =
-      translations.find((translation) => translation.id === selectedTranslationId)?.abbreviation ??
-      selectedTranslationId.toUpperCase();
+      translations.find(
+        (translation) => translation.id === selectedTranslationId,
+      )?.abbreviation ?? selectedTranslationId.toUpperCase();
 
     return {
       error: getModeError({
@@ -118,18 +119,18 @@ function getModeLoadingState({
   savedPassageResponse,
 }: Pick<
   UseAppDisplayStateParams,
-  | "appMode"
-  | "bibleIsLoading"
-  | "featuredIsLoading"
-  | "featuredPassageResponse"
-  | "practiceSource"
-  | "savedIsLoading"
-  | "savedPassageResponse"
+  | 'appMode'
+  | 'bibleIsLoading'
+  | 'featuredIsLoading'
+  | 'featuredPassageResponse'
+  | 'practiceSource'
+  | 'savedIsLoading'
+  | 'savedPassageResponse'
 >) {
-  if (appMode === "home") return featuredIsLoading;
-  if (appMode === "bible") return bibleIsLoading;
-  if (appMode === "practice") {
-    if (practiceSource === "featured") {
+  if (appMode === 'home') return featuredIsLoading;
+  if (appMode === 'bible') return bibleIsLoading;
+  if (appMode === 'practice') {
+    if (practiceSource === 'featured') {
       return featuredIsLoading && !featuredPassageResponse;
     }
 
@@ -145,10 +146,18 @@ function getModeError({
   featuredError,
   practiceSource,
   savedPassageError,
-}: Pick<UseAppDisplayStateParams, "appMode" | "bibleError" | "featuredError" | "practiceSource" | "savedPassageError">) {
-  if (appMode === "home") return featuredError;
-  if (appMode === "bible") return bibleError;
-  if (appMode === "practice") return practiceSource === "featured" ? featuredError : savedPassageError;
+}: Pick<
+  UseAppDisplayStateParams,
+  | 'appMode'
+  | 'bibleError'
+  | 'featuredError'
+  | 'practiceSource'
+  | 'savedPassageError'
+>) {
+  if (appMode === 'home') return featuredError;
+  if (appMode === 'bible') return bibleError;
+  if (appMode === 'practice')
+    return practiceSource === 'featured' ? featuredError : savedPassageError;
   return null;
 }
 
@@ -159,16 +168,19 @@ function getHeaderTitle({
   selectedSavedPassage,
 }: Pick<
   UseAppDisplayStateParams,
-  "appMode" | "featuredPassageResponse" | "practiceSource" | "selectedSavedPassage"
+  | 'appMode'
+  | 'featuredPassageResponse'
+  | 'practiceSource'
+  | 'selectedSavedPassage'
 >) {
-  if (appMode === "home") return "Welcome";
-  if (appMode === "bible") return "Bible Reader";
-  if (appMode === "library") return "Saved Library";
-  if (appMode === "profile") return "Profile";
+  if (appMode === 'home') return 'Welcome';
+  if (appMode === 'bible') return 'Bible Reader';
+  if (appMode === 'library') return 'Saved Library';
+  if (appMode === 'profile') return 'Profile';
 
-  return practiceSource === "featured"
-    ? featuredPassageResponse?.passage.title ?? "Featured Passage"
-    : selectedSavedPassage?.title ?? "Saved Passage";
+  return practiceSource === 'featured'
+    ? (featuredPassageResponse?.passage.title ?? 'Featured Passage')
+    : (selectedSavedPassage?.title ?? 'Saved Passage');
 }
 
 function getHeaderReference({
@@ -179,31 +191,38 @@ function getHeaderReference({
   selectedSavedPassage,
 }: Pick<
   UseAppDisplayStateParams,
-  "appMode" | "featuredPassageResponse" | "practiceSource" | "savedPassageCount" | "selectedSavedPassage"
+  | 'appMode'
+  | 'featuredPassageResponse'
+  | 'practiceSource'
+  | 'savedPassageCount'
+  | 'selectedSavedPassage'
 >) {
-  if (appMode === "home") return "";
-  if (appMode === "bible") return "";
-  if (appMode === "library") return `${savedPassageCount} saved`;
-  if (appMode === "profile") return "";
+  if (appMode === 'home') return '';
+  if (appMode === 'bible') return '';
+  if (appMode === 'library') return `${savedPassageCount} saved`;
+  if (appMode === 'profile') return '';
 
-  return practiceSource === "featured"
-    ? featuredPassageResponse?.reference ?? ""
-    : selectedSavedPassage?.reference ?? "";
+  return practiceSource === 'featured'
+    ? (featuredPassageResponse?.reference ?? '')
+    : (selectedSavedPassage?.reference ?? '');
 }
 
 function getHeaderSubtitle({
   appMode,
   featuredPassageResponse,
   practiceSource,
-}: Pick<UseAppDisplayStateParams, "appMode" | "featuredPassageResponse" | "practiceSource">) {
-  if (appMode === "home") return "The Word per Minute";
-  if (appMode === "bible") return "Read and save scripture";
-  if (appMode === "library") return "Manage your saved passages";
-  if (appMode === "profile") return "Account and practice history";
+}: Pick<
+  UseAppDisplayStateParams,
+  'appMode' | 'featuredPassageResponse' | 'practiceSource'
+>) {
+  if (appMode === 'home') return 'The Word per Minute';
+  if (appMode === 'bible') return 'Read and save scripture';
+  if (appMode === 'library') return 'Manage your saved passages';
+  if (appMode === 'profile') return 'Account and practice history';
 
-  return practiceSource === "featured"
-    ? `Practice - ${featuredPassageResponse?.passage.theme ?? "Discovery"}`
-    : "Practice - Saved passage";
+  return practiceSource === 'featured'
+    ? `Practice - ${featuredPassageResponse?.passage.theme ?? 'Discovery'}`
+    : 'Practice - Saved passage';
 }
 
 function getTranslationName({
@@ -214,16 +233,19 @@ function getTranslationName({
   selectedTranslation,
 }: Pick<
   UseAppDisplayStateParams,
-  "appMode" | "featuredPassageResponse" | "practiceSource" | "selectedSavedPassage"
+  | 'appMode'
+  | 'featuredPassageResponse'
+  | 'practiceSource'
+  | 'selectedSavedPassage'
 > & {
   selectedTranslation: string;
 }) {
-  if (appMode === "home") return "WEB";
-  if (appMode === "bible") return selectedTranslation;
-  if (appMode === "library") return "WEB";
-  if (appMode === "profile") return "WEB";
+  if (appMode === 'home') return 'WEB';
+  if (appMode === 'bible') return selectedTranslation;
+  if (appMode === 'library') return 'WEB';
+  if (appMode === 'profile') return 'WEB';
 
-  return practiceSource === "featured"
-    ? featuredPassageResponse?.translation.abbreviation ?? "WEB"
-    : selectedSavedPassage?.translationAbbreviation ?? "WEB";
+  return practiceSource === 'featured'
+    ? (featuredPassageResponse?.translation.abbreviation ?? 'WEB')
+    : (selectedSavedPassage?.translationAbbreviation ?? 'WEB');
 }

@@ -57,13 +57,13 @@ The browser reads public scripture content from the application bundle. Guest sa
 
 Route paths are defined in `src/app/routes/appRoutePaths.ts` and rendered through React Router in `AppRoutes`.
 
-| Path | Page | Responsibility |
-| --- | --- | --- |
-| `/` | Home | Introduces the Bible typing experience and routes users into typing, reading, themed passage selection, or account creation. |
-| `/practice` | Practice | Selects a featured or saved source and runs the typing session. |
-| `/bible` | Bible | Loads chapters, manages verse selection, and provides passage-saving context. |
-| `/library` | Library | Filters, edits, removes, reads, and practices saved passages. |
-| `/profile` | Profile | Presents account progress, paginated attempt history, and reflections. |
+| Path        | Page     | Responsibility                                                                                                               |
+| ----------- | -------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `/`         | Home     | Introduces the Bible typing experience and routes users into typing, reading, themed passage selection, or account creation. |
+| `/practice` | Practice | Selects a featured or saved source and runs the typing session.                                                              |
+| `/bible`    | Bible    | Loads chapters, manages verse selection, and provides passage-saving context.                                                |
+| `/library`  | Library  | Filters, edits, removes, reads, and practices saved passages.                                                                |
+| `/profile`  | Profile  | Presents account progress, paginated attempt history, and reflections.                                                       |
 
 Unknown paths redirect to Home. Vercel rewrites direct route requests to `index.html`, allowing React Router to resolve the URL after the app loads.
 
@@ -196,18 +196,18 @@ It is a plain factory rather than a React hook because it does not own React sta
 
 Each kind of state has one primary owner:
 
-| Concern | Owner | Persistence |
-| --- | --- | --- |
-| Active route | React Router through `useAppNavigation` | Browser URL |
-| Theme | `useTheme` | Browser storage |
-| Account and session | `useAuthSession` | Supabase Auth session |
-| Reader translation, book, and chapter | `useVerseLibrary` | Current runtime session |
-| Selected reader verses | `useReaderSelection` | Current runtime session |
-| Featured catalogue and selection | `useFeaturedPassages` | Bundled data plus runtime selection |
-| Saved-passage collection | `useSavedPassages` | `localStorage` or Supabase, based on auth |
-| Active practice passage | `usePracticePassage` | Derived from selected source |
-| Typing text and live metrics | `usePracticeSession` | Current runtime session |
-| Attempt history and reflections | `usePracticeAttempts` | Supabase for signed-in users |
+| Concern                               | Owner                                   | Persistence                               |
+| ------------------------------------- | --------------------------------------- | ----------------------------------------- |
+| Active route                          | React Router through `useAppNavigation` | Browser URL                               |
+| Theme                                 | `useTheme`                              | Browser storage                           |
+| Account and session                   | `useAuthSession`                        | Supabase Auth session                     |
+| Reader translation, book, and chapter | `useVerseLibrary`                       | Current runtime session                   |
+| Selected reader verses                | `useReaderSelection`                    | Current runtime session                   |
+| Featured catalogue and selection      | `useFeaturedPassages`                   | Bundled data plus runtime selection       |
+| Saved-passage collection              | `useSavedPassages`                      | `localStorage` or Supabase, based on auth |
+| Active practice passage               | `usePracticePassage`                    | Derived from selected source              |
+| Typing text and live metrics          | `usePracticeSession`                    | Current runtime session                   |
+| Attempt history and reflections       | `usePracticeAttempts`                   | Supabase for signed-in users              |
 
 State should not be duplicated in pages when it can be derived from these owners. Route or source changes reset practice through `useAppModeEffects` so typed text cannot carry into a different passage.
 

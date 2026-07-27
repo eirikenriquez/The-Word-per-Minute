@@ -11,7 +11,7 @@ export type Translation = {
 export type BookSummary = {
   id: string;
   name: string;
-  testament: "OT" | "NT";
+  testament: 'OT' | 'NT';
   chapterCount: number;
   verseCounts: number[];
 };
@@ -30,7 +30,7 @@ export type BibleBook = {
   translationId: string;
   id: string;
   name: string;
-  testament: "OT" | "NT";
+  testament: 'OT' | 'NT';
   chapters: BibleChapter[];
 };
 

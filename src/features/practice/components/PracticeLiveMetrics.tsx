@@ -1,4 +1,4 @@
-import type { PracticeStatus } from "../types/practice";
+import type { PracticeStatus } from '../types/practice';
 
 type PracticeLiveMetricsProps = {
   accuracy: number;
@@ -26,12 +26,10 @@ export function PracticeLiveMetrics({
         <strong className="font-semibold text-ink">{wpm}</strong> WPM
       </p>
       <p>
-        <strong className="font-semibold text-ink">{accuracy}%</strong>{" "}
-        accuracy
+        <strong className="font-semibold text-ink">{accuracy}%</strong> accuracy
       </p>
       <p>
-        <strong className="font-semibold text-ink">{progress}%</strong>{" "}
-        complete
+        <strong className="font-semibold text-ink">{progress}%</strong> complete
       </p>
       <p className="font-medium text-ink-subtle sm:ml-auto">{status}</p>
     </div>

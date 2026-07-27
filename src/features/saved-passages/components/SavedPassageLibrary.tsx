@@ -1,20 +1,20 @@
-import { useMemo, useState } from "react";
-import type {
-  SavedPassage,
-  SavedPassageUpdate,
-} from "../types/savedPassage";
-import { SavedPassageCard } from "./SavedPassageCard";
+import { useMemo, useState } from 'react';
+import type { SavedPassage, SavedPassageUpdate } from '../types/savedPassage';
+import { SavedPassageCard } from './SavedPassageCard';
 import {
   SavedPassageFilters,
   type SavedPassageSourceFilter,
-} from "./SavedPassageFilters";
+} from './SavedPassageFilters';
 
 type SavedPassageLibraryProps = {
   savedPassages: SavedPassage[];
   onPracticePassage: (passageId: string) => void;
   onReadPassage: (passageId: string) => void;
   onRemovePassage: (passageId: string) => void | Promise<void>;
-  onUpdatePassage: (passageId: string, update: SavedPassageUpdate) => SavedPassage | null | Promise<SavedPassage | null>;
+  onUpdatePassage: (
+    passageId: string,
+    update: SavedPassageUpdate,
+  ) => SavedPassage | null | Promise<SavedPassage | null>;
 };
 
 /**
@@ -27,18 +27,21 @@ export function SavedPassageLibrary({
   onRemovePassage,
   onUpdatePassage,
 }: SavedPassageLibraryProps) {
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedSource, setSelectedSource] = useState<SavedPassageSourceFilter>("all");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedSource, setSelectedSource] =
+    useState<SavedPassageSourceFilter>('all');
+  const [searchTerm, setSearchTerm] = useState('');
   const hasSavedPassages = savedPassages.length > 0;
 
   const categories = useMemo(() => {
-    const savedCategories = savedPassages.map((passage) => passage.category || "Other");
-    return ["All", ...new Set(savedCategories)];
+    const savedCategories = savedPassages.map(
+      (passage) => passage.category || 'Other',
+    );
+    return ['All', ...new Set(savedCategories)];
   }, [savedPassages]);
 
   const editableCategories = useMemo(
-    () => categories.filter((category) => category !== "All"),
+    () => categories.filter((category) => category !== 'All'),
     [categories],
   );
 
@@ -56,12 +59,15 @@ export function SavedPassageLibrary({
   if (!hasSavedPassages) {
     return (
       <section className="grid gap-6">
-        <LibraryMessage>Saved passages will appear here after you save one from Featured or Bible.</LibraryMessage>
+        <LibraryMessage>
+          Saved passages will appear here after you save one from Featured or
+          Bible.
+        </LibraryMessage>
       </section>
     );
   }
 
-  const resultSummary = `${visiblePassages.length} of ${savedPassages.length} passage${savedPassages.length === 1 ? "" : "s"}`;
+  const resultSummary = `${visiblePassages.length} of ${savedPassages.length} passage${savedPassages.length === 1 ? '' : 's'}`;
 
   return (
     <section className="grid gap-6">
@@ -91,7 +97,9 @@ export function SavedPassageLibrary({
           ))}
         </div>
       ) : (
-        <LibraryMessage>No saved passages match those filters yet.</LibraryMessage>
+        <LibraryMessage>
+          No saved passages match those filters yet.
+        </LibraryMessage>
       )}
     </section>
   );
@@ -105,16 +113,19 @@ function LibraryMessage({ children }: { children: string }) {
   );
 }
 
-function matchesSavedPassageCategory(passage: SavedPassage, selectedCategory: string) {
-  return selectedCategory === "All" || passage.category === selectedCategory;
+function matchesSavedPassageCategory(
+  passage: SavedPassage,
+  selectedCategory: string,
+) {
+  return selectedCategory === 'All' || passage.category === selectedCategory;
 }
 
 function matchesSavedPassageSource(
   passage: SavedPassage,
   selectedSource: SavedPassageSourceFilter,
 ) {
-  if (selectedSource === "all") return true;
-  if (selectedSource === "saved") return passage.source !== "featured";
+  if (selectedSource === 'all') return true;
+  if (selectedSource === 'saved') return passage.source !== 'featured';
 
   return passage.source === selectedSource;
 }
@@ -130,7 +141,7 @@ function matchesSavedPassageSearch(passage: SavedPassage, searchTerm: string) {
     passage.bookName,
     passage.translationAbbreviation,
   ]
-    .join(" ")
+    .join(' ')
     .toLowerCase()
     .includes(normalizedSearchTerm);
 }

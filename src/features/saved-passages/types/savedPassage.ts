@@ -1,4 +1,4 @@
-export type SavedPassageSource = "featured" | "bible";
+export type SavedPassageSource = 'featured' | 'bible';
 
 export type SavedPassage = {
   id: string;
@@ -18,6 +18,6 @@ export type SavedPassage = {
   createdAt: string;
 };
 
-export type SavePassageInput = Omit<SavedPassage, "createdAt" | "id">;
+export type SavePassageInput = Omit<SavedPassage, 'createdAt' | 'id'>;
 
-export type SavedPassageUpdate = Pick<SavedPassage, "category" | "title">;
+export type SavedPassageUpdate = Pick<SavedPassage, 'category' | 'title'>;

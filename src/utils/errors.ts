@@ -9,14 +9,14 @@ export function getErrorMessage(caughtError: unknown) {
     return caughtError.message;
   }
 
-  return "Something went wrong.";
+  return 'Something went wrong.';
 }
 
 function hasMessage(value: unknown): value is { message: string } {
   return (
-    typeof value === "object" &&
+    typeof value === 'object' &&
     value !== null &&
-    "message" in value &&
-    typeof value.message === "string"
+    'message' in value &&
+    typeof value.message === 'string'
   );
 }

@@ -1,4 +1,4 @@
-export type SavedPassageSourceFilter = "all" | "featured" | "saved";
+export type SavedPassageSourceFilter = 'all' | 'featured' | 'saved';
 
 type SavedPassageFiltersProps = {
   categories: string[];
@@ -70,7 +70,9 @@ export function SavedPassageFilters({
             className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft"
             value={selectedSource}
             onChange={(event) =>
-              onSelectedSourceChange(event.target.value as SavedPassageSourceFilter)
+              onSelectedSourceChange(
+                event.target.value as SavedPassageSourceFilter,
+              )
             }
           >
             <option value="all">All sources</option>

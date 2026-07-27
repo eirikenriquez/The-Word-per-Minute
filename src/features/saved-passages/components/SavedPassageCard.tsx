@@ -1,20 +1,14 @@
-import { Transition } from "@headlessui/react";
+import { Transition } from '@headlessui/react';
 import {
   BookOpenIcon,
   BookmarkIcon,
   PencilSquareIcon,
   PlayIcon,
   TrashIcon,
-} from "@heroicons/react/24/outline";
-import {
-  type ReactNode,
-  useState,
-} from "react";
-import type {
-  SavedPassage,
-  SavedPassageUpdate,
-} from "../types/savedPassage";
-import { Button } from "../../../components/ui/Button";
+} from '@heroicons/react/24/outline';
+import { type ReactNode, useState } from 'react';
+import type { SavedPassage, SavedPassageUpdate } from '../types/savedPassage';
+import { Button } from '../../../components/ui/Button';
 
 type SavedPassageCardProps = {
   passage: SavedPassage;
@@ -22,10 +16,13 @@ type SavedPassageCardProps = {
   onPracticePassage: (passageId: string) => void;
   onReadPassage: (passageId: string) => void;
   onRemovePassage: (passageId: string) => void | Promise<void>;
-  onUpdatePassage: (passageId: string, update: SavedPassageUpdate) => SavedPassage | null | Promise<SavedPassage | null>;
+  onUpdatePassage: (
+    passageId: string,
+    update: SavedPassageUpdate,
+  ) => SavedPassage | null | Promise<SavedPassage | null>;
 };
 
-type SavedPassageCardMode = "view" | "edit" | "remove";
+type SavedPassageCardMode = 'view' | 'edit' | 'remove';
 
 /**
  * Displays one saved passage and owns its local edit form state.
@@ -38,24 +35,24 @@ export function SavedPassageCard({
   onRemovePassage,
   onUpdatePassage,
 }: SavedPassageCardProps) {
-  const [mode, setMode] = useState<SavedPassageCardMode>("view");
+  const [mode, setMode] = useState<SavedPassageCardMode>('view');
   const [draftTitle, setDraftTitle] = useState(passage.title);
   const [draftCategory, setDraftCategory] = useState(passage.category);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isRemoving, setIsRemoving] = useState(false);
-  const isEditing = mode === "edit";
-  const isConfirmingRemove = mode === "remove";
+  const isEditing = mode === 'edit';
+  const isConfirmingRemove = mode === 'remove';
 
   function startEditing() {
     setDraftTitle(passage.title);
     setDraftCategory(passage.category);
-    setMode("edit");
+    setMode('edit');
   }
 
   function cancelEditing() {
     setDraftTitle(passage.title);
     setDraftCategory(passage.category);
-    setMode("view");
+    setMode('view');
   }
 
   async function confirmRemove() {
@@ -81,16 +78,14 @@ export function SavedPassageCard({
         category: draftCategory || passage.category,
       });
 
-      if (updatedPassage) setMode("view");
+      if (updatedPassage) setMode('view');
     } finally {
       setIsUpdating(false);
     }
   }
 
   return (
-    <article
-      className="rounded-md border border-line bg-surface p-5 transition hover:border-line-strong"
-    >
+    <article className="rounded-md border border-line bg-surface p-5 transition hover:border-line-strong">
       <div className="grid gap-5">
         <div className="grid min-h-20 flex-1 gap-3">
           <AnimatedCardState
@@ -107,7 +102,9 @@ export function SavedPassageCard({
               />
             </label>
             <label className="grid gap-1">
-              <span className="text-sm font-medium text-ink-muted">Category</span>
+              <span className="text-sm font-medium text-ink-muted">
+                Category
+              </span>
               <select
                 className="rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft disabled:bg-surface-muted disabled:text-ink-subtle"
                 disabled={isUpdating}
@@ -157,18 +154,11 @@ export function SavedPassageCard({
             className="col-start-1 row-start-1 flex flex-wrap gap-2 sm:justify-end"
             show={isEditing}
           >
-            <Button
-              disabled={isUpdating}
-              variant="primary"
-              onClick={saveEdits}
-            >
+            <Button disabled={isUpdating} variant="primary" onClick={saveEdits}>
               <BookmarkIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
-              {isUpdating ? "Saving..." : "Save"}
+              {isUpdating ? 'Saving...' : 'Save'}
             </Button>
-            <Button
-              disabled={isUpdating}
-              onClick={cancelEditing}
-            >
+            <Button disabled={isUpdating} onClick={cancelEditing}>
               Cancel
             </Button>
           </AnimatedCardState>
@@ -181,7 +171,7 @@ export function SavedPassageCard({
               Remove this saved passage?
             </p>
             <div className="flex flex-wrap gap-2">
-              <Button disabled={isRemoving} onClick={() => setMode("view")}>
+              <Button disabled={isRemoving} onClick={() => setMode('view')}>
                 Cancel
               </Button>
               <Button
@@ -190,7 +180,7 @@ export function SavedPassageCard({
                 onClick={confirmRemove}
               >
                 <TrashIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
-                {isRemoving ? "Removing..." : "Remove"}
+                {isRemoving ? 'Removing...' : 'Remove'}
               </Button>
             </div>
           </AnimatedCardState>
@@ -213,17 +203,14 @@ export function SavedPassageCard({
               </Button>
             </div>
             <div className="flex flex-wrap gap-1">
-              <Button
-                variant="ghost"
-                onClick={startEditing}
-              >
-                <PencilSquareIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
+              <Button variant="ghost" onClick={startEditing}>
+                <PencilSquareIcon
+                  aria-hidden="true"
+                  className="h-4 w-4 shrink-0"
+                />
                 Edit
               </Button>
-              <Button
-                variant="danger"
-                onClick={() => setMode("remove")}
-              >
+              <Button variant="danger" onClick={() => setMode('remove')}>
                 <TrashIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
                 Remove
               </Button>
@@ -266,16 +253,16 @@ function MetadataDivider() {
 }
 
 function getSourceLabel(passage: SavedPassage) {
-  return passage.source === "featured" ? "Featured" : "Saved";
+  return passage.source === 'featured' ? 'Featured' : 'Saved';
 }
 
 function getSavedDateLabel(createdAt: string) {
   const savedDate = new Date(createdAt);
-  if (Number.isNaN(savedDate.getTime())) return "Saved";
+  if (Number.isNaN(savedDate.getTime())) return 'Saved';
 
   return `Saved ${savedDate.toLocaleDateString(undefined, {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
   })}`;
 }

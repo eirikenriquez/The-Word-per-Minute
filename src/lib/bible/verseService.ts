@@ -1,9 +1,6 @@
-import translationsData from "../../data/translations.json";
-import webManifest from "../../data/bibles/web/manifest.json";
-import type {
-  PassageReference,
-  PassageResponse,
-} from "../../types/passage";
+import translationsData from '../../data/translations.json';
+import webManifest from '../../data/bibles/web/manifest.json';
+import type { PassageReference, PassageResponse } from '../../types/passage';
 import type {
   BibleBook,
   BookListResponse,
@@ -11,8 +8,11 @@ import type {
   ChapterResponse,
   Translation,
   TranslationListResponse,
-} from "../../types/bible";
-import { formatPassageReference, formatSelectedVerseReference } from "../../utils/passageReference";
+} from '../../types/bible';
+import {
+  formatPassageReference,
+  formatSelectedVerseReference,
+} from '../../utils/passageReference';
 
 type BibleManifest = {
   translationId: string;
@@ -25,7 +25,7 @@ const manifestsByTranslation: Record<string, BibleManifest> = {
 };
 
 // Vite keeps each book as a lazy module so the app does not load the full Bible immediately.
-const bookModules = import.meta.glob("../../data/bibles/*/books/*.json");
+const bookModules = import.meta.glob('../../data/bibles/*/books/*.json');
 
 /**
  * Looks up translation metadata before loading books or chapters.
@@ -83,10 +83,16 @@ export const verseService = {
   /**
    * Loads one chapter from one book.
    */
-  async getChapter(translationId: string, bookId: string, chapterNumber: number): Promise<ChapterResponse> {
+  async getChapter(
+    translationId: string,
+    bookId: string,
+    chapterNumber: number,
+  ): Promise<ChapterResponse> {
     const translation = findTranslation(translationId);
     const book = await loadBook(translationId, bookId);
-    const chapter = book.chapters.find((availableChapter) => availableChapter.chapter === chapterNumber);
+    const chapter = book.chapters.find(
+      (availableChapter) => availableChapter.chapter === chapterNumber,
+    );
 
     if (!translation) {
       throw new Error(`Translation not found: ${translationId}`);
@@ -106,7 +112,9 @@ export const verseService = {
   /**
    * Resolves any structured reference into verse text ready for typing.
    */
-  async getReferencePassage(passage: PassageReference): Promise<PassageResponse> {
+  async getReferencePassage(
+    passage: PassageReference,
+  ): Promise<PassageResponse> {
     const { translation, book, chapter } = await this.getChapter(
       passage.translationId,
       passage.bookId,
@@ -118,7 +126,9 @@ export const verseService = {
     const verses = selectedVerseSet
       ? chapter.verses.filter((verse) => selectedVerseSet.has(verse.number))
       : chapter.verses.filter(
-          (verse) => verse.number >= passage.startVerse && verse.number <= passage.endVerse,
+          (verse) =>
+            verse.number >= passage.startVerse &&
+            verse.number <= passage.endVerse,
         );
 
     if (!verses.length) {
@@ -128,7 +138,11 @@ export const verseService = {
     return {
       passage,
       reference: passage.selectedVerses?.length
-        ? formatSelectedVerseReference(book.name, passage.chapter, passage.selectedVerses)
+        ? formatSelectedVerseReference(
+            book.name,
+            passage.chapter,
+            passage.selectedVerses,
+          )
         : formatPassageReference(
             book.name,
             passage.chapter,

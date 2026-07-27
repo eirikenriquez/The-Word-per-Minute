@@ -1,18 +1,18 @@
-import type { useReaderSelection } from "../../features/bible-reader/hooks/useReaderSelection";
-import type { useVerseLibrary } from "../../features/bible-reader/hooks/useVerseLibrary";
-import type { usePracticeSession } from "../../features/practice/hooks/usePracticeSession";
-import type { useSavedPassages } from "../../features/saved-passages/hooks/useSavedPassages";
-import type { BiblePageProps } from "../../pages/bible/BiblePage";
-import type { HomeCategory, HomePageProps } from "../../pages/home/HomePage";
-import type { LibraryPageProps } from "../../pages/library/LibraryPage";
-import type { PracticePageProps } from "../../pages/practice/PracticePage";
-import type { ProfilePageProps } from "../../pages/profile/ProfilePage";
+import type { useReaderSelection } from '../../features/bible-reader/hooks/useReaderSelection';
+import type { useVerseLibrary } from '../../features/bible-reader/hooks/useVerseLibrary';
+import type { usePracticeSession } from '../../features/practice/hooks/usePracticeSession';
+import type { useSavedPassages } from '../../features/saved-passages/hooks/useSavedPassages';
+import type { BiblePageProps } from '../../pages/bible/BiblePage';
+import type { HomeCategory, HomePageProps } from '../../pages/home/HomePage';
+import type { LibraryPageProps } from '../../pages/library/LibraryPage';
+import type { PracticePageProps } from '../../pages/practice/PracticePage';
+import type { ProfilePageProps } from '../../pages/profile/ProfilePage';
 import type {
   PracticePassage,
   PracticeSource,
-} from "@/features/practice/types/practice";
-import type { createAppActions } from "./createAppActions";
-import type { usePracticeAttempts } from "../../features/practice/hooks/usePracticeAttempts";
+} from '@/features/practice/types/practice';
+import type { createAppActions } from './createAppActions';
+import type { usePracticeAttempts } from '../../features/practice/hooks/usePracticeAttempts';
 
 type AppActions = ReturnType<typeof createAppActions>;
 
@@ -25,7 +25,7 @@ export function createBiblePageProps({
   appActions: AppActions;
   bibleLibrary: ReturnType<typeof useVerseLibrary>;
   readerSelection: ReturnType<typeof useReaderSelection>;
-  saveControls: BiblePageProps["saveControls"];
+  saveControls: BiblePageProps['saveControls'];
 }): BiblePageProps {
   return {
     bibleBooks: bibleLibrary.books,
@@ -140,11 +140,13 @@ export function createPracticePageProps({
     practiceTitle,
     progress: practiceSession.progress,
     reflectionError,
-    savedPassageOptions: savedLibrary.savedPassages.map(({ category, id, title }) => ({
-      category,
-      id,
-      title,
-    })),
+    savedPassageOptions: savedLibrary.savedPassages.map(
+      ({ category, id, title }) => ({
+        category,
+        id,
+        title,
+      }),
+    ),
     selectedSavedPassageId: savedLibrary.selectedSavedPassageId,
     status: practiceSession.status,
     translationName,

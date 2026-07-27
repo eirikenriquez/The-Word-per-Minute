@@ -1,8 +1,8 @@
-import { SavedPassageLibrary } from "../../features/saved-passages/components/SavedPassageLibrary";
+import { SavedPassageLibrary } from '../../features/saved-passages/components/SavedPassageLibrary';
 import type {
   SavedPassage,
   SavedPassageUpdate,
-} from "../../features/saved-passages/types/savedPassage";
+} from '../../features/saved-passages/types/savedPassage';
 
 export type LibraryPageProps = {
   errorMessage: string | null;
@@ -10,7 +10,10 @@ export type LibraryPageProps = {
   onPracticeSavedPassage: (passageId: string) => void;
   onReadSavedPassage: (passageId: string) => void;
   onRemoveSavedPassage: (passageId: string) => void | Promise<void>;
-  onUpdateSavedPassage: (passageId: string, update: SavedPassageUpdate) => SavedPassage | null | Promise<SavedPassage | null>;
+  onUpdateSavedPassage: (
+    passageId: string,
+    update: SavedPassageUpdate,
+  ) => SavedPassage | null | Promise<SavedPassage | null>;
 };
 
 /**

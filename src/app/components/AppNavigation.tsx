@@ -3,9 +3,9 @@ import {
   BookmarkSquareIcon,
   HomeIcon,
   PencilSquareIcon,
-} from "@heroicons/react/24/outline";
-import type { ReactNode } from "react";
-import type { AppMode } from "../../types/app";
+} from '@heroicons/react/24/outline';
+import type { ReactNode } from 'react';
+import type { AppMode } from '../../types/app';
 
 type AppNavigationProps = {
   appMode: AppMode;
@@ -20,27 +20,31 @@ export function AppNavigation({ appMode, onSelectMode }: AppNavigationProps) {
     <nav className="grid grid-cols-4 gap-1 text-sm sm:flex sm:items-center">
       <ModeButton
         icon={<HomeIcon aria-hidden="true" className="h-4 w-4 shrink-0" />}
-        isSelected={appMode === "home"}
+        isSelected={appMode === 'home'}
         label="Home"
-        onSelect={() => onSelectMode("home")}
+        onSelect={() => onSelectMode('home')}
       />
       <ModeButton
-        icon={<PencilSquareIcon aria-hidden="true" className="h-4 w-4 shrink-0" />}
-        isSelected={appMode === "practice"}
+        icon={
+          <PencilSquareIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
+        }
+        isSelected={appMode === 'practice'}
         label="Practice"
-        onSelect={() => onSelectMode("practice")}
+        onSelect={() => onSelectMode('practice')}
       />
       <ModeButton
         icon={<BookOpenIcon aria-hidden="true" className="h-4 w-4 shrink-0" />}
-        isSelected={appMode === "bible"}
+        isSelected={appMode === 'bible'}
         label="Bible"
-        onSelect={() => onSelectMode("bible")}
+        onSelect={() => onSelectMode('bible')}
       />
       <ModeButton
-        icon={<BookmarkSquareIcon aria-hidden="true" className="h-4 w-4 shrink-0" />}
-        isSelected={appMode === "library"}
+        icon={
+          <BookmarkSquareIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
+        }
+        isSelected={appMode === 'library'}
         label="Library"
-        onSelect={() => onSelectMode("library")}
+        onSelect={() => onSelectMode('library')}
       />
     </nav>
   );
@@ -58,8 +62,8 @@ function ModeButton({ icon, isSelected, label, onSelect }: ModeButtonProps) {
     <button
       className={`inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 font-medium transition ${
         isSelected
-          ? "bg-accent-soft text-accent-ink"
-          : "text-ink-muted hover:bg-accent-soft hover:text-accent-ink"
+          ? 'bg-accent-soft text-accent-ink'
+          : 'text-ink-muted hover:bg-accent-soft hover:text-accent-ink'
       }`}
       type="button"
       onClick={onSelect}

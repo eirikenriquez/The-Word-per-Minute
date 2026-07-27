@@ -1,7 +1,7 @@
-import type { BibleVerse } from "../../../types/bible";
+import type { BibleVerse } from '../../../types/bible';
 
-export type PracticeSource = "featured" | "saved";
-export type PracticeStatus = "Ready" | "Typing" | "Complete";
+export type PracticeSource = 'featured' | 'saved';
+export type PracticeStatus = 'Ready' | 'Typing' | 'Complete';
 
 export type PracticeCompletionResult = {
   accuracy: number;
@@ -57,7 +57,10 @@ export type PracticeAttemptPage = {
   hasMore: boolean;
 };
 
-export type SavePracticeAttemptInput = Omit<PracticeAttempt, "completedAt" | "id"> & {
+export type SavePracticeAttemptInput = Omit<
+  PracticeAttempt,
+  'completedAt' | 'id'
+> & {
   featuredPassageId?: string | null;
   savedPassageId?: string | null;
 };

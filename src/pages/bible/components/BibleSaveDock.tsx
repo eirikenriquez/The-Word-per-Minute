@@ -1,7 +1,7 @@
-import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
-import { BookmarkIcon } from "@heroicons/react/24/outline";
-import { useRef, useState } from "react";
-import { Button } from "../../../components/ui/Button";
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
+import { BookmarkIcon } from '@heroicons/react/24/outline';
+import { useRef, useState } from 'react';
+import { Button } from '../../../components/ui/Button';
 
 export type BibleSaveFormProps = {
   canSaveCurrentPassage: boolean;
@@ -43,7 +43,7 @@ export function BibleSaveDock({
   const [isOpen, setIsOpen] = useState(false);
   const titleInputRef = useRef<HTMLInputElement>(null);
   const hasSelectedVerses = selectedVerseCount > 0;
-  const saveActionLabel = hasSelectedVerses ? "Save Selection" : "Save Chapter";
+  const saveActionLabel = hasSelectedVerses ? 'Save Selection' : 'Save Chapter';
 
   async function savePassage() {
     const didSave = await onSaveCurrentPassage();
@@ -57,11 +57,13 @@ export function BibleSaveDock({
     >
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 border-y border-line py-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
-          <h2 className="truncate text-lg font-semibold text-ink">{passageReference}</h2>
+          <h2 className="truncate text-lg font-semibold text-ink">
+            {passageReference}
+          </h2>
           <p aria-live="polite" className="mt-0.5 text-sm text-ink-subtle">
             {hasSelectedVerses
-              ? `${selectedVerseCount} ${selectedVerseCount === 1 ? "verse" : "verses"} selected`
-              : "Whole chapter"}
+              ? `${selectedVerseCount} ${selectedVerseCount === 1 ? 'verse' : 'verses'} selected`
+              : 'Whole chapter'}
           </p>
         </div>
 
@@ -72,7 +74,11 @@ export function BibleSaveDock({
             </Button>
           )}
           <SaveButton
-            disabled={!canSaveCurrentPassage || isCurrentPassageSaved || isSavingCurrentPassage}
+            disabled={
+              !canSaveCurrentPassage ||
+              isCurrentPassageSaved ||
+              isSavingCurrentPassage
+            }
             isSaved={isCurrentPassageSaved}
             isSaving={isSavingCurrentPassage}
             label={saveActionLabel}
@@ -93,16 +99,21 @@ export function BibleSaveDock({
         >
           <div className="grid gap-1">
             <DialogTitle className="text-lg font-semibold text-ink">
-              {hasSelectedVerses ? "Save selected verses" : "Save Bible chapter"}
+              {hasSelectedVerses
+                ? 'Save selected verses'
+                : 'Save Bible chapter'}
             </DialogTitle>
             <p className="text-sm text-ink-muted">
-              Review the title and category before adding this passage to your library.
+              Review the title and category before adding this passage to your
+              library.
             </p>
           </div>
 
           <div className="grid gap-4">
             <label className="grid gap-1">
-              <span className="text-sm font-medium text-ink-muted">Saved Title</span>
+              <span className="text-sm font-medium text-ink-muted">
+                Saved Title
+              </span>
               <input
                 className="rounded-md border border-line-strong bg-canvas px-3 py-2 text-sm text-ink outline-none transition placeholder:text-ink-subtle focus:border-accent focus:ring-2 focus:ring-accent-soft"
                 placeholder="Name this saved passage"
@@ -112,7 +123,9 @@ export function BibleSaveDock({
               />
             </label>
             <label className="grid gap-1">
-              <span className="text-sm font-medium text-ink-muted">Category</span>
+              <span className="text-sm font-medium text-ink-muted">
+                Category
+              </span>
               <select
                 className="rounded-md border border-line-strong bg-canvas px-3 py-2 text-sm text-ink outline-none transition focus:border-accent focus:ring-2 focus:ring-accent-soft"
                 value={saveCategory}
@@ -138,7 +151,11 @@ export function BibleSaveDock({
               Cancel
             </Button>
             <SaveButton
-              disabled={!canSaveCurrentPassage || isCurrentPassageSaved || isSavingCurrentPassage}
+              disabled={
+                !canSaveCurrentPassage ||
+                isCurrentPassageSaved ||
+                isSavingCurrentPassage
+              }
               isSaved={isCurrentPassageSaved}
               isSaving={isSavingCurrentPassage}
               label={saveActionLabel}
@@ -159,7 +176,13 @@ type SaveButtonProps = {
   onSave: () => void | Promise<void>;
 };
 
-function SaveButton({ disabled, isSaved, isSaving, label, onSave }: SaveButtonProps) {
+function SaveButton({
+  disabled,
+  isSaved,
+  isSaving,
+  label,
+  onSave,
+}: SaveButtonProps) {
   return (
     <Button
       disabled={disabled}
@@ -169,7 +192,7 @@ function SaveButton({ disabled, isSaved, isSaving, label, onSave }: SaveButtonPr
       }}
     >
       <BookmarkIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
-      {isSaving ? "Saving..." : isSaved ? "Saved" : label}
+      {isSaving ? 'Saving...' : isSaved ? 'Saved' : label}
     </Button>
   );
 }

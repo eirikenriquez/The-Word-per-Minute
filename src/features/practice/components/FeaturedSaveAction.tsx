@@ -1,5 +1,5 @@
-import { BookmarkIcon } from "@heroicons/react/24/outline";
-import { Button } from "../../../components/ui/Button";
+import { BookmarkIcon } from '@heroicons/react/24/outline';
+import { Button } from '../../../components/ui/Button';
 
 type FeaturedSaveActionProps = {
   canSaveCurrentPassage: boolean;
@@ -21,7 +21,7 @@ export function FeaturedSaveAction({
       onClick={onSaveCurrentPassage}
     >
       <BookmarkIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
-      {isCurrentPassageSaved ? "Saved" : "Save Passage"}
+      {isCurrentPassageSaved ? 'Saved' : 'Save Passage'}
     </Button>
   );
 }

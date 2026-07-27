@@ -1,9 +1,9 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import tseslint from 'typescript-eslint'
-import { defineConfig, globalIgnores } from 'eslint/config'
+import js from '@eslint/js';
+import globals from 'globals';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import tseslint from 'typescript-eslint';
+import { defineConfig, globalIgnores } from 'eslint/config';
 
 const featureNames = [
   'auth',
@@ -11,12 +11,12 @@ const featureNames = [
   'featured-passages',
   'practice',
   'saved-passages',
-]
+];
 
 const featureBoundaryConfigs = featureNames.map((featureName) => {
   const otherFeatureNames = featureNames
     .filter((otherFeatureName) => otherFeatureName !== featureName)
-    .join('|')
+    .join('|');
 
   return {
     files: [`src/features/${featureName}/**/*.{ts,tsx}`],
@@ -39,8 +39,8 @@ const featureBoundaryConfigs = featureNames.map((featureName) => {
         },
       ],
     },
-  }
-})
+  };
+});
 
 export default defineConfig([
   globalIgnores(['.vite', 'dist']),
@@ -70,7 +70,8 @@ export default defineConfig([
           patterns: [
             {
               regex: '^(?:@/|(?:\\.\\./)+)app(?:/|$)',
-              message: 'Pages cannot import app. The app owns routing and page composition.',
+              message:
+                'Pages cannot import app. The app owns routing and page composition.',
             },
           ],
         },
@@ -94,4 +95,4 @@ export default defineConfig([
       ],
     },
   },
-])
+]);

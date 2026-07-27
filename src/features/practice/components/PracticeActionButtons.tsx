@@ -2,9 +2,9 @@ import {
   ArrowPathIcon,
   ArrowRightIcon,
   FolderOpenIcon,
-} from "@heroicons/react/24/outline";
-import { Button } from "../../../components/ui/Button";
-import type { PracticeSource } from "../types/practice";
+} from '@heroicons/react/24/outline';
+import { Button } from '../../../components/ui/Button';
+import type { PracticeSource } from '../types/practice';
 
 type PracticeActionButtonsProps = {
   practiceSource: PracticeSource;
@@ -24,27 +24,18 @@ export function PracticeActionButtons({
 }: PracticeActionButtonsProps) {
   return (
     <>
-      {practiceSource === "featured" ? (
-        <Button
-          variant="primary"
-          onClick={onNextFeaturedPassage}
-        >
+      {practiceSource === 'featured' ? (
+        <Button variant="primary" onClick={onNextFeaturedPassage}>
           <ArrowRightIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
           Next Passage
         </Button>
       ) : (
-        <Button
-          variant="primary"
-          onClick={onOpenLibrary}
-        >
+        <Button variant="primary" onClick={onOpenLibrary}>
           <FolderOpenIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
           Manage Library
         </Button>
       )}
-      <Button
-        variant="ghost"
-        onClick={onReset}
-      >
+      <Button variant="ghost" onClick={onReset}>
         <ArrowPathIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
         Reset
       </Button>

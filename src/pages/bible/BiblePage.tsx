@@ -1,8 +1,14 @@
-import { BibleChapterReader } from "../../features/bible-reader/components/BibleChapterReader";
-import { BibleReaderControls } from "../../features/bible-reader/components/BibleReaderControls";
-import { BibleSaveDock, type BibleSaveFormProps } from "./components/BibleSaveDock";
-import type { BibleChapter, BookSummary, Translation } from "../../types/bible";
-import { formatChapterReference, formatSelectedVerseReference } from "../../utils/passageReference";
+import { BibleChapterReader } from '../../features/bible-reader/components/BibleChapterReader';
+import { BibleReaderControls } from '../../features/bible-reader/components/BibleReaderControls';
+import {
+  BibleSaveDock,
+  type BibleSaveFormProps,
+} from './components/BibleSaveDock';
+import type { BibleChapter, BookSummary, Translation } from '../../types/bible';
+import {
+  formatChapterReference,
+  formatSelectedVerseReference,
+} from '../../utils/passageReference';
 
 export type BiblePageProps = {
   bibleBooks: BookSummary[];
@@ -55,7 +61,7 @@ export function BiblePage({
           selectedVerseNumbers,
         )
       : formatChapterReference(selectedBibleBook.name, selectedBibleChapter)
-    : "Bible passage";
+    : 'Bible passage';
 
   return (
     <div className="grid gap-8">

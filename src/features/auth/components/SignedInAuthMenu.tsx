@@ -1,10 +1,10 @@
 import {
   ArrowRightStartOnRectangleIcon,
   ChartBarIcon,
-} from "@heroicons/react/24/outline";
-import { Link } from "react-router";
-import { Button } from "../../../components/ui/Button";
-import type { AuthSessionState } from "../hooks/useAuthSession";
+} from '@heroicons/react/24/outline';
+import { Link } from 'react-router';
+import { Button } from '../../../components/ui/Button';
+import type { AuthSessionState } from '../hooks/useAuthSession';
 
 type SignedInAuthMenuProps = {
   authSession: AuthSessionState;
@@ -24,7 +24,7 @@ export function SignedInAuthMenu({
           Signed in as
         </p>
         <p className="mt-1 truncate text-sm font-semibold text-ink">
-          {authSession.user?.email ?? "Signed in"}
+          {authSession.user?.email ?? 'Signed in'}
         </p>
         <p className="mt-2 text-sm text-ink-subtle">
           Saved passages sync to your account.
@@ -48,7 +48,10 @@ export function SignedInAuthMenu({
           onClose();
         }}
       >
-        <ArrowRightStartOnRectangleIcon aria-hidden="true" className="h-4 w-4" />
+        <ArrowRightStartOnRectangleIcon
+          aria-hidden="true"
+          className="h-4 w-4"
+        />
         Sign out
       </Button>
     </div>

@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState } from 'react';
 
 /**
  * Owns Bible-reader verse selection.
  * Click toggles individual verses; drag selection adds a continuous range.
  */
 export function useReaderSelection() {
-  const [selectedVerseNumbers, setSelectedVerseNumbers] = useState<number[]>([]);
+  const [selectedVerseNumbers, setSelectedVerseNumbers] = useState<number[]>(
+    [],
+  );
   const [focusSelectedVerseKey, setFocusSelectedVerseKey] = useState(0);
 
   function clearSelection() {
@@ -19,7 +21,9 @@ export function useReaderSelection() {
   function selectVerse(verseNumber: number) {
     setSelectedVerseNumbers((currentVerseNumbers) => {
       if (currentVerseNumbers.includes(verseNumber)) {
-        return currentVerseNumbers.filter((currentVerseNumber) => currentVerseNumber !== verseNumber);
+        return currentVerseNumbers.filter(
+          (currentVerseNumber) => currentVerseNumber !== verseNumber,
+        );
       }
 
       return [...currentVerseNumbers, verseNumber].sort(sortVerseNumbers);
@@ -35,7 +39,9 @@ export function useReaderSelection() {
     );
 
     setSelectedVerseNumbers((currentVerseNumbers) => {
-      return [...new Set([...currentVerseNumbers, ...verseRange])].sort(sortVerseNumbers);
+      return [...new Set([...currentVerseNumbers, ...verseRange])].sort(
+        sortVerseNumbers,
+      );
     });
   }
 

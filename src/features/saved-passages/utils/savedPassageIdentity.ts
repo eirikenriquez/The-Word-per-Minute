@@ -1,4 +1,4 @@
-import type { SavePassageInput } from "../types/savedPassage";
+import type { SavePassageInput } from '../types/savedPassage';
 
 /**
  * Creates a stable identity for the Bible passage itself.
@@ -9,7 +9,9 @@ export function getSavedPassageIdentity(passage: SavePassageInput) {
     passage.translationId,
     passage.bookId,
     passage.chapter,
-    passage.selectedVerses?.length ? passage.selectedVerses.join(",") : passage.startVerse,
-    passage.selectedVerses?.length ? "selected" : passage.endVerse,
-  ].join(":");
+    passage.selectedVerses?.length
+      ? passage.selectedVerses.join(',')
+      : passage.startVerse,
+    passage.selectedVerses?.length ? 'selected' : passage.endVerse,
+  ].join(':');
 }

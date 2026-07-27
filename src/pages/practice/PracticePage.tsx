@@ -1,12 +1,12 @@
-import { PracticeControls } from "../../features/practice/components/PracticeControls";
-import { PracticeLiveMetrics } from "../../features/practice/components/PracticeLiveMetrics";
-import { PracticePassageDisplay } from "../../features/practice/components/PracticePassageDisplay";
+import { PracticeControls } from '../../features/practice/components/PracticeControls';
+import { PracticeLiveMetrics } from '../../features/practice/components/PracticeLiveMetrics';
+import { PracticePassageDisplay } from '../../features/practice/components/PracticePassageDisplay';
 import type {
   PracticePassage,
   PracticePassageOption,
   PracticeSource,
   PracticeStatus,
-} from "../../features/practice/types/practice";
+} from '../../features/practice/types/practice';
 
 export type PracticePageProps = {
   accuracy: number;
@@ -91,14 +91,20 @@ export function PracticePage({
           accuracy={accuracy}
           attemptSaveError={attemptSaveError}
           canSaveReflection={canSaveReflection}
-          completionActionLabel={isPassageComplete && practiceSource === "featured" ? "Next Passage" : undefined}
-          completionMessage={
-            `You finished ${practiceTitle}.`
+          completionActionLabel={
+            isPassageComplete && practiceSource === 'featured'
+              ? 'Next Passage'
+              : undefined
           }
+          completionMessage={`You finished ${practiceTitle}.`}
           isComplete={isPassageComplete}
           isSavingReflection={isSavingReflection}
           isSignedIn={isSignedIn}
-          onCompletionAction={isPassageComplete && practiceSource === "featured" ? onNextFeaturedPassage : undefined}
+          onCompletionAction={
+            isPassageComplete && practiceSource === 'featured'
+              ? onNextFeaturedPassage
+              : undefined
+          }
           onSaveReflection={onSaveReflection}
           onTypingChange={onTypingChange}
           passage={passage}

@@ -1,5 +1,5 @@
-import { ArrowUpIcon } from "@heroicons/react/24/outline";
-import { useEffect, useState } from "react";
+import { ArrowUpIcon } from '@heroicons/react/24/outline';
+import { useEffect, useState } from 'react';
 
 type BackToTopButtonProps = {
   isEnabled: boolean;
@@ -23,9 +23,9 @@ export function BackToTopButton({ isEnabled }: BackToTopButtonProps) {
     }
 
     updateVisibility();
-    window.addEventListener("scroll", updateVisibility, { passive: true });
+    window.addEventListener('scroll', updateVisibility, { passive: true });
 
-    return () => window.removeEventListener("scroll", updateVisibility);
+    return () => window.removeEventListener('scroll', updateVisibility);
   }, [isEnabled]);
 
   if (!isEnabled) return null;
@@ -34,11 +34,11 @@ export function BackToTopButton({ isEnabled }: BackToTopButtonProps) {
     <button
       aria-label="Back to top"
       className={`fixed bottom-5 right-5 z-40 grid h-11 w-11 place-items-center rounded-full border border-line-strong bg-surface/90 text-ink-muted shadow-sm backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:border-accent-line hover:bg-accent-soft hover:text-accent-ink ${
-        isVisible ? "opacity-100" : "pointer-events-none opacity-0"
+        isVisible ? 'opacity-100' : 'pointer-events-none opacity-0'
       }`}
       tabIndex={isVisible ? 0 : -1}
       type="button"
-      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
     >
       <ArrowUpIcon aria-hidden="true" className="h-5 w-5" />
     </button>

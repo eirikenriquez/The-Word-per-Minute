@@ -1,4 +1,4 @@
-import type { PracticePassageOption, PracticeSource } from "../types/practice";
+import type { PracticePassageOption, PracticeSource } from '../types/practice';
 
 type SourcePickerProps = {
   practiceSource: PracticeSource;
@@ -20,19 +20,22 @@ export function SourcePicker({
 }: SourcePickerProps) {
   return (
     <div className="grid gap-1">
-      <span className="text-sm font-medium text-ink-muted">Practice source</span>
+      <span className="text-sm font-medium text-ink-muted">
+        Practice source
+      </span>
       <div className="inline-flex w-fit gap-1">
         <SourceButton
-          isSelected={practiceSource === "featured"}
+          isSelected={practiceSource === 'featured'}
           label="Featured"
           onSelect={onSelectFeaturedPractice}
         />
         <SourceButton
           disabled={savedPassageOptions.length === 0}
-          isSelected={practiceSource === "saved"}
+          isSelected={practiceSource === 'saved'}
           label="Saved"
           onSelect={() => {
-            const passageId = selectedSavedPassageId || savedPassageOptions[0]?.id;
+            const passageId =
+              selectedSavedPassageId || savedPassageOptions[0]?.id;
             if (passageId) onSelectSavedPractice(passageId);
           }}
         />
@@ -48,13 +51,18 @@ type SourceButtonProps = {
   onSelect: () => void;
 };
 
-function SourceButton({ disabled = false, isSelected, label, onSelect }: SourceButtonProps) {
+function SourceButton({
+  disabled = false,
+  isSelected,
+  label,
+  onSelect,
+}: SourceButtonProps) {
   return (
     <button
       className={`rounded-md px-3 py-2 text-sm font-medium transition ${
         isSelected
-          ? "bg-accent-soft text-accent-ink"
-          : "text-ink-subtle hover:bg-accent-soft hover:text-accent-ink"
+          ? 'bg-accent-soft text-accent-ink'
+          : 'text-ink-subtle hover:bg-accent-soft hover:text-accent-ink'
       } disabled:cursor-not-allowed disabled:text-ink-subtle`}
       disabled={disabled}
       type="button"

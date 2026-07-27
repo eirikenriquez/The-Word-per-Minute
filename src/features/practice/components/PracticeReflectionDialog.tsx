@@ -1,6 +1,6 @@
-import { Dialog, DialogPanel, DialogTitle } from "@headlessui/react";
-import { useRef, useState } from "react";
-import { Button } from "../../../components/ui/Button";
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
+import { useRef, useState } from 'react';
+import { Button } from '../../../components/ui/Button';
 
 type PracticeReflectionDialogProps = {
   attemptSaveErrorMessage: string | null;
@@ -22,7 +22,7 @@ export function PracticeReflectionDialog({
   onSaveReflection,
   reflectionError,
 }: PracticeReflectionDialogProps) {
-  const [reflectionText, setReflectionText] = useState("");
+  const [reflectionText, setReflectionText] = useState('');
   const [hasSavedReflection, setHasSavedReflection] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const reflectionInputRef = useRef<HTMLTextAreaElement>(null);
@@ -32,7 +32,7 @@ export function PracticeReflectionDialog({
     if (!didSave) return;
 
     setHasSavedReflection(true);
-    setReflectionText("");
+    setReflectionText('');
     setIsOpen(false);
   }
 
@@ -61,7 +61,8 @@ export function PracticeReflectionDialog({
               What stood out to you?
             </DialogTitle>
             <p className="text-sm text-ink-muted">
-              Save a short reflection from this passage to your practice history.
+              Save a short reflection from this passage to your practice
+              history.
             </p>
           </div>
 
@@ -69,11 +70,15 @@ export function PracticeReflectionDialog({
             <span className="sr-only">Reflection</span>
             <textarea
               className="h-32 resize-none rounded-md border border-line-strong bg-canvas p-3 text-sm text-ink outline-none transition placeholder:text-ink-subtle focus:border-accent focus:ring-2 focus:ring-accent-soft disabled:bg-surface-muted disabled:text-ink-subtle"
-              disabled={!isSignedIn || hasSavedReflection || Boolean(attemptSaveErrorMessage)}
+              disabled={
+                !isSignedIn ||
+                hasSavedReflection ||
+                Boolean(attemptSaveErrorMessage)
+              }
               placeholder={
                 isSignedIn
-                  ? "Write a short reflection from this passage..."
-                  : "Create an account to keep reflections with your practice history."
+                  ? 'Write a short reflection from this passage...'
+                  : 'Create an account to keep reflections with your practice history.'
               }
               ref={reflectionInputRef}
               value={reflectionText}
@@ -100,22 +105,35 @@ export function PracticeReflectionDialog({
                   variant="secondary"
                   onClick={saveReflection}
                 >
-                  {isSavingReflection ? "Saving..." : hasSavedReflection ? "Saved" : "Save reflection"}
+                  {isSavingReflection
+                    ? 'Saving...'
+                    : hasSavedReflection
+                      ? 'Saved'
+                      : 'Save reflection'}
                 </Button>
               </div>
               {!canSaveReflection && !attemptSaveErrorMessage && (
-                <p className="text-sm text-ink-subtle">Saving your practice history...</p>
+                <p className="text-sm text-ink-subtle">
+                  Saving your practice history...
+                </p>
               )}
               {attemptSaveErrorMessage && (
-                <p className="text-sm text-red-700 dark:text-red-300" role="alert">
+                <p
+                  className="text-sm text-red-700 dark:text-red-300"
+                  role="alert"
+                >
                   {attemptSaveErrorMessage}
                 </p>
               )}
               {hasSavedReflection && (
-                <p className="text-sm font-medium text-accent-ink">Reflection saved.</p>
+                <p className="text-sm font-medium text-accent-ink">
+                  Reflection saved.
+                </p>
               )}
               {reflectionError && (
-                <p className="text-sm text-red-700 dark:text-red-300">{reflectionError}</p>
+                <p className="text-sm text-red-700 dark:text-red-300">
+                  {reflectionError}
+                </p>
               )}
             </div>
           ) : (

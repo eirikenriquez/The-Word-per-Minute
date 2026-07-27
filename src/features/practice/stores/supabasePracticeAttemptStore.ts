@@ -1,25 +1,33 @@
-import { supabase } from "../../../lib/supabase/client";
-import type { Database } from "../../../lib/supabase/database.types";
+import { supabase } from '../../../lib/supabase/client';
+import type { Database } from '../../../lib/supabase/database.types';
 import type {
   PracticeAttempt,
   PracticeAttemptPage,
   PracticeAttemptSummary,
   SavePracticeAttemptInput,
-} from "../types/practice";
-import type { PracticeAttemptStore } from "./practiceAttemptStore";
+} from '../types/practice';
+import type { PracticeAttemptStore } from './practiceAttemptStore';
 
-type PracticeAttemptRow = Database["public"]["Tables"]["practice_attempts"]["Row"];
-type PracticeAttemptInsert = Database["public"]["Tables"]["practice_attempts"]["Insert"];
-type PracticeAttemptUpdate = Database["public"]["Tables"]["practice_attempts"]["Update"];
-type PracticeAttemptSummaryRow = Database["public"]["Functions"]["get_practice_attempt_summary"]["Returns"][number];
+type PracticeAttemptRow =
+  Database['public']['Tables']['practice_attempts']['Row'];
+type PracticeAttemptInsert =
+  Database['public']['Tables']['practice_attempts']['Insert'];
+type PracticeAttemptUpdate =
+  Database['public']['Tables']['practice_attempts']['Update'];
+type PracticeAttemptSummaryRow =
+  Database['public']['Functions']['get_practice_attempt_summary']['Returns'][number];
 
 const PRACTICE_ATTEMPT_COLUMNS =
-  "id,user_id,saved_passage_id,featured_passage_id,passage_reference,translation_id,book_id,chapter,start_verse,end_verse,selected_verses,duration_seconds,mistake_count,typed_character_count,wpm,accuracy,reflection,completed_at";
+  'id,user_id,saved_passage_id,featured_passage_id,passage_reference,translation_id,book_id,chapter,start_verse,end_verse,selected_verses,duration_seconds,mistake_count,typed_character_count,wpm,accuracy,reflection,completed_at';
 
-export function createSupabasePracticeAttemptStore(userId: string): PracticeAttemptStore {
+export function createSupabasePracticeAttemptStore(
+  userId: string,
+): PracticeAttemptStore {
   return {
     async getSummary() {
-      const { data, error } = await supabase.rpc("get_practice_attempt_summary");
+      const { data, error } = await supabase.rpc(
+        'get_practice_attempt_summary',
+      );
 
       if (error) throw error;
 
@@ -28,10 +36,10 @@ export function createSupabasePracticeAttemptStore(userId: string): PracticeAtte
 
     async listPage(offset = 0, limit = 20): Promise<PracticeAttemptPage> {
       const { data, error } = await supabase
-        .from("practice_attempts")
+        .from('practice_attempts')
         .select(PRACTICE_ATTEMPT_COLUMNS)
-        .eq("user_id", userId)
-        .order("completed_at", { ascending: false })
+        .eq('user_id', userId)
+        .order('completed_at', { ascending: false })
         .range(offset, offset + limit);
 
       if (error) throw error;
@@ -46,7 +54,7 @@ export function createSupabasePracticeAttemptStore(userId: string): PracticeAtte
 
     async save(input: SavePracticeAttemptInput) {
       const { data, error } = await supabase
-        .from("practice_attempts")
+        .from('practice_attempts')
         .insert(mapSavePracticeAttemptInput(userId, input))
         .select(PRACTICE_ATTEMPT_COLUMNS)
         .single();
@@ -62,10 +70,10 @@ export function createSupabasePracticeAttemptStore(userId: string): PracticeAtte
       };
 
       const { data, error } = await supabase
-        .from("practice_attempts")
+        .from('practice_attempts')
         .update(rowUpdate)
-        .eq("id", attemptId)
-        .eq("user_id", userId)
+        .eq('id', attemptId)
+        .eq('user_id', userId)
         .select(PRACTICE_ATTEMPT_COLUMNS)
         .maybeSingle();
 
@@ -123,7 +131,9 @@ function mapPracticeAttemptRow(row: PracticeAttemptRow): PracticeAttempt {
     chapter: row.chapter,
     startVerse: row.start_verse,
     endVerse: row.end_verse,
-    selectedVerses: row.selected_verses.length ? row.selected_verses : undefined,
+    selectedVerses: row.selected_verses.length
+      ? row.selected_verses
+      : undefined,
     durationSeconds: row.duration_seconds,
     mistakeCount: row.mistake_count,
     typedCharacterCount: row.typed_character_count,

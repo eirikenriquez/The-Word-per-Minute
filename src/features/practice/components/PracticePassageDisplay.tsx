@@ -1,9 +1,9 @@
-import { Transition } from "@headlessui/react";
-import { ArrowRightIcon } from "@heroicons/react/24/outline";
-import { Button } from "../../../components/ui/Button";
-import type { PracticePassage } from "../types/practice";
-import { PracticeReflectionDialog } from "./PracticeReflectionDialog";
-import { PracticeTypingSurface } from "./PracticeTypingSurface";
+import { Transition } from '@headlessui/react';
+import { ArrowRightIcon } from '@heroicons/react/24/outline';
+import { Button } from '../../../components/ui/Button';
+import type { PracticePassage } from '../types/practice';
+import { PracticeReflectionDialog } from './PracticeReflectionDialog';
+import { PracticeTypingSurface } from './PracticeTypingSurface';
 
 type PracticePassageDisplayProps = {
   accuracy: number;
@@ -53,7 +53,8 @@ export function PracticePassageDisplay({
     <section className="grid gap-4">
       <div className="flex flex-col gap-1">
         <p className="text-sm font-semibold text-ink-muted">
-          {passage.ref} <span className="text-ink-subtle">({translationName})</span>
+          {passage.ref}{' '}
+          <span className="text-ink-subtle">({translationName})</span>
         </p>
         <p className="text-sm text-ink-subtle">
           Click the passage and type what you see.
@@ -92,7 +93,8 @@ export function PracticePassageDisplay({
                 <strong className="font-semibold text-ink">{wpm}</strong> WPM
               </p>
               <p>
-                <strong className="font-semibold text-ink">{accuracy}%</strong> accuracy
+                <strong className="font-semibold text-ink">{accuracy}%</strong>{' '}
+                accuracy
               </p>
             </div>
 
@@ -108,14 +110,20 @@ export function PracticePassageDisplay({
               />
               {completionActionLabel && onCompletionAction && (
                 <Button variant="primary" onClick={onCompletionAction}>
-                  <ArrowRightIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
+                  <ArrowRightIcon
+                    aria-hidden="true"
+                    className="h-4 w-4 shrink-0"
+                  />
                   {completionActionLabel}
                 </Button>
               )}
             </div>
 
             {attemptSaveErrorMessage && (
-              <p className="text-sm text-red-700 dark:text-red-300" role="alert">
+              <p
+                className="text-sm text-red-700 dark:text-red-300"
+                role="alert"
+              >
                 {attemptSaveErrorMessage}
               </p>
             )}
