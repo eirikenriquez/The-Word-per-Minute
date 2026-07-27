@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
 import { DEFAULT_SAVED_CATEGORY } from "../constants/savedPassageCategories";
-import type { AppMode } from "../../../types/app";
 import type { SavedPassage, SavePassageInput } from "../types/savedPassage";
 
 type UseSavePassageFormParams = {
-  appMode: AppMode;
   isPassageSaved: (input: SavePassageInput | null) => boolean;
   saveInput: SavePassageInput | null;
   savePassage: (input: SavePassageInput) => SavedPassage | null | Promise<SavedPassage | null>;
@@ -15,7 +13,6 @@ type UseSavePassageFormParams = {
  * Featured passages keep their curated metadata; Bible selections can be renamed before saving.
  */
 export function useSavePassageForm({
-  appMode,
   isPassageSaved,
   saveInput,
   savePassage,
@@ -35,7 +32,7 @@ export function useSavePassageForm({
     if (!saveInput) return false;
 
     const passageToSave =
-      appMode === "bible"
+      saveInput.source === "bible"
         ? {
             ...saveInput,
             category: saveCategory,

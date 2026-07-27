@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import type { AppHeaderProps } from "../components/AppHeader";
 import type { AppRoutesProps } from "../components/AppRoutes";
 import { useAuthSession } from "../../features/auth/hooks/useAuthSession";
@@ -8,9 +8,12 @@ import { useFeaturedPassages } from "../../features/featured-passages/hooks/useF
 import { usePracticePassage } from "../../features/practice/hooks/usePracticePassage";
 import { usePracticeAttempts } from "../../features/practice/hooks/usePracticeAttempts";
 import { usePracticeSession } from "../../features/practice/hooks/usePracticeSession";
-import { usePassageSaveInput } from "../../features/saved-passages/hooks/usePassageSaveInput";
 import { useSavePassageForm } from "../../features/saved-passages/hooks/useSavePassageForm";
 import { useSavedPassages } from "../../features/saved-passages/hooks/useSavedPassages";
+import {
+  createBiblePassageSaveInput,
+  createFeaturedPassageSaveInput,
+} from "../../features/saved-passages/utils/passageSaveInput";
 import type { PracticeSource } from "../../types/app";
 import type { PracticeCompletionResult } from "../../features/practice/types/practice";
 import { useAppDisplayState } from "../hooks/useAppDisplayState";
@@ -130,18 +133,38 @@ export function useAppController() {
       selectedTranslationId: bibleLibrary.selectedTranslationId,
       translations: bibleLibrary.translations,
     });
-  const saveInput = usePassageSaveInput({
+  const saveInput = useMemo(() => {
+    if (appMode === "practice" && practiceSource === "featured") {
+      return createFeaturedPassageSaveInput(
+        featuredLibrary.passageResponse,
+        savedPassageCategories,
+      );
+    }
+
+    if (appMode === "bible") {
+      return createBiblePassageSaveInput({
+        bibleChapter: bibleLibrary.chapter,
+        selectedBook: bibleLibrary.selectedBook,
+        selectedChapter: bibleLibrary.selectedChapter,
+        selectedTranslationId: bibleLibrary.selectedTranslationId,
+        selectedVerseNumbers: readerSelection.selectedVerseNumbers,
+        translations: bibleLibrary.translations,
+      });
+    }
+
+    return null;
+  }, [
     appMode,
-    bibleChapter: bibleLibrary.chapter,
-    featuredPassageResponse: featuredLibrary.passageResponse,
+    bibleLibrary.chapter,
+    bibleLibrary.selectedBook,
+    bibleLibrary.selectedChapter,
+    bibleLibrary.selectedTranslationId,
+    bibleLibrary.translations,
+    featuredLibrary.passageResponse,
     practiceSource,
+    readerSelection.selectedVerseNumbers,
     savedPassageCategories,
-    selectedBook: bibleLibrary.selectedBook,
-    selectedChapter: bibleLibrary.selectedChapter,
-    selectedTranslationId: bibleLibrary.selectedTranslationId,
-    selectedVerseNumbers: readerSelection.selectedVerseNumbers,
-    translations: bibleLibrary.translations,
-  });
+  ]);
   const {
     isCurrentPassageSaved,
     saveCategory,
@@ -150,7 +173,6 @@ export function useAppController() {
     setSaveCategory,
     setSaveTitle,
   } = useSavePassageForm({
-    appMode,
     isPassageSaved: savedLibrary.isPassageSaved,
     saveInput,
     savePassage: savedLibrary.savePassage,
