@@ -25,7 +25,6 @@ import {
   createBiblePageProps,
   createLibraryPageProps,
   createPracticePageProps,
-  createProfilePageProps,
 } from './createPageProps';
 
 /**
@@ -291,10 +290,6 @@ export function useAppController() {
       translationName,
       onSaveCurrentPassage: saveCurrentPassage,
       onSaveReflection: savePracticeReflection,
-    }),
-    profilePageProps: createProfilePageProps({
-      authSession,
-      practiceAttempts,
     }),
   };
 

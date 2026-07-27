@@ -2,7 +2,9 @@ import { createBrowserRouter } from 'react-router';
 import App from '../../App';
 import { AppRouteErrorBoundary } from '../components/AppRouteErrorBoundary';
 import { AppLayout } from '../layouts/AppLayout';
+import { APP_ROUTE_PATHS } from './appRoutePaths';
 import { HomeRoute } from './HomeRoute';
+import { ProfileRoute } from './ProfileRoute';
 
 /**
  * Browser router created once outside the React render tree.
@@ -19,6 +21,10 @@ export const appRouter = createBrowserRouter([
       {
         index: true,
         Component: HomeRoute,
+      },
+      {
+        path: APP_ROUTE_PATHS.profile,
+        Component: ProfileRoute,
       },
       {
         path: '*',

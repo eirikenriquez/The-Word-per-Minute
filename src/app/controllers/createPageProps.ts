@@ -5,13 +5,11 @@ import type { useSavedPassages } from '../../features/saved-passages/hooks/useSa
 import type { BiblePageProps } from '../../pages/bible/BiblePage';
 import type { LibraryPageProps } from '../../pages/library/LibraryPage';
 import type { PracticePageProps } from '../../pages/practice/PracticePage';
-import type { ProfilePageProps } from '../../pages/profile/ProfilePage';
 import type {
   PracticePassage,
   PracticeSource,
 } from '@/features/practice/types/practice';
 import type { createAppActions } from './createAppActions';
-import type { usePracticeAttempts } from '../../features/practice/hooks/usePracticeAttempts';
 
 type AppActions = ReturnType<typeof createAppActions>;
 
@@ -135,33 +133,5 @@ export function createPracticePageProps({
     onSelectFeaturedPractice: appActions.selectFeaturedPractice,
     onSelectSavedPassage: appActions.selectSavedPractice,
     onTypingChange: practiceSession.handleTyping,
-  };
-}
-
-export function createProfilePageProps({
-  authSession,
-  practiceAttempts,
-}: {
-  authSession: {
-    isSignedIn: boolean;
-    user?: {
-      email?: string;
-    } | null;
-  };
-  practiceAttempts: ReturnType<typeof usePracticeAttempts>;
-}): ProfilePageProps {
-  return {
-    hasMoreRecentAttempts: practiceAttempts.hasMoreAttempts,
-    isLoadingMoreRecentAttempts: practiceAttempts.isLoadingMore,
-    isLoadingPracticeSummary: practiceAttempts.isLoadingSummary,
-    isLoadingRecentAttempts: practiceAttempts.isLoading,
-    isSignedIn: authSession.isSignedIn,
-    practiceSummary: practiceAttempts.summary,
-    practiceSummaryError: practiceAttempts.summaryError,
-    recentAttemptsError: practiceAttempts.historyError,
-    recentAttemptsLoadMoreError: practiceAttempts.loadMoreError,
-    recentPracticeAttempts: practiceAttempts.recentAttempts,
-    userEmail: authSession.user?.email,
-    onLoadMoreRecentAttempts: practiceAttempts.loadMoreAttempts,
   };
 }
