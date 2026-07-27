@@ -4,7 +4,6 @@ import type { useBibleRouteSelection } from '../hooks/useBibleRouteSelection';
 import type { usePracticeSession } from '../../features/practice/hooks/usePracticeSession';
 import type { useSavedPassages } from '../../features/saved-passages/hooks/useSavedPassages';
 import type { BiblePageProps } from '../../pages/bible/BiblePage';
-import type { LibraryPageProps } from '../../pages/library/LibraryPage';
 import type { PracticePageProps } from '../../pages/practice/PracticePage';
 import type {
   PracticePassage,
@@ -45,23 +44,6 @@ export function createBiblePageProps({
     onSelectReaderRange: bibleRouteSelection.selectReaderRange,
     onSelectReaderVerse: bibleRouteSelection.selectReaderVerse,
     onSelectTranslation: bibleRouteSelection.selectReaderTranslation,
-  };
-}
-
-export function createLibraryPageProps({
-  appActions,
-  savedLibrary,
-}: {
-  appActions: AppActions;
-  savedLibrary: ReturnType<typeof useSavedPassages>;
-}): LibraryPageProps {
-  return {
-    errorMessage: savedLibrary.listError ?? savedLibrary.mutationError,
-    savedPassages: savedLibrary.savedPassages,
-    onPracticeSavedPassage: appActions.selectSavedPractice,
-    onReadSavedPassage: appActions.readSavedPassage,
-    onRemoveSavedPassage: appActions.removeSavedPractice,
-    onUpdateSavedPassage: savedLibrary.updatePassage,
   };
 }
 

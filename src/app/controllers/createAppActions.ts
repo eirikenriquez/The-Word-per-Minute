@@ -8,7 +8,6 @@ import type { PracticeRouteState } from '../routes/practiceRouteState';
 type CreateAppActionsParams = {
   featuredPassages: FeaturedPassage[];
   featuredSelectedPassageId: string;
-  removeSavedPassage: (passageId: string) => void | Promise<void>;
   resetPractice: () => void;
   savedPassages: SavedPassage[];
   selectBibleRoute: (routeState: BibleRouteState) => void;
@@ -25,7 +24,6 @@ type CreateAppActionsParams = {
 export function createAppActions({
   featuredPassages,
   featuredSelectedPassageId,
-  removeSavedPassage,
   resetPractice,
   savedPassages,
   selectBibleRoute,
@@ -111,11 +109,6 @@ export function createAppActions({
     resetPractice();
   }
 
-  async function removeSavedPractice(passageId: string) {
-    await removeSavedPassage(passageId);
-    resetPractice();
-  }
-
   function randomFeaturedReaderPassage() {
     const passage =
       featuredPassages[Math.floor(Math.random() * featuredPassages.length)];
@@ -127,26 +120,8 @@ export function createAppActions({
     );
   }
 
-  function readSavedPassage(passageId: string) {
-    const passage = savedPassages.find(
-      (savedPassage) => savedPassage.id === passageId,
-    );
-    if (!passage) return;
-
-    const selectedVerses = passage.selectedVerses?.length
-      ? passage.selectedVerses
-      : passage.source === 'featured'
-        ? createVerseRange(passage.startVerse, passage.endVerse)
-        : [];
-
-    openReaderPassage(passage, selectedVerses);
-  }
-
   function openReaderPassage(
-    passage: Pick<
-      SavedPassage | FeaturedPassage,
-      'bookId' | 'chapter' | 'translationId'
-    >,
+    passage: Pick<FeaturedPassage, 'bookId' | 'chapter' | 'translationId'>,
     selectedVerses: number[],
   ) {
     selectBibleRoute({
@@ -164,8 +139,6 @@ export function createAppActions({
     openLibrary,
     openProfile,
     randomFeaturedReaderPassage,
-    readSavedPassage,
-    removeSavedPractice,
     selectFeaturedPractice,
     selectSavedPractice,
     startFeaturedCategory,

@@ -4,6 +4,7 @@ import { AppRouteErrorBoundary } from '../components/AppRouteErrorBoundary';
 import { AppLayout } from '../layouts/AppLayout';
 import { APP_ROUTE_PATHS } from './appRoutePaths';
 import { HomeRoute } from './HomeRoute';
+import { LibraryRoute } from './LibraryRoute';
 import { ProfileRoute } from './ProfileRoute';
 
 /**
@@ -25,6 +26,10 @@ export const appRouter = createBrowserRouter([
       {
         path: APP_ROUTE_PATHS.profile,
         Component: ProfileRoute,
+      },
+      {
+        path: APP_ROUTE_PATHS.library,
+        Component: LibraryRoute,
       },
       {
         path: '*',

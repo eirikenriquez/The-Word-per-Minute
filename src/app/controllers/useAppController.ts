@@ -24,7 +24,6 @@ import { usePracticeRouteSelection } from '../hooks/usePracticeRouteSelection';
 import { createAppActions } from './createAppActions';
 import {
   createBiblePageProps,
-  createLibraryPageProps,
   createPracticePageProps,
 } from './createPageProps';
 
@@ -236,7 +235,6 @@ export function useAppController() {
   const appActions = createAppActions({
     featuredPassages: featuredLibrary.passages,
     featuredSelectedPassageId: featuredLibrary.selectedPassageId,
-    removeSavedPassage: savedLibrary.removePassage,
     resetPractice: resetPracticeSession,
     savedPassages: savedLibrary.savedPassages,
     selectBibleRoute: bibleRouteSelection.selectBibleRoute,
@@ -278,10 +276,6 @@ export function useAppController() {
         onSaveCurrentPassage: saveCurrentPassage,
         onSaveTitleChange: setSaveTitle,
       },
-    }),
-    libraryPageProps: createLibraryPageProps({
-      appActions,
-      savedLibrary,
     }),
     practicePageProps: createPracticePageProps({
       appActions,
