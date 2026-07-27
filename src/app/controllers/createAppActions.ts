@@ -1,25 +1,24 @@
-import type { PracticeSource } from '@/features/practice/types/practice';
 import type { AppMode } from '../../types/app';
 import type { FeaturedPassage } from '../../features/featured-passages/types/featuredPassage';
 import type { SavedPassage } from '../../features/saved-passages/types/savedPassage';
+import type { PracticeRouteState } from '../routes/practiceRouteState';
 
 type CreateAppActionsParams = {
   clearReaderSelection: () => void;
+  featuredPassages: FeaturedPassage[];
+  featuredSelectedPassageId: string;
   focusSelectedVerses: () => void;
   removeSavedPassage: (passageId: string) => void | Promise<void>;
   resetPractice: () => void;
   savedPassages: SavedPassage[];
   selectBibleBook: (bookId: string) => void;
   selectBibleChapter: (chapterNumber: number) => void;
-  selectFeaturedPassage: (passageId: string) => void;
-  selectRandomFeaturedPassage: () => void;
+  selectPracticeRoute: (routeState: PracticeRouteState) => void;
   selectSavedPassage: (passageId: string) => void;
   selectTranslation: (translationId: string) => void;
   selectedSavedPassageId: string;
   setAppMode: (mode: AppMode) => void;
-  setPracticeSource: (source: PracticeSource) => void;
   setSelectedVerseNumbers: (verseNumbers: number[]) => void;
-  featuredPassages: FeaturedPassage[];
 };
 
 /**
@@ -29,19 +28,18 @@ type CreateAppActionsParams = {
 export function createAppActions({
   clearReaderSelection,
   featuredPassages,
+  featuredSelectedPassageId,
   focusSelectedVerses,
   removeSavedPassage,
   resetPractice,
   savedPassages,
   selectBibleBook,
   selectBibleChapter,
-  selectFeaturedPassage,
-  selectRandomFeaturedPassage,
+  selectPracticeRoute,
   selectSavedPassage,
   selectTranslation,
   selectedSavedPassageId,
   setAppMode,
-  setPracticeSource,
   setSelectedVerseNumbers,
 }: CreateAppActionsParams) {
   function openBible() {
@@ -67,9 +65,14 @@ export function createAppActions({
   }
 
   function startFeaturedPractice() {
-    selectRandomFeaturedPassage();
-    setPracticeSource('featured');
-    setAppMode('practice');
+    const passage = getRandomFeaturedPassage(
+      featuredPassages,
+      featuredSelectedPassageId,
+    );
+    selectPracticeRoute({
+      passageId: passage?.id ?? null,
+      source: 'featured',
+    });
     resetPractice();
   }
 
@@ -81,29 +84,38 @@ export function createAppActions({
       categoryPassages[Math.floor(Math.random() * categoryPassages.length)];
     if (!passage) return;
 
-    selectFeaturedPassage(passage.id);
-    setPracticeSource('featured');
-    setAppMode('practice');
+    selectPracticeRoute({
+      passageId: passage.id,
+      source: 'featured',
+    });
     resetPractice();
   }
 
   function nextFeaturedPassage() {
-    selectRandomFeaturedPassage();
-    setPracticeSource('featured');
-    setAppMode('practice');
+    const passage = getRandomFeaturedPassage(
+      featuredPassages,
+      featuredSelectedPassageId,
+    );
+    selectPracticeRoute({
+      passageId: passage?.id ?? null,
+      source: 'featured',
+    });
     resetPractice();
   }
 
   function selectFeaturedPractice() {
-    setPracticeSource('featured');
-    setAppMode('practice');
+    selectPracticeRoute({
+      passageId: featuredSelectedPassageId || null,
+      source: 'featured',
+    });
     resetPractice();
   }
 
   function selectSavedPractice(passageId: string) {
-    selectSavedPassage(passageId);
-    setPracticeSource('saved');
-    setAppMode('practice');
+    selectPracticeRoute({
+      passageId,
+      source: 'saved',
+    });
     resetPractice();
   }
 
@@ -208,4 +220,17 @@ function createVerseRange(startVerse: number, endVerse: number) {
     { length: endVerse - startVerse + 1 },
     (_, index) => startVerse + index,
   );
+}
+
+function getRandomFeaturedPassage(
+  passages: FeaturedPassage[],
+  currentPassageId: string,
+) {
+  const otherPassages = passages.filter(
+    (passage) => passage.id !== currentPassageId,
+  );
+  const availablePassages = otherPassages.length ? otherPassages : passages;
+  return availablePassages[
+    Math.floor(Math.random() * availablePassages.length)
+  ];
 }

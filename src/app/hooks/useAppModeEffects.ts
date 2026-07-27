@@ -9,10 +9,8 @@ type UseAppModeEffectsParams = {
   featuredSelectedPassageId: string;
   practiceSource: PracticeSource;
   resetPractice: () => void;
-  savedPassageCount: number;
   savedSelectedPassageId: string;
   selectedVerseNumbers: number[];
-  setPracticeSource: (source: PracticeSource) => void;
 };
 
 /**
@@ -26,17 +24,9 @@ export function useAppModeEffects({
   featuredSelectedPassageId,
   practiceSource,
   resetPractice,
-  savedPassageCount,
   savedSelectedPassageId,
   selectedVerseNumbers,
-  setPracticeSource,
 }: UseAppModeEffectsParams) {
-  useEffect(() => {
-    if (practiceSource === 'saved' && !savedPassageCount) {
-      setPracticeSource('featured');
-    }
-  }, [practiceSource, savedPassageCount, setPracticeSource]);
-
   useEffect(() => {
     resetPractice();
   }, [

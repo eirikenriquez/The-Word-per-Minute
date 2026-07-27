@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { PassageResponse } from '../../../types/passage';
 import { getErrorMessage } from '../../../utils/errors';
 import { featuredPassageService } from '../api/featuredPassageService';
@@ -74,13 +74,9 @@ export function useFeaturedPassages() {
     };
   }, [selectedPassageId]);
 
-  function selectPassage(passageId: string) {
+  const selectPassage = useCallback((passageId: string) => {
     setSelectedPassageId(passageId);
-  }
-
-  function selectRandomPassage() {
-    setSelectedPassageId(getRandomPassageId(passages, selectedPassageId));
-  }
+  }, []);
 
   return {
     error,
@@ -88,7 +84,6 @@ export function useFeaturedPassages() {
     passageResponse,
     passages,
     selectPassage,
-    selectRandomPassage,
     selectedPassage,
     selectedPassageId,
   };

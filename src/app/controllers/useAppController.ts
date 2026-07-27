@@ -15,14 +15,12 @@ import {
   createBiblePassageSaveInput,
   createFeaturedPassageSaveInput,
 } from '../../features/saved-passages/utils/passageSaveInput';
-import type {
-  PracticeCompletionResult,
-  PracticeSource,
-} from '@/features/practice/types/practice';
+import type { PracticeCompletionResult } from '@/features/practice/types/practice';
 import { useAppDisplayState } from '../hooks/useAppDisplayState';
 import { useAppModeEffects } from '../hooks/useAppModeEffects';
 import { useAppNavigation } from '../hooks/useAppNavigation';
 import { usePassageCategories } from '../hooks/usePassageCategories';
+import { usePracticeRouteSelection } from '../hooks/usePracticeRouteSelection';
 import { useTheme } from '../hooks/useTheme';
 import { createAppActions } from './createAppActions';
 import {
@@ -42,8 +40,6 @@ export function useAppController() {
   const [completedPracticeAttemptId, setCompletedPracticeAttemptId] = useState<
     string | null
   >(null);
-  const [practiceSource, setPracticeSource] =
-    useState<PracticeSource>('featured');
   const { theme, toggleTheme } = useTheme();
   const authSession = useAuth();
   const { openSignUpMenu } = useAuthMenu();
@@ -60,6 +56,16 @@ export function useAppController() {
   const savedPassageCount = savedLibrary.savedPassages.length;
   const { featuredHomeCategories, savedPassageCategories } =
     usePassageCategories(featuredLibrary.passages);
+  const { practiceSource, selectPracticeRoute } = usePracticeRouteSelection({
+    appMode,
+    featuredPassages: featuredLibrary.passages,
+    isSavedPassageListLoading: savedLibrary.isLoading,
+    savedPassages: savedLibrary.savedPassages,
+    selectedFeaturedPassageId: featuredLibrary.selectedPassageId,
+    selectedSavedPassageId: savedLibrary.selectedSavedPassageId,
+    selectFeaturedPassage: featuredLibrary.selectPassage,
+    selectSavedPassage: savedLibrary.selectSavedPassage,
+  });
 
   const practicePassage = usePracticePassage({
     enabled: appMode === 'practice',
@@ -214,27 +220,24 @@ export function useAppController() {
     featuredSelectedPassageId: featuredLibrary.selectedPassageId,
     practiceSource,
     resetPractice: resetPracticeSession,
-    savedPassageCount,
     savedSelectedPassageId: savedLibrary.selectedSavedPassageId,
     selectedVerseNumbers: readerSelection.selectedVerseNumbers,
-    setPracticeSource,
   });
   const appActions = createAppActions({
     clearReaderSelection: readerSelection.clearSelection,
     featuredPassages: featuredLibrary.passages,
+    featuredSelectedPassageId: featuredLibrary.selectedPassageId,
     focusSelectedVerses: readerSelection.focusSelectedVerses,
     removeSavedPassage: savedLibrary.removePassage,
     resetPractice: resetPracticeSession,
     savedPassages: savedLibrary.savedPassages,
     selectBibleBook: bibleLibrary.selectBook,
     selectBibleChapter: bibleLibrary.selectChapter,
-    selectFeaturedPassage: featuredLibrary.selectPassage,
-    selectRandomFeaturedPassage: featuredLibrary.selectRandomPassage,
+    selectPracticeRoute,
     selectSavedPassage: savedLibrary.selectSavedPassage,
     selectTranslation: bibleLibrary.selectTranslation,
     selectedSavedPassageId: savedLibrary.selectedSavedPassageId,
     setAppMode: selectAppMode,
-    setPracticeSource,
     setSelectedVerseNumbers: readerSelection.setSelectedVerseNumbers,
   });
 

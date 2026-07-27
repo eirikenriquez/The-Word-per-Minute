@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   createPracticePath,
   readPracticeRouteState,
+  resolvePracticeRouteState,
 } from './practiceRouteState';
 
 describe('Practice route state', () => {
@@ -71,5 +72,97 @@ describe('Practice route state', () => {
         source: 'featured',
       }),
     ).toBe('/practice?source=featured&passage=love+%26+grace');
+  });
+
+  it('keeps a valid passage requested by the URL', () => {
+    expect(
+      resolvePracticeRouteState({
+        featuredPassageIds: ['featured-one', 'featured-two'],
+        isSavedPassageListLoading: false,
+        routeState: {
+          passageId: 'featured-two',
+          source: 'featured',
+        },
+        savedPassageIds: [],
+        selectedFeaturedPassageId: 'featured-one',
+        selectedSavedPassageId: '',
+      }),
+    ).toEqual({
+      passageId: 'featured-two',
+      source: 'featured',
+    });
+  });
+
+  it('replaces an invalid passage with the current feature selection', () => {
+    expect(
+      resolvePracticeRouteState({
+        featuredPassageIds: ['featured-one', 'featured-two'],
+        isSavedPassageListLoading: false,
+        routeState: {
+          passageId: 'missing-passage',
+          source: 'featured',
+        },
+        savedPassageIds: [],
+        selectedFeaturedPassageId: 'featured-two',
+        selectedSavedPassageId: '',
+      }),
+    ).toEqual({
+      passageId: 'featured-two',
+      source: 'featured',
+    });
+  });
+
+  it('waits for the saved-passage list before falling back', () => {
+    expect(
+      resolvePracticeRouteState({
+        featuredPassageIds: ['featured-one'],
+        isSavedPassageListLoading: true,
+        routeState: {
+          passageId: 'saved-one',
+          source: 'saved',
+        },
+        savedPassageIds: [],
+        selectedFeaturedPassageId: 'featured-one',
+        selectedSavedPassageId: '',
+      }),
+    ).toBeNull();
+  });
+
+  it('keeps a valid saved-passage selection', () => {
+    expect(
+      resolvePracticeRouteState({
+        featuredPassageIds: ['featured-one'],
+        isSavedPassageListLoading: false,
+        routeState: {
+          passageId: 'saved-two',
+          source: 'saved',
+        },
+        savedPassageIds: ['saved-one', 'saved-two'],
+        selectedFeaturedPassageId: 'featured-one',
+        selectedSavedPassageId: 'saved-one',
+      }),
+    ).toEqual({
+      passageId: 'saved-two',
+      source: 'saved',
+    });
+  });
+
+  it('falls back to featured when there are no saved passages', () => {
+    expect(
+      resolvePracticeRouteState({
+        featuredPassageIds: ['featured-one'],
+        isSavedPassageListLoading: false,
+        routeState: {
+          passageId: null,
+          source: 'saved',
+        },
+        savedPassageIds: [],
+        selectedFeaturedPassageId: 'featured-one',
+        selectedSavedPassageId: '',
+      }),
+    ).toEqual({
+      passageId: 'featured-one',
+      source: 'featured',
+    });
   });
 });
