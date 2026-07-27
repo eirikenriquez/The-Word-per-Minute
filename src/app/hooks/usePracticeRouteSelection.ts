@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import type { AppMode } from '../../types/app';
 import {
   createPracticePath,
   readPracticeRouteState,
@@ -13,7 +12,6 @@ type PassageOption = {
 };
 
 type UsePracticeRouteSelectionParams = {
-  appMode: AppMode;
   featuredPassages: readonly PassageOption[];
   isSavedPassageListLoading: boolean;
   savedPassages: readonly PassageOption[];
@@ -31,7 +29,6 @@ type SelectPracticeRouteOptions = {
  * Keeps the shareable Practice URL and feature selections synchronized.
  */
 export function usePracticeRouteSelection({
-  appMode,
   featuredPassages,
   isSavedPassageListLoading,
   savedPassages,
@@ -103,10 +100,10 @@ export function usePracticeRouteSelection({
   );
 
   useEffect(() => {
-    if (appMode !== 'practice' || !resolvedRouteState) return;
+    if (!resolvedRouteState) return;
 
     selectPracticeRoute(resolvedRouteState, { replace: true });
-  }, [appMode, resolvedRouteState, selectPracticeRoute]);
+  }, [resolvedRouteState, selectPracticeRoute]);
 
   return {
     practiceSource: resolvedRouteState?.source ?? routeState.source,

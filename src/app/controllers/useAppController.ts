@@ -40,7 +40,6 @@ export function useAppController() {
     featuredLibrary.passages,
   );
   const { practiceSource, selectPracticeRoute } = usePracticeRouteSelection({
-    appMode,
     featuredPassages: featuredLibrary.passages,
     isSavedPassageListLoading: savedLibrary.isLoadingSavedPassages,
     savedPassages: savedLibrary.savedPassages,

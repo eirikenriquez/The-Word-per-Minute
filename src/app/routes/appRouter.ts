@@ -1,19 +1,18 @@
-import { createBrowserRouter } from 'react-router';
-import App from '../../App';
+import { createBrowserRouter, redirect } from 'react-router';
 import { AppRouteErrorBoundary } from '../components/AppRouteErrorBoundary';
 import { AppLayout } from '../layouts/AppLayout';
 import { APP_ROUTE_PATHS } from './appRoutePaths';
 import { BibleRoute } from './BibleRoute';
 import { HomeRoute } from './HomeRoute';
 import { LibraryRoute } from './LibraryRoute';
+import { PracticeRoute } from './PracticeRoute';
 import { ProfileRoute } from './ProfileRoute';
 
 /**
  * Browser router created once outside the React render tree.
  *
- * The pathless parent owns the global application layout. Its wildcard child
- * temporarily preserves the existing AppRoutes while pages move into this
- * route tree incrementally.
+ * The pathless parent owns the global application layout while each child
+ * route composes only the feature state needed by its page.
  */
 export const appRouter = createBrowserRouter([
   {
@@ -37,8 +36,12 @@ export const appRouter = createBrowserRouter([
         Component: BibleRoute,
       },
       {
+        path: APP_ROUTE_PATHS.practice,
+        Component: PracticeRoute,
+      },
+      {
         path: '*',
-        Component: App,
+        loader: () => redirect(APP_ROUTE_PATHS.home),
       },
     ],
   },
