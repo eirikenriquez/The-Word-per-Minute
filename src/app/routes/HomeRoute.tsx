@@ -4,7 +4,7 @@ import { AppLoadingState } from '../components/AppLoadingState';
 import { usePassageCategories } from '../hooks/usePassageCategories';
 import { useAuth } from '../../features/auth/context/authContext';
 import { useAuthMenu } from '../../features/auth/context/authMenuContext';
-import { useFeaturedPassages } from '../../features/featured-passages/hooks/useFeaturedPassages';
+import { useFeaturedPassageCatalog } from '../../features/featured-passages/hooks/useFeaturedPassageCatalog';
 import { getRandomFeaturedPassage } from '../../features/featured-passages/utils/featuredPassageSelection';
 import { useSavedPassageCollection } from '../../features/saved-passages/hooks/useSavedPassageCollection';
 import { HomePage } from '../../pages/home/HomePage';
@@ -18,30 +18,27 @@ export function HomeRoute() {
   const navigate = useNavigate();
   const authSession = useAuth();
   const { openSignUpMenu } = useAuthMenu();
-  const featuredLibrary = useFeaturedPassages();
+  const featuredCatalog = useFeaturedPassageCatalog();
   const savedPassageCollection = useSavedPassageCollection(
     authSession.user?.id,
   );
   const { featuredHomeCategories } = usePassageCategories(
-    featuredLibrary.passages,
+    featuredCatalog.passages,
   );
 
-  if (featuredLibrary.isLoading) {
+  if (featuredCatalog.isLoading) {
     return <AppLoadingState message="Loading featured passages..." />;
   }
 
-  if (featuredLibrary.error) {
-    return <AppErrorState message={featuredLibrary.error} />;
+  if (featuredCatalog.error) {
+    return <AppErrorState message={featuredCatalog.error} />;
   }
 
   function startFeaturedPractice(category?: string) {
     const availablePassages = category
-      ? featuredLibrary.passages.filter((passage) => passage.theme === category)
-      : featuredLibrary.passages;
-    const passage = getRandomFeaturedPassage(
-      availablePassages,
-      category ? '' : featuredLibrary.selectedPassageId,
-    );
+      ? featuredCatalog.passages.filter((passage) => passage.theme === category)
+      : featuredCatalog.passages;
+    const passage = getRandomFeaturedPassage(availablePassages);
 
     if (!passage) return;
 

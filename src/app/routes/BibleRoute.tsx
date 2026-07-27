@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useAuth } from '../../features/auth/context/authContext';
 import { useReaderSelection } from '../../features/bible-reader/hooks/useReaderSelection';
 import { useVerseLibrary } from '../../features/bible-reader/hooks/useVerseLibrary';
-import { useFeaturedPassages } from '../../features/featured-passages/hooks/useFeaturedPassages';
+import { useFeaturedPassageCatalog } from '../../features/featured-passages/hooks/useFeaturedPassageCatalog';
 import { getRandomFeaturedPassage } from '../../features/featured-passages/utils/featuredPassageSelection';
 import { useSavePassageForm } from '../../features/saved-passages/hooks/useSavePassageForm';
 import { useSavedPassageCollection } from '../../features/saved-passages/hooks/useSavedPassageCollection';
@@ -20,13 +20,13 @@ import { usePassageCategories } from '../hooks/usePassageCategories';
 export function BibleRoute() {
   const authSession = useAuth();
   const readerSelection = useReaderSelection();
-  const featuredLibrary = useFeaturedPassages();
+  const featuredCatalog = useFeaturedPassageCatalog();
   const bibleLibrary = useVerseLibrary();
   const savedPassageCollection = useSavedPassageCollection(
     authSession.user?.id,
   );
   const { savedPassageCategories } = usePassageCategories(
-    featuredLibrary.passages,
+    featuredCatalog.passages,
   );
   const bibleRouteSelection = useBibleRouteSelection({
     books: bibleLibrary.books,
@@ -82,7 +82,7 @@ export function BibleRoute() {
   }
 
   function openRandomFeaturedPassage() {
-    const passage = getRandomFeaturedPassage(featuredLibrary.passages);
+    const passage = getRandomFeaturedPassage(featuredCatalog.passages);
     if (!passage) return;
 
     bibleRouteSelection.selectBibleRoute({

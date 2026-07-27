@@ -204,21 +204,22 @@ Code belongs here only when it is independent of a specific feature or establish
 
 Each kind of state has one primary owner:
 
-| Concern                               | Owner                                   | Persistence                          |
-| ------------------------------------- | --------------------------------------- | ------------------------------------ |
-| Active route                          | React Router and `useAppNavigation`     | Browser URL                          |
-| Bible and Practice selections         | Route-state modules and route hooks     | Browser URL                          |
-| Theme                                 | `useTheme`                              | Browser storage                      |
-| Account and session                   | `useAuthSession` through `AuthProvider` | Supabase Auth session                |
-| Auth-menu visibility                  | `AuthMenuProvider`                      | Current runtime session              |
-| Reader translation, book, and chapter | `useVerseLibrary`                       | Current route lifecycle              |
-| Selected reader verses                | `useReaderSelection`                    | Bible URL and current route state    |
-| Featured catalogue and passage        | `useFeaturedPassages`                   | Bundled data and current route state |
-| Saved-passage collection              | `useSavedPassageCollection`             | `localStorage` or Supabase           |
-| Active saved passage                  | `useSelectedSavedPassage`               | Current route state                  |
-| Typing text and live metrics          | `usePracticeSession`                    | Current Practice route lifecycle     |
-| Attempt history and summary           | `usePracticeAttemptHistory`             | Supabase                             |
-| Attempt and reflection writes         | `usePracticeAttemptMutations`           | Supabase                             |
+| Concern                               | Owner                                   | Persistence                       |
+| ------------------------------------- | --------------------------------------- | --------------------------------- |
+| Active route                          | React Router and `useAppNavigation`     | Browser URL                       |
+| Bible and Practice selections         | Route-state modules and route hooks     | Browser URL                       |
+| Theme                                 | `useTheme`                              | Browser storage                   |
+| Account and session                   | `useAuthSession` through `AuthProvider` | Supabase Auth session             |
+| Auth-menu visibility                  | `AuthMenuProvider`                      | Current runtime session           |
+| Reader translation, book, and chapter | `useVerseLibrary`                       | Current route lifecycle           |
+| Selected reader verses                | `useReaderSelection`                    | Bible URL and current route state |
+| Featured catalogue                    | `useFeaturedPassageCatalog`             | Bundled data                      |
+| Active featured passage               | `useSelectedFeaturedPassage`            | Current Practice route state      |
+| Saved-passage collection              | `useSavedPassageCollection`             | `localStorage` or Supabase        |
+| Active saved passage                  | `useSelectedSavedPassage`               | Current route state               |
+| Typing text and live metrics          | `usePracticeSession`                    | Current Practice route lifecycle  |
+| Attempt history and summary           | `usePracticeAttemptHistory`             | Supabase                          |
+| Attempt and reflection writes         | `usePracticeAttemptMutations`           | Supabase                          |
 
 State should not be copied into pages when it can be derived from these owners. Navigating away from a route unmounts its route-specific state.
 
@@ -304,7 +305,6 @@ The visual system uses semantic theme tokens:
 
 The structure is stable, but several implementation tradeoffs remain:
 
-- `useFeaturedPassages` currently combines catalogue loading with selected-passage loading, so some routes load passage text they do not render.
 - Practice initializes featured and saved source state together, which can load the inactive source.
 - Route remounting can repeat data requests because the app has no shared server-state cache.
 - Route modules are statically imported, so the initial JavaScript bundle contains code for every route.
