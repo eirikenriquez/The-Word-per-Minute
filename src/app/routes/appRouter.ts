@@ -41,7 +41,7 @@ export const appRouter = createBrowserRouter([
       {
         path: APP_ROUTE_PATHS.bible,
         lazy: async () => {
-          const { BibleRoute } = await import('./BibleRoute');
+          const { BibleRoute } = await import('./bible/BibleRoute');
 
           return { Component: BibleRoute };
         },

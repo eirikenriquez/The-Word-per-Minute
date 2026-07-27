@@ -3,7 +3,7 @@ import { AppHeader } from '../../components/AppHeader';
 import { useAuth } from '../../../features/auth/context/authContext';
 import { useSavedPassageCollection } from '../../../features/saved-passages/hooks/useSavedPassageCollection';
 import type { SavedPassage } from '../../../features/saved-passages/types/savedPassage';
-import { createBiblePath } from '../bibleRouteState';
+import { createBiblePath } from '../bible/bibleRouteState';
 import { createPracticePath } from '../practiceRouteState';
 import { LibraryPage } from './LibraryPage';
 

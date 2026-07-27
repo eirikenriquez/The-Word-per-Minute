@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import type { BookSummary, Translation } from '../../types/bible';
+import type { BookSummary, Translation } from '../../../types/bible';
 import {
   addVerseRange,
   toggleVerseSelection,
-} from '../../features/bible-reader/utils/readerSelection';
+} from '../../../features/bible-reader/utils/readerSelection';
 import {
   createBiblePath,
   readBibleRouteState,
   resolveBibleRouteState,
   type BibleRouteState,
-} from '../routes/bibleRouteState';
+} from './bibleRouteState';
 
 type UseBibleRouteSelectionParams = {
   books: readonly BookSummary[];

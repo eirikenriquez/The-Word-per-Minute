@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { BookSummary, Translation } from '../../types/bible';
+import type { BookSummary, Translation } from '../../../types/bible';
 import {
   createBiblePath,
   readBibleRouteState,

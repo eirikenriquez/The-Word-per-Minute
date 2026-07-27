@@ -1,14 +1,15 @@
-import { BibleChapterReader } from '../../features/bible-reader/components/BibleChapterReader';
-import { BibleReaderControls } from '../../features/bible-reader/components/BibleReaderControls';
-import {
-  BibleSaveDock,
-  type BibleSaveFormProps,
-} from './components/BibleSaveDock';
-import type { BibleChapter, BookSummary, Translation } from '../../types/bible';
+import { BibleChapterReader } from '../../../features/bible-reader/components/BibleChapterReader';
+import { BibleReaderControls } from '../../../features/bible-reader/components/BibleReaderControls';
+import { BibleSaveDock, type BibleSaveFormProps } from './BibleSaveDock';
+import type {
+  BibleChapter,
+  BookSummary,
+  Translation,
+} from '../../../types/bible';
 import {
   formatChapterReference,
   formatSelectedVerseReference,
-} from '../../utils/passageReference';
+} from '../../../utils/passageReference';
 
 export type BiblePageProps = {
   bibleBooks: BookSummary[];

@@ -1,5 +1,5 @@
-import type { BookSummary, Translation } from '../../types/bible';
-import { APP_ROUTE_PATHS } from './appRoutePaths';
+import type { BookSummary, Translation } from '../../../types/bible';
+import { APP_ROUTE_PATHS } from '../appRoutePaths';
 
 export type BibleRouteState = {
   bookId: string | null;

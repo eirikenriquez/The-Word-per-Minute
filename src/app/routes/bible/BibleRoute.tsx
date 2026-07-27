@@ -1,18 +1,18 @@
 import { useMemo } from 'react';
-import { useAuth } from '../../features/auth/context/authContext';
-import { useReaderSelection } from '../../features/bible-reader/hooks/useReaderSelection';
-import { useVerseLibrary } from '../../features/bible-reader/hooks/useVerseLibrary';
-import { useFeaturedPassageCatalog } from '../../features/featured-passages/hooks/useFeaturedPassageCatalog';
-import { getRandomFeaturedPassage } from '../../features/featured-passages/utils/featuredPassageSelection';
-import { useSavePassageForm } from '../../features/saved-passages/hooks/useSavePassageForm';
-import { useSavedPassageCollection } from '../../features/saved-passages/hooks/useSavedPassageCollection';
-import { createBiblePassageSaveInput } from '../../features/saved-passages/utils/passageSaveInput';
-import { BiblePage } from '../../pages/bible/BiblePage';
-import { AppErrorState } from '../components/AppErrorState';
-import { AppHeader } from '../components/AppHeader';
-import { AppLoadingState } from '../components/AppLoadingState';
-import { useBibleRouteSelection } from '../hooks/useBibleRouteSelection';
-import { usePassageCategories } from '../hooks/usePassageCategories';
+import { AppErrorState } from '../../components/AppErrorState';
+import { AppHeader } from '../../components/AppHeader';
+import { AppLoadingState } from '../../components/AppLoadingState';
+import { usePassageCategories } from '../../hooks/usePassageCategories';
+import { useAuth } from '../../../features/auth/context/authContext';
+import { useReaderSelection } from '../../../features/bible-reader/hooks/useReaderSelection';
+import { useVerseLibrary } from '../../../features/bible-reader/hooks/useVerseLibrary';
+import { useFeaturedPassageCatalog } from '../../../features/featured-passages/hooks/useFeaturedPassageCatalog';
+import { getRandomFeaturedPassage } from '../../../features/featured-passages/utils/featuredPassageSelection';
+import { useSavePassageForm } from '../../../features/saved-passages/hooks/useSavePassageForm';
+import { useSavedPassageCollection } from '../../../features/saved-passages/hooks/useSavedPassageCollection';
+import { createBiblePassageSaveInput } from '../../../features/saved-passages/utils/passageSaveInput';
+import { BiblePage } from './BiblePage';
+import { useBibleRouteSelection } from './useBibleRouteSelection';
 
 /**
  * Composes reader, saving, and URL state needed only by the Bible page.
