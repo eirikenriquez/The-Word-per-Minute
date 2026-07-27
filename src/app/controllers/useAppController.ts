@@ -52,14 +52,10 @@ export function useAppController() {
   const { featuredHomeCategories, savedPassageCategories } = usePassageCategories(featuredLibrary.passages);
 
   const practicePassage = usePracticePassage({
-    appMode,
-    bibleChapter: bibleLibrary.chapter,
+    enabled: appMode === "practice",
     featuredPassageResponse: featuredLibrary.passageResponse,
     practiceSource,
     savedPassageResponse: savedLibrary.passageResponse,
-    selectedBook: bibleLibrary.selectedBook,
-    selectedChapter: bibleLibrary.selectedChapter,
-    selectedVerseNumbers: readerSelection.selectedVerseNumbers,
   });
 
   const handleCompletedPracticeAttempt = useCallback((result: PracticeCompletionResult) => {

@@ -1,64 +1,36 @@
 import { useMemo } from "react";
-import type { AppMode, PracticeSource } from "../../../types/app";
+import type { PracticeSource } from "../../../types/app";
 import type { PassageResponse } from "../../../types/passage";
-import type { BibleChapter, BookSummary } from "../../../types/bible";
 import type { PracticePassage } from "../types/practice";
 import { buildPracticePassage } from "../utils/practicePassage";
 
 type UsePracticePassageParams = {
-  appMode: AppMode;
-  bibleChapter: BibleChapter | null;
+  enabled: boolean;
   featuredPassageResponse: PassageResponse | null;
   practiceSource: PracticeSource;
   savedPassageResponse: PassageResponse | null;
-  selectedBook?: BookSummary;
-  selectedChapter: number;
-  selectedVerseNumbers: number[];
 };
 
 /**
- * Converts whichever source is active into one continuous practice passage.
- * Keeping this separate lets App choose a mode without knowing how passages are assembled.
+ * Converts the active Practice source into one continuous passage.
+ * The app decides whether Practice is enabled without exposing route concepts here.
  */
 export function usePracticePassage({
-  appMode,
-  bibleChapter,
+  enabled,
   featuredPassageResponse,
   practiceSource,
   savedPassageResponse,
-  selectedBook,
-  selectedChapter,
-  selectedVerseNumbers,
 }: UsePracticePassageParams) {
-  const featuredPassage = useMemo(() => {
-    return getPracticePassageFromResponse(featuredPassageResponse);
-  }, [featuredPassageResponse]);
+  const activePassageResponse = enabled
+    ? practiceSource === "featured"
+      ? featuredPassageResponse
+      : savedPassageResponse
+    : null;
 
-  const biblePassage = useMemo(() => {
-    if (!bibleChapter || !selectedBook) return undefined;
-
-    const selectedVerseSet = new Set(selectedVerseNumbers);
-    const selectedVerses = selectedVerseNumbers.length
-      ? bibleChapter.verses.filter((verse) => selectedVerseSet.has(verse.number))
-      : bibleChapter.verses;
-
-    return buildPracticePassage(selectedBook.name, selectedChapter, selectedVerses);
-  }, [bibleChapter, selectedBook, selectedChapter, selectedVerseNumbers]);
-
-  const savedPassage = useMemo(() => {
-    return getPracticePassageFromResponse(savedPassageResponse);
-  }, [savedPassageResponse]);
-
-  const passage =
-    appMode === "practice" && practiceSource === "featured"
-      ? featuredPassage
-      : appMode === "practice" && practiceSource === "saved"
-        ? savedPassage
-        : appMode === "bible"
-          ? biblePassage
-          : undefined;
-
-  return passage;
+  return useMemo(
+    () => getPracticePassageFromResponse(activePassageResponse),
+    [activePassageResponse],
+  );
 }
 
 function getPracticePassageFromResponse(response: PassageResponse | null): PracticePassage | undefined {
