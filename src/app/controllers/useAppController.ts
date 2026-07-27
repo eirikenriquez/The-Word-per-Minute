@@ -21,7 +21,6 @@ import { useAppModeEffects } from '../hooks/useAppModeEffects';
 import { useAppNavigation } from '../hooks/useAppNavigation';
 import { usePassageCategories } from '../hooks/usePassageCategories';
 import { usePracticeRouteSelection } from '../hooks/usePracticeRouteSelection';
-import { useTheme } from '../hooks/useTheme';
 import { createAppActions } from './createAppActions';
 import {
   createBiblePageProps,
@@ -40,7 +39,6 @@ export function useAppController() {
   const [completedPracticeAttemptId, setCompletedPracticeAttemptId] = useState<
     string | null
   >(null);
-  const { theme, toggleTheme } = useTheme();
   const authSession = useAuth();
   const { openSignUpMenu } = useAuthMenu();
 
@@ -314,9 +312,6 @@ export function useAppController() {
     errorMessage,
     headerProps,
     isLoading,
-    onSelectMode: selectAppMode,
     pageRoutesProps,
-    theme,
-    toggleTheme,
   };
 }

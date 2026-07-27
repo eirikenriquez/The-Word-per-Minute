@@ -9,15 +9,15 @@ import { AppNavigation } from './AppNavigation';
 import { BackToTopButton } from './BackToTopButton';
 
 type PageShellProps = {
-  appMode?: AppMode;
+  appMode: AppMode;
   children: ReactNode;
   theme: Theme;
   onToggleTheme: () => void;
-  onSelectMode?: (mode: AppMode) => void;
+  onSelectMode: (mode: AppMode) => void;
 };
 
 /**
- * App page frame for loading, error, and practice states.
+ * Global page frame shared by every application route.
  */
 export function PageShell({
   appMode,
@@ -55,9 +55,7 @@ export function PageShell({
           </div>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            {appMode && onSelectMode && (
-              <AppNavigation appMode={appMode} onSelectMode={onSelectMode} />
-            )}
+            <AppNavigation appMode={appMode} onSelectMode={onSelectMode} />
             <AuthControls profilePath={APP_ROUTE_PATHS.profile} />
           </div>
         </div>

@@ -2,57 +2,32 @@ import { AppErrorState } from './app/components/AppErrorState';
 import { AppHeader } from './app/components/AppHeader';
 import { AppLoadingState } from './app/components/AppLoadingState';
 import { AppRoutes } from './app/components/AppRoutes';
-import { PageShell } from './app/components/PageShell';
 import { useAppController } from './app/controllers/useAppController';
 
 /**
- * Root application shell.
- * Renders global loading/error states, navigation, contextual headers, and URL routes.
+ * Temporary coordinator for routes that have not moved into the data router.
  */
 function App() {
-  const {
-    appMode,
-    errorMessage,
-    headerProps,
-    isLoading,
-    onSelectMode,
-    pageRoutesProps,
-    theme,
-    toggleTheme,
-  } = useAppController();
+  const { appMode, errorMessage, headerProps, isLoading, pageRoutesProps } =
+    useAppController();
 
   // App-level guards keep incomplete data out of the page tree.
   if (isLoading) {
-    return (
-      <PageShell theme={theme} onToggleTheme={toggleTheme}>
-        <AppLoadingState />
-      </PageShell>
-    );
+    return <AppLoadingState />;
   }
 
   if (errorMessage) {
-    return (
-      <PageShell theme={theme} onToggleTheme={toggleTheme}>
-        <AppErrorState message={errorMessage} />
-      </PageShell>
-    );
+    return <AppErrorState message={errorMessage} />;
   }
 
   return (
-    <PageShell
-      appMode={appMode}
-      theme={theme}
-      onSelectMode={onSelectMode}
-      onToggleTheme={toggleTheme}
-    >
-      <div key={appMode} className="page-transition grid gap-4">
-        {appMode !== 'home' && appMode !== 'profile' && (
-          <AppHeader {...headerProps} />
-        )}
+    <div key={appMode} className="page-transition grid gap-4">
+      {appMode !== 'home' && appMode !== 'profile' && (
+        <AppHeader {...headerProps} />
+      )}
 
-        <AppRoutes {...pageRoutesProps} />
-      </div>
-    </PageShell>
+      <AppRoutes {...pageRoutesProps} />
+    </div>
   );
 }
 
