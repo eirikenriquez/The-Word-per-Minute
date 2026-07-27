@@ -13,6 +13,8 @@ During public alpha:
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-07-27
+
 ### Added
 
 - Added React Router data routing with a shared application layout, route error boundary, and independently composed Home, Profile, Library, Bible, and Practice routes.
