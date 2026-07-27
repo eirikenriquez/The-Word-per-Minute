@@ -162,19 +162,25 @@ These limitations should be resolved or explicitly reflected in the public priva
 
 ## Frontend Storage Boundaries
 
-UI components do not call `localStorage` or Supabase persistence directly. Domain hooks depend on store contracts, and the active implementation is selected outside the visual components.
+UI components do not call `localStorage` or Supabase persistence directly. Feature hooks depend on store contracts, and route composition selects the required behaviour outside the visual components.
 
 ### Saved passages
 
 ```mermaid
 flowchart TD
-  ui["Page and UI components"] --> hook["useSavedPassages"]
-  hook --> contract["SavedPassageStore"]
+  routes["Home, Bible, Library, and Practice routes"] --> collection["useSavedPassageCollection"]
+  practice["PracticeRoute"] --> combined["useSavedPassages"]
+  combined --> collection
+  combined --> selection["useSelectedSavedPassage"]
+  collection --> contract["SavedPassageStore"]
   contract --> local["localSavedPassageStore"]
   contract --> cloud["supabaseSavedPassageStore"]
+  selection --> scripture["verseService"]
   local --> browser["localStorage"]
   cloud --> table["Supabase saved_passages"]
 ```
+
+`useSavedPassageCollection` chooses local or cloud persistence from the current user ID. `useSavedPassages` combines that collection with resolved selected-passage text for Practice, the route that needs both responsibilities.
 
 This boundary keeps list, add, edit, and remove behaviour consistent while allowing guest and account persistence to remain different.
 
@@ -182,13 +188,15 @@ This boundary keeps list, add, edit, and remove behaviour consistent while allow
 
 ```mermaid
 flowchart TD
-  ui["Practice and Profile pages"] --> hook["usePracticeAttempts"]
-  hook --> contract["PracticeAttemptStore"]
+  practice["PracticeRoute"] --> mutations["usePracticeAttemptMutations"]
+  profile["ProfileRoute"] --> history["usePracticeAttemptHistory"]
+  mutations --> contract["PracticeAttemptStore"]
+  history --> contract
   contract --> cloud["supabasePracticeAttemptStore"]
   cloud --> table["Supabase practice_attempts and summary RPC"]
 ```
 
-Completed signed-in attempts are sent to the cloud store. Attempt-save, history, reflection, pagination, and summary failures are kept as separate domain states so one failure does not incorrectly invalidate unrelated data.
+Completed signed-in attempts are sent to the cloud store without loading Profile history. Profile loads paginated history and summary data without initializing Practice mutation state. Attempt-save, history, reflection, pagination, and summary failures remain separate so one failure does not incorrectly invalidate unrelated data.
 
 A failed history save does not turn a completed typing session into a failed session. A reflection cannot be attached until the corresponding cloud attempt exists.
 
@@ -199,9 +207,9 @@ The repository currently uses a manual database workflow:
 - `supabase/schema.sql` records the intended current schema and the setup/update SQL used during the initial backend phase.
 - Schema changes are run manually against the Supabase project.
 - The repository does not yet contain timestamped Supabase migrations or a local Supabase configuration.
-- `src/shared/types/database.ts` mirrors the database contract and is currently maintained manually rather than generated from Supabase.
+- `src/lib/supabase/database.types.ts` mirrors the database contract and is currently maintained manually rather than generated from Supabase.
 
-Every schema change must therefore update both `supabase/schema.sql` and `src/shared/types/database.ts`, then be applied and verified against the remote project. The repository alone cannot currently prove which SQL changes have already been applied to production.
+Every schema change must therefore update both `supabase/schema.sql` and `src/lib/supabase/database.types.ts`, then be applied and verified against the remote project. The repository alone cannot currently prove which SQL changes have already been applied to production.
 
 Adopting versioned migrations, generated database types, local schema replay, and automated RLS checks is future maintenance work. Until then, `schema.sql` describes the intended state while the deployed Supabase project remains the runtime state.
 
@@ -211,7 +219,6 @@ The repository currently provides:
 
 ```txt
 src/data/
-  featuredPassages.json
   translations.json
   bibles/
     web/
@@ -220,13 +227,16 @@ src/data/
         Gen.json
         Exod.json
         ...
+
+src/features/featured-passages/data/
+  featuredPassages.json
 ```
 
-- `featuredPassages.json` contains curated passage identities and broad themes.
+- `features/featured-passages/data/featuredPassages.json` contains curated passage identities and broad themes.
 - `translations.json` describes translations available to the reader.
 - `bibles/web` contains the local World English Bible manifest and book files.
 
-`src/domain/bible/verseService.ts` provides an API-shaped read boundary over these files. Pages should request scripture through that service rather than importing individual book JSON files.
+`src/lib/bible/verseService.ts` provides an API-shaped read boundary over the shared translation and Bible files. Features and routes should request scripture through that service rather than importing individual book JSON files.
 
 ## Additional Translation Requirements
 
@@ -270,7 +280,7 @@ Future changes should preserve these rules:
 - Keep RLS enabled for every user-owned table exposed through the Data API.
 - Scope every user-owned query and mutation to the authenticated user through policy, not UI assumptions.
 - Record every intended database change in version-controlled SQL and keep the deployed project aligned with it.
-- Keep `src/shared/types/database.ts` aligned with the deployed schema until generated types are adopted.
-- Keep persistence details behind domain store contracts rather than page components.
+- Keep `src/lib/supabase/database.types.ts` aligned with the deployed schema until generated types are adopted.
+- Keep persistence details behind feature store contracts rather than page components.
 - Never merge guest data into an account without an explicit user action and duplicate strategy.
 - Do not host or redistribute additional Bible translations until licensing and attribution are resolved.

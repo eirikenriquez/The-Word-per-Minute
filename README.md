@@ -107,13 +107,16 @@ Open the local URL shown by Vite, normally `http://localhost:5173`.
 ## Repository Structure
 
 ```txt
-src/app       Application composition, routing, and global shell
-src/pages     Route-level screens and page-specific components
-src/domain    Product behaviour, hooks, and persistence contracts
-src/shared    Generic UI, types, utilities, and infrastructure clients
-src/data      Bundled Bible, translation, and featured-passage data
-supabase      Postgres schema, functions, grants, and RLS policies
-docs          Architecture, data/security, and product documentation
+src/app         Application composition, routing, providers, and global shell
+src/features    Product behaviour, components, hooks, and persistence contracts
+src/pages       Route-level screens and page-specific visual composition
+src/components  Reusable UI primitives
+src/lib         Supabase infrastructure and Bible content services
+src/types       Cross-feature TypeScript contracts
+src/utils       Generic cross-feature utilities
+src/data        Bundled Bible and translation data
+supabase        Postgres schema, functions, grants, and RLS policies
+docs            Architecture, data/security, and product documentation
 ```
 
 ## Documentation
