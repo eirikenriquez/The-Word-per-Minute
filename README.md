@@ -53,7 +53,7 @@ The practice experience keeps the selected passage at the centre of the page whi
 
 ### Requirements
 
-- Node.js compatible with Vite (`^20.19.0 || >=22.12.0`) for local development and builds
+- Node.js 22.22.0 or newer for local development and builds
 - npm
 - A Supabase project configured for authentication and account-owned data
 
@@ -100,16 +100,20 @@ Open the local URL shown by Vite, normally `http://localhost:5173`.
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `npm run dev`          | Start the Vite development server.                                                                                                               |
 | `npm run build`        | Type-check and create the production build.                                                                                                      |
+| `npm run format`       | Format supported project files with Prettier.                                                                                                    |
+| `npm run format:check` | Check formatting without changing files.                                                                                                         |
 | `npm run lint`         | Run ESLint across the repository.                                                                                                                |
+| `npm run test`         | Run the Vitest test suite once.                                                                                                                  |
+| `npm run test:watch`   | Run Vitest in watch mode during development.                                                                                                     |
 | `npm run preview`      | Preview the production build locally.                                                                                                            |
 | `npm run import:bible` | Download and rebuild the bundled public-domain Bible data. This maintenance command replaces the generated WEB data under `src/data/bibles/web`. |
 
 ## Repository Structure
 
 ```txt
-src/app         Application composition, routing, providers, and global shell
+src/app         Application routing, providers, and global shell
+src/app/routes  Route folders containing composition, page UI, and URL state
 src/features    Product behaviour, components, hooks, and persistence contracts
-src/pages       Route-level screens and page-specific visual composition
 src/components  Reusable UI primitives
 src/lib         Supabase infrastructure and Bible content services
 src/types       Cross-feature TypeScript contracts
