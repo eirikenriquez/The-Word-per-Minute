@@ -11,6 +11,7 @@ import type {
   PracticeCompletionResult,
   PracticeSource,
 } from '../../features/practice/types/practice';
+import { createPracticeAttemptInput } from '../../features/practice/utils/practiceAttemptInput';
 import { useSavePassageForm } from '../../features/saved-passages/hooks/useSavePassageForm';
 import { useSavedPassages } from '../../features/saved-passages/hooks/useSavedPassages';
 import type { SavedPassage } from '../../features/saved-passages/types/savedPassage';
@@ -73,31 +74,16 @@ export function PracticeRoute() {
         practiceSource === 'featured'
           ? selectedFeaturedPassage.passageResponse
           : savedLibrary.passageResponse;
+      const attemptInput = createPracticeAttemptInput({
+        completionResult: result,
+        featuredPassageId: selectedFeaturedPassage.selectedPassageId,
+        passageResponse: activePassageResponse,
+        practiceSource,
+        savedPassageId: savedLibrary.selectedSavedPassageId,
+      });
+      if (!attemptInput) return;
 
-      if (!activePassageResponse) return;
-
-      void saveAttempt({
-        accuracy: result.accuracy,
-        bookId: activePassageResponse.passage.bookId,
-        chapter: activePassageResponse.passage.chapter,
-        durationSeconds: result.durationSeconds,
-        endVerse: activePassageResponse.passage.endVerse,
-        featuredPassageId:
-          practiceSource === 'featured'
-            ? selectedFeaturedPassage.selectedPassageId
-            : undefined,
-        mistakeCount: result.mistakeCount,
-        passageReference: activePassageResponse.reference,
-        savedPassageId:
-          practiceSource === 'saved'
-            ? savedLibrary.selectedSavedPassageId
-            : undefined,
-        selectedVerses: activePassageResponse.passage.selectedVerses,
-        startVerse: activePassageResponse.passage.startVerse,
-        translationId: activePassageResponse.translation.id,
-        typedCharacterCount: result.typedCharacterCount,
-        wpm: result.wpm,
-      }).then((savedAttempt) => {
+      void saveAttempt(attemptInput).then((savedAttempt) => {
         if (savedAttempt) setCompletedPracticeAttemptId(savedAttempt.id);
       });
     },
