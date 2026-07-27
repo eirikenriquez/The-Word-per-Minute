@@ -1,7 +1,6 @@
 import { useMemo } from "react";
-import type { PracticeSource } from "../../../types/app";
 import type { PassageResponse } from "../../../types/passage";
-import type { PracticePassage } from "../types/practice";
+import type { PracticePassage, PracticeSource } from "../types/practice";
 import { buildPracticePassage } from "../utils/practicePassage";
 
 type UsePracticePassageParams = {

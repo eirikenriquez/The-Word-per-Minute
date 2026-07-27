@@ -3,8 +3,8 @@ import {
   ArrowRightIcon,
   FolderOpenIcon,
 } from "@heroicons/react/24/outline";
-import type { PracticeSource } from "../../../types/app";
 import { Button } from "../../../components/ui/Button";
+import type { PracticeSource } from "../types/practice";
 
 type PracticeActionButtonsProps = {
   practiceSource: PracticeSource;

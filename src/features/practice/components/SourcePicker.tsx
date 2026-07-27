@@ -1,5 +1,4 @@
-import type { PracticeSource } from "../../../types/app";
-import type { PracticePassageOption } from "../types/practice";
+import type { PracticePassageOption, PracticeSource } from "../types/practice";
 
 type SourcePickerProps = {
   practiceSource: PracticeSource;

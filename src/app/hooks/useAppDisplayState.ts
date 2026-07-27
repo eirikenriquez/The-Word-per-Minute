@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import type { AppMode, PracticeSource } from "../../types/app";
+import type { PracticeSource } from "@/features/practice/types/practice";
+import type { AppMode } from "../../types/app";
 import type { PassageResponse } from "../../types/passage";
 import type { SavedPassage } from "../../features/saved-passages/types/savedPassage";
 import type { Translation } from "../../types/bible";

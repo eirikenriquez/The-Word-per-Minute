@@ -1,10 +1,10 @@
 import { PracticeControls } from "../../features/practice/components/PracticeControls";
 import { PracticeLiveMetrics } from "../../features/practice/components/PracticeLiveMetrics";
 import { PracticePassageDisplay } from "../../features/practice/components/PracticePassageDisplay";
-import type { PracticeSource } from "../../types/app";
 import type {
   PracticePassage,
   PracticePassageOption,
+  PracticeSource,
   PracticeStatus,
 } from "../../features/practice/types/practice";
 

@@ -1,4 +1,5 @@
-import type { AppMode, PracticeSource } from "../../types/app";
+import type { PracticeSource } from "@/features/practice/types/practice";
+import type { AppMode } from "../../types/app";
 import type { FeaturedPassage } from "../../features/featured-passages/types/featuredPassage";
 import type { SavedPassage } from "../../features/saved-passages/types/savedPassage";
 

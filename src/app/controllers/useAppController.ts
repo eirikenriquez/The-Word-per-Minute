@@ -14,8 +14,10 @@ import {
   createBiblePassageSaveInput,
   createFeaturedPassageSaveInput,
 } from "../../features/saved-passages/utils/passageSaveInput";
-import type { PracticeSource } from "../../types/app";
-import type { PracticeCompletionResult } from "../../features/practice/types/practice";
+import type {
+  PracticeCompletionResult,
+  PracticeSource,
+} from "@/features/practice/types/practice";
 import { useAppDisplayState } from "../hooks/useAppDisplayState";
 import { useAppModeEffects } from "../hooks/useAppModeEffects";
 import { useAppNavigation } from "../hooks/useAppNavigation";

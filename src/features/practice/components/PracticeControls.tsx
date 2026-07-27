@@ -4,9 +4,8 @@ import {
   DisclosurePanel,
 } from "@headlessui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
-import type { PracticeSource } from "../../../types/app";
 import { Button } from "../../../components/ui/Button";
-import type { PracticePassageOption } from "../types/practice";
+import type { PracticePassageOption, PracticeSource } from "../types/practice";
 import { FeaturedSaveAction } from "./FeaturedSaveAction";
 import { PracticeActionButtons } from "./PracticeActionButtons";
 import { SavedPassageSelect } from "./SavedPassageSelect";

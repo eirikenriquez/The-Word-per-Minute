@@ -1,5 +1,6 @@
 import type { BibleVerse } from "../../../types/bible";
 
+export type PracticeSource = "featured" | "saved";
 export type PracticeStatus = "Ready" | "Typing" | "Complete";
 
 export type PracticeCompletionResult = {
