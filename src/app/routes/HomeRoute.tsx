@@ -6,7 +6,7 @@ import { useAuth } from '../../features/auth/context/authContext';
 import { useAuthMenu } from '../../features/auth/context/authMenuContext';
 import { useFeaturedPassages } from '../../features/featured-passages/hooks/useFeaturedPassages';
 import { getRandomFeaturedPassage } from '../../features/featured-passages/utils/featuredPassageSelection';
-import { useSavedPassages } from '../../features/saved-passages/hooks/useSavedPassages';
+import { useSavedPassageCollection } from '../../features/saved-passages/hooks/useSavedPassageCollection';
 import { HomePage } from '../../pages/home/HomePage';
 import { APP_ROUTE_PATHS } from './appRoutePaths';
 import { createPracticePath } from './practiceRouteState';
@@ -19,7 +19,9 @@ export function HomeRoute() {
   const authSession = useAuth();
   const { openSignUpMenu } = useAuthMenu();
   const featuredLibrary = useFeaturedPassages();
-  const savedLibrary = useSavedPassages(authSession.user?.id);
+  const savedPassageCollection = useSavedPassageCollection(
+    authSession.user?.id,
+  );
   const { featuredHomeCategories } = usePassageCategories(
     featuredLibrary.passages,
   );
@@ -55,7 +57,7 @@ export function HomeRoute() {
     <HomePage
       featuredHomeCategories={featuredHomeCategories}
       isSignedIn={authSession.isSignedIn}
-      savedPassageCount={savedLibrary.savedPassages.length}
+      savedPassageCount={savedPassageCollection.savedPassages.length}
       onCreateAccount={openSignUpMenu}
       onOpenBible={() => void navigate(APP_ROUTE_PATHS.bible)}
       onSelectFeaturedCategory={startFeaturedPractice}

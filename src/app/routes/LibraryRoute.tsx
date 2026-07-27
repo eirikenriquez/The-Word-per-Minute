@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router';
 import { useAuth } from '../../features/auth/context/authContext';
-import { useSavedPassages } from '../../features/saved-passages/hooks/useSavedPassages';
+import { useSavedPassageCollection } from '../../features/saved-passages/hooks/useSavedPassageCollection';
 import type { SavedPassage } from '../../features/saved-passages/types/savedPassage';
 import { LibraryPage } from '../../pages/library/LibraryPage';
 import { AppHeader } from '../components/AppHeader';
@@ -13,7 +13,9 @@ import { createPracticePath } from './practiceRouteState';
 export function LibraryRoute() {
   const navigate = useNavigate();
   const authSession = useAuth();
-  const savedLibrary = useSavedPassages(authSession.user?.id);
+  const savedPassageCollection = useSavedPassageCollection(
+    authSession.user?.id,
+  );
 
   function practiceSavedPassage(passageId: string) {
     void navigate(
@@ -25,7 +27,7 @@ export function LibraryRoute() {
   }
 
   function readSavedPassage(passageId: string) {
-    const passage = savedLibrary.savedPassages.find(
+    const passage = savedPassageCollection.savedPassages.find(
       (savedPassage) => savedPassage.id === passageId,
     );
     if (!passage) return;
@@ -43,17 +45,22 @@ export function LibraryRoute() {
   return (
     <div className="page-transition grid gap-4">
       <AppHeader
-        headerReference={`${savedLibrary.savedPassages.length} saved`}
+        headerReference={`${savedPassageCollection.savedPassages.length} saved`}
         headerSubtitle="Manage your saved passages"
         headerTitle="Saved Library"
       />
       <LibraryPage
-        errorMessage={savedLibrary.listError ?? savedLibrary.mutationError}
-        savedPassages={savedLibrary.savedPassages}
+        errorMessage={
+          savedPassageCollection.listError ??
+          savedPassageCollection.mutationError
+        }
+        savedPassages={savedPassageCollection.savedPassages}
         onPracticeSavedPassage={practiceSavedPassage}
         onReadSavedPassage={readSavedPassage}
-        onRemoveSavedPassage={savedLibrary.removePassage}
-        onUpdateSavedPassage={savedLibrary.updatePassage}
+        onRemoveSavedPassage={async (passageId) => {
+          await savedPassageCollection.removePassage(passageId);
+        }}
+        onUpdateSavedPassage={savedPassageCollection.updatePassage}
       />
     </div>
   );

@@ -1,216 +1,34 @@
-import { useEffect, useMemo, useState } from 'react';
-import { localSavedPassageStore } from '../stores/localSavedPassageStore';
-import { createSupabaseSavedPassageStore } from '../stores/supabaseSavedPassageStore';
-import { verseService } from '../../../lib/bible/verseService';
-import type { PassageResponse } from '../../../types/passage';
-import { getErrorMessage } from '../../../utils/errors';
-import type {
-  SavedPassage,
-  SavePassageInput,
-  SavedPassageUpdate,
-} from '../types/savedPassage';
-import { getSavedPassageIdentity } from '../utils/savedPassageIdentity';
+import type { SavePassageInput } from '../types/savedPassage';
+import { useSavedPassageCollection } from './useSavedPassageCollection';
+import { useSelectedSavedPassage } from './useSelectedSavedPassage';
 
 /**
- * Manages saved passages through a repository boundary.
- * Guests use localStorage. Signed-in users use Supabase.
+ * Temporary compatibility facade for routes that still need both the saved
+ * collection and a resolved selected passage.
  */
 export function useSavedPassages(userId?: string | null) {
-  const savedPassageStore = useMemo(() => {
-    return userId
-      ? createSupabaseSavedPassageStore(userId)
-      : localSavedPassageStore;
-  }, [userId]);
-  const [savedPassages, setSavedPassages] = useState<SavedPassage[]>([]);
-  const [selectedSavedPassageId, setSelectedSavedPassageId] = useState('');
-  const [passageResponse, setPassageResponse] =
-    useState<PassageResponse | null>(null);
-  const [isLoadingSavedPassages, setIsLoadingSavedPassages] = useState(false);
-  const [isLoadingSelectedPassage, setIsLoadingSelectedPassage] =
-    useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [listError, setListError] = useState<string | null>(null);
-  const [selectedPassageError, setSelectedPassageError] = useState<
-    string | null
-  >(null);
-  const [mutationError, setMutationError] = useState<string | null>(null);
-  const isLoading = isLoadingSavedPassages || isLoadingSelectedPassage;
-
-  const selectedSavedPassage = useMemo(
-    () =>
-      savedPassages.find((passage) => passage.id === selectedSavedPassageId),
-    [savedPassages, selectedSavedPassageId],
-  );
-
-  useEffect(() => {
-    let isCurrent = true;
-
-    async function loadSavedPassages() {
-      setSavedPassages([]);
-      setSelectedSavedPassageId('');
-      setPassageResponse(null);
-      setIsLoadingSavedPassages(true);
-      setListError(null);
-      setSelectedPassageError(null);
-      setMutationError(null);
-
-      try {
-        const nextSavedPassages = await savedPassageStore.list();
-        if (!isCurrent) return;
-
-        setSavedPassages(nextSavedPassages);
-        setSelectedSavedPassageId((currentPassageId) => {
-          if (
-            nextSavedPassages.some((passage) => passage.id === currentPassageId)
-          )
-            return currentPassageId;
-          return nextSavedPassages[0]?.id ?? '';
-        });
-      } catch (caughtError) {
-        if (isCurrent) setListError(getErrorMessage(caughtError));
-      } finally {
-        if (isCurrent) setIsLoadingSavedPassages(false);
-      }
-    }
-
-    loadSavedPassages();
-
-    return () => {
-      isCurrent = false;
-    };
-  }, [savedPassageStore]);
-
-  useEffect(() => {
-    const selectedPassageExists = savedPassages.some(
-      (passage) => passage.id === selectedSavedPassageId,
-    );
-    if (selectedPassageExists) return;
-
-    const fallbackPassageId = savedPassages[0]?.id ?? '';
-    if (selectedSavedPassageId !== fallbackPassageId) {
-      setSelectedSavedPassageId(fallbackPassageId);
-    }
-  }, [savedPassages, selectedSavedPassageId]);
-
-  useEffect(() => {
-    if (!selectedSavedPassage) {
-      setPassageResponse(null);
-      setIsLoadingSelectedPassage(false);
-      setSelectedPassageError(null);
-      return;
-    }
-
-    let isCurrent = true;
-    const passageToLoad = selectedSavedPassage;
-    setIsLoadingSelectedPassage(true);
-    setSelectedPassageError(null);
-
-    async function loadSavedPassage() {
-      try {
-        const response = await verseService.getReferencePassage(passageToLoad);
-        if (!isCurrent) return;
-
-        setPassageResponse(response);
-      } catch (caughtError) {
-        if (!isCurrent) return;
-
-        setPassageResponse(null);
-        setSelectedPassageError(getErrorMessage(caughtError));
-      } finally {
-        if (isCurrent) setIsLoadingSelectedPassage(false);
-      }
-    }
-
-    loadSavedPassage();
-
-    return () => {
-      isCurrent = false;
-    };
-  }, [selectedSavedPassage]);
+  const collection = useSavedPassageCollection(userId);
+  const selection = useSelectedSavedPassage(collection.savedPassages);
 
   async function savePassage(input: SavePassageInput) {
-    setIsSaving(true);
-    setMutationError(null);
-
-    try {
-      const savedPassage = await savedPassageStore.save(input);
-
-      setSavedPassages((currentPassages) => [
-        savedPassage,
-        ...currentPassages.filter((passage) => passage.id !== savedPassage.id),
-      ]);
-      setSelectedSavedPassageId(savedPassage.id);
-      return savedPassage;
-    } catch (caughtError) {
-      setMutationError(getErrorMessage(caughtError));
-      return null;
-    } finally {
-      setIsSaving(false);
-    }
+    const savedPassage = await collection.savePassage(input);
+    if (savedPassage) selection.selectSavedPassage(savedPassage.id);
+    return savedPassage;
   }
 
   async function removePassage(passageId: string) {
-    setMutationError(null);
-
-    try {
-      await savedPassageStore.remove(passageId);
-
-      setSavedPassages((currentPassages) => {
-        return currentPassages.filter((passage) => passage.id !== passageId);
-      });
-      setSelectedSavedPassageId((currentPassageId) => {
-        if (currentPassageId !== passageId) return currentPassageId;
-        return '';
-      });
-    } catch (caughtError) {
-      setMutationError(getErrorMessage(caughtError));
+    const wasRemoved = await collection.removePassage(passageId);
+    if (wasRemoved && selection.selectedSavedPassageId === passageId) {
+      selection.selectSavedPassage('');
     }
-  }
-
-  async function updatePassage(passageId: string, update: SavedPassageUpdate) {
-    setMutationError(null);
-
-    try {
-      const updatedPassage = await savedPassageStore.update(passageId, update);
-
-      if (!updatedPassage) return null;
-
-      setSavedPassages((currentPassages) => {
-        return currentPassages.map((passage) => {
-          return passage.id === passageId ? updatedPassage : passage;
-        });
-      });
-
-      return updatedPassage;
-    } catch (caughtError) {
-      setMutationError(getErrorMessage(caughtError));
-      return null;
-    }
-  }
-
-  function isPassageSaved(input: SavePassageInput | null) {
-    if (!input) return false;
-
-    const passageIdentity = getSavedPassageIdentity(input);
-    return savedPassages.some(
-      (passage) => getSavedPassageIdentity(passage) === passageIdentity,
-    );
   }
 
   return {
-    isLoading,
-    isSaving,
-    isPassageSaved,
-    listError,
-    mutationError,
-    passageResponse,
+    ...collection,
+    ...selection,
+    isLoading: collection.isLoading || selection.isLoading,
+    isLoadingSavedPassages: collection.isLoading,
     removePassage,
     savePassage,
-    savedPassages,
-    selectSavedPassage: setSelectedSavedPassageId,
-    selectedSavedPassage,
-    selectedPassageError,
-    selectedSavedPassageId,
-    updatePassage,
   };
 }
