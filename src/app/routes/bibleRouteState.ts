@@ -1,3 +1,4 @@
+import type { BookSummary, Translation } from '../../types/bible';
 import { APP_ROUTE_PATHS } from './appRoutePaths';
 
 export type BibleRouteState = {
@@ -5,6 +6,22 @@ export type BibleRouteState = {
   chapter: number | null;
   selectedVerseNumbers: number[];
   translationId: string | null;
+};
+
+export type ResolvedBibleRouteState = {
+  bookId: string;
+  chapter: number;
+  selectedVerseNumbers: number[];
+  translationId: string;
+};
+
+type ResolveBibleRouteStateParams = {
+  books: readonly BookSummary[];
+  routeState: BibleRouteState;
+  selectedBookId: string;
+  selectedChapter: number;
+  selectedTranslationId: string;
+  translations: readonly Translation[];
 };
 
 /**
@@ -56,6 +73,83 @@ export function createBiblePath({
 
   const search = searchParams.toString();
   return search ? `${APP_ROUTE_PATHS.bible}?${search}` : APP_ROUTE_PATHS.bible;
+}
+
+/**
+ * Resolves requested reader state against the currently available Bible data.
+ */
+export function resolveBibleRouteState({
+  books,
+  routeState,
+  selectedBookId,
+  selectedChapter,
+  selectedTranslationId,
+  translations,
+}: ResolveBibleRouteStateParams): ResolvedBibleRouteState | null {
+  const translationId = resolveIdentifier(
+    routeState.translationId,
+    selectedTranslationId,
+    translations,
+  );
+  if (!translationId) return null;
+
+  const bookId = resolveIdentifier(routeState.bookId, selectedBookId, books);
+  if (!bookId) return null;
+
+  const selectedBook = books.find((book) => book.id === bookId);
+  if (!selectedBook) return null;
+
+  const chapter = resolveChapter(
+    routeState.chapter,
+    selectedChapter,
+    selectedBook.chapterCount,
+  );
+  const verseCount = selectedBook.verseCounts[chapter - 1] ?? 0;
+
+  return {
+    bookId,
+    chapter,
+    selectedVerseNumbers: normaliseVerseNumbers(
+      routeState.selectedVerseNumbers,
+    ).filter((verseNumber) => verseNumber <= verseCount),
+    translationId,
+  };
+}
+
+function resolveIdentifier(
+  requestedId: string | null,
+  selectedId: string,
+  options: readonly { id: string }[],
+) {
+  if (requestedId && options.some((option) => option.id === requestedId)) {
+    return requestedId;
+  }
+
+  if (selectedId && options.some((option) => option.id === selectedId)) {
+    return selectedId;
+  }
+
+  return options[0]?.id ?? null;
+}
+
+function resolveChapter(
+  requestedChapter: number | null,
+  selectedChapter: number,
+  chapterCount: number,
+) {
+  if (
+    requestedChapter &&
+    requestedChapter > 0 &&
+    requestedChapter <= chapterCount
+  ) {
+    return requestedChapter;
+  }
+
+  if (selectedChapter > 0 && selectedChapter <= chapterCount) {
+    return selectedChapter;
+  }
+
+  return 1;
 }
 
 function normaliseIdentifier(identifier: string | null) {

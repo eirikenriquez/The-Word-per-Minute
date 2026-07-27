@@ -8,6 +8,7 @@ import {
 import {
   createBiblePath,
   readBibleRouteState,
+  resolveBibleRouteState,
   type BibleRouteState,
 } from '../routes/bibleRouteState';
 
@@ -53,6 +54,25 @@ export function useBibleRouteSelection({
     () => readBibleRouteState(new URLSearchParams(location.search)),
     [location.search],
   );
+  const resolvedRouteState = useMemo(
+    () =>
+      resolveBibleRouteState({
+        books,
+        routeState,
+        selectedBookId,
+        selectedChapter,
+        selectedTranslationId,
+        translations,
+      }),
+    [
+      books,
+      routeState,
+      selectedBookId,
+      selectedChapter,
+      selectedTranslationId,
+      translations,
+    ],
+  );
 
   useEffect(() => {
     selectedVerseNumbersRef.current = selectedVerseNumbers;
@@ -76,64 +96,41 @@ export function useBibleRouteSelection({
   );
 
   useEffect(() => {
-    const translationId = resolveIdentifier(
-      routeState.translationId,
-      selectedTranslationId,
-      translations,
-    );
-    if (!translationId) return;
+    if (!resolvedRouteState) return;
 
-    if (selectedTranslationId !== translationId) {
-      selectTranslation(translationId);
+    if (selectedTranslationId !== resolvedRouteState.translationId) {
+      selectTranslation(resolvedRouteState.translationId);
       return;
     }
 
-    const bookId = resolveIdentifier(routeState.bookId, selectedBookId, books);
-    if (!bookId) return;
-
-    if (selectedBookId !== bookId) {
-      selectBook(bookId);
+    if (selectedBookId !== resolvedRouteState.bookId) {
+      selectBook(resolvedRouteState.bookId);
       return;
     }
 
-    const selectedBook = books.find((book) => book.id === bookId);
-    if (!selectedBook) return;
-
-    const chapter = resolveChapter(
-      routeState.chapter,
-      selectedChapter,
-      selectedBook.chapterCount,
-    );
-    if (selectedChapter !== chapter) {
-      selectChapter(chapter);
+    if (selectedChapter !== resolvedRouteState.chapter) {
+      selectChapter(resolvedRouteState.chapter);
       return;
     }
 
-    const verseCount = selectedBook.verseCounts[chapter - 1] ?? 0;
-    const routeVerseNumbers = routeState.selectedVerseNumbers.filter(
-      (verseNumber) => verseNumber <= verseCount,
-    );
-
-    if (!haveSameVerseNumbers(selectedVerseNumbers, routeVerseNumbers)) {
-      selectedVerseNumbersRef.current = routeVerseNumbers;
-      setSelectedVerseNumbers(routeVerseNumbers);
-      if (routeVerseNumbers.length) focusSelectedVerses();
+    if (
+      !haveSameVerseNumbers(
+        selectedVerseNumbers,
+        resolvedRouteState.selectedVerseNumbers,
+      )
+    ) {
+      selectedVerseNumbersRef.current = resolvedRouteState.selectedVerseNumbers;
+      setSelectedVerseNumbers(resolvedRouteState.selectedVerseNumbers);
+      if (resolvedRouteState.selectedVerseNumbers.length) {
+        focusSelectedVerses();
+      }
       return;
     }
 
-    selectBibleRoute(
-      {
-        bookId,
-        chapter,
-        selectedVerseNumbers: routeVerseNumbers,
-        translationId,
-      },
-      { replace: true },
-    );
+    selectBibleRoute(resolvedRouteState, { replace: true });
   }, [
-    books,
     focusSelectedVerses,
-    routeState,
+    resolvedRouteState,
     selectedBookId,
     selectedChapter,
     selectedTranslationId,
@@ -143,7 +140,6 @@ export function useBibleRouteSelection({
     selectChapter,
     selectTranslation,
     setSelectedVerseNumbers,
-    translations,
   ]);
 
   const clearReaderSelection = useCallback(() => {
@@ -253,38 +249,6 @@ export function useBibleRouteSelection({
     selectReaderTranslation,
     selectReaderVerse,
   };
-}
-
-function resolveIdentifier(
-  requestedId: string | null,
-  selectedId: string,
-  options: readonly { id: string }[],
-) {
-  if (requestedId && options.some((option) => option.id === requestedId)) {
-    return requestedId;
-  }
-
-  if (selectedId && options.some((option) => option.id === selectedId)) {
-    return selectedId;
-  }
-
-  return options[0]?.id ?? null;
-}
-
-function resolveChapter(
-  requestedChapter: number | null,
-  selectedChapter: number,
-  chapterCount: number,
-) {
-  if (requestedChapter && requestedChapter <= chapterCount) {
-    return requestedChapter;
-  }
-
-  if (selectedChapter > 0 && selectedChapter <= chapterCount) {
-    return selectedChapter;
-  }
-
-  return 1;
 }
 
 function haveSameVerseNumbers(

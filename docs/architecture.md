@@ -308,7 +308,8 @@ The structure is stable, but several implementation tradeoffs remain:
 - Practice initializes featured and saved source state together, which can load the inactive source.
 - Route remounting can repeat data requests because the app has no shared server-state cache.
 - Route modules are statically imported, so the initial JavaScript bundle contains code for every route.
-- `PracticeRoute` and `useBibleRouteSelection` are the largest composition hotspots and need targeted extraction only where behaviour is cohesive and testable.
+- `PracticeRoute` remains the largest route composition module and should be reduced only through cohesive, testable feature behaviour.
+- `useBibleRouteSelection` remains long because it exposes the reader's URL-backed event handlers, but its pure fallback and bounds rules are isolated and tested in `bibleRouteState`.
 - Database types are manually maintained and Supabase changes use one schema file rather than versioned migrations.
 - Automated tests cover important pure logic but not yet the highest-risk route, store, and authenticated flows.
 
