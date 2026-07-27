@@ -4,9 +4,9 @@ import { PracticePassageDisplay } from "../../features/practice/components/Pract
 import type { PracticeSource } from "../../types/app";
 import type {
   PracticePassage,
+  PracticePassageOption,
   PracticeStatus,
 } from "../../features/practice/types/practice";
-import type { SavedPassage } from "../../features/saved-passages/types/savedPassage";
 
 export type PracticePageProps = {
   accuracy: number;
@@ -22,7 +22,7 @@ export type PracticePageProps = {
   practiceTitle: string;
   progress: number;
   reflectionError: string | null;
-  savedPassages: SavedPassage[];
+  savedPassageOptions: PracticePassageOption[];
   selectedSavedPassageId: string;
   status: PracticeStatus;
   translationName: string;
@@ -55,7 +55,7 @@ export function PracticePage({
   practiceTitle,
   progress,
   reflectionError,
-  savedPassages,
+  savedPassageOptions,
   selectedSavedPassageId,
   status,
   translationName,
@@ -74,10 +74,9 @@ export function PracticePage({
     <div className="grid gap-8">
       <PracticeControls
         canSaveCurrentPassage={canSaveCurrentPassage}
-        hasSavedPassages={savedPassages.length > 0}
         isCurrentPassageSaved={isCurrentPassageSaved}
         practiceSource={practiceSource}
-        savedPassages={savedPassages}
+        savedPassageOptions={savedPassageOptions}
         selectedSavedPassageId={selectedSavedPassageId}
         onNextFeaturedPassage={onNextFeaturedPassage}
         onOpenLibrary={onOpenLibrary}

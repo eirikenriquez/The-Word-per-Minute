@@ -1,10 +1,9 @@
 import type { PracticeSource } from "../../../types/app";
-import type { SavedPassage } from "../../saved-passages/types/savedPassage";
+import type { PracticePassageOption } from "../types/practice";
 
 type SourcePickerProps = {
-  hasSavedPassages: boolean;
   practiceSource: PracticeSource;
-  savedPassages: SavedPassage[];
+  savedPassageOptions: PracticePassageOption[];
   selectedSavedPassageId: string;
   onSelectFeaturedPractice: () => void;
   onSelectSavedPractice: (passageId: string) => void;
@@ -14,9 +13,8 @@ type SourcePickerProps = {
  * Lets the user choose whether Practice pulls from curated passages or their saved library.
  */
 export function SourcePicker({
-  hasSavedPassages,
   practiceSource,
-  savedPassages,
+  savedPassageOptions,
   selectedSavedPassageId,
   onSelectFeaturedPractice,
   onSelectSavedPractice,
@@ -31,11 +29,11 @@ export function SourcePicker({
           onSelect={onSelectFeaturedPractice}
         />
         <SourceButton
-          disabled={!hasSavedPassages}
+          disabled={savedPassageOptions.length === 0}
           isSelected={practiceSource === "saved"}
           label="Saved"
           onSelect={() => {
-            const passageId = selectedSavedPassageId || savedPassages[0]?.id;
+            const passageId = selectedSavedPassageId || savedPassageOptions[0]?.id;
             if (passageId) onSelectSavedPractice(passageId);
           }}
         />

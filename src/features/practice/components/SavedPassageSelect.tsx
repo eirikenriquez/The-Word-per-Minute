@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import type { SavedPassage } from "../../saved-passages/types/savedPassage";
+import type { PracticePassageOption } from "../types/practice";
 
 type SavedPassageSelectProps = {
-  savedPassages: SavedPassage[];
+  savedPassageOptions: PracticePassageOption[];
   selectedSavedPassageId: string;
   onSelectSavedPractice: (passageId: string) => void;
 };
@@ -12,22 +12,24 @@ type SavedPassageSelectProps = {
  * The selected passage still owns the typing session; the category only narrows the list.
  */
 export function SavedPassageSelect({
-  savedPassages,
+  savedPassageOptions,
   selectedSavedPassageId,
   onSelectSavedPractice,
 }: SavedPassageSelectProps) {
   const categories = useMemo(() => {
-    const savedCategories = savedPassages.map((passage) => getSavedCategory(passage));
+    const savedCategories = savedPassageOptions.map((passage) => getSavedCategory(passage));
     return ["All", ...Array.from(new Set(savedCategories))];
-  }, [savedPassages]);
+  }, [savedPassageOptions]);
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   const visiblePassages = useMemo(
     () =>
       selectedCategory === "All"
-        ? savedPassages
-        : savedPassages.filter((passage) => getSavedCategory(passage) === selectedCategory),
-    [savedPassages, selectedCategory],
+        ? savedPassageOptions
+        : savedPassageOptions.filter(
+            (passage) => getSavedCategory(passage) === selectedCategory,
+          ),
+    [savedPassageOptions, selectedCategory],
   );
 
   useEffect(() => {
@@ -36,7 +38,10 @@ export function SavedPassageSelect({
 
   function handleCategoryChange(category: string) {
     setSelectedCategory(category);
-    const firstPassage = category === "All" ? savedPassages[0] : savedPassages.find((passage) => getSavedCategory(passage) === category);
+    const firstPassage =
+      category === "All"
+        ? savedPassageOptions[0]
+        : savedPassageOptions.find((passage) => getSavedCategory(passage) === category);
     if (firstPassage) onSelectSavedPractice(firstPassage.id);
   }
 
@@ -75,6 +80,6 @@ export function SavedPassageSelect({
   );
 }
 
-function getSavedCategory(passage: SavedPassage) {
+function getSavedCategory(passage: PracticePassageOption) {
   return passage.category || "Other";
 }

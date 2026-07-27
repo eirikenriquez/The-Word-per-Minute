@@ -5,8 +5,8 @@ import {
 } from "@headlessui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import type { PracticeSource } from "../../../types/app";
-import type { SavedPassage } from "../../saved-passages/types/savedPassage";
 import { Button } from "../../../components/ui/Button";
+import type { PracticePassageOption } from "../types/practice";
 import { FeaturedSaveAction } from "./FeaturedSaveAction";
 import { PracticeActionButtons } from "./PracticeActionButtons";
 import { SavedPassageSelect } from "./SavedPassageSelect";
@@ -14,10 +14,9 @@ import { SourcePicker } from "./SourcePicker";
 
 type PracticeControlsProps = {
   canSaveCurrentPassage: boolean;
-  hasSavedPassages: boolean;
   isCurrentPassageSaved: boolean;
   practiceSource: PracticeSource;
-  savedPassages: SavedPassage[];
+  savedPassageOptions: PracticePassageOption[];
   selectedSavedPassageId: string;
   onNextFeaturedPassage: () => void;
   onOpenLibrary: () => void;
@@ -33,10 +32,9 @@ type PracticeControlsProps = {
  */
 export function PracticeControls({
   canSaveCurrentPassage,
-  hasSavedPassages,
   isCurrentPassageSaved,
   practiceSource,
-  savedPassages,
+  savedPassageOptions,
   selectedSavedPassageId,
   onNextFeaturedPassage,
   onOpenLibrary,
@@ -78,9 +76,8 @@ export function PracticeControls({
                 <div className="grid gap-4 pt-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
                   <div className="grid gap-3 xl:min-h-16 xl:grid-cols-[auto_minmax(0,1fr)] xl:items-end">
                     <SourcePicker
-                      hasSavedPassages={hasSavedPassages}
                       practiceSource={practiceSource}
-                      savedPassages={savedPassages}
+                      savedPassageOptions={savedPassageOptions}
                       selectedSavedPassageId={selectedSavedPassageId}
                       onSelectFeaturedPractice={onSelectFeaturedPractice}
                       onSelectSavedPractice={onSelectSavedPractice}
@@ -88,7 +85,7 @@ export function PracticeControls({
 
                     {practiceSource === "saved" && (
                       <SavedPassageSelect
-                        savedPassages={savedPassages}
+                        savedPassageOptions={savedPassageOptions}
                         selectedSavedPassageId={selectedSavedPassageId}
                         onSelectSavedPractice={onSelectSavedPractice}
                       />

@@ -18,6 +18,12 @@ export type PracticePassage = {
   verses: BibleVerse[];
 };
 
+export type PracticePassageOption = {
+  id: string;
+  title: string;
+  category: string;
+};
+
 export type PracticeAttempt = {
   id: string;
   featuredPassageId?: string;

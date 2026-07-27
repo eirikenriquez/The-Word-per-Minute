@@ -138,7 +138,11 @@ export function createPracticePageProps({
     practiceTitle,
     progress: practiceSession.progress,
     reflectionError,
-    savedPassages: savedLibrary.savedPassages,
+    savedPassageOptions: savedLibrary.savedPassages.map(({ category, id, title }) => ({
+      category,
+      id,
+      title,
+    })),
     selectedSavedPassageId: savedLibrary.selectedSavedPassageId,
     status: practiceSession.status,
     translationName,
