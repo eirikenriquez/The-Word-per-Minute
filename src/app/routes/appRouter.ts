@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router';
 import App from '../../App';
 import { AppRouteErrorBoundary } from '../components/AppRouteErrorBoundary';
 import { AppLayout } from '../layouts/AppLayout';
+import { HomeRoute } from './HomeRoute';
 
 /**
  * Browser router created once outside the React render tree.
@@ -15,6 +16,10 @@ export const appRouter = createBrowserRouter([
     Component: AppLayout,
     ErrorBoundary: AppRouteErrorBoundary,
     children: [
+      {
+        index: true,
+        Component: HomeRoute,
+      },
       {
         path: '*',
         Component: App,

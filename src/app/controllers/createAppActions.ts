@@ -1,5 +1,6 @@
 import type { AppMode } from '../../types/app';
 import type { FeaturedPassage } from '../../features/featured-passages/types/featuredPassage';
+import { getRandomFeaturedPassage } from '../../features/featured-passages/utils/featuredPassageSelection';
 import type { SavedPassage } from '../../features/saved-passages/types/savedPassage';
 import type { PracticeRouteState } from '../routes/practiceRouteState';
 
@@ -220,17 +221,4 @@ function createVerseRange(startVerse: number, endVerse: number) {
     { length: endVerse - startVerse + 1 },
     (_, index) => startVerse + index,
   );
-}
-
-function getRandomFeaturedPassage(
-  passages: FeaturedPassage[],
-  currentPassageId: string,
-) {
-  const otherPassages = passages.filter(
-    (passage) => passage.id !== currentPassageId,
-  );
-  const availablePassages = otherPassages.length ? otherPassages : passages;
-  return availablePassages[
-    Math.floor(Math.random() * availablePassages.length)
-  ];
 }

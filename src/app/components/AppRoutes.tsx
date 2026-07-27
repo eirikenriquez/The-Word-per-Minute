@@ -1,8 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router';
 import type { BiblePageProps } from '../../pages/bible/BiblePage';
 import { BiblePage } from '../../pages/bible/BiblePage';
-import type { HomePageProps } from '../../pages/home/HomePage';
-import { HomePage } from '../../pages/home/HomePage';
 import type { LibraryPageProps } from '../../pages/library/LibraryPage';
 import { LibraryPage } from '../../pages/library/LibraryPage';
 import type { PracticePageProps } from '../../pages/practice/PracticePage';
@@ -13,7 +11,6 @@ import { APP_ROUTE_PATHS } from '../routes/appRoutePaths';
 
 export type AppRoutesProps = {
   biblePageProps: BiblePageProps;
-  homePageProps: HomePageProps;
   libraryPageProps: LibraryPageProps;
   practicePageProps: PracticePageProps | null;
   profilePageProps: ProfilePageProps;
@@ -24,17 +21,12 @@ export type AppRoutesProps = {
  */
 export function AppRoutes({
   biblePageProps,
-  homePageProps,
   libraryPageProps,
   practicePageProps,
   profilePageProps,
 }: AppRoutesProps) {
   return (
     <Routes>
-      <Route
-        element={<HomePage {...homePageProps} />}
-        path={APP_ROUTE_PATHS.home}
-      />
       <Route
         element={
           practicePageProps ? <PracticePage {...practicePageProps} /> : null

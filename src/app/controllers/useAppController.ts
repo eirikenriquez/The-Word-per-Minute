@@ -2,7 +2,6 @@ import { useCallback, useMemo, useState } from 'react';
 import type { AppHeaderProps } from '../components/AppHeader';
 import type { AppRoutesProps } from '../components/AppRoutes';
 import { useAuth } from '../../features/auth/context/authContext';
-import { useAuthMenu } from '../../features/auth/context/authMenuContext';
 import { useReaderSelection } from '../../features/bible-reader/hooks/useReaderSelection';
 import { useVerseLibrary } from '../../features/bible-reader/hooks/useVerseLibrary';
 import { useFeaturedPassages } from '../../features/featured-passages/hooks/useFeaturedPassages';
@@ -24,7 +23,6 @@ import { usePracticeRouteSelection } from '../hooks/usePracticeRouteSelection';
 import { createAppActions } from './createAppActions';
 import {
   createBiblePageProps,
-  createHomePageProps,
   createLibraryPageProps,
   createPracticePageProps,
   createProfilePageProps,
@@ -40,7 +38,6 @@ export function useAppController() {
     string | null
   >(null);
   const authSession = useAuth();
-  const { openSignUpMenu } = useAuthMenu();
 
   const readerSelection = useReaderSelection();
   const featuredLibrary = useFeaturedPassages();
@@ -52,8 +49,9 @@ export function useAppController() {
     updateReflection: updatePracticeReflection,
   } = practiceAttempts;
   const savedPassageCount = savedLibrary.savedPassages.length;
-  const { featuredHomeCategories, savedPassageCategories } =
-    usePassageCategories(featuredLibrary.passages);
+  const { savedPassageCategories } = usePassageCategories(
+    featuredLibrary.passages,
+  );
   const { practiceSource, selectPracticeRoute } = usePracticeRouteSelection({
     appMode,
     featuredPassages: featuredLibrary.passages,
@@ -270,13 +268,6 @@ export function useAppController() {
         onSaveCurrentPassage: saveCurrentPassage,
         onSaveTitleChange: setSaveTitle,
       },
-    }),
-    homePageProps: createHomePageProps({
-      appActions,
-      featuredHomeCategories,
-      isSignedIn: authSession.isSignedIn,
-      onCreateAccount: openSignUpMenu,
-      savedPassageCount,
     }),
     libraryPageProps: createLibraryPageProps({
       appActions,

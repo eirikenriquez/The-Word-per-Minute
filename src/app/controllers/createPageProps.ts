@@ -3,7 +3,6 @@ import type { useVerseLibrary } from '../../features/bible-reader/hooks/useVerse
 import type { usePracticeSession } from '../../features/practice/hooks/usePracticeSession';
 import type { useSavedPassages } from '../../features/saved-passages/hooks/useSavedPassages';
 import type { BiblePageProps } from '../../pages/bible/BiblePage';
-import type { HomeCategory, HomePageProps } from '../../pages/home/HomePage';
 import type { LibraryPageProps } from '../../pages/library/LibraryPage';
 import type { PracticePageProps } from '../../pages/practice/PracticePage';
 import type { ProfilePageProps } from '../../pages/profile/ProfilePage';
@@ -45,30 +44,6 @@ export function createBiblePageProps({
     onSelectReaderRange: readerSelection.selectRange,
     onSelectReaderVerse: readerSelection.selectVerse,
     onSelectTranslation: appActions.selectReaderTranslation,
-  };
-}
-
-export function createHomePageProps({
-  appActions,
-  featuredHomeCategories,
-  isSignedIn,
-  onCreateAccount,
-  savedPassageCount,
-}: {
-  appActions: AppActions;
-  featuredHomeCategories: HomeCategory[];
-  isSignedIn: boolean;
-  onCreateAccount: () => void;
-  savedPassageCount: number;
-}): HomePageProps {
-  return {
-    featuredHomeCategories,
-    isSignedIn,
-    onCreateAccount,
-    savedPassageCount,
-    onOpenBible: appActions.openBible,
-    onSelectFeaturedCategory: appActions.startFeaturedCategory,
-    onStartFeaturedPractice: appActions.startFeaturedPractice,
   };
 }
 
