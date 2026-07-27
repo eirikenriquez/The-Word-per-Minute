@@ -4,15 +4,19 @@ import {
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { Button } from "../../../components/ui/Button";
-import { APP_ROUTE_PATHS } from "../../../app/routes/appRoutePaths";
 import type { AuthSessionState } from "../hooks/useAuthSession";
 
 type SignedInAuthMenuProps = {
   authSession: AuthSessionState;
   onClose: () => void;
+  profilePath: string;
 };
 
-export function SignedInAuthMenu({ authSession, onClose }: SignedInAuthMenuProps) {
+export function SignedInAuthMenu({
+  authSession,
+  onClose,
+  profilePath,
+}: SignedInAuthMenuProps) {
   return (
     <div className="grid gap-4">
       <div>
@@ -29,7 +33,7 @@ export function SignedInAuthMenu({ authSession, onClose }: SignedInAuthMenuProps
 
       <Link
         className="inline-flex min-h-9 items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-ink-muted transition-colors hover:bg-surface-muted hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
-        to={APP_ROUTE_PATHS.profile}
+        to={profilePath}
         onClick={onClose}
       >
         <ChartBarIcon aria-hidden="true" className="h-4 w-4" />
