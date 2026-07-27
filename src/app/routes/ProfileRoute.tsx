@@ -1,5 +1,5 @@
 import { useAuth } from '../../features/auth/context/authContext';
-import { usePracticeAttempts } from '../../features/practice/hooks/usePracticeAttempts';
+import { usePracticeAttemptHistory } from '../../features/practice/hooks/usePracticeAttemptHistory';
 import { ProfilePage } from '../../pages/profile/ProfilePage';
 
 /**
@@ -7,22 +7,22 @@ import { ProfilePage } from '../../pages/profile/ProfilePage';
  */
 export function ProfileRoute() {
   const authSession = useAuth();
-  const practiceAttempts = usePracticeAttempts(authSession.user?.id);
+  const practiceHistory = usePracticeAttemptHistory(authSession.user?.id);
 
   return (
     <ProfilePage
-      hasMoreRecentAttempts={practiceAttempts.hasMoreAttempts}
-      isLoadingMoreRecentAttempts={practiceAttempts.isLoadingMore}
-      isLoadingPracticeSummary={practiceAttempts.isLoadingSummary}
-      isLoadingRecentAttempts={practiceAttempts.isLoading}
+      hasMoreRecentAttempts={practiceHistory.hasMoreAttempts}
+      isLoadingMoreRecentAttempts={practiceHistory.isLoadingMore}
+      isLoadingPracticeSummary={practiceHistory.isLoadingSummary}
+      isLoadingRecentAttempts={practiceHistory.isLoading}
       isSignedIn={authSession.isSignedIn}
-      practiceSummary={practiceAttempts.summary}
-      practiceSummaryError={practiceAttempts.summaryError}
-      recentAttemptsError={practiceAttempts.historyError}
-      recentAttemptsLoadMoreError={practiceAttempts.loadMoreError}
-      recentPracticeAttempts={practiceAttempts.recentAttempts}
+      practiceSummary={practiceHistory.summary}
+      practiceSummaryError={practiceHistory.summaryError}
+      recentAttemptsError={practiceHistory.historyError}
+      recentAttemptsLoadMoreError={practiceHistory.loadMoreError}
+      recentPracticeAttempts={practiceHistory.recentAttempts}
       userEmail={authSession.user?.email}
-      onLoadMoreRecentAttempts={practiceAttempts.loadMoreAttempts}
+      onLoadMoreRecentAttempts={practiceHistory.loadMoreAttempts}
     />
   );
 }
