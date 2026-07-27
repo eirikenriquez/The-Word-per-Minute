@@ -5,6 +5,43 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
+const featureNames = [
+  'auth',
+  'bible-reader',
+  'featured-passages',
+  'practice',
+  'saved-passages',
+]
+
+const featureBoundaryConfigs = featureNames.map((featureName) => {
+  const otherFeatureNames = featureNames
+    .filter((otherFeatureName) => otherFeatureName !== featureName)
+    .join('|')
+
+  return {
+    files: [`src/features/${featureName}/**/*.{ts,tsx}`],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              regex: '^(?:@/|(?:\\.\\./)+)(?:app|pages)(?:/|$)',
+              message:
+                'Features cannot import app or pages. Compose features in the application layer.',
+            },
+            {
+              regex: `^(?:@/features/|(?:\\.\\./)+(?:features/)?)(?:${otherFeatureNames})(?:/|$)`,
+              message:
+                'Features cannot import other features. Compose them in the application layer.',
+            },
+          ],
+        },
+      ],
+    },
+  }
+})
+
 export default defineConfig([
   globalIgnores(['.vite', 'dist']),
   {
@@ -18,6 +55,40 @@ export default defineConfig([
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
+    },
+  },
+  ...featureBoundaryConfigs,
+  {
+    files: ['src/pages/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              regex: '^(?:@/|(?:\\.\\./)+)app(?:/|$)',
+              message: 'Pages cannot import app. The app owns routing and page composition.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/{components,lib,types,utils}/**/*.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              regex: '^(?:@/|(?:\\.\\./)+)(?:app|features|pages)(?:/|$)',
+              message:
+                'Shared modules cannot import higher application layers.',
+            },
+          ],
+        },
+      ],
     },
   },
 ])
