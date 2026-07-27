@@ -2,24 +2,20 @@ import type { AppMode } from '../../types/app';
 import type { FeaturedPassage } from '../../features/featured-passages/types/featuredPassage';
 import { getRandomFeaturedPassage } from '../../features/featured-passages/utils/featuredPassageSelection';
 import type { SavedPassage } from '../../features/saved-passages/types/savedPassage';
+import type { BibleRouteState } from '../routes/bibleRouteState';
 import type { PracticeRouteState } from '../routes/practiceRouteState';
 
 type CreateAppActionsParams = {
-  clearReaderSelection: () => void;
   featuredPassages: FeaturedPassage[];
   featuredSelectedPassageId: string;
-  focusSelectedVerses: () => void;
   removeSavedPassage: (passageId: string) => void | Promise<void>;
   resetPractice: () => void;
   savedPassages: SavedPassage[];
-  selectBibleBook: (bookId: string) => void;
-  selectBibleChapter: (chapterNumber: number) => void;
+  selectBibleRoute: (routeState: BibleRouteState) => void;
   selectPracticeRoute: (routeState: PracticeRouteState) => void;
   selectSavedPassage: (passageId: string) => void;
-  selectTranslation: (translationId: string) => void;
   selectedSavedPassageId: string;
   setAppMode: (mode: AppMode) => void;
-  setSelectedVerseNumbers: (verseNumbers: number[]) => void;
 };
 
 /**
@@ -27,21 +23,16 @@ type CreateAppActionsParams = {
  * Pure page-local interactions should stay inside their page or feature hooks.
  */
 export function createAppActions({
-  clearReaderSelection,
   featuredPassages,
   featuredSelectedPassageId,
-  focusSelectedVerses,
   removeSavedPassage,
   resetPractice,
   savedPassages,
-  selectBibleBook,
-  selectBibleChapter,
+  selectBibleRoute,
   selectPracticeRoute,
   selectSavedPassage,
-  selectTranslation,
   selectedSavedPassageId,
   setAppMode,
-  setSelectedVerseNumbers,
 }: CreateAppActionsParams) {
   function openBible() {
     setAppMode('bible');
@@ -125,27 +116,6 @@ export function createAppActions({
     resetPractice();
   }
 
-  function selectReaderTranslation(translationId: string) {
-    selectTranslation(translationId);
-    clearReaderSelection();
-    setAppMode('bible');
-    resetPractice();
-  }
-
-  function selectReaderBook(bookId: string) {
-    selectBibleBook(bookId);
-    clearReaderSelection();
-    setAppMode('bible');
-    resetPractice();
-  }
-
-  function selectReaderChapter(chapterNumber: number) {
-    selectBibleChapter(chapterNumber);
-    clearReaderSelection();
-    setAppMode('bible');
-    resetPractice();
-  }
-
   function randomFeaturedReaderPassage() {
     const passage =
       featuredPassages[Math.floor(Math.random() * featuredPassages.length)];
@@ -179,26 +149,16 @@ export function createAppActions({
     >,
     selectedVerses: number[],
   ) {
-    selectTranslation(passage.translationId);
-    selectBibleBook(passage.bookId);
-    selectBibleChapter(passage.chapter);
-    setSelectedVerseNumbers(selectedVerses);
-
-    if (selectedVerses.length) {
-      focusSelectedVerses();
-    }
-
-    setAppMode('bible');
-    resetPractice();
-  }
-
-  function clearBibleSelection() {
-    clearReaderSelection();
+    selectBibleRoute({
+      bookId: passage.bookId,
+      chapter: passage.chapter,
+      selectedVerseNumbers: selectedVerses,
+      translationId: passage.translationId,
+    });
     resetPractice();
   }
 
   return {
-    clearBibleSelection,
     nextFeaturedPassage,
     openBible,
     openLibrary,
@@ -207,9 +167,6 @@ export function createAppActions({
     readSavedPassage,
     removeSavedPractice,
     selectFeaturedPractice,
-    selectReaderBook,
-    selectReaderChapter,
-    selectReaderTranslation,
     selectSavedPractice,
     startFeaturedCategory,
     startFeaturedPractice,

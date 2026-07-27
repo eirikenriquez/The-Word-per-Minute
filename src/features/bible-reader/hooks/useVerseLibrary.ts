@@ -114,15 +114,21 @@ export function useVerseLibrary() {
 
   function selectTranslation(translationId: string) {
     setSelectedTranslationId(translationId);
+    setBooks([]);
+    setSelectedBookId('');
+    setSelectedChapter(1);
+    setChapter(null);
   }
 
   function selectBook(bookId: string) {
     setSelectedBookId(bookId);
     setSelectedChapter(1);
+    setChapter(null);
   }
 
   function selectChapter(chapterNumber: number) {
     setSelectedChapter(chapterNumber);
+    setChapter(null);
   }
 
   return {

@@ -1,5 +1,6 @@
 import type { useReaderSelection } from '../../features/bible-reader/hooks/useReaderSelection';
 import type { useVerseLibrary } from '../../features/bible-reader/hooks/useVerseLibrary';
+import type { useBibleRouteSelection } from '../hooks/useBibleRouteSelection';
 import type { usePracticeSession } from '../../features/practice/hooks/usePracticeSession';
 import type { useSavedPassages } from '../../features/saved-passages/hooks/useSavedPassages';
 import type { BiblePageProps } from '../../pages/bible/BiblePage';
@@ -16,11 +17,13 @@ type AppActions = ReturnType<typeof createAppActions>;
 export function createBiblePageProps({
   appActions,
   bibleLibrary,
+  bibleRouteSelection,
   readerSelection,
   saveControls,
 }: {
   appActions: AppActions;
   bibleLibrary: ReturnType<typeof useVerseLibrary>;
+  bibleRouteSelection: ReturnType<typeof useBibleRouteSelection>;
   readerSelection: ReturnType<typeof useReaderSelection>;
   saveControls: BiblePageProps['saveControls'];
 }): BiblePageProps {
@@ -35,13 +38,13 @@ export function createBiblePageProps({
     selectedVerseNumbers: readerSelection.selectedVerseNumbers,
     saveControls,
     translations: bibleLibrary.translations,
-    onClearBibleSelection: appActions.clearBibleSelection,
+    onClearBibleSelection: bibleRouteSelection.clearReaderSelection,
     onRandomFeaturedReaderPassage: appActions.randomFeaturedReaderPassage,
-    onSelectBibleBook: appActions.selectReaderBook,
-    onSelectBibleChapter: appActions.selectReaderChapter,
-    onSelectReaderRange: readerSelection.selectRange,
-    onSelectReaderVerse: readerSelection.selectVerse,
-    onSelectTranslation: appActions.selectReaderTranslation,
+    onSelectBibleBook: bibleRouteSelection.selectReaderBook,
+    onSelectBibleChapter: bibleRouteSelection.selectReaderChapter,
+    onSelectReaderRange: bibleRouteSelection.selectReaderRange,
+    onSelectReaderVerse: bibleRouteSelection.selectReaderVerse,
+    onSelectTranslation: bibleRouteSelection.selectReaderTranslation,
   };
 }
 

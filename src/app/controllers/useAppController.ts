@@ -16,6 +16,7 @@ import {
 } from '../../features/saved-passages/utils/passageSaveInput';
 import type { PracticeCompletionResult } from '@/features/practice/types/practice';
 import { useAppDisplayState } from '../hooks/useAppDisplayState';
+import { useBibleRouteSelection } from '../hooks/useBibleRouteSelection';
 import { useAppModeEffects } from '../hooks/useAppModeEffects';
 import { useAppNavigation } from '../hooks/useAppNavigation';
 import { usePassageCategories } from '../hooks/usePassageCategories';
@@ -51,6 +52,20 @@ export function useAppController() {
   const { savedPassageCategories } = usePassageCategories(
     featuredLibrary.passages,
   );
+  const bibleRouteSelection = useBibleRouteSelection({
+    appMode,
+    books: bibleLibrary.books,
+    focusSelectedVerses: readerSelection.focusSelectedVerses,
+    selectedBookId: bibleLibrary.selectedBookId,
+    selectedChapter: bibleLibrary.selectedChapter,
+    selectedTranslationId: bibleLibrary.selectedTranslationId,
+    selectedVerseNumbers: readerSelection.selectedVerseNumbers,
+    selectBook: bibleLibrary.selectBook,
+    selectChapter: bibleLibrary.selectChapter,
+    selectTranslation: bibleLibrary.selectTranslation,
+    setSelectedVerseNumbers: readerSelection.setSelectedVerseNumbers,
+    translations: bibleLibrary.translations,
+  });
   const { practiceSource, selectPracticeRoute } = usePracticeRouteSelection({
     appMode,
     featuredPassages: featuredLibrary.passages,
@@ -219,21 +234,16 @@ export function useAppController() {
     selectedVerseNumbers: readerSelection.selectedVerseNumbers,
   });
   const appActions = createAppActions({
-    clearReaderSelection: readerSelection.clearSelection,
     featuredPassages: featuredLibrary.passages,
     featuredSelectedPassageId: featuredLibrary.selectedPassageId,
-    focusSelectedVerses: readerSelection.focusSelectedVerses,
     removeSavedPassage: savedLibrary.removePassage,
     resetPractice: resetPracticeSession,
     savedPassages: savedLibrary.savedPassages,
-    selectBibleBook: bibleLibrary.selectBook,
-    selectBibleChapter: bibleLibrary.selectChapter,
+    selectBibleRoute: bibleRouteSelection.selectBibleRoute,
     selectPracticeRoute,
     selectSavedPassage: savedLibrary.selectSavedPassage,
-    selectTranslation: bibleLibrary.selectTranslation,
     selectedSavedPassageId: savedLibrary.selectedSavedPassageId,
     setAppMode: selectAppMode,
-    setSelectedVerseNumbers: readerSelection.setSelectedVerseNumbers,
   });
 
   const errorMessage =
@@ -254,6 +264,7 @@ export function useAppController() {
     biblePageProps: createBiblePageProps({
       appActions,
       bibleLibrary,
+      bibleRouteSelection,
       readerSelection,
       saveControls: {
         canSaveCurrentPassage: Boolean(saveInput),
