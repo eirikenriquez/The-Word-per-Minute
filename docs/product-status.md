@@ -20,7 +20,7 @@ The exact current release and previous changes are tracked in [`CHANGELOG.md`](.
 
 ## Current Capabilities
 
-- Discover curated passages through broad scripture themes.
+- Discover 66 curated World English Bible selections across eight broad scripture themes.
 - Read locally bundled World English Bible chapters and select verse ranges.
 - Practice featured or saved passages through one continuous, keyboard-focused typing surface.
 - Receive live WPM, accuracy, progress, and completion feedback.
