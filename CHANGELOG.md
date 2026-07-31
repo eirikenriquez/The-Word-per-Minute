@@ -13,6 +13,10 @@ During public alpha:
 
 ## [Unreleased]
 
+### Added
+
+- Expanded the featured catalogue from 22 to 66 World English Bible selections with 29 new single verses and 15 multi-verse passages across the existing eight broad themes.
+
 ## [0.2.0] - 2026-07-27
 
 ### Added
