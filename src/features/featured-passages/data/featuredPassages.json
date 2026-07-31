@@ -509,6 +509,156 @@
       "chapter": 139,
       "startVerse": 14,
       "endVerse": 14
+    },
+    {
+      "id": "ps-1-1-6",
+      "title": "Planted by Streams",
+      "theme": "Wisdom",
+      "translationId": "web",
+      "bookId": "Ps",
+      "chapter": 1,
+      "startVerse": 1,
+      "endVerse": 6
+    },
+    {
+      "id": "ps-51-10-12",
+      "title": "Create in Me a Clean Heart",
+      "theme": "Prayer",
+      "translationId": "web",
+      "bookId": "Ps",
+      "chapter": 51,
+      "startVerse": 10,
+      "endVerse": 12
+    },
+    {
+      "id": "ps-103-10-14",
+      "title": "Compassion of a Father",
+      "theme": "Love & Grace",
+      "translationId": "web",
+      "bookId": "Ps",
+      "chapter": 103,
+      "startVerse": 10,
+      "endVerse": 14
+    },
+    {
+      "id": "ps-121-1-8",
+      "title": "My Help Comes from the LORD",
+      "theme": "Peace & Comfort",
+      "translationId": "web",
+      "bookId": "Ps",
+      "chapter": 121,
+      "startVerse": 1,
+      "endVerse": 8
+    },
+    {
+      "id": "isa-53-4-6",
+      "title": "Wounded for Us",
+      "theme": "Love & Grace",
+      "translationId": "web",
+      "bookId": "Isa",
+      "chapter": 53,
+      "startVerse": 4,
+      "endVerse": 6
+    },
+    {
+      "id": "mic-6-6-8",
+      "title": "Walk Humbly",
+      "theme": "Wisdom",
+      "translationId": "web",
+      "bookId": "Mic",
+      "chapter": 6,
+      "startVerse": 6,
+      "endVerse": 8
+    },
+    {
+      "id": "matt-6-9-13",
+      "title": "The Lord's Prayer",
+      "theme": "Prayer",
+      "translationId": "web",
+      "bookId": "Matt",
+      "chapter": 6,
+      "startVerse": 9,
+      "endVerse": 13
+    },
+    {
+      "id": "matt-11-28-30",
+      "title": "Rest for Your Souls",
+      "theme": "Peace & Comfort",
+      "translationId": "web",
+      "bookId": "Matt",
+      "chapter": 11,
+      "startVerse": 28,
+      "endVerse": 30
+    },
+    {
+      "id": "matt-28-18-20",
+      "title": "The Great Commission",
+      "theme": "Kingdom",
+      "translationId": "web",
+      "bookId": "Matt",
+      "chapter": 28,
+      "startVerse": 18,
+      "endVerse": 20
+    },
+    {
+      "id": "john-1-1-5",
+      "title": "The Word and the Light",
+      "theme": "Faith & Trust",
+      "translationId": "web",
+      "bookId": "John",
+      "chapter": 1,
+      "startVerse": 1,
+      "endVerse": 5
+    },
+    {
+      "id": "rom-5-1-5",
+      "title": "Hope Does Not Disappoint",
+      "theme": "Hope",
+      "translationId": "web",
+      "bookId": "Rom",
+      "chapter": 5,
+      "startVerse": 1,
+      "endVerse": 5
+    },
+    {
+      "id": "rom-10-9-10",
+      "title": "Believe and Confess",
+      "theme": "Faith & Trust",
+      "translationId": "web",
+      "bookId": "Rom",
+      "chapter": 10,
+      "startVerse": 9,
+      "endVerse": 10
+    },
+    {
+      "id": "phil-4-8-9",
+      "title": "Think on These Things",
+      "theme": "Wisdom",
+      "translationId": "web",
+      "bookId": "Phil",
+      "chapter": 4,
+      "startVerse": 8,
+      "endVerse": 9
+    },
+    {
+      "id": "eph-6-10-18",
+      "title": "The Armor of God",
+      "theme": "Character & Endurance",
+      "translationId": "web",
+      "bookId": "Eph",
+      "chapter": 6,
+      "startVerse": 10,
+      "endVerse": 18
+    },
+    {
+      "id": "heb-12-1-3",
+      "title": "Run with Endurance",
+      "theme": "Character & Endurance",
+      "translationId": "web",
+      "bookId": "Heb",
+      "chapter": 12,
+      "startVerse": 1,
+      "endVerse": 3
     }
   ]
 }
