@@ -259,6 +259,256 @@
       "chapter": 33,
       "startVerse": 12,
       "endVerse": 12
+    },
+    {
+      "id": "isa-41-10",
+      "title": "Do Not Fear",
+      "theme": "Hope",
+      "translationId": "web",
+      "bookId": "Isa",
+      "chapter": 41,
+      "startVerse": 10,
+      "endVerse": 10
+    },
+    {
+      "id": "rom-8-28",
+      "title": "Working for Good",
+      "theme": "Faith & Trust",
+      "translationId": "web",
+      "bookId": "Rom",
+      "chapter": 8,
+      "startVerse": 28,
+      "endVerse": 28
+    },
+    {
+      "id": "josh-1-9",
+      "title": "Strong and Courageous",
+      "theme": "Faith & Trust",
+      "translationId": "web",
+      "bookId": "Josh",
+      "chapter": 1,
+      "startVerse": 9,
+      "endVerse": 9
+    },
+    {
+      "id": "john-14-6",
+      "title": "The Way, the Truth, and the Life",
+      "theme": "Faith & Trust",
+      "translationId": "web",
+      "bookId": "John",
+      "chapter": 14,
+      "startVerse": 6,
+      "endVerse": 6
+    },
+    {
+      "id": "phil-4-13",
+      "title": "Strength Through Christ",
+      "theme": "Character & Endurance",
+      "translationId": "web",
+      "bookId": "Phil",
+      "chapter": 4,
+      "startVerse": 13,
+      "endVerse": 13
+    },
+    {
+      "id": "john-16-33",
+      "title": "Take Heart",
+      "theme": "Peace & Comfort",
+      "translationId": "web",
+      "bookId": "John",
+      "chapter": 16,
+      "startVerse": 33,
+      "endVerse": 33
+    },
+    {
+      "id": "2cor-5-17",
+      "title": "A New Creation",
+      "theme": "Hope",
+      "translationId": "web",
+      "bookId": "2Cor",
+      "chapter": 5,
+      "startVerse": 17,
+      "endVerse": 17
+    },
+    {
+      "id": "2tim-1-7",
+      "title": "Power, Love, and Self-Control",
+      "theme": "Character & Endurance",
+      "translationId": "web",
+      "bookId": "2Tim",
+      "chapter": 1,
+      "startVerse": 7,
+      "endVerse": 7
+    },
+    {
+      "id": "2cor-12-9",
+      "title": "Grace Is Sufficient",
+      "theme": "Love & Grace",
+      "translationId": "web",
+      "bookId": "2Cor",
+      "chapter": 12,
+      "startVerse": 9,
+      "endVerse": 9
+    },
+    {
+      "id": "john-14-27",
+      "title": "Peace I Give You",
+      "theme": "Peace & Comfort",
+      "translationId": "web",
+      "bookId": "John",
+      "chapter": 14,
+      "startVerse": 27,
+      "endVerse": 27
+    },
+    {
+      "id": "isa-54-17",
+      "title": "No Weapon Will Prevail",
+      "theme": "Faith & Trust",
+      "translationId": "web",
+      "bookId": "Isa",
+      "chapter": 54,
+      "startVerse": 17,
+      "endVerse": 17
+    },
+    {
+      "id": "john-10-10",
+      "title": "Life Abundantly",
+      "theme": "Hope",
+      "translationId": "web",
+      "bookId": "John",
+      "chapter": 10,
+      "startVerse": 10,
+      "endVerse": 10
+    },
+    {
+      "id": "eph-3-20",
+      "title": "Beyond What We Ask",
+      "theme": "Faith & Trust",
+      "translationId": "web",
+      "bookId": "Eph",
+      "chapter": 3,
+      "startVerse": 20,
+      "endVerse": 20
+    },
+    {
+      "id": "1thess-5-18",
+      "title": "Give Thanks",
+      "theme": "Prayer",
+      "translationId": "web",
+      "bookId": "1Thess",
+      "chapter": 5,
+      "startVerse": 18,
+      "endVerse": 18
+    },
+    {
+      "id": "2tim-3-16",
+      "title": "God-Breathed Scripture",
+      "theme": "Wisdom",
+      "translationId": "web",
+      "bookId": "2Tim",
+      "chapter": 3,
+      "startVerse": 16,
+      "endVerse": 16
+    },
+    {
+      "id": "1john-1-9",
+      "title": "Faithful to Forgive",
+      "theme": "Love & Grace",
+      "translationId": "web",
+      "bookId": "1John",
+      "chapter": 1,
+      "startVerse": 9,
+      "endVerse": 9
+    },
+    {
+      "id": "ps-46-10",
+      "title": "Be Still",
+      "theme": "Peace & Comfort",
+      "translationId": "web",
+      "bookId": "Ps",
+      "chapter": 46,
+      "startVerse": 10,
+      "endVerse": 10
+    },
+    {
+      "id": "2cor-10-5",
+      "title": "Take Every Thought Captive",
+      "theme": "Character & Endurance",
+      "translationId": "web",
+      "bookId": "2Cor",
+      "chapter": 10,
+      "startVerse": 5,
+      "endVerse": 5
+    },
+    {
+      "id": "heb-4-12",
+      "title": "Living and Active",
+      "theme": "Wisdom",
+      "translationId": "web",
+      "bookId": "Heb",
+      "chapter": 4,
+      "startVerse": 12,
+      "endVerse": 12
+    },
+    {
+      "id": "gal-6-9",
+      "title": "Do Not Grow Weary",
+      "theme": "Character & Endurance",
+      "translationId": "web",
+      "bookId": "Gal",
+      "chapter": 6,
+      "startVerse": 9,
+      "endVerse": 9
+    },
+    {
+      "id": "2chr-7-14",
+      "title": "Humble and Pray",
+      "theme": "Prayer",
+      "translationId": "web",
+      "bookId": "2Chr",
+      "chapter": 7,
+      "startVerse": 14,
+      "endVerse": 14
+    },
+    {
+      "id": "matt-5-16",
+      "title": "Let Your Light Shine",
+      "theme": "Kingdom",
+      "translationId": "web",
+      "bookId": "Matt",
+      "chapter": 5,
+      "startVerse": 16,
+      "endVerse": 16
+    },
+    {
+      "id": "1pet-2-9",
+      "title": "Called Into Light",
+      "theme": "Kingdom",
+      "translationId": "web",
+      "bookId": "1Pet",
+      "chapter": 2,
+      "startVerse": 9,
+      "endVerse": 9
+    },
+    {
+      "id": "gen-1-27",
+      "title": "Made in His Image",
+      "theme": "Love & Grace",
+      "translationId": "web",
+      "bookId": "Gen",
+      "chapter": 1,
+      "startVerse": 27,
+      "endVerse": 27
+    },
+    {
+      "id": "ps-139-14",
+      "title": "Wonderfully Made",
+      "theme": "Love & Grace",
+      "translationId": "web",
+      "bookId": "Ps",
+      "chapter": 139,
+      "startVerse": 14,
+      "endVerse": 14
     }
   ]
 }
