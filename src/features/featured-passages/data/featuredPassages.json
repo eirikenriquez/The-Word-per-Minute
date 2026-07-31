@@ -219,6 +219,46 @@
       "chapter": 1,
       "startVerse": 12,
       "endVerse": 12
+    },
+    {
+      "id": "2cor-5-7",
+      "title": "Walk by Faith",
+      "theme": "Faith & Trust",
+      "translationId": "web",
+      "bookId": "2Cor",
+      "chapter": 5,
+      "startVerse": 7,
+      "endVerse": 7
+    },
+    {
+      "id": "ps-139-5",
+      "title": "Held on Every Side",
+      "theme": "Peace & Comfort",
+      "translationId": "web",
+      "bookId": "Ps",
+      "chapter": 139,
+      "startVerse": 5,
+      "endVerse": 5
+    },
+    {
+      "id": "1pet-5-7",
+      "title": "He Cares for You",
+      "theme": "Peace & Comfort",
+      "translationId": "web",
+      "bookId": "1Pet",
+      "chapter": 5,
+      "startVerse": 7,
+      "endVerse": 7
+    },
+    {
+      "id": "deut-33-12",
+      "title": "Beloved and Sheltered",
+      "theme": "Love & Grace",
+      "translationId": "web",
+      "bookId": "Deut",
+      "chapter": 33,
+      "startVerse": 12,
+      "endVerse": 12
     }
   ]
 }
