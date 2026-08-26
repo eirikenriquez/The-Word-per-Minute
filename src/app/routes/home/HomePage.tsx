@@ -3,6 +3,7 @@ import {
   BookOpenIcon,
   SparklesIcon,
 } from '@heroicons/react/24/outline';
+import { useEffect, useState } from 'react';
 import type { PassageResponse } from '../../../types/passage';
 import { Button } from '../../../components/ui/Button';
 
@@ -81,7 +82,7 @@ export function HomePage({
               Curated passages
             </dt>
             <dd className="mt-1 text-4xl font-bold text-ink">
-              {totalFeaturedPassages}
+              <CountUpNumber value={totalFeaturedPassages} />
             </dd>
           </div>
           <div>
@@ -89,7 +90,7 @@ export function HomePage({
               {secondaryStat.label}
             </dt>
             <dd className="mt-1 text-4xl font-bold text-ink">
-              {secondaryStat.value}
+              <CountUpNumber value={secondaryStat.value} />
             </dd>
           </div>
         </dl>
@@ -147,6 +148,45 @@ export function HomePage({
       )}
     </section>
   );
+}
+
+type CountUpNumberProps = {
+  durationMs?: number;
+  value: number;
+};
+
+function CountUpNumber({ durationMs = 950, value }: CountUpNumberProps) {
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+
+    if (prefersReducedMotion) {
+      setDisplayValue(value);
+      return;
+    }
+
+    let animationFrameId = 0;
+    let startTime: number | null = null;
+
+    function updateCount(currentTime: number) {
+      startTime ??= currentTime;
+      const progress = Math.min((currentTime - startTime) / durationMs, 1);
+      const easedProgress = 1 - (1 - progress) ** 3;
+      setDisplayValue(Math.round(value * easedProgress));
+
+      if (progress < 1) {
+        animationFrameId = window.requestAnimationFrame(updateCount);
+      }
+    }
+
+    animationFrameId = window.requestAnimationFrame(updateCount);
+    return () => window.cancelAnimationFrame(animationFrameId);
+  }, [durationMs, value]);
+
+  return displayValue;
 }
 
 type FeaturedPassagePreviewProps = {
