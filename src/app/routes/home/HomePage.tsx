@@ -1,5 +1,9 @@
-import { BookOpenIcon, SparklesIcon } from '@heroicons/react/24/outline';
-import { useEffect, useState } from 'react';
+import {
+  ArrowRightIcon,
+  BookOpenIcon,
+  SparklesIcon,
+} from '@heroicons/react/24/outline';
+import type { PassageResponse } from '../../../types/passage';
 import { Button } from '../../../components/ui/Button';
 
 export type HomeCategory = {
@@ -9,10 +13,13 @@ export type HomeCategory = {
 
 export type HomePageProps = {
   featuredHomeCategories: HomeCategory[];
+  featuredPassageError: string | null;
+  featuredPassageResponse: PassageResponse | null;
+  isFeaturedPassageLoading: boolean;
   isSignedIn: boolean;
-  savedPassageCount: number;
   onCreateAccount: () => void;
   onOpenBible: () => void;
+  onPracticeFeaturedPassage: () => void;
   onSelectFeaturedCategory: (category: string) => void;
   onStartFeaturedPractice: () => void;
 };
@@ -22,22 +29,16 @@ export type HomePageProps = {
  */
 export function HomePage({
   featuredHomeCategories,
+  featuredPassageError,
+  featuredPassageResponse,
+  isFeaturedPassageLoading,
   isSignedIn,
-  savedPassageCount,
   onCreateAccount,
   onOpenBible,
+  onPracticeFeaturedPassage,
   onSelectFeaturedCategory,
   onStartFeaturedPractice,
 }: HomePageProps) {
-  const totalFeaturedPassages = featuredHomeCategories.reduce(
-    (total, category) => total + category.count,
-    0,
-  );
-  const secondaryStat =
-    savedPassageCount > 0
-      ? { label: 'Saved passages', value: savedPassageCount }
-      : { label: 'Themes', value: featuredHomeCategories.length };
-
   return (
     <section className="grid gap-10">
       <section className="grid gap-8 py-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-center lg:py-12">
@@ -63,24 +64,12 @@ export function HomePage({
           </div>
         </div>
 
-        <dl className="rise-in rise-in-delay-1 grid grid-cols-2 gap-6 border-t border-line pt-6 lg:grid-cols-1 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
-          <div>
-            <dt className="text-sm font-medium text-ink-subtle">
-              Curated passages
-            </dt>
-            <dd className="mt-1 text-4xl font-bold text-ink">
-              <CountUpNumber value={totalFeaturedPassages} />
-            </dd>
-          </div>
-          <div>
-            <dt className="text-sm font-medium text-ink-subtle">
-              {secondaryStat.label}
-            </dt>
-            <dd className="mt-1 text-4xl font-bold text-ink">
-              <CountUpNumber value={secondaryStat.value} />
-            </dd>
-          </div>
-        </dl>
+        <FeaturedPassagePreview
+          error={featuredPassageError}
+          isLoading={isFeaturedPassageLoading}
+          onPractice={onPracticeFeaturedPassage}
+          passageResponse={featuredPassageResponse}
+        />
       </section>
 
       <section className="rise-in rise-in-delay-2 grid gap-4 border-t border-line pt-8">
@@ -128,33 +117,74 @@ export function HomePage({
   );
 }
 
-type CountUpNumberProps = {
-  durationMs?: number;
-  value: number;
+type FeaturedPassagePreviewProps = {
+  error: string | null;
+  isLoading: boolean;
+  onPractice: () => void;
+  passageResponse: PassageResponse | null;
 };
 
-function CountUpNumber({ durationMs = 950, value }: CountUpNumberProps) {
-  const [displayValue, setDisplayValue] = useState(0);
+function FeaturedPassagePreview({
+  error,
+  isLoading,
+  onPractice,
+  passageResponse,
+}: FeaturedPassagePreviewProps) {
+  const passageText = passageResponse?.verses
+    .map((verse) => verse.text)
+    .join(' ');
+  const [firstWord, ...remainingWords] = passageText?.split(' ') ?? [];
 
-  useEffect(() => {
-    let animationFrameId = 0;
-    let startTime: number | null = null;
-
-    function updateCount(currentTime: number) {
-      startTime ??= currentTime;
-      const progress = Math.min((currentTime - startTime) / durationMs, 1);
-      const easedProgress = 1 - (1 - progress) ** 3;
-      setDisplayValue(Math.round(value * easedProgress));
-
-      if (progress < 1)
-        animationFrameId = window.requestAnimationFrame(updateCount);
-    }
-
-    animationFrameId = window.requestAnimationFrame(updateCount);
-    return () => window.cancelAnimationFrame(animationFrameId);
-  }, [durationMs, value]);
-
-  return displayValue;
+  return (
+    <article className="rise-in rise-in-delay-1 rounded-xl border border-line bg-surface p-6 shadow-lg shadow-black/5 dark:shadow-black/20 sm:p-8">
+      {passageResponse ? (
+        <>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-ink-subtle">
+              Featured passage
+            </p>
+            <p className="rounded-full border border-line px-2 py-1 text-xs font-semibold text-ink-subtle">
+              {passageResponse.passage.theme}
+            </p>
+          </div>
+          <h2 className="mt-6 text-2xl font-bold text-ink">
+            {passageResponse.passage.title}
+          </h2>
+          <p className="mt-1 text-sm font-semibold text-ink-muted">
+            {passageResponse.reference}
+          </p>
+          <blockquote className="mt-6 max-w-prose font-reading text-[1.375rem] leading-[1.6] tracking-[-0.012em] text-ink">
+            <span className="relative whitespace-nowrap before:absolute before:top-[0.18em] before:bottom-[0.12em] before:-left-2 before:w-[3px] before:rounded-full before:bg-accent">
+              {firstWord}
+            </span>
+            {remainingWords.length > 0 && ` ${remainingWords.join(' ')}`}
+          </blockquote>
+          <div className="mt-7 flex flex-col items-start gap-2 border-t border-line pt-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+            <p className="text-xs font-semibold text-ink-subtle">
+              {passageResponse.translation.name}
+            </p>
+            <button
+              className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-ink transition hover:text-accent-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+              type="button"
+              onClick={onPractice}
+            >
+              Practice this passage
+              <ArrowRightIcon aria-hidden="true" className="h-4 w-4" />
+            </button>
+          </div>
+        </>
+      ) : (
+        <div className="grid min-h-64 place-content-center gap-2 text-center">
+          <p className="text-sm font-semibold text-ink-subtle">
+            {isLoading
+              ? 'Loading a featured passage...'
+              : 'Featured passage unavailable'}
+          </p>
+          {error && <p className="text-sm text-ink-muted">{error}</p>}
+        </div>
+      )}
+    </article>
+  );
 }
 
 type HomeCategoryButtonProps = {

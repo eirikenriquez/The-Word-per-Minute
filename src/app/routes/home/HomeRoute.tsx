@@ -5,8 +5,8 @@ import { usePassageCategories } from '../../hooks/usePassageCategories';
 import { useAuth } from '../../../features/auth/context/authContext';
 import { useAuthMenu } from '../../../features/auth/context/authMenuContext';
 import { useFeaturedPassageCatalog } from '../../../features/featured-passages/hooks/useFeaturedPassageCatalog';
+import { useSelectedFeaturedPassage } from '../../../features/featured-passages/hooks/useSelectedFeaturedPassage';
 import { getRandomFeaturedPassage } from '../../../features/featured-passages/utils/featuredPassageSelection';
-import { useSavedPassageCollection } from '../../../features/saved-passages/hooks/useSavedPassageCollection';
 import { APP_ROUTE_PATHS } from '../appRoutePaths';
 import { createPracticePath } from '../practice/practiceRouteState';
 import { HomePage } from './HomePage';
@@ -19,10 +19,10 @@ export function HomeRoute() {
   const authSession = useAuth();
   const { openSignUpMenu } = useAuthMenu();
   const featuredCatalog = useFeaturedPassageCatalog();
-  const savedPassageCollection = useSavedPassageCollection(
-    authSession.user?.id,
-  );
   const { featuredHomeCategories } = usePassageCategories(
+    featuredCatalog.passages,
+  );
+  const selectedFeaturedPassage = useSelectedFeaturedPassage(
     featuredCatalog.passages,
   );
 
@@ -34,11 +34,15 @@ export function HomeRoute() {
     return <AppErrorState message={featuredCatalog.error} />;
   }
 
-  function startFeaturedPractice(category?: string) {
+  function startFeaturedPractice(category?: string, passageId?: string) {
     const availablePassages = category
       ? featuredCatalog.passages.filter((passage) => passage.theme === category)
       : featuredCatalog.passages;
-    const passage = getRandomFeaturedPassage(availablePassages);
+    const passage = passageId
+      ? availablePassages.find(
+          (availablePassage) => availablePassage.id === passageId,
+        )
+      : getRandomFeaturedPassage(availablePassages);
 
     if (!passage) return;
 
@@ -53,12 +57,25 @@ export function HomeRoute() {
   return (
     <HomePage
       featuredHomeCategories={featuredHomeCategories}
+      featuredPassageError={selectedFeaturedPassage.error}
+      featuredPassageResponse={selectedFeaturedPassage.passageResponse}
+      isFeaturedPassageLoading={selectedFeaturedPassage.isLoading}
       isSignedIn={authSession.isSignedIn}
-      savedPassageCount={savedPassageCollection.savedPassages.length}
       onCreateAccount={openSignUpMenu}
       onOpenBible={() => void navigate(APP_ROUTE_PATHS.bible)}
       onSelectFeaturedCategory={startFeaturedPractice}
-      onStartFeaturedPractice={() => startFeaturedPractice()}
+      onPracticeFeaturedPassage={() =>
+        startFeaturedPractice(
+          undefined,
+          selectedFeaturedPassage.selectedPassageId,
+        )
+      }
+      onStartFeaturedPractice={() =>
+        startFeaturedPractice(
+          undefined,
+          selectedFeaturedPassage.selectedPassageId,
+        )
+      }
     />
   );
 }
