@@ -198,7 +198,7 @@ function FeaturedPassagePreview({
   const [firstWord, ...remainingWords] = passageText?.split(' ') ?? [];
 
   return (
-    <article className="rise-in rise-in-delay-1 rounded-xl border border-line bg-surface p-6 shadow-lg shadow-black/5 dark:shadow-black/20 sm:p-8">
+    <article className="rise-in rise-in-delay-1 mx-auto w-full max-w-5xl rounded-xl border border-line bg-surface p-6 shadow-lg shadow-black/5 dark:shadow-black/20 sm:p-8">
       {passageResponse ? (
         <>
           <div className="flex min-w-0 items-center justify-between gap-2">
