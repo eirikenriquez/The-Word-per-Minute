@@ -54,7 +54,7 @@ export function HomePage({
   return (
     <section className="grid gap-10">
       <section className="grid gap-8 py-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-center lg:py-12">
-        <div className="rise-in mx-auto max-w-3xl text-center">
+        <div className="rise-in max-w-3xl">
           <h1 className="text-4xl font-bold text-ink sm:text-5xl">
             Type a Bible passage,
             <span className="block">one word at a time.</span>
@@ -159,15 +159,6 @@ function CountUpNumber({ durationMs = 950, value }: CountUpNumberProps) {
   const [displayValue, setDisplayValue] = useState(0);
 
   useEffect(() => {
-    const prefersReducedMotion = window.matchMedia(
-      '(prefers-reduced-motion: reduce)',
-    ).matches;
-
-    if (prefersReducedMotion) {
-      setDisplayValue(value);
-      return;
-    }
-
     let animationFrameId = 0;
     let startTime: number | null = null;
 
@@ -177,9 +168,8 @@ function CountUpNumber({ durationMs = 950, value }: CountUpNumberProps) {
       const easedProgress = 1 - (1 - progress) ** 3;
       setDisplayValue(Math.round(value * easedProgress));
 
-      if (progress < 1) {
+      if (progress < 1)
         animationFrameId = window.requestAnimationFrame(updateCount);
-      }
     }
 
     animationFrameId = window.requestAnimationFrame(updateCount);
