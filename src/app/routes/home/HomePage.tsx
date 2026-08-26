@@ -1,9 +1,5 @@
-import {
-  ArrowRightIcon,
-  BookOpenIcon,
-  SparklesIcon,
-} from '@heroicons/react/24/outline';
-import { useEffect, useState } from 'react';
+import { ArrowRightIcon, BookOpenIcon } from '@heroicons/react/24/outline';
+import { useEffect, useRef, useState } from 'react';
 import type { PassageResponse } from '../../../types/passage';
 import { Button } from '../../../components/ui/Button';
 
@@ -18,12 +14,10 @@ export type HomePageProps = {
   featuredPassageResponse: PassageResponse | null;
   isFeaturedPassageLoading: boolean;
   isSignedIn: boolean;
-  savedPassageCount: number;
   onCreateAccount: () => void;
   onOpenBible: () => void;
   onPracticeFeaturedPassage: () => void;
   onSelectFeaturedCategory: (category: string) => void;
-  onStartFeaturedPractice: () => void;
 };
 
 /**
@@ -35,26 +29,55 @@ export function HomePage({
   featuredPassageResponse,
   isFeaturedPassageLoading,
   isSignedIn,
-  savedPassageCount,
   onCreateAccount,
   onOpenBible,
   onPracticeFeaturedPassage,
   onSelectFeaturedCategory,
-  onStartFeaturedPractice,
 }: HomePageProps) {
+  const homePageRef = useRef<HTMLElement>(null);
   const totalFeaturedPassages = featuredHomeCategories.reduce(
     (total, category) => total + category.count,
     0,
   );
-  const secondaryStat =
-    savedPassageCount > 0
-      ? { label: 'Saved passages', value: savedPassageCount }
-      : { label: 'Themes', value: featuredHomeCategories.length };
+
+  useEffect(() => {
+    const homePage = homePageRef.current;
+    if (!homePage) return;
+
+    const revealTargets = homePage.querySelectorAll<HTMLElement>(
+      '[data-scroll-reveal]',
+    );
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+
+    if (prefersReducedMotion || !('IntersectionObserver' in window)) {
+      revealTargets.forEach((target) =>
+        target.classList.add('scroll-reveal-visible'),
+      );
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+
+          entry.target.classList.add('scroll-reveal-visible');
+          observer.unobserve(entry.target);
+        });
+      },
+      { rootMargin: '0px 0px -60px', threshold: 0.12 },
+    );
+
+    revealTargets.forEach((target) => observer.observe(target));
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <section className="grid gap-10">
-      <section className="grid gap-8 py-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-center lg:py-12">
-        <div className="rise-in max-w-3xl">
+    <section ref={homePageRef} className="grid gap-10">
+      <section className="grid justify-items-center gap-7 py-8 lg:py-12">
+        <div className="rise-in max-w-3xl text-center">
           <h1 className="text-4xl font-bold text-ink sm:text-5xl">
             Type a Bible passage,
             <span className="block">one word at a time.</span>
@@ -64,19 +87,9 @@ export function HomePage({
             something you have saved. See your accuracy and progress as you
             type.
           </p>
-          <div className="mt-7 flex flex-wrap gap-3">
-            <Button variant="primary" onClick={onStartFeaturedPractice}>
-              <SparklesIcon aria-hidden="true" className="h-5 w-5 shrink-0" />
-              Start typing
-            </Button>
-            <Button variant="secondary" onClick={onOpenBible}>
-              <BookOpenIcon aria-hidden="true" className="h-5 w-5 shrink-0" />
-              Browse the Bible
-            </Button>
-          </div>
         </div>
 
-        <dl className="rise-in rise-in-delay-1 grid grid-cols-2 gap-6 border-t border-line pt-6 text-left lg:grid-cols-1 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
+        <dl className="rise-in rise-in-delay-1 grid w-full max-w-sm grid-cols-2 gap-8 border-y border-line py-4 text-center">
           <div>
             <dt className="text-sm font-medium text-ink-subtle">
               Curated passages
@@ -86,26 +99,40 @@ export function HomePage({
             </dd>
           </div>
           <div>
-            <dt className="text-sm font-medium text-ink-subtle">
-              {secondaryStat.label}
-            </dt>
+            <dt className="text-sm font-medium text-ink-subtle">Themes</dt>
             <dd className="mt-1 text-4xl font-bold text-ink">
-              <CountUpNumber value={secondaryStat.value} />
+              <CountUpNumber value={featuredHomeCategories.length} />
             </dd>
           </div>
         </dl>
       </section>
 
-      <section className="grid">
+      <section className="grid justify-items-center">
         <FeaturedPassagePreview
           error={featuredPassageError}
           isLoading={isFeaturedPassageLoading}
-          onPractice={onPracticeFeaturedPassage}
           passageResponse={featuredPassageResponse}
         />
+        <div className="mt-4 flex w-full flex-col items-stretch justify-center gap-2 sm:w-auto sm:flex-row sm:items-center">
+          <Button
+            disabled={!featuredPassageResponse}
+            variant="primary"
+            onClick={onPracticeFeaturedPassage}
+          >
+            Practice this passage
+            <ArrowRightIcon aria-hidden="true" className="h-4 w-4" />
+          </Button>
+          <Button variant="secondary" onClick={onOpenBible}>
+            <BookOpenIcon aria-hidden="true" className="h-4 w-4" />
+            Browse the Bible
+          </Button>
+        </div>
       </section>
 
-      <section className="rise-in rise-in-delay-2 grid gap-4 border-t border-line pt-8">
+      <section
+        className="scroll-reveal grid gap-4 border-t border-line pt-8"
+        data-scroll-reveal
+      >
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
@@ -129,7 +156,10 @@ export function HomePage({
       </section>
 
       {!isSignedIn && (
-        <section className="rise-in rise-in-delay-3 border-t border-line py-10">
+        <section
+          className="scroll-reveal border-t border-line py-10"
+          data-scroll-reveal
+        >
           <div className="mx-auto grid max-w-xl justify-items-center gap-5 text-center">
             <div className="grid gap-2">
               <h2 className="text-xl font-semibold text-ink">
@@ -182,14 +212,12 @@ function CountUpNumber({ durationMs = 950, value }: CountUpNumberProps) {
 type FeaturedPassagePreviewProps = {
   error: string | null;
   isLoading: boolean;
-  onPractice: () => void;
   passageResponse: PassageResponse | null;
 };
 
 function FeaturedPassagePreview({
   error,
   isLoading,
-  onPractice,
   passageResponse,
 }: FeaturedPassagePreviewProps) {
   const passageText = passageResponse?.verses
@@ -221,18 +249,10 @@ function FeaturedPassagePreview({
             </span>
             {remainingWords.length > 0 && ` ${remainingWords.join(' ')}`}
           </blockquote>
-          <div className="mt-7 flex flex-col items-start gap-2 border-t border-line pt-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+          <div className="mt-7 border-t border-line pt-4">
             <p className="text-xs font-semibold text-ink-subtle">
               {passageResponse.translation.name}
             </p>
-            <button
-              className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-ink transition hover:text-accent-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
-              type="button"
-              onClick={onPractice}
-            >
-              Practice this passage
-              <ArrowRightIcon aria-hidden="true" className="h-4 w-4" />
-            </button>
           </div>
         </>
       ) : (
