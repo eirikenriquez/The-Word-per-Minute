@@ -153,7 +153,7 @@ function FeaturedPassagePreview({
           <p className="mt-1 text-sm font-semibold text-ink-muted">
             {passageResponse.reference}
           </p>
-          <blockquote className="mt-6 max-w-prose font-reading text-[1.375rem] leading-[1.6] tracking-[-0.012em] text-ink">
+          <blockquote className="mt-6 line-clamp-6 max-h-[14rem] max-w-prose overflow-hidden font-reading text-[1.375rem] leading-[1.6] tracking-[-0.012em] text-ink">
             <span className="relative whitespace-nowrap before:absolute before:top-[0.18em] before:bottom-[0.12em] before:-left-2 before:w-[3px] before:rounded-full before:bg-accent">
               {firstWord}
             </span>
