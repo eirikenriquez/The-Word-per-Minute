@@ -17,6 +17,7 @@ export type HomePageProps = {
   featuredPassageResponse: PassageResponse | null;
   isFeaturedPassageLoading: boolean;
   isSignedIn: boolean;
+  savedPassageCount: number;
   onCreateAccount: () => void;
   onOpenBible: () => void;
   onPracticeFeaturedPassage: () => void;
@@ -33,16 +34,26 @@ export function HomePage({
   featuredPassageResponse,
   isFeaturedPassageLoading,
   isSignedIn,
+  savedPassageCount,
   onCreateAccount,
   onOpenBible,
   onPracticeFeaturedPassage,
   onSelectFeaturedCategory,
   onStartFeaturedPractice,
 }: HomePageProps) {
+  const totalFeaturedPassages = featuredHomeCategories.reduce(
+    (total, category) => total + category.count,
+    0,
+  );
+  const secondaryStat =
+    savedPassageCount > 0
+      ? { label: 'Saved passages', value: savedPassageCount }
+      : { label: 'Themes', value: featuredHomeCategories.length };
+
   return (
     <section className="grid gap-10">
       <section className="grid gap-8 py-8 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-center lg:py-12">
-        <div className="rise-in max-w-3xl">
+        <div className="rise-in mx-auto max-w-3xl text-center">
           <h1 className="text-4xl font-bold text-ink sm:text-5xl">
             Type a Bible passage,
             <span className="block">one word at a time.</span>
@@ -64,6 +75,27 @@ export function HomePage({
           </div>
         </div>
 
+        <dl className="rise-in rise-in-delay-1 grid grid-cols-2 gap-6 border-t border-line pt-6 text-left lg:grid-cols-1 lg:border-l lg:border-t-0 lg:pl-8 lg:pt-0">
+          <div>
+            <dt className="text-sm font-medium text-ink-subtle">
+              Curated passages
+            </dt>
+            <dd className="mt-1 text-4xl font-bold text-ink">
+              {totalFeaturedPassages}
+            </dd>
+          </div>
+          <div>
+            <dt className="text-sm font-medium text-ink-subtle">
+              {secondaryStat.label}
+            </dt>
+            <dd className="mt-1 text-4xl font-bold text-ink">
+              {secondaryStat.value}
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <section className="grid">
         <FeaturedPassagePreview
           error={featuredPassageError}
           isLoading={isFeaturedPassageLoading}
