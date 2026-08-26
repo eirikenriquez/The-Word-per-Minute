@@ -139,11 +139,11 @@ function FeaturedPassagePreview({
     <article className="rise-in rise-in-delay-1 rounded-xl border border-line bg-surface p-6 shadow-lg shadow-black/5 dark:shadow-black/20 sm:p-8">
       {passageResponse ? (
         <>
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-ink-subtle">
+          <div className="flex min-w-0 items-center justify-between gap-2">
+            <p className="min-w-0 truncate text-xs font-semibold uppercase tracking-wide text-ink-subtle">
               Featured passage
             </p>
-            <p className="rounded-full border border-line px-2 py-1 text-xs font-semibold text-ink-subtle">
+            <p className="max-w-[55%] shrink-0 truncate rounded-full border border-line px-2 py-1 text-xs font-semibold text-ink-subtle">
               {passageResponse.passage.theme}
             </p>
           </div>
