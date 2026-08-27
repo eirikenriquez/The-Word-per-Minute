@@ -70,6 +70,7 @@ export function HomeRoute() {
           selectedFeaturedPassage.selectedPassageId,
         )
       }
+      onStartFeaturedPractice={() => startFeaturedPractice()}
     />
   );
 }

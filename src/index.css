@@ -55,6 +55,19 @@ body {
   animation-delay: 250ms;
 }
 
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 700ms ease-out,
+    transform 700ms ease-out;
+}
+
+.scroll-reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .soft-hover {
   transition:
     border-color 180ms ease,
@@ -80,5 +93,12 @@ body {
 
   .soft-hover:hover {
     transform: none;
+  }
+
+  .scroll-reveal,
+  .scroll-reveal-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }

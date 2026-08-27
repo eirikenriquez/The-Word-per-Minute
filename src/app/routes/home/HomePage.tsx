@@ -18,6 +18,7 @@ export type HomePageProps = {
   onOpenBible: () => void;
   onPracticeFeaturedPassage: () => void;
   onSelectFeaturedCategory: (category: string) => void;
+  onStartFeaturedPractice: () => void;
 };
 
 /**
@@ -33,6 +34,7 @@ export function HomePage({
   onOpenBible,
   onPracticeFeaturedPassage,
   onSelectFeaturedCategory,
+  onStartFeaturedPractice,
 }: HomePageProps) {
   const homePageRef = useRef<HTMLElement>(null);
   const totalFeaturedPassages = featuredHomeCategories.reduce(
@@ -76,8 +78,11 @@ export function HomePage({
 
   return (
     <section ref={homePageRef} className="grid gap-10">
-      <section className="grid justify-items-center gap-7 py-8 lg:py-12">
-        <div className="rise-in max-w-3xl text-center">
+      <section className="grid items-center gap-10 py-8 lg:grid-cols-[minmax(0,1fr)_minmax(26rem,32rem)] lg:gap-16 lg:py-12">
+        <div className="rise-in max-w-3xl">
+          <p className="mb-4 text-sm font-semibold uppercase tracking-wide text-ink-subtle">
+            Scripture-first typing practice
+          </p>
           <h1 className="text-4xl font-bold text-ink sm:text-5xl">
             Type a Bible passage,
             <span className="block">one word at a time.</span>
@@ -87,46 +92,51 @@ export function HomePage({
             something you have saved. See your accuracy and progress as you
             type.
           </p>
+          <dl className="rise-in rise-in-delay-1 mt-7 grid w-full max-w-sm grid-cols-2 gap-6 border-y border-line py-4">
+            <div>
+              <dt className="text-sm font-medium text-ink-subtle">
+                Curated passages
+              </dt>
+              <dd className="mt-1 text-4xl font-bold text-ink">
+                <CountUpNumber value={totalFeaturedPassages} />
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm font-medium text-ink-subtle">Themes</dt>
+              <dd className="mt-1 text-4xl font-bold text-ink">
+                <CountUpNumber value={featuredHomeCategories.length} />
+              </dd>
+            </div>
+          </dl>
+          <div className="mt-3 flex flex-wrap gap-3">
+            <Button
+              className="min-h-[50px] !rounded-[9px] !border-accent !bg-accent px-5 !text-base !font-bold !text-white shadow-lg shadow-accent/20 hover:-translate-y-px hover:!border-accent-ink hover:!bg-accent-ink dark:!text-stone-950 dark:hover:!text-stone-950"
+              variant="primary"
+              onClick={onStartFeaturedPractice}
+            >
+              Start typing
+              <ArrowRightIcon
+                aria-hidden="true"
+                className="h-[18px] w-[18px]"
+              />
+            </Button>
+            <Button
+              className="min-h-11 px-0"
+              variant="ghost"
+              onClick={onOpenBible}
+            >
+              <BookOpenIcon aria-hidden="true" className="h-4 w-4" />
+              Browse the Bible
+            </Button>
+          </div>
         </div>
 
-        <dl className="rise-in rise-in-delay-1 grid w-full max-w-sm grid-cols-2 gap-8 border-y border-line py-4 text-center">
-          <div>
-            <dt className="text-sm font-medium text-ink-subtle">
-              Curated passages
-            </dt>
-            <dd className="mt-1 text-4xl font-bold text-ink">
-              <CountUpNumber value={totalFeaturedPassages} />
-            </dd>
-          </div>
-          <div>
-            <dt className="text-sm font-medium text-ink-subtle">Themes</dt>
-            <dd className="mt-1 text-4xl font-bold text-ink">
-              <CountUpNumber value={featuredHomeCategories.length} />
-            </dd>
-          </div>
-        </dl>
-      </section>
-
-      <section className="grid justify-items-center">
         <FeaturedPassagePreview
           error={featuredPassageError}
           isLoading={isFeaturedPassageLoading}
+          onPractice={onPracticeFeaturedPassage}
           passageResponse={featuredPassageResponse}
         />
-        <div className="mt-4 flex w-full flex-col items-stretch justify-center gap-2 sm:w-auto sm:flex-row sm:items-center">
-          <Button
-            disabled={!featuredPassageResponse}
-            variant="primary"
-            onClick={onPracticeFeaturedPassage}
-          >
-            Practice this passage
-            <ArrowRightIcon aria-hidden="true" className="h-4 w-4" />
-          </Button>
-          <Button variant="secondary" onClick={onOpenBible}>
-            <BookOpenIcon aria-hidden="true" className="h-4 w-4" />
-            Browse the Bible
-          </Button>
-        </div>
       </section>
 
       <section
@@ -189,6 +199,15 @@ function CountUpNumber({ durationMs = 950, value }: CountUpNumberProps) {
   const [displayValue, setDisplayValue] = useState(0);
 
   useEffect(() => {
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+
+    if (prefersReducedMotion) {
+      setDisplayValue(value);
+      return;
+    }
+
     let animationFrameId = 0;
     let startTime: number | null = null;
 
@@ -212,12 +231,14 @@ function CountUpNumber({ durationMs = 950, value }: CountUpNumberProps) {
 type FeaturedPassagePreviewProps = {
   error: string | null;
   isLoading: boolean;
+  onPractice: () => void;
   passageResponse: PassageResponse | null;
 };
 
 function FeaturedPassagePreview({
   error,
   isLoading,
+  onPractice,
   passageResponse,
 }: FeaturedPassagePreviewProps) {
   const passageText = passageResponse?.verses
@@ -249,10 +270,14 @@ function FeaturedPassagePreview({
             </span>
             {remainingWords.length > 0 && ` ${remainingWords.join(' ')}`}
           </blockquote>
-          <div className="mt-7 border-t border-line pt-4">
+          <div className="mt-7 flex flex-col items-start gap-3 border-t border-line pt-4 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
             <p className="text-xs font-semibold text-ink-subtle">
               {passageResponse.translation.name}
             </p>
+            <Button className="min-h-12" variant="primary" onClick={onPractice}>
+              Practice this passage
+              <ArrowRightIcon aria-hidden="true" className="h-4 w-4" />
+            </Button>
           </div>
         </>
       ) : (
