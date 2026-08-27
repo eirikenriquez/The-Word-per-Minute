@@ -140,20 +140,18 @@ export function HomePage({
       </section>
 
       <section
-        className="scroll-reveal grid gap-4 border-t border-line pt-8"
+        className="scroll-reveal grid gap-6 border-t border-line pt-8"
         data-scroll-reveal
       >
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h2 className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
-              Practice by theme
-            </h2>
-            <p className="mt-2 text-sm text-ink-muted">
-              Pick a theme when you want a more focused passage.
-            </p>
-          </div>
+        <div className="grid gap-3 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,0.7fr)] lg:items-end lg:gap-8">
+          <h2 className="text-2xl font-semibold leading-tight tracking-tight text-ink sm:text-3xl">
+            Practice by theme
+          </h2>
+          <p className="max-w-md text-sm leading-6 text-ink-muted lg:justify-self-end">
+            Pick a theme when you want a more focused passage.
+          </p>
         </div>
-        <div className="grid gap-x-4 gap-y-2 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid border-t border-line lg:grid-cols-2 lg:gap-x-8">
           {featuredHomeCategories.map((category) => (
             <HomeCategoryButton
               key={category.label}
@@ -307,17 +305,18 @@ function HomeCategoryButton({
 }: HomeCategoryButtonProps) {
   return (
     <button
-      className="soft-hover group flex items-center justify-between gap-4 border-b border-line py-3 text-left hover:border-accent-line"
+      className="group grid min-h-[76px] min-w-0 grid-cols-[minmax(0,1fr)_auto_auto] items-center gap-4 border-b border-line px-1 text-left transition-colors duration-150 hover:border-accent-line hover:bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas motion-reduce:transition-none"
       type="button"
       onClick={onSelect}
     >
-      <span>
-        <span className="block text-sm font-semibold text-ink">{label}</span>
-        <span className="mt-1 block text-xs text-ink-subtle">{meta}</span>
+      <span className="min-w-0 whitespace-nowrap text-sm font-semibold text-ink">
+        {label}
       </span>
-      <span className="text-sm text-ink-subtle transition group-hover:translate-x-1 group-hover:text-accent">
-        Start
-      </span>
+      <span className="text-sm text-ink-subtle">{meta}</span>
+      <ArrowRightIcon
+        aria-hidden="true"
+        className="h-5 w-5 shrink-0 text-ink-subtle transition-transform duration-150 group-hover:translate-x-1 group-hover:text-accent motion-reduce:transform-none motion-reduce:transition-none"
+      />
     </button>
   );
 }
