@@ -1,10 +1,3 @@
-import {
-  BookOpenIcon,
-  BookmarkSquareIcon,
-  HomeIcon,
-  PencilSquareIcon,
-} from '@heroicons/react/24/outline';
-import type { ReactNode } from 'react';
 import type { AppMode } from '../types';
 
 type AppNavigationProps = {
@@ -19,29 +12,21 @@ export function AppNavigation({ appMode, onSelectMode }: AppNavigationProps) {
   return (
     <nav className="grid grid-cols-4 gap-1 text-sm sm:flex sm:items-center">
       <ModeButton
-        icon={<HomeIcon aria-hidden="true" className="h-4 w-4 shrink-0" />}
         isSelected={appMode === 'home'}
         label="Home"
         onSelect={() => onSelectMode('home')}
       />
       <ModeButton
-        icon={
-          <PencilSquareIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
-        }
         isSelected={appMode === 'practice'}
         label="Practice"
         onSelect={() => onSelectMode('practice')}
       />
       <ModeButton
-        icon={<BookOpenIcon aria-hidden="true" className="h-4 w-4 shrink-0" />}
         isSelected={appMode === 'bible'}
         label="Bible"
         onSelect={() => onSelectMode('bible')}
       />
       <ModeButton
-        icon={
-          <BookmarkSquareIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
-        }
         isSelected={appMode === 'library'}
         label="Library"
         onSelect={() => onSelectMode('library')}
@@ -51,24 +36,22 @@ export function AppNavigation({ appMode, onSelectMode }: AppNavigationProps) {
 }
 
 type ModeButtonProps = {
-  icon: ReactNode;
   isSelected: boolean;
   label: string;
   onSelect: () => void;
 };
 
-function ModeButton({ icon, isSelected, label, onSelect }: ModeButtonProps) {
+function ModeButton({ isSelected, label, onSelect }: ModeButtonProps) {
   return (
     <button
-      className={`inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 font-medium transition ${
+      className={`inline-flex min-h-11 items-center justify-center rounded-md border-b-2 px-3 py-2 font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas ${
         isSelected
-          ? 'bg-accent-soft text-accent-ink'
-          : 'text-ink-muted hover:bg-accent-soft hover:text-accent-ink'
+          ? 'border-line-strong text-ink'
+          : 'border-transparent text-ink-muted hover:bg-surface-muted hover:text-ink'
       }`}
       type="button"
       onClick={onSelect}
     >
-      {icon}
       {label}
     </button>
   );
