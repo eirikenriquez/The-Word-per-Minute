@@ -66,7 +66,9 @@ function AuthPopoverContent({
     onMenuRequestHandled?.();
   }, [authSession.isSignedIn, isOpen, menuRequest, onMenuRequestHandled]);
 
-  const panelWidthClassName = authSession.isSignedIn ? 'w-72' : 'w-80';
+  const panelWidthClassName = authSession.isSignedIn
+    ? 'w-72'
+    : 'w-[22rem] max-w-[calc(100vw-2rem)]';
 
   return (
     <>
