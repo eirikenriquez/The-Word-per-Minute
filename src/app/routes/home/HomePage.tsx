@@ -165,20 +165,24 @@ export function HomePage({
 
       {!isSignedIn && (
         <section
-          className="scroll-reveal border-t border-line py-10"
+          className="scroll-reveal border-y border-line py-6 sm:py-7"
           data-scroll-reveal
         >
-          <div className="mx-auto grid max-w-xl justify-items-center gap-5 text-center">
+          <div className="grid gap-5 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
             <div className="grid gap-2">
               <h2 className="text-xl font-semibold text-ink">
                 Keep your practice with you.
               </h2>
               <p className="text-base leading-7 text-ink-muted">
-                Create a free account to sync saved passages and keep your
-                practice history across devices.
+                Guests save passages locally. Create an account to sync saved
+                passages and practice history across devices.
               </p>
             </div>
-            <Button variant="primary" onClick={onCreateAccount}>
+            <Button
+              className="justify-self-start sm:justify-self-end"
+              variant="secondary"
+              onClick={onCreateAccount}
+            >
               Create free account
             </Button>
           </div>
