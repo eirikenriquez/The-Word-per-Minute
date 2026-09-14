@@ -46,7 +46,7 @@ function ModeButton({ isSelected, label, onSelect }: ModeButtonProps) {
     <button
       className={`inline-flex min-h-11 items-center justify-center rounded-md border-b-2 px-3 py-2 font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas ${
         isSelected
-          ? 'border-line-strong text-ink'
+          ? 'border-accent text-ink'
           : 'border-transparent text-ink-muted hover:bg-surface-muted hover:text-ink'
       }`}
       type="button"
