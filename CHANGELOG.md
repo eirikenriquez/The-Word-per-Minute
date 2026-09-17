@@ -16,6 +16,13 @@ During public alpha:
 ### Added
 
 - Expanded the featured catalogue from 22 to 66 World English Bible selections with 29 new single verses and 15 multi-verse passages across the existing eight broad themes.
+- Added a real featured-passage preview to Home with bundled Scripture text and direct navigation into the selected practice passage.
+
+### Changed
+
+- Redesigned Home around a two-column desktop hero, animated catalogue counts, a focused reading preview, flat theme rows, and a compact signed-out account prompt.
+- Added Source Serif 4 as the Scripture reading face while retaining Instrument Sans for interface copy.
+- Refined the shared navigation and account controls with text labels, distinct hover and selected underlines, a visible account label, and a simplified signed-out authentication form.
 
 ## [0.2.0] - 2026-07-27
 
