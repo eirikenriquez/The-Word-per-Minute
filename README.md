@@ -41,13 +41,13 @@ The practice experience keeps the selected passage at the centre of the page whi
 
 ## Technology
 
-| Area                          | Technology                                                            |
-| ----------------------------- | --------------------------------------------------------------------- |
-| Application                   | React, TypeScript, and Vite                                           |
-| Routing                       | React Router                                                          |
-| Interface                     | Tailwind CSS, Headless UI, Heroicons, and self-hosted Instrument Sans |
-| Authentication and cloud data | Supabase Auth and Postgres                                            |
-| Hosting                       | Vercel                                                                |
+| Area                          | Technology                                                                            |
+| ----------------------------- | ------------------------------------------------------------------------------------- |
+| Application                   | React, TypeScript, and Vite                                                           |
+| Routing                       | React Router                                                                          |
+| Interface                     | Tailwind CSS, Headless UI, Heroicons, self-hosted Instrument Sans, and Source Serif 4 |
+| Authentication and cloud data | Supabase Auth and Postgres                                                            |
+| Hosting                       | Vercel                                                                                |
 
 ## Local Development
 

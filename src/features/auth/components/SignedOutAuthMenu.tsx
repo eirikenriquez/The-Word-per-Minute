@@ -1,7 +1,3 @@
-import {
-  ArrowRightEndOnRectangleIcon,
-  UserPlusIcon,
-} from '@heroicons/react/24/outline';
 import type { FormEvent } from 'react';
 import { useEffect, useState } from 'react';
 import { Button } from '../../../components/ui/Button';
@@ -80,15 +76,15 @@ export function SignedOutAuthMenu({
   }
 
   return (
-    <form className="grid gap-4" onSubmit={submitAuthForm}>
+    <form className="grid gap-3" onSubmit={submitAuthForm}>
       <div>
-        <p className="text-sm font-semibold text-ink">
+        <p className="text-lg font-semibold text-ink">
           {isSignUpMode ? 'Create account' : 'Sign in'}
         </p>
         <p className="mt-1 text-sm text-ink-subtle">
           {isSignUpMode
-            ? 'Start syncing saved passages across sessions.'
-            : 'Save passages to your account.'}
+            ? 'Sync saved passages and practice history across devices.'
+            : 'Access your saved passages and practice history.'}
         </p>
       </div>
 
@@ -96,7 +92,7 @@ export function SignedOutAuthMenu({
         <label className="grid gap-1" htmlFor="auth-email">
           <span className="text-sm font-medium text-ink-muted">Email</span>
           <input
-            className="min-h-9 rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition placeholder:text-ink-subtle focus:border-accent focus:ring-2 focus:ring-accent-soft"
+            className="min-h-10 rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition placeholder:text-ink-subtle focus:border-accent focus:ring-2 focus:ring-accent-soft"
             id="auth-email"
             placeholder="you@example.com"
             type="email"
@@ -112,9 +108,9 @@ export function SignedOutAuthMenu({
         <label className="grid gap-1" htmlFor="auth-password">
           <span className="text-sm font-medium text-ink-muted">Password</span>
           <input
-            className="min-h-9 rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition placeholder:text-ink-subtle focus:border-accent focus:ring-2 focus:ring-accent-soft"
+            className="min-h-10 rounded-md border border-line-strong bg-surface px-3 py-2 text-sm text-ink outline-none transition placeholder:text-ink-subtle focus:border-accent focus:ring-2 focus:ring-accent-soft"
             id="auth-password"
-            placeholder="At least 6 characters"
+            placeholder={isSignUpMode ? 'At least 6 characters' : 'Your password'}
             type="password"
             autoComplete={isSignUpMode ? 'new-password' : 'current-password'}
             value={password}
@@ -126,35 +122,29 @@ export function SignedOutAuthMenu({
         </label>
       </div>
 
-      <div className="grid gap-2">
+      <div className="grid gap-3">
         <Button
-          className="w-full"
+          className="min-h-10 w-full"
           disabled={!canSubmit}
           type="submit"
           variant="primary"
         >
-          {isSignUpMode ? (
-            <UserPlusIcon aria-hidden="true" className="h-4 w-4" />
-          ) : (
-            <ArrowRightEndOnRectangleIcon
-              aria-hidden="true"
-              className="h-4 w-4"
-            />
-          )}
           {isSignUpMode ? 'Create account' : 'Sign in'}
         </Button>
 
-        <Button
-          className="w-full"
-          type="button"
-          variant="ghost"
-          onClick={() => {
-            setAuthMode(isSignUpMode ? 'signIn' : 'signUp');
-            setFormMessage(null);
-          }}
-        >
-          {isSignUpMode ? 'Use existing account' : 'Create account'}
-        </Button>
+        <p className="text-center text-sm text-ink-subtle">
+          {isSignUpMode ? 'Already have an account? ' : 'New here? '}
+          <button
+            className="ml-1 rounded-sm font-medium text-accent-ink underline-offset-2 transition-colors hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+            type="button"
+            onClick={() => {
+              setAuthMode(isSignUpMode ? 'signIn' : 'signUp');
+              setFormMessage(null);
+            }}
+          >
+            {isSignUpMode ? 'Sign in' : 'Create an account'}
+          </button>
+        </p>
       </div>
 
       {(formMessage || authSession.error) && (
