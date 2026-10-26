@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { PracticePassage } from '../types/practice';
 import { areCharactersEquivalent } from '../utils/typingMetrics';
 
@@ -22,6 +22,9 @@ type DisplayPart =
       textIndex: number;
     };
 
+const caretClass =
+  'before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-0.5 before:bg-practice-caret';
+
 /**
  * Chooses the highlight class for each displayed character.
  * It uses typing normalization so curly quotes and straight quotes score consistently.
@@ -29,15 +32,14 @@ type DisplayPart =
 function getCharacterClass(
   targetCharacter: string,
   typedCharacter: string | undefined,
-  isCurrent: boolean,
 ) {
   if (typedCharacter === undefined) {
-    return isCurrent ? 'bg-selected text-selected-ink' : 'text-ink-subtle';
+    return 'text-ink-subtle';
   }
 
   return areCharactersEquivalent(targetCharacter, typedCharacter)
-    ? 'bg-surface-muted text-ink'
-    : 'bg-rose-100 text-rose-950 dark:bg-rose-950 dark:text-rose-100';
+    ? 'text-ink'
+    : 'bg-practice-error-surface text-practice-error underline decoration-2 underline-offset-4';
 }
 
 /**
@@ -90,6 +92,10 @@ export function PracticeTypingSurface({
   const typingInputRef = useRef<HTMLTextAreaElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const activeCharacterRef = useRef<HTMLSpanElement>(null);
+  const [isFocused, setIsFocused] = useState(false);
+  const [caretPosition, setCaretPosition] = useState(0);
+  const currentIndex = Math.min(caretPosition, typedText.length);
+  const showCaret = isFocused && !isComplete;
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -105,13 +111,13 @@ export function PracticeTypingSurface({
       behavior: typedText.length > 1 ? 'smooth' : 'auto',
       top: Math.max(0, nextScrollTop),
     });
-  }, [passage.ref, typedText.length]);
+  }, [currentIndex, passage.ref, typedText.length]);
 
   return (
     <>
       <textarea
         aria-label="Type the passage"
-        className="absolute inset-0 z-10 h-full w-full resize-none overflow-hidden bg-transparent text-transparent caret-transparent outline-none"
+        className="absolute inset-0 z-10 h-full w-full resize-none overflow-hidden opacity-0"
         disabled={isComplete}
         ref={typingInputRef}
         spellCheck={false}
@@ -119,7 +125,25 @@ export function PracticeTypingSurface({
         autoCapitalize="off"
         autoComplete="off"
         autoCorrect="off"
-        onChange={(event) => onTypingChange(event.target.value)}
+        onBlur={() => setIsFocused(false)}
+        onChange={(event) => {
+          setCaretPosition(event.currentTarget.selectionEnd);
+          onTypingChange(event.currentTarget.value);
+        }}
+        onFocus={(event) => {
+          setIsFocused(true);
+          setCaretPosition(event.currentTarget.selectionEnd);
+        }}
+        onSelect={(event) => setCaretPosition(event.currentTarget.selectionEnd)}
+        onPointerDown={(event) => {
+          if (event.button !== 0) return;
+
+          // Clicking starts/resumes typing at the end without drag-selection.
+          event.preventDefault();
+          const input = event.currentTarget;
+          input.focus({ preventScroll: true });
+          input.setSelectionRange(input.value.length, input.value.length);
+        }}
       />
       <div
         className={`h-56 overflow-hidden border-y py-5 pr-4 scroll-smooth transition-[border-color,filter,opacity] duration-500 ease-out ${
@@ -130,7 +154,7 @@ export function PracticeTypingSurface({
         ref={viewportRef}
         onClick={() => typingInputRef.current?.focus()}
       >
-        <p className="relative text-xl leading-10 text-ink-muted sm:text-2xl sm:leading-[3rem]">
+        <p className="relative select-none text-xl leading-10 text-ink-muted sm:text-2xl sm:leading-[3rem]">
           {getDisplayParts(passage).map((part) =>
             part.kind === 'verseNumber' ? (
               <sup
@@ -141,14 +165,13 @@ export function PracticeTypingSurface({
               </sup>
             ) : (
               <span
-                className={getCharacterClass(
+                className={`relative ${getCharacterClass(
                   part.character,
                   typedText[part.textIndex],
-                  part.textIndex === typedText.length,
-                )}
+                )} ${showCaret && part.textIndex === currentIndex ? caretClass : ''}`}
                 key={part.key}
                 ref={
-                  part.textIndex === typedText.length
+                  part.textIndex === currentIndex
                     ? activeCharacterRef
                     : undefined
                 }
@@ -157,6 +180,17 @@ export function PracticeTypingSurface({
               </span>
             ),
           )}
+          <span
+            aria-hidden="true"
+            className={`relative ${showCaret && currentIndex === passage.text.length ? caretClass : ''}`}
+            ref={
+              currentIndex === passage.text.length
+                ? activeCharacterRef
+                : undefined
+            }
+          >
+            {'\u200b'}
+          </span>
         </p>
       </div>
     </>

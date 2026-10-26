@@ -20,6 +20,10 @@
   --app-accent-border: var(--color-orange-200);
   --app-selected: var(--color-orange-100);
   --app-selected-text: var(--color-orange-950);
+
+  --app-practice-caret: var(--color-orange-700);
+  --app-practice-error: var(--color-rose-700);
+  --app-practice-error-surface: var(--color-rose-100);
 }
 
 .dark {
@@ -44,6 +48,10 @@
   --app-accent-border: var(--color-orange-800);
   --app-selected: var(--color-orange-900);
   --app-selected-text: var(--color-orange-100);
+
+  --app-practice-caret: var(--color-orange-400);
+  --app-practice-error: var(--color-rose-300);
+  --app-practice-error-surface: var(--color-rose-950);
 }
 
 @theme inline {
@@ -71,4 +79,8 @@
   --color-accent-line: var(--app-accent-border);
   --color-selected: var(--app-selected);
   --color-selected-ink: var(--app-selected-text);
+
+  --color-practice-caret: var(--app-practice-caret);
+  --color-practice-error: var(--app-practice-error);
+  --color-practice-error-surface: var(--app-practice-error-surface);
 }
