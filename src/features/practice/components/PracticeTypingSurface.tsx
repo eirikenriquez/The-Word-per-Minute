@@ -117,7 +117,7 @@ export function PracticeTypingSurface({
     <>
       <textarea
         aria-label="Type the passage"
-        className="absolute inset-0 z-10 h-full w-full resize-none overflow-hidden opacity-0"
+        className="absolute inset-0 z-10 h-full w-full resize-none select-none overflow-hidden opacity-0"
         disabled={isComplete}
         ref={typingInputRef}
         spellCheck={false}
@@ -134,7 +134,26 @@ export function PracticeTypingSurface({
           setIsFocused(true);
           setCaretPosition(event.currentTarget.selectionEnd);
         }}
-        onSelect={(event) => setCaretPosition(event.currentTarget.selectionEnd)}
+        onKeyDown={(event) => {
+          if (
+            (event.ctrlKey || event.metaKey) &&
+            event.key.toLowerCase() === 'a'
+          ) {
+            event.preventDefault();
+          }
+        }}
+        onSelect={(event) => {
+          const input = event.currentTarget;
+          const position =
+            input.selectionDirection === 'backward'
+              ? input.selectionStart
+              : input.selectionEnd;
+
+          if (input.selectionStart !== input.selectionEnd) {
+            input.setSelectionRange(position, position);
+          }
+          setCaretPosition(position);
+        }}
         onPointerDown={(event) => {
           if (event.button !== 0) return;
 
@@ -146,7 +165,7 @@ export function PracticeTypingSurface({
         }}
       />
       <div
-        className={`h-56 overflow-hidden border-y py-5 pr-4 scroll-smooth transition-[border-color,filter,opacity] duration-500 ease-out ${
+        className={`h-56 select-none overflow-hidden border-y py-5 pr-4 scroll-smooth transition-[border-color,filter,opacity] duration-500 ease-out ${
           isComplete
             ? 'border-transparent opacity-30 blur-[1px] [mask-image:linear-gradient(to_bottom,transparent,black_18%,black_82%,transparent)]'
             : 'border-line'
@@ -154,7 +173,7 @@ export function PracticeTypingSurface({
         ref={viewportRef}
         onClick={() => typingInputRef.current?.focus()}
       >
-        <p className="relative select-none text-xl leading-10 text-ink-muted sm:text-2xl sm:leading-[3rem]">
+        <p className="relative text-xl leading-10 text-ink-muted sm:text-2xl sm:leading-[3rem]">
           {getDisplayParts(passage).map((part) =>
             part.kind === 'verseNumber' ? (
               <sup
