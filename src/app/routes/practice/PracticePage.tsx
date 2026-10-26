@@ -17,6 +17,9 @@ export type PracticePageProps = {
   isPassageComplete: boolean;
   isSavingReflection: boolean;
   isSignedIn: boolean;
+  isPassageLoading: boolean;
+  passageLoadError: string | null;
+  onRetryPassage: () => void;
   passage: PracticePassage;
   practiceSource: PracticeSource;
   practiceTitle: string;
@@ -50,6 +53,9 @@ export function PracticePage({
   isPassageComplete,
   isSavingReflection,
   isSignedIn,
+  isPassageLoading,
+  passageLoadError,
+  onRetryPassage,
   passage,
   practiceSource,
   practiceTitle,
@@ -70,21 +76,24 @@ export function PracticePage({
   onSelectSavedPassage,
   onTypingChange,
 }: PracticePageProps) {
+  const isPassageUnavailable = isPassageLoading || Boolean(passageLoadError);
   return (
     <div className="grid gap-8">
-      <PracticeControls
-        canSaveCurrentPassage={canSaveCurrentPassage}
-        isCurrentPassageSaved={isCurrentPassageSaved}
-        practiceSource={practiceSource}
-        savedPassageOptions={savedPassageOptions}
-        selectedSavedPassageId={selectedSavedPassageId}
-        onNextFeaturedPassage={onNextFeaturedPassage}
-        onOpenLibrary={onOpenLibrary}
-        onReset={onResetPractice}
-        onSaveCurrentPassage={onSaveCurrentPassage}
-        onSelectFeaturedPractice={onSelectFeaturedPractice}
-        onSelectSavedPractice={onSelectSavedPassage}
-      />
+      <fieldset disabled={isPassageUnavailable} className="min-w-0">
+        <PracticeControls
+          canSaveCurrentPassage={canSaveCurrentPassage}
+          isCurrentPassageSaved={isCurrentPassageSaved}
+          practiceSource={practiceSource}
+          savedPassageOptions={savedPassageOptions}
+          selectedSavedPassageId={selectedSavedPassageId}
+          onNextFeaturedPassage={onNextFeaturedPassage}
+          onOpenLibrary={onOpenLibrary}
+          onReset={onResetPractice}
+          onSaveCurrentPassage={onSaveCurrentPassage}
+          onSelectFeaturedPractice={onSelectFeaturedPractice}
+          onSelectSavedPractice={onSelectSavedPassage}
+        />
+      </fieldset>
 
       <section className="mx-auto grid w-full max-w-5xl gap-8">
         <PracticePassageDisplay
@@ -100,6 +109,9 @@ export function PracticePage({
           isComplete={isPassageComplete}
           isSavingReflection={isSavingReflection}
           isSignedIn={isSignedIn}
+          isPassageLoading={isPassageLoading}
+          passageLoadError={passageLoadError}
+          onRetryPassage={onRetryPassage}
           onCompletionAction={
             isPassageComplete && practiceSource === 'featured'
               ? onNextFeaturedPassage

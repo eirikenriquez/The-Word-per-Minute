@@ -14,6 +14,9 @@ type PracticePassageDisplayProps = {
   isComplete: boolean;
   isSavingReflection: boolean;
   isSignedIn: boolean;
+  isPassageLoading: boolean;
+  passageLoadError: string | null;
+  onRetryPassage: () => void;
   onTypingChange: (typedText: string) => void;
   onCompletionAction?: () => void;
   onSaveReflection: (reflection: string) => Promise<boolean>;
@@ -36,6 +39,9 @@ export function PracticePassageDisplay({
   isComplete,
   isSavingReflection,
   isSignedIn,
+  isPassageLoading,
+  passageLoadError,
+  onRetryPassage,
   onTypingChange,
   onCompletionAction,
   onSaveReflection,
@@ -45,6 +51,7 @@ export function PracticePassageDisplay({
   typedText,
   wpm,
 }: PracticePassageDisplayProps) {
+  const isPassageUnavailable = isPassageLoading || Boolean(passageLoadError);
   const attemptSaveErrorMessage = attemptSaveError
     ? "This attempt couldn't be saved to your history, so a reflection can't be attached."
     : null;
@@ -61,15 +68,42 @@ export function PracticePassageDisplay({
         </p>
       </div>
 
-      <div className="relative focus-within:ring-2 focus-within:ring-accent-soft">
+      <div
+        aria-busy={isPassageLoading}
+        className="relative focus-within:ring-2 focus-within:ring-accent-soft"
+      >
         <PracticeTypingSurface
-          isComplete={isComplete}
+          isComplete={isComplete && !isPassageUnavailable}
+          isDisabled={isPassageUnavailable}
           passage={passage}
           typedText={typedText}
           onTypingChange={onTypingChange}
         />
 
+        {isPassageUnavailable && (
+          <div className="absolute inset-0 z-30 grid place-items-center px-4 py-4 text-center">
+            <div className="grid max-w-sm justify-items-center gap-3 rounded-md border border-line bg-canvas/95 px-5 py-4">
+              {passageLoadError ? (
+                <>
+                  <p className="text-sm text-ink" role="alert">
+                    Couldn't load this passage. Your previous passage is still
+                    here.
+                  </p>
+                  <Button variant="secondary" onClick={onRetryPassage}>
+                    Try again
+                  </Button>
+                </>
+              ) : (
+                <p className="text-sm text-ink-muted" role="status">
+                  Loading next passage…
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
         <Transition
+          key={`${passage.ref}:${completionMessage}`}
           as="div"
           className="absolute inset-0 z-20 grid place-items-center overflow-y-auto bg-gradient-to-b from-canvas/80 via-canvas/35 to-canvas/80 px-4 py-4 text-center backdrop-blur-[2px]"
           enter="transition-opacity duration-500 ease-out motion-reduce:transition-none"
@@ -78,7 +112,7 @@ export function PracticePassageDisplay({
           leave="transition-opacity duration-150 ease-in motion-reduce:transition-none"
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
-          show={isComplete}
+          show={isComplete && !isPassageUnavailable}
         >
           <div className="grid w-full max-w-2xl justify-items-center gap-3">
             <p className="text-sm font-semibold uppercase tracking-wide text-ink-subtle">
@@ -98,7 +132,10 @@ export function PracticePassageDisplay({
               </p>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-2">
+            <fieldset
+              className="flex flex-wrap justify-center gap-2"
+              disabled={!isComplete || isPassageUnavailable}
+            >
               <PracticeReflectionDialog
                 key={passage.ref}
                 attemptSaveErrorMessage={attemptSaveErrorMessage}
@@ -117,7 +154,7 @@ export function PracticePassageDisplay({
                   {completionActionLabel}
                 </Button>
               )}
-            </div>
+            </fieldset>
 
             {attemptSaveErrorMessage && (
               <p

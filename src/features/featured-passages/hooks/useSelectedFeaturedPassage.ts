@@ -9,6 +9,7 @@ type PassageLoadState = {
   error: string | null;
   isLoading: boolean;
   passageId: string;
+  reloadVersion: number;
   response: PassageResponse | null;
 };
 
@@ -16,6 +17,7 @@ const EMPTY_LOAD_STATE: PassageLoadState = {
   error: null,
   isLoading: false,
   passageId: '',
+  reloadVersion: 0,
   response: null,
 };
 
@@ -26,6 +28,7 @@ export function useSelectedFeaturedPassage(
   passages: readonly FeaturedPassage[],
 ) {
   const [requestedPassageId, setRequestedPassageId] = useState('');
+  const [reloadVersion, setReloadVersion] = useState(0);
   const fallbackPassageId = useMemo(
     () => getRandomFeaturedPassage(passages)?.id ?? '',
     [passages],
@@ -50,6 +53,7 @@ export function useSelectedFeaturedPassage(
       error: null,
       isLoading: true,
       passageId,
+      reloadVersion,
       response: null,
     });
 
@@ -62,6 +66,7 @@ export function useSelectedFeaturedPassage(
           error: null,
           isLoading: false,
           passageId,
+          reloadVersion,
           response,
         });
       } catch (caughtError) {
@@ -71,6 +76,7 @@ export function useSelectedFeaturedPassage(
           error: getErrorMessage(caughtError),
           isLoading: false,
           passageId,
+          reloadVersion,
           response: null,
         });
       }
@@ -81,12 +87,17 @@ export function useSelectedFeaturedPassage(
     return () => {
       isCurrent = false;
     };
-  }, [selectedPassageId]);
+  }, [reloadVersion, selectedPassageId]);
 
   const selectPassage = useCallback((passageId: string) => {
     setRequestedPassageId(passageId);
   }, []);
-  const isCurrentSelectionLoaded = loadState.passageId === selectedPassageId;
+  const reloadPassage = useCallback(() => {
+    setReloadVersion((version) => version + 1);
+  }, []);
+  const isCurrentSelectionLoaded =
+    loadState.passageId === selectedPassageId &&
+    loadState.reloadVersion === reloadVersion;
 
   return {
     error: isCurrentSelectionLoaded ? loadState.error : null,
@@ -94,6 +105,7 @@ export function useSelectedFeaturedPassage(
       Boolean(selectedPassageId) &&
       (!isCurrentSelectionLoaded || loadState.isLoading),
     passageResponse: isCurrentSelectionLoaded ? loadState.response : null,
+    reloadPassage,
     selectPassage,
     selectedPassageId,
   };

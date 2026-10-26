@@ -5,6 +5,7 @@ import { PracticeCaret } from './PracticeCaret';
 
 type PracticeTypingSurfaceProps = {
   isComplete: boolean;
+  isDisabled?: boolean;
   onTypingChange: (typedText: string) => void;
   passage: PracticePassage;
   typedText: string;
@@ -83,6 +84,7 @@ function getDisplayParts(passage: PracticePassage) {
  */
 export function PracticeTypingSurface({
   isComplete,
+  isDisabled = false,
   onTypingChange,
   passage,
   typedText,
@@ -94,7 +96,7 @@ export function PracticeTypingSurface({
   const [isFocused, setIsFocused] = useState(false);
   const [caretPosition, setCaretPosition] = useState(0);
   const currentIndex = Math.min(caretPosition, typedText.length);
-  const showCaret = isFocused && !isComplete;
+  const showCaret = isFocused && !isComplete && !isDisabled;
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -117,7 +119,7 @@ export function PracticeTypingSurface({
       <textarea
         aria-label="Type the passage"
         className="absolute inset-0 z-10 h-full w-full resize-none select-none overflow-hidden opacity-0"
-        disabled={isComplete}
+        disabled={isComplete || isDisabled}
         ref={typingInputRef}
         spellCheck={false}
         value={typedText}
@@ -165,9 +167,11 @@ export function PracticeTypingSurface({
       />
       <div
         className={`h-56 select-none overflow-hidden border-y py-5 pr-4 scroll-smooth transition-[border-color,filter,opacity] duration-500 ease-out ${
-          isComplete
-            ? 'border-transparent opacity-30 blur-[1px] [mask-image:linear-gradient(to_bottom,transparent,black_18%,black_82%,transparent)]'
-            : 'border-line'
+          isDisabled
+            ? 'border-line opacity-50'
+            : isComplete
+              ? 'border-transparent opacity-30 blur-[1px] [mask-image:linear-gradient(to_bottom,transparent,black_18%,black_82%,transparent)]'
+              : 'border-line'
         }`}
         ref={viewportRef}
         onClick={() => typingInputRef.current?.focus()}

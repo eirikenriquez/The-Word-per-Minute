@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { verseService } from '../../../lib/bible/verseService';
 import type { PassageResponse } from '../../../types/passage';
 import { getErrorMessage } from '../../../utils/errors';
@@ -11,12 +11,20 @@ export function useSelectedSavedPassage(
   savedPassages: readonly SavedPassage[],
 ) {
   const [selectedSavedPassageId, setSelectedSavedPassageId] = useState('');
-  const [passageResponse, setPassageResponse] =
-    useState<PassageResponse | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedPassageError, setSelectedPassageError] = useState<
-    string | null
-  >(null);
+  const [reloadVersion, setReloadVersion] = useState(0);
+  const [loadState, setLoadState] = useState<{
+    error: string | null;
+    isLoading: boolean;
+    passageId: string;
+    reloadVersion: number;
+    response: PassageResponse | null;
+  }>({
+    error: null,
+    isLoading: false,
+    passageId: '',
+    reloadVersion: 0,
+    response: null,
+  });
 
   const selectedSavedPassage = useMemo(
     () =>
@@ -38,28 +46,49 @@ export function useSelectedSavedPassage(
 
   useEffect(() => {
     if (!selectedSavedPassage) {
-      setPassageResponse(null);
-      setIsLoading(false);
-      setSelectedPassageError(null);
+      setLoadState({
+        error: null,
+        isLoading: false,
+        passageId: '',
+        reloadVersion,
+        response: null,
+      });
       return;
     }
 
     let isCurrent = true;
     const passageToLoad = selectedSavedPassage;
-    setIsLoading(true);
-    setSelectedPassageError(null);
+    const passageId = passageToLoad.id;
+    setLoadState({
+      error: null,
+      isLoading: true,
+      passageId,
+      reloadVersion,
+      response: null,
+    });
 
     async function loadSavedPassage() {
       try {
         const response = await verseService.getReferencePassage(passageToLoad);
-        if (isCurrent) setPassageResponse(response);
+        if (isCurrent) {
+          setLoadState({
+            error: null,
+            isLoading: false,
+            passageId,
+            reloadVersion,
+            response,
+          });
+        }
       } catch (caughtError) {
         if (!isCurrent) return;
 
-        setPassageResponse(null);
-        setSelectedPassageError(getErrorMessage(caughtError));
-      } finally {
-        if (isCurrent) setIsLoading(false);
+        setLoadState({
+          error: getErrorMessage(caughtError),
+          isLoading: false,
+          passageId,
+          reloadVersion,
+          response: null,
+        });
       }
     }
 
@@ -68,13 +97,23 @@ export function useSelectedSavedPassage(
     return () => {
       isCurrent = false;
     };
-  }, [selectedSavedPassage]);
+  }, [reloadVersion, selectedSavedPassage]);
+
+  const reloadPassage = useCallback(() => {
+    setReloadVersion((currentVersion) => currentVersion + 1);
+  }, []);
+  const hasCurrentLoadState =
+    loadState.passageId === selectedSavedPassageId &&
+    loadState.reloadVersion === reloadVersion;
 
   return {
-    isLoading,
-    passageResponse,
+    isLoading:
+      Boolean(selectedSavedPassage) &&
+      (!hasCurrentLoadState || loadState.isLoading),
+    passageResponse: hasCurrentLoadState ? loadState.response : null,
+    reloadPassage,
     selectSavedPassage: setSelectedSavedPassageId,
-    selectedPassageError,
+    selectedPassageError: hasCurrentLoadState ? loadState.error : null,
     selectedSavedPassage,
     selectedSavedPassageId,
   };

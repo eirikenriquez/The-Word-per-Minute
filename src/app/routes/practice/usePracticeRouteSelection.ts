@@ -68,45 +68,44 @@ export function usePracticeRouteSelection({
       nextRouteState: PracticeRouteState,
       options: SelectPracticeRouteOptions = {},
     ) => {
-      if (nextRouteState.passageId) {
-        if (
-          nextRouteState.source === 'featured' &&
-          nextRouteState.passageId !== selectedFeaturedPassageId
-        ) {
-          selectFeaturedPassage(nextRouteState.passageId);
-        } else if (
-          nextRouteState.source === 'saved' &&
-          nextRouteState.passageId !== selectedSavedPassageId
-        ) {
-          selectSavedPassage(nextRouteState.passageId);
-        }
-      }
-
       const nextPath = createPracticePath(nextRouteState);
       const currentPath = `${location.pathname}${location.search}`;
       if (nextPath !== currentPath) {
-        void navigate(nextPath, { replace: options.replace });
+        void navigate(nextPath, {
+          replace: options.replace,
+          preventScrollReset: true,
+        });
       }
     },
-    [
-      location.pathname,
-      location.search,
-      navigate,
-      selectedFeaturedPassageId,
-      selectedSavedPassageId,
-      selectFeaturedPassage,
-      selectSavedPassage,
-    ],
+    [location.pathname, location.search, navigate],
   );
 
   useEffect(() => {
     if (!resolvedRouteState) return;
 
+    // Let the URL drive loading so navigation cannot start duplicate requests.
+    const { source, passageId } = resolvedRouteState;
+    if (passageId) {
+      if (source === 'featured' && passageId !== selectedFeaturedPassageId) {
+        selectFeaturedPassage(passageId);
+      } else if (source === 'saved' && passageId !== selectedSavedPassageId) {
+        selectSavedPassage(passageId);
+      }
+    }
+
     selectPracticeRoute(resolvedRouteState, { replace: true });
-  }, [resolvedRouteState, selectPracticeRoute]);
+  }, [
+    resolvedRouteState,
+    selectedFeaturedPassageId,
+    selectedSavedPassageId,
+    selectFeaturedPassage,
+    selectSavedPassage,
+    selectPracticeRoute,
+  ]);
 
   return {
     practiceSource: resolvedRouteState?.source ?? routeState.source,
+    requestedPassageId: resolvedRouteState?.passageId ?? routeState.passageId,
     selectPracticeRoute,
   };
 }
