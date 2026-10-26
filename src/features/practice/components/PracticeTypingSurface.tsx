@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { PracticePassage } from '../types/practice';
 import { areCharactersEquivalent } from '../utils/typingMetrics';
+import { PracticeCaret } from './PracticeCaret';
 
 type PracticeTypingSurfaceProps = {
   isComplete: boolean;
@@ -21,9 +22,6 @@ type DisplayPart =
       kind: 'character';
       textIndex: number;
     };
-
-const caretClass =
-  'before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-0.5 before:bg-practice-caret';
 
 /**
  * Chooses the highlight class for each displayed character.
@@ -92,6 +90,7 @@ export function PracticeTypingSurface({
   const typingInputRef = useRef<HTMLTextAreaElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
   const activeCharacterRef = useRef<HTMLSpanElement>(null);
+  const passageTextRef = useRef<HTMLParagraphElement>(null);
   const [isFocused, setIsFocused] = useState(false);
   const [caretPosition, setCaretPosition] = useState(0);
   const currentIndex = Math.min(caretPosition, typedText.length);
@@ -173,44 +172,56 @@ export function PracticeTypingSurface({
         ref={viewportRef}
         onClick={() => typingInputRef.current?.focus()}
       >
-        <p className="relative text-xl leading-10 text-ink-muted sm:text-2xl sm:leading-[3rem]">
-          {getDisplayParts(passage).map((part) =>
-            part.kind === 'verseNumber' ? (
-              <sup
-                className="mr-1 text-sm font-bold text-ink-subtle"
-                key={part.key}
-              >
-                {part.verseNumber}
-              </sup>
-            ) : (
-              <span
-                className={`relative ${getCharacterClass(
-                  part.character,
-                  typedText[part.textIndex],
-                )} ${showCaret && part.textIndex === currentIndex ? caretClass : ''}`}
-                key={part.key}
-                ref={
-                  part.textIndex === currentIndex
-                    ? activeCharacterRef
-                    : undefined
-                }
-              >
-                {part.character}
-              </span>
-            ),
-          )}
-          <span
-            aria-hidden="true"
-            className={`relative ${showCaret && currentIndex === passage.text.length ? caretClass : ''}`}
-            ref={
-              currentIndex === passage.text.length
-                ? activeCharacterRef
-                : undefined
-            }
+        <div className="relative">
+          <p
+            className="text-xl leading-10 text-ink-muted sm:text-2xl sm:leading-[3rem]"
+            ref={passageTextRef}
           >
-            {'\u200b'}
-          </span>
-        </p>
+            {getDisplayParts(passage).map((part) =>
+              part.kind === 'verseNumber' ? (
+                <sup
+                  className="mr-1 text-sm font-bold text-ink-subtle"
+                  key={part.key}
+                >
+                  {part.verseNumber}
+                </sup>
+              ) : (
+                <span
+                  className={getCharacterClass(
+                    part.character,
+                    typedText[part.textIndex],
+                  )}
+                  key={part.key}
+                  ref={
+                    part.textIndex === currentIndex
+                      ? activeCharacterRef
+                      : undefined
+                  }
+                >
+                  {part.character}
+                </span>
+              ),
+            )}
+            <span
+              aria-hidden="true"
+              ref={
+                currentIndex === passage.text.length
+                  ? activeCharacterRef
+                  : undefined
+              }
+            >
+              {'\u200b'}
+            </span>
+          </p>
+          <PracticeCaret
+            activeCharacterRef={activeCharacterRef}
+            currentIndex={currentIndex}
+            isVisible={showCaret}
+            passageRef={passage.ref}
+            textRef={passageTextRef}
+            typedText={typedText}
+          />
+        </div>
       </div>
     </>
   );

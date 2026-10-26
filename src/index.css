@@ -81,6 +81,25 @@ body {
   transform: translateY(-1px);
 }
 
+@keyframes practice-caret-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.practice-caret {
+  transition: transform 80ms ease-out;
+}
+
+.practice-caret[data-idle='true'] {
+  animation: practice-caret-blink 1200ms ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -93,6 +112,11 @@ body {
 
   .soft-hover:hover {
     transform: none;
+  }
+
+  .practice-caret {
+    animation: none !important;
+    transition: none !important;
   }
 
   .scroll-reveal,
