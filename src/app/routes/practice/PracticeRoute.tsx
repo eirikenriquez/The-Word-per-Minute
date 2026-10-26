@@ -44,6 +44,9 @@ export function PracticeRoute() {
   >(null);
   const [attemptSaveError, setAttemptSaveError] = useState<string | null>(null);
   const attemptVersionRef = useRef(0);
+  const [focusRequestId, setFocusRequestId] = useState(0);
+  const initialFocusRequestedRef = useRef(false);
+  const pendingNextFocusKeyRef = useRef<string | null>(null);
   const [transition, dispatchTransition] = useReducer(
     practicePassageTransitionReducer,
     initialPracticePassageTransition,
@@ -184,7 +187,17 @@ export function PracticeRoute() {
     setAttemptSaveError(null);
   }, [resetPractice]);
 
+  const restartPractice = useCallback(() => {
+    if (isPassageUnavailable) return;
+    // Library navigation also resets the session, so request focus separately.
+    resetPracticeSession();
+    setFocusRequestId((id) => id + 1);
+  }, [isPassageUnavailable, resetPracticeSession]);
+
   useEffect(() => {
+    if (pendingNextFocusKeyRef.current !== requestKey) {
+      pendingNextFocusKeyRef.current = null;
+    }
     if (requestIsLoading || transition.requestKey !== requestKey) {
       dispatchTransition({ type: 'requested', key: requestKey });
     }
@@ -200,7 +213,17 @@ export function PracticeRoute() {
       });
     } else if (readySnapshot) {
       // Reset the attempt and replace the full displayed selection in one batch.
-      if (displayed?.key !== readySnapshot.key) resetPracticeSession();
+      if (displayed?.key !== readySnapshot.key) {
+        resetPracticeSession();
+        if (
+          !initialFocusRequestedRef.current ||
+          pendingNextFocusKeyRef.current === readySnapshot.key
+        ) {
+          setFocusRequestId((id) => id + 1);
+        }
+        initialFocusRequestedRef.current = true;
+      }
+      pendingNextFocusKeyRef.current = null;
       dispatchTransition({
         type: 'loaded',
         key: requestKey,
@@ -254,13 +277,23 @@ export function PracticeRoute() {
       featuredCatalog.passages,
       selectedFeaturedPassage.selectedPassageId,
     );
+    if (!passage) return;
+    const nextKey = JSON.stringify([ownerId, 'featured', passage.id]);
+    if (nextKey === displayed?.key) {
+      restartPractice();
+      return;
+    }
+    pendingNextFocusKeyRef.current = nextKey;
     selectPracticeRoute({
-      passageId: passage?.id ?? null,
+      passageId: passage.id,
       source: 'featured',
     });
   }, [
     featuredCatalog.passages,
     isPassageUnavailable,
+    displayed?.key,
+    ownerId,
+    restartPractice,
     selectedFeaturedPassage.selectedPassageId,
     selectPracticeRoute,
   ]);
@@ -321,6 +354,7 @@ export function PracticeRoute() {
         headerTitle={displayed.headerTitle}
       />
       <PracticePage
+        focusRequestId={focusRequestId}
         accuracy={practiceSession.accuracy}
         attemptSaveError={attemptSaveError}
         canSaveCurrentPassage={!isPassageUnavailable && Boolean(saveInput)}
@@ -359,7 +393,7 @@ export function PracticeRoute() {
         wpm={practiceSession.wpm}
         onNextFeaturedPassage={nextFeaturedPassage}
         onOpenLibrary={openLibrary}
-        onResetPractice={resetPracticeSession}
+        onResetPractice={restartPractice}
         onSaveCurrentPassage={() => {
           if (!isPassageUnavailable) void saveCurrentPassage();
         }}

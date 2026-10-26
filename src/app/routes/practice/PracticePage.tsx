@@ -9,6 +9,7 @@ import type {
 } from '../../../features/practice/types/practice';
 
 export type PracticePageProps = {
+  focusRequestId: number;
   accuracy: number;
   attemptSaveError: string | null;
   canSaveReflection: boolean;
@@ -45,6 +46,7 @@ export type PracticePageProps = {
  * Central typing page: source controls, active passage display, typing input, and stats.
  */
 export function PracticePage({
+  focusRequestId,
   accuracy,
   attemptSaveError,
   canSaveReflection,
@@ -97,6 +99,7 @@ export function PracticePage({
 
       <section className="mx-auto grid w-full max-w-5xl gap-8">
         <PracticePassageDisplay
+          focusRequestId={focusRequestId}
           accuracy={accuracy}
           attemptSaveError={attemptSaveError}
           canSaveReflection={canSaveReflection}

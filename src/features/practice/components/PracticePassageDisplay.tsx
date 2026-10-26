@@ -6,6 +6,7 @@ import { PracticeReflectionDialog } from './PracticeReflectionDialog';
 import { PracticeTypingSurface } from './PracticeTypingSurface';
 
 type PracticePassageDisplayProps = {
+  focusRequestId: number;
   accuracy: number;
   attemptSaveError: string | null;
   canSaveReflection: boolean;
@@ -31,6 +32,7 @@ type PracticePassageDisplayProps = {
  * Composes the active passage, completion summary, and reflection action.
  */
 export function PracticePassageDisplay({
+  focusRequestId,
   accuracy,
   attemptSaveError,
   canSaveReflection,
@@ -63,9 +65,7 @@ export function PracticePassageDisplay({
           {passage.ref}{' '}
           <span className="text-ink-subtle">({translationName})</span>
         </p>
-        <p className="text-sm text-ink-subtle">
-          Click the passage and type what you see.
-        </p>
+        <p className="text-sm text-ink-subtle">Type what you see.</p>
       </div>
 
       <div
@@ -73,6 +73,7 @@ export function PracticePassageDisplay({
         className="relative focus-within:ring-2 focus-within:ring-accent-soft"
       >
         <PracticeTypingSurface
+          focusRequestId={focusRequestId}
           isComplete={isComplete && !isPassageUnavailable}
           isDisabled={isPassageUnavailable}
           passage={passage}

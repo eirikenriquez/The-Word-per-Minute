@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { PracticePassage } from '../types/practice';
 import { areCharactersEquivalent } from '../utils/typingMetrics';
 import { PracticeCaret } from './PracticeCaret';
 
 type PracticeTypingSurfaceProps = {
+  focusRequestId: number;
   isComplete: boolean;
   isDisabled?: boolean;
   onTypingChange: (typedText: string) => void;
@@ -83,6 +84,7 @@ function getDisplayParts(passage: PracticePassage) {
  * Owns the invisible typing input and the fixed-height passage viewport that follows it.
  */
 export function PracticeTypingSurface({
+  focusRequestId,
   isComplete,
   isDisabled = false,
   onTypingChange,
@@ -93,10 +95,37 @@ export function PracticeTypingSurface({
   const viewportRef = useRef<HTMLDivElement>(null);
   const activeCharacterRef = useRef<HTMLSpanElement>(null);
   const passageTextRef = useRef<HTMLParagraphElement>(null);
+  const handledFocusRequestRef = useRef(0);
   const [isFocused, setIsFocused] = useState(false);
   const [caretPosition, setCaretPosition] = useState(0);
   const currentIndex = Math.min(caretPosition, typedText.length);
   const showCaret = isFocused && !isComplete && !isDisabled;
+
+  const focusTypingInput = useCallback(() => {
+    const input = typingInputRef.current;
+    if (input && !input.disabled) input.focus({ preventScroll: true });
+  }, []);
+
+  useEffect(() => {
+    if (focusRequestId === handledFocusRequestRef.current) return;
+    // Consume once, including requests skipped because another control owns focus.
+    handledFocusRequestRef.current = focusRequestId;
+    const input = typingInputRef.current;
+    if (!input || isComplete || isDisabled) return;
+
+    const active = document.activeElement;
+    const anotherFieldIsActive =
+      active instanceof HTMLElement &&
+      active !== input &&
+      (active.matches('input, textarea, select') || active.isContentEditable);
+    // Closing popovers remain mounted briefly; their trigger owns the open state.
+    const openOverlay = document.querySelector(
+      '[role="dialog"][aria-modal="true"], [role="menu"], [id^="headlessui-popover-button-"][aria-expanded="true"]',
+    );
+    if (anotherFieldIsActive || openOverlay) return;
+
+    focusTypingInput();
+  }, [focusRequestId, focusTypingInput, isComplete, isDisabled]);
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -161,7 +190,7 @@ export function PracticeTypingSurface({
           // Clicking starts/resumes typing at the end without drag-selection.
           event.preventDefault();
           const input = event.currentTarget;
-          input.focus({ preventScroll: true });
+          focusTypingInput();
           input.setSelectionRange(input.value.length, input.value.length);
         }}
       />
@@ -174,7 +203,7 @@ export function PracticeTypingSurface({
               : 'border-line'
         }`}
         ref={viewportRef}
-        onClick={() => typingInputRef.current?.focus()}
+        onClick={focusTypingInput}
       >
         <div className="relative">
           <p
