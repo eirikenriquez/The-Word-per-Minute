@@ -19,7 +19,6 @@ type PracticeControlsProps = {
   selectedSavedPassageId: string;
   onNextFeaturedPassage: () => void;
   onOpenLibrary: () => void;
-  onReset: () => void;
   onSaveCurrentPassage: () => void;
   onSelectFeaturedPractice: () => void;
   onSelectSavedPractice: (passageId: string) => void;
@@ -37,7 +36,6 @@ export function PracticeControls({
   selectedSavedPassageId,
   onNextFeaturedPassage,
   onOpenLibrary,
-  onReset,
   onSaveCurrentPassage,
   onSelectFeaturedPractice,
   onSelectSavedPractice,
@@ -105,7 +103,6 @@ export function PracticeControls({
                       practiceSource={practiceSource}
                       onNextFeaturedPassage={onNextFeaturedPassage}
                       onOpenLibrary={onOpenLibrary}
-                      onReset={onReset}
                     />
                   </div>
                 </div>

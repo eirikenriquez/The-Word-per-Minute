@@ -1,5 +1,6 @@
 import { Transition } from '@headlessui/react';
-import { ArrowRightIcon } from '@heroicons/react/24/outline';
+import { ArrowPathIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
+import { useEffect, useRef } from 'react';
 import { Button } from '../../../components/ui/Button';
 import type { PracticePassage } from '../types/practice';
 import { PracticeReflectionDialog } from './PracticeReflectionDialog';
@@ -18,6 +19,7 @@ type PracticePassageDisplayProps = {
   isPassageLoading: boolean;
   passageLoadError: string | null;
   onRetryPassage: () => void;
+  onRestart: () => void;
   onTypingChange: (typedText: string) => void;
   onCompletionAction?: () => void;
   onSaveReflection: (reflection: string) => Promise<boolean>;
@@ -44,6 +46,7 @@ export function PracticePassageDisplay({
   isPassageLoading,
   passageLoadError,
   onRetryPassage,
+  onRestart,
   onTypingChange,
   onCompletionAction,
   onSaveReflection,
@@ -53,13 +56,35 @@ export function PracticePassageDisplay({
   typedText,
   wpm,
 }: PracticePassageDisplayProps) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const restartButtonRef = useRef<HTMLButtonElement>(null);
+  const wasCompleteRef = useRef(false);
   const isPassageUnavailable = isPassageLoading || Boolean(passageLoadError);
   const attemptSaveErrorMessage = attemptSaveError
     ? "This attempt couldn't be saved to your history, so a reflection can't be attached."
     : null;
 
+  useEffect(() => {
+    const justCompleted = isComplete && !wasCompleteRef.current;
+    wasCompleteRef.current = isComplete;
+    if (!justCompleted || isPassageUnavailable) return;
+
+    // Hand off from the disabled typing input without interrupting another control.
+    const active = document.activeElement;
+    if (
+      document.querySelector(
+        '[role="dialog"][aria-modal="true"], [role="menu"]',
+      ) ||
+      (active &&
+        active !== document.body &&
+        !sectionRef.current?.contains(active))
+    )
+      return;
+    restartButtonRef.current?.focus({ preventScroll: true });
+  }, [isComplete, isPassageUnavailable]);
+
   return (
-    <section className="grid gap-4">
+    <section className="grid gap-4" ref={sectionRef}>
       <div className="flex flex-col gap-1">
         <p className="text-sm font-semibold text-ink-muted">
           {passage.ref}{' '}
@@ -133,30 +158,6 @@ export function PracticePassageDisplay({
               </p>
             </div>
 
-            <fieldset
-              className="flex flex-wrap justify-center gap-2"
-              disabled={!isComplete || isPassageUnavailable}
-            >
-              <PracticeReflectionDialog
-                key={passage.ref}
-                attemptSaveErrorMessage={attemptSaveErrorMessage}
-                canSaveReflection={canSaveReflection}
-                isSavingReflection={isSavingReflection}
-                isSignedIn={isSignedIn}
-                reflectionError={reflectionError}
-                onSaveReflection={onSaveReflection}
-              />
-              {completionActionLabel && onCompletionAction && (
-                <Button variant="primary" onClick={onCompletionAction}>
-                  <ArrowRightIcon
-                    aria-hidden="true"
-                    className="h-4 w-4 shrink-0"
-                  />
-                  {completionActionLabel}
-                </Button>
-              )}
-            </fieldset>
-
             {attemptSaveErrorMessage && (
               <p
                 className="text-sm text-red-700 dark:text-red-300"
@@ -168,6 +169,49 @@ export function PracticePassageDisplay({
           </div>
         </Transition>
       </div>
+
+      <fieldset
+        aria-label="Practice actions"
+        className="flex min-w-0 flex-wrap items-center justify-between gap-3"
+        disabled={isPassageUnavailable}
+      >
+        <div className="flex flex-wrap gap-2">
+          <Button ref={restartButtonRef} variant="ghost" onClick={onRestart}>
+            <ArrowPathIcon aria-hidden="true" className="h-4 w-4 shrink-0" />
+            Restart
+          </Button>
+          {isComplete && !isPassageUnavailable && (
+            <>
+              {completionActionLabel && onCompletionAction && (
+                <Button variant="primary" onClick={onCompletionAction}>
+                  <ArrowRightIcon
+                    aria-hidden="true"
+                    className="h-4 w-4 shrink-0"
+                  />
+                  {completionActionLabel}
+                </Button>
+              )}
+              <PracticeReflectionDialog
+                key={passage.ref}
+                attemptSaveErrorMessage={attemptSaveErrorMessage}
+                canSaveReflection={canSaveReflection}
+                isSavingReflection={isSavingReflection}
+                isSignedIn={isSignedIn}
+                reflectionError={reflectionError}
+                onSaveReflection={onSaveReflection}
+              />
+            </>
+          )}
+        </div>
+        <p className="text-xs text-ink-subtle">
+          {!isComplete && (
+            <>
+              <kbd className="font-sans">Tab</kbd> then{' '}
+            </>
+          )}
+          <kbd className="font-sans">Enter</kbd> to restart
+        </p>
+      </fieldset>
     </section>
   );
 }

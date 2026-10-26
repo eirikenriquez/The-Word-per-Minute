@@ -90,7 +90,6 @@ export function PracticePage({
           selectedSavedPassageId={selectedSavedPassageId}
           onNextFeaturedPassage={onNextFeaturedPassage}
           onOpenLibrary={onOpenLibrary}
-          onReset={onResetPractice}
           onSaveCurrentPassage={onSaveCurrentPassage}
           onSelectFeaturedPractice={onSelectFeaturedPractice}
           onSelectSavedPractice={onSelectSavedPassage}
@@ -115,6 +114,7 @@ export function PracticePage({
           isPassageLoading={isPassageLoading}
           passageLoadError={passageLoadError}
           onRetryPassage={onRetryPassage}
+          onRestart={onResetPractice}
           onCompletionAction={
             isPassageComplete && practiceSource === 'featured'
               ? onNextFeaturedPassage
